@@ -1,6 +1,11 @@
 # weather-station-site
 This is the website to display the weather station data
 
+## Endpoints
+1. ""  Displays basic text index page
+2. "currentweather/restUrl" - Displays basic json response
+3. "currentweather/htmlTemplate" - Displays basic html template response
+
 ## Install 
 MacOS:
 
