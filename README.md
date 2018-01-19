@@ -19,7 +19,7 @@ Windows:
 2. git clone https://github.com/batiyeh/weather-station-site
 3. cd weather-station-site
 4. python -m venv env
-5. . ./env/Script/activate
+5. . ./env/Scripts/activate
 6. env/Script/pip install -r requirements.txt
 7. python manage.py migrate
 8. python manage.py runserver
