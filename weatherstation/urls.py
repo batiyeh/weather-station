@@ -14,10 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name='index'), # Parameters: ('url/path/after/domain', views.functionName, 'NameAccessibleToJavascript')
+    path('', views.index, name='index'),  # Parameters: ('url/path/after/domain', views.functionName, 'NameAccessibleToJavascript')
+    path('currentweather/', include('currentweather.urls')) # This will include all the urls from ./currentweather/urls.py except with a currentweather/ prefix
 ]
