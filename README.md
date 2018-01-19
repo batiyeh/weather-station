@@ -10,7 +10,8 @@ MacOS:
 4. python3 -m venv env
 5. . ./env/bin/activate
 6. env/bin/pip install -r requirements.txt
-7. python3 manage.py runserver
+7. python3 manage.py migrate
+8. python3 manage.py runserver
 
 Windows: 
 
@@ -20,5 +21,6 @@ Windows:
 4. python -m venv env
 5. . ./env/Script/activate
 6. env/Script/pip install -r requirements.txt
-7. python manage.py runserver
+7. python manage.py migrate
+8. python manage.py runserver
 
