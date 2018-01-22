@@ -21,6 +21,6 @@ def restUrl(request):
 # This is an example of an HTML file being served to display data
 def htmlTemplate(request):
     # Select data from database up here if you want and build a context dictionary
-    context = {'contextAttribute': '157'}
+    context = {'contextAttribute': '1414', 'someStuff': 'Testing'}
 
     return render(request, "templates/templateFile.html", context)
