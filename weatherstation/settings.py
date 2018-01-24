@@ -53,7 +53,10 @@ ROOT_URLCONF = 'weatherstation.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            'currentweather/',
+            'weatherstation/'
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -65,6 +68,11 @@ TEMPLATES = [
         },
     },
 ]
+
+TEMPLATE_DIRS = ()
+
+TEMPLATE_LOADERS = ('django.template.loaders.filesystem.Loader',
+                    'django.template.loaders.app_directories.Loader', )
 
 WSGI_APPLICATION = 'weatherstation.wsgi.application'
 

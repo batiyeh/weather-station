@@ -2,9 +2,10 @@
 This is the website to display the weather station data
 
 ## Endpoints
-1. ""  Displays basic text index page
-2. "currentweather/restUrl" - Displays basic json response
-3. "currentweather/htmlTemplate" - Displays basic html template response
+1. "" - Displays basic text index page
+2. "/restUrl" - Displays basic json response
+3. "/htmlTemplate" - Displays basic html template response
+3. "/currentweather" - Displays temperature, wind speed, pressure, and humidity
 
 ## Install 
 MacOS:

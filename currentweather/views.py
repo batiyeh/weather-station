@@ -3,6 +3,8 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 import json
+import requests
+
 
 # This is an example of a RESTful API endpoint
 def restUrl(request):
@@ -24,3 +26,17 @@ def htmlTemplate(request):
     context = {'contextAttribute': '157'}
 
     return render(request, "templates/templateFile.html", context)
+
+
+# Get weather data from the weather underground api and display *some* of it. This could be built dynamically with different cities or GPS coordinates. We will probably have to build a model to store data from this
+def getCurrentWeatherJson(request):
+    data = requests.get("http://api.wunderground.com/api/ec938655f8fd9257/conditions/q/MI/Detroit.json")
+    data = data.json()
+
+    context = {
+        "temperature": data["current_observation"]["temp_f"],
+        "wind_speed": data["current_observation"]["wind_mph"],
+        "humidity": data["current_observation"]["relative_humidity"], # Percentage
+        "pressure": data["current_observation"]["pressure_mb"], # In millobars
+    }
+    return render(request, "templates/currentweather.html", context)

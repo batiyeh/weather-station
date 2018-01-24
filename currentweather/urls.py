@@ -5,4 +5,5 @@ from . import views
 urlpatterns = [
     path('restUrl', views.restUrl, name='restUrl'),
     path('htmlTemplate', views.htmlTemplate, name='htmlTemplate'),
+    path('currentweather', views.getCurrentWeatherJson, name='currentWeather'),
 ]
