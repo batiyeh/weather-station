@@ -20,5 +20,5 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),  # Parameters: ('url/path/after/domain', views.functionName, 'NameAccessibleToJavascript')
-    path('currentweather/', include('currentweather.urls')) # This will include all the urls from ./currentweather/urls.py except with a currentweather/ prefix
+    path('', include('currentweather.urls')) # This will include all the urls from ./currentweather/urls.py
 ]
