@@ -38,5 +38,6 @@ def getCurrentWeatherJson(request):
         "wind_speed": data["current_observation"]["wind_mph"],
         "humidity": data["current_observation"]["relative_humidity"], # Percentage
         "pressure": data["current_observation"]["pressure_mb"], # In millobars
+        "Last_rec": data["current_observation"]["observation_time"],
     }
     return render(request, "templates/currentweather.html", context)
