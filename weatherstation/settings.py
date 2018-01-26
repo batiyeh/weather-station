@@ -53,10 +53,7 @@ ROOT_URLCONF = 'weatherstation.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            'currentweather/',
-            'weatherstation/'
-        ],
+        'DIRS': ['currentweather/', 'weatherstation/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -82,8 +79,12 @@ WSGI_APPLICATION = 'weatherstation.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'weatherstation',
+        'USER': 'root',
+        'PASSWORD': 'pass1234',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
