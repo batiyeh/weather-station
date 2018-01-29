@@ -9,4 +9,5 @@ class Weather(models.Model):
     date_time = models.DateTimeField()
 
     def __set__(self):
-        return self.temperature + ' - ' + self.wind_speed + ' - ' + self.humidity + ' - ' + self.pressure + ' - ' + self.date_time
+        return self.temperature + ' - ' + self.wind_speed + ' - ' + self.humidity + ' - ' + self.pressure + ' - ' + self.date_time  #this shows data clear in shell
+    
