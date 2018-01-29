@@ -84,8 +84,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'weatherstation',
-        'USER': 'root',
-        'PASSWORD': 'pass1234',
+        'USER': 'weatherstation',
+        'PASSWORD': 'ws1234',
         'HOST': 'localhost',
         'PORT': '3306',
     }
