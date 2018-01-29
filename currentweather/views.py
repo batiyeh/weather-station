@@ -2,6 +2,7 @@
 # or directly to an HTML page to be
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.conf import settings
 import json
 import requests
 
@@ -30,13 +31,17 @@ def htmlTemplate(request):
 
 # Get weather data from the weather underground api and display *some* of it. This could be built dynamically with different cities or GPS coordinates.
 def getCurrentWeatherJson(request):
-    data = requests.get("http://api.wunderground.com/api/ec938655f8fd9257/conditions/q/MI/Detroit.json")
-    data = data.json()
+    context = {"temperature": 0, "wind_speed": 0, "humidity": 0, "pressure": 0}
+    try:
+        params = {'q': "Detroit", 'units': 'imperial', 'appid': settings.OPEN_WEATHER_KEY}
+        data = requests.get("http://api.openweathermap.org/data/2.5/weather", params=params)
 
-    context = {
-        "temperature": data["current_observation"]["temp_f"],
-        "wind_speed": data["current_observation"]["wind_mph"],
-        "humidity": data["current_observation"]["relative_humidity"], # Percentage
-        "pressure": data["current_observation"]["pressure_mb"], # In millobars
-    }
+        data = data.json()
+        context["temperature"] = data["main"]["temp"]
+        context["wind_speed"] = data["wind"]["speed"]
+        context["humidity"] = data["main"]["humidity"]
+        context["pressure"] = data["main"]["pressure"]
+    except:
+        context["error"] = "true"
+
     return render(request, "templates/currentweather.html", context)

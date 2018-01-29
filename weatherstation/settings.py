@@ -21,6 +21,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '7xo5vlgk@&)3(qm14c71%x#2gl1ybc0k(t$!r4%&7ul&2jk4@%'
 
+# OpenWeatherMap API Key for requests
+OPEN_WEATHER_KEY = 'bfa43dcbd89779767af6b8769b3b4fc6'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
