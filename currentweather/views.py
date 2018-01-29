@@ -2,6 +2,11 @@
 # or directly to an HTML page to be
 from django.http import HttpResponse
 from django.shortcuts import render
+from dj_twilio_sms import utils
+from dj_twilio_sms.models import OutgoingSMS
+from sendsms.message import SmsMessage
+from sendsms import api
+from django.core.mail import send_mail
 import json
 import requests
 
@@ -41,3 +46,27 @@ def getCurrentWeatherJson(request):
         "Last_rec": data["current_observation"]["observation_time"],
     }
     return render(request, "templates/currentweather.html", context)
+
+def testAlert(request):
+    #api.send_sms(body='I can haz txt', from_phone='+2488800626', to=['+2488800626'])
+    #message = SmsMessage(body='lolcats make me hungry', from_phone='+41791111111', to=['+41791234567'])
+    #message.send()
+   # result = utils.send_sms(
+    #    request=None,
+     #   to_number='+2488800626',
+      #  body='Test Message from tox'
+    #)
+    #self.assertTrue(isinstance(result, OutgoingSMS))
+    #!usr/bin/python2.7
+
+    #api.send_sms(body='I can haz txt', from_phone='+2488800626', to=['+2488800626'])
+
+    send_mail(
+        'Weather Alert!',
+        'The Weather is BAD!',
+        'WStationTestdod@gmail.com',
+        ['tmalarkey14@gmail.com'],
+        fail_silently=False,
+    )
+    return render(request, "templates/testAlert.html")
+
