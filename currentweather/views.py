@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.conf import settings
 import json
 import requests
+from . import models
 
 
 # This is an example of a RESTful API endpoint
@@ -41,6 +42,9 @@ def getCurrentWeatherJson(request):
         context["wind_speed"] = data["wind"]["speed"]
         context["humidity"] = data["main"]["humidity"]
         context["pressure"] = data["main"]["pressure"]
+
+        q = Weather(temperature = 'data["main"]["temp"]',wind_speed = data["wind"]["speed"], humidity = data["main"]["humidity"], pressure = data["main"]["pressure"] )
+        q.save()
     except:
         context["error"] = "true"
 
