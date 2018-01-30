@@ -31,7 +31,7 @@ def htmlTemplate(request):
 
 # Get weather data from the weather underground api and display *some* of it. This could be built dynamically with different cities or GPS coordinates.
 def getCurrentWeatherJson(request):
-    context = {"temperature": 0, "wind_speed": 0, "humidity": 0, "pressure": 0}
+    context = {"temperature": 0, "wind_speed": 0, "humidity": 0, "pressure": 0, "desc": "", "location": ""}
     try:
         params = {'q': "Detroit", 'units': 'imperial', 'appid': settings.OPEN_WEATHER_KEY}
         data = requests.get("http://api.openweathermap.org/data/2.5/weather", params=params)
@@ -41,6 +41,8 @@ def getCurrentWeatherJson(request):
         context["wind_speed"] = data["wind"]["speed"]
         context["humidity"] = data["main"]["humidity"]
         context["pressure"] = data["main"]["pressure"]
+        context["desc"] = data["weather"][0]["main"]
+        context["location"] = data["name"]
     except:
         context["error"] = "true"
 

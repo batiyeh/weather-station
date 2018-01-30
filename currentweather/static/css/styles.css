@@ -1,10 +1,56 @@
-html, body{
+html, body {
     font-family: 'Roboto Mono', monospace;
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
 }
 
 nav {
     background: #191654;
-    background: -webkit-linear-gradient(to right, #43c6ac, #191654);
-    background: linear-gradient(to right, #43c6ac, #191654);
-    color: white;
+    background: -webkit-linear-gradient(to right, #3C3973, #43C6AC);
+    background: linear-gradient(to right, #3C3973, #43C6AC);
+}
+
+nav a {
+    color: #F3F3F3 !important;
+}
+
+.centered {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.top-info {
+    margin-bottom: 75px;
+}
+
+.bottom-info {
+
+}
+
+#temp {
+    font-size: 64pt;
+    text-align: center;
+    margin-bottom: 0px;
+}
+
+#desc {
+    margin-bottom: 0px;
+    text-align: center;
+    font-size: 48pt;
+}
+
+#location {
+    margin-bottom: 0px;
+    text-align: center;
+    font-size: 24pt;
+}
+
+.weather-list-item {
+    font-size: 30pt;
 }
