@@ -1,0 +1,10 @@
+html, body{
+    font-family: 'Roboto Mono', monospace;
+}
+
+nav {
+    background: #191654;
+    background: -webkit-linear-gradient(to right, #43c6ac, #191654);
+    background: linear-gradient(to right, #43c6ac, #191654);
+    color: white;
+}
