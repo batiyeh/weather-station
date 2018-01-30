@@ -9,7 +9,7 @@ class Weather(models.Model):
     wind_speed = models.CharField(max_length=100)
     humidity = models.CharField(max_length=100)
     pressure = models.CharField(max_length=100)
-    date_time = models.DateTimeField()
+    date_time = models.DateTimeField(timezone.now())
 
     def __set__(self):
         return self.temperature + ' - ' + self.wind_speed + ' - ' + self.humidity + ' - ' + self.pressure + ' - ' + self.date_time  #this shows data clear in shell
