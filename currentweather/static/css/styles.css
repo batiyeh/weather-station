@@ -18,19 +18,16 @@ nav a {
     color: #F3F3F3 !important;
 }
 
-.centered {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+.current .container {
+    width: 40%;
 }
 
 .top-info {
-    margin-bottom: 75px;
+    margin-top: 50px;
 }
 
 .bottom-info {
-
+    margin-top: 100px;
 }
 
 #temp {
@@ -52,5 +49,10 @@ nav a {
 }
 
 .weather-list-item {
-    font-size: 30pt;
+    font-size: 24pt;
+    margin-bottom: 20px;
+}
+
+.weather-num {
+    text-align: right;
 }
