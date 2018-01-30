@@ -1,10 +1,23 @@
 # weather-station-site
-This is the website to display the weather station data
+Website to display the weather station data
 
 ## Endpoints
-1. ""  Displays basic text index page
-2. "currentweather/restUrl" - Displays basic json response
-3. "currentweather/htmlTemplate" - Displays basic html template response
+1. "" - Displays basic text index page
+2. "/restUrl" - Displays basic json response
+3. "/htmlTemplate" - Displays basic html template response
+3. "/currentweather" - Displays temperature, wind speed, pressure, and humidity
+
+## How to start development environment
+1. If the env is not activated: . ./env/Scripts/activate
+2. If there are new requirements: pip install -r requirements.txt
+3. python manage.py runserver
+
+## What to do when models are changed
+1. manage.py makemigrations
+2. manage.py migrate
+
+## How to save newly installed requirements
+pip freeze > requirements.txt
 
 ## Install 
 MacOS:
@@ -25,7 +38,7 @@ Windows:
 3. cd weather-station-site
 4. python -m venv env
 5. . ./env/Scripts/activate
-6. env/Script/pip install -r requirements.txt
+6. env/Scripts/pip install -r requirements.txt
 7. python manage.py migrate
 8. python manage.py runserver
 
