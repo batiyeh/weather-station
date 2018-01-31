@@ -20,14 +20,29 @@ Website to display the weather station data
 pip freeze > requirements.txt
 
 ## Install 
-MacOS:
 
-1. Open up git bash and cd into wherever you want to store this folder
+### Mac OS:
+This project requires the following dependencies before continuing the install:
+1. Python 3.6 with venv (easily installed via [Homebrew](https://brew.sh))
+```sh
+brew install python3
+```
+2. MySQL
+
+After you have the above dependencies:
+
+1. Open up terminal and navigate to where you want to store this project
 2. git clone https://github.com/batiyeh/weather-station-site
 3. cd weather-station-site
 4. python3 -m venv env
-5. . ./env/bin/activate
-6. env/bin/pip install -r requirements.txt
+5. Activate the source files within your env:  
+```sh
+. ./env/bin/activate
+```
+6. Install the requirements that come with the project:
+```sh
+pip install -r requirements.txt
+```
 7. python3 manage.py migrate
 8. python3 manage.py runserver
 
