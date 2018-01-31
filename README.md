@@ -31,14 +31,53 @@ MacOS:
 7. python3 manage.py migrate
 8. python3 manage.py runserver
 
-Windows: 
+### Windows:
+This project requires the following dependencies before continuing the install:
+1. Python 3.6 from https://www.python.org/downloads/
 
-1. Open up git bash and cd into wherever you want to store this folder
-2. git clone https://github.com/batiyeh/weather-station-site
-3. cd weather-station-site
-4. python -m venv env
-5. . ./env/Scripts/activate
-6. env/Scripts/pip install -r requirements.txt
-7. python manage.py migrate
-8. python manage.py runserver
+2. MySQL from https://dev.mysql.com/downloads/mysql/  (make sure it is the MySQL Community Server)
 
+After you have installed the above dependencies:
+
+1. Create a MySQL user with the name "weatherstation" and password "ws1234".
+```sh
+# Log into your MySQL shell. If you have a password on your root account
+# also add -p onto the end of the following command.
+mysql -u root
+# Once logged in, create the user
+mysql > CREATE USER 'weatherstation'@'localhost' IDENTIFIED BY 'ws1234';
+# Grant all privileges to the new user you have created
+mysql > GRANT ALL PRIVILEGES ON * . * TO 'weatherstation'@'localhost';
+mysql > FLUSH PRIVILEGES;
+```
+2. Create a database with the name weatherstation while logged into your MySQL shell.
+```sh
+mysql > CREATE DATABASE weatherstation;
+```
+3. Open up terminal and navigate to where you want to store this project
+4. Clone the repository and navigate inside it.
+```sh
+git clone https://github.com/batiyeh/weather-station-site
+cd weather-station-site
+```
+5. Create a virtual envelope folder where we will install this project's requirements
+```sh
+\weather-station-site\env\Scripts>python -m venv env
+```
+6. Activate the files within your env. After this step you should now have (env) listed on the left hand side of your terminal:
+```sh
+. \weather-station-site\env\Scripts>activate
+```
+7. Install the requirements that come with the project:
+```sh
+pip install -r requirements.txt
+```
+8. Create the initial migration of the database:
+```sh
+\weather-station-site>python manage.py makemigrations
+\weather-station-site>python manage.py migrate
+```
+9. Run the server and navigate to the given IP address in your web browser (normally http://127.0.0.1:8000)
+```sh
+python3 manage.py runserver
+```
