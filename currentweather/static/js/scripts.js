@@ -6,9 +6,9 @@ $(document).ready(function(){
     }
     
     $('#alert').click(function() {
-        var email = "btatiyeh@gmail.com";
+        var email = "tmalarkey14@gmail.com";
         var csrftoken = Cookies.get('csrftoken');
-
+        alert('Alert! Bad Weather!')
         $.ajaxSetup({
             beforeSend: function (xhr, settings) {
                 if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
