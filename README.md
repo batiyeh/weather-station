@@ -100,7 +100,7 @@ This project requires the following dependencies before continuing the install:
 1. Python 3.6 from https://www.python.org/downloads/
 
 2. MySQL from https://dev.mysql.com/downloads/mysql/  (make sure it is the MySQL Community Server)
-```
+
 After you have installed the above dependencies:
 
 1. Create a MySQL user with the name "weatherstation" and password "ws1234".
