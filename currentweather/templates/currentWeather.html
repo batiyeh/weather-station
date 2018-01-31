@@ -1,7 +1,5 @@
-{% load static %}
-{% csrf_token %}
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
+
 
 <head>
     <meta charset="utf-8">
@@ -71,3 +69,36 @@
 </body>
 
 </html>
+
+{% block content %}
+<div class="current">
+    <div class="container">
+        <div class="top-info">
+            <p id="desc">{{ desc }}</p>
+            <p id="temp">{{ temperature }}&#176;F</p>
+            <p id="location">{{ location }}</p>
+        </div>
+        <div class="bottom-info">
+            <div class="row">
+                <div class="col-12 weather-list-item">
+                    <div class="col-6 weather-text float-left">Wind Speed: </div> 
+                    <div class="col-6 weather-num float-right">{{ wind_speed }} mph</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 weather-list-item">
+                    <div class="col-6 weather-text float-left">Pressure: </div>
+                    <div class="col-6 weather-num float-right">{{ pressure }} hPa</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 weather-list-item">
+                    <div class="col-6 weather-text float-left">Humidity: </div>
+                    <div class="col-6 weather-num float-right">{{ humidity }}%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
