@@ -7,5 +7,4 @@ urlpatterns = [
     path('htmlTemplate', views.htmlTemplate, name='htmlTemplate'),
     path('currentweather', views.getCurrentWeatherJson, name='currentWeather'),
     path('testAlert', views.testAlert, name='testAlert'),
-
 ]
