@@ -36,7 +36,7 @@ manage.py migrate
 pip freeze > requirements.txt
 ```
 
-## Install 
+## Install
 
 ### Mac OS:
 This project requires the following dependencies before continuing the install:
@@ -145,4 +145,3 @@ pip install -r requirements.txt
 ```sh
 python3 manage.py runserver
 ```
-
