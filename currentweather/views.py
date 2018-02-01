@@ -2,7 +2,9 @@
 # or directly to an HTML page to be
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.core.mail import send_mail
 from django.conf import settings
+
 import json
 import requests
 
@@ -24,7 +26,7 @@ def restUrl(request):
 # This is an example of an HTML file being served to display data
 def htmlTemplate(request):
     # Select data from database up here if you want and build a context dictionary
-    context = {'contextAttribute': '157'}
+    context = {'contextAttribute': '1414', 'someStuff': 'Testing'}
 
     return render(request, "templates/templateFile.html", context)
 
@@ -50,4 +52,17 @@ def getCurrentWeatherJson(request):
         # TODO: Check for this in the currentWeather template and display an error on that page.
         context["error"] = "true"
 
+
     return render(request, "templates/currentweather.html", context)
+
+def testAlert(request):
+    response = {'attribute1': 'TestData', 'attribute2': 'MoreTestData'}
+    send_mail(
+        'Weather Alert!',
+        'The Weather is BAD!',
+        'WStationTestdod@gmail.com',
+        ['tmalarkey14@gmail.com'],
+        fail_silently=False,
+    )
+    return HttpResponse(json.dumps(response), content_type='application/json')
+
