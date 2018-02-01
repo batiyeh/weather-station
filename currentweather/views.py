@@ -62,8 +62,9 @@ def getCurrentWeatherJson(request):
 
     return render(request, "templates/currentweather.html", context)
 
+# Sends a test email to Trevor's email
 def testAlert(request):
-    response = {'attribute1': 'TestData', 'attribute2': 'MoreTestData'}
+    response = {'success': 'email sent'}
     send_mail(
         'Weather Alert!',
         'The Weather is BAD!',
@@ -71,5 +72,5 @@ def testAlert(request):
         ['tmalarkey14@gmail.com'],
         fail_silently=False,
     )
-    return HttpResponse(json.dumps(response), content_type='application/json')
+    return HttpResponse(json.dumps(response), content_type='application/json', status=200)
 

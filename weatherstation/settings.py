@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'dj_twilio_sms',
 ]
 
 SENDSMS_BACKEND = 'myapp.mysmsbackend.SmsBackend'

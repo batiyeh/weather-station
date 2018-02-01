@@ -5,12 +5,12 @@ $(document).ready(function(){
         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
     }
     
-    $('#alert').click(function() {
+    $('#email-btn').click(function() {
         var email = "tmalarkey14@gmail.com";
         var csrftoken = Cookies.get('csrftoken');
-        alert('Alert! Bad Weather!')
         $.ajaxSetup({
             beforeSend: function (xhr, settings) {
+                // Check if the HTTP method requires a csrf token before adding the header
                 if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
                     xhr.setRequestHeader("X-CSRFToken", csrftoken);
                 }
