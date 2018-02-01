@@ -26,8 +26,13 @@ nav a {
     margin-top: 50px;
 }
 
-.bottom-info {
+.bottom-info-container {
     margin-top: 100px;
+}
+
+.bottom-info {
+    max-width: 500px;
+    margin: auto;
 }
 
 #temp {
