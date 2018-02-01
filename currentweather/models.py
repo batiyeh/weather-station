@@ -1,9 +1,16 @@
 from django.db import models
 from django.utils import timezone
 
+# Model to store the latest data from the weather station.
+# TODO: Discuss if we want to store historical data with this model.
+class StationWeather(models.Model):
+    wsid = models.AutoField(primary_key=True)  # Auto incremented key
+    created_at = models.DateTimeField(default=timezone.now)
+    temperature = models.FloatField(blank=True, null=True)
+    pressure = models.FloatField(blank=True, null=True)
+    humidity = models.FloatField(blank=True, null=True)
 
-# The models file is used for creating database schemas that you can use to query the database
-class Weather(models.Model):
+class ApiWeather(models.Model):
     id = models.IntegerField(primary_key=True)
     temperature = models.CharField(max_length=100)
     wind_speed = models.CharField(max_length=100)
@@ -13,4 +20,3 @@ class Weather(models.Model):
 
     def __set__(self):
         return self.temperature + ' - ' + self.wind_speed + ' - ' + self.humidity + ' - ' + self.pressure + ' - ' + self.date_time  #this shows data clear in shell
-

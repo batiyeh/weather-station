@@ -47,13 +47,11 @@ def getCurrentWeatherJson(request):
         context["wind_speed"] = data["wind"]["speed"]
         context["humidity"] = data["main"]["humidity"]
         context["pressure"] = data["main"]["pressure"]
-
+        context["desc"] = data["weather"][0]["main"]
+        context["location"] = data["name"]
 
         q = Weather(temperature = 'data["main"]["temp"]',wind_speed = data["wind"]["speed"], humidity = data["main"]["humidity"], pressure = data["main"]["pressure"] )
         q.save()
-
-        context["desc"] = data["weather"][0]["main"]
-        context["location"] = data["name"]
 
     except:
         # TODO: Check for this in the currentWeather template and display an error on that page.
