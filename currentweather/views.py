@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import MultipleObjectsReturned
+import random
 import json
 import requests
 from currentweather.models import UserAccount, ApiWeather
@@ -105,14 +106,6 @@ def createUser(request):
             return HttpResponse(json.dumps({'success': 'Successfully created account'}), content_type='application/json', status=200)
 
     return HttpResponse(json.dumpsd({'error': 'Failed to create account'}), content_type='application/json', status=500)
-    #         print("Invalid Phone number")
-    #         return HttpResponse('')
-
-    #     print("Invalid Email")
-    #     return HttpResponse('')
-
-    # print("Invalid Username")
-    # return HttpResponse('')
 
 def verifyLogin(request):
     if request.method == 'POST':
@@ -128,27 +121,14 @@ def verifyLogin(request):
             return HttpResponse(json.dumps({'error': 'Database is broken'}), content_type='application/json', status=500)
 
         return HttpResponse(json.dumps({'success': 'User has logged in'}), content_type='application/json', status=200)
-        # try:
-        #     u = UserAccount.objects.get(name=name)
-        # except ObjectDoesNotExist:
-        #     print("Incorrect login information")
-        #     return HttpResponse('')
-        # except MultipleObjectsReturned:
-        #     print("Error in database, duplicate user names not allowed")
-        #     return HttpResponse('')
 
-        # try:
-        #     p = UserAccount.objects.get(password=password)
-        # except ObjectDoesNotExist:
-        #     print("Incorrect login information")
-        #     return HttpResponse('')
-        # except MultipleObjectsReturned:
-        #     print("Incorrect login information")
-        #     return HttpResponse('')
+def randomPage(request):
+    context = {"one":random.randint(1,101), "two":random.randint(1,101)}
 
-        # if(u==p):
-        #     print("User has logged in")
-        #     return HttpResponse('')
-        # else:
-        #     print("Incorrect login information")
-        #     return HttpResponse('')
+    return render(request, "rng.html", context)
+
+def randomNum(request):
+    context = {"one":random.randint(1,101), "two":random.randint(1,101)}
+
+    return(request, context)
+

@@ -11,4 +11,6 @@ urlpatterns = [
     path('newAccount', views.newAccount, name='newAccount'),
     path('create', views.createUser),
     path('verifyLogin',views.verifyLogin),
+    path('random', views.randomPage, name='random'),
+    path('randomNum', views.randomNum),
 ]
