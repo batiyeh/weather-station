@@ -23,10 +23,3 @@ class ApiWeather(AbstractWeather):
 
     def __set__(self):
         return self.temperature + ' - ' + self.wind_speed + ' - ' + self.humidity + ' - ' + self.pressure + ' - ' + self.date_time  #this shows data clear in shell
-
-# Model to store users for our site
-class UserAccount(models.Model):
-    userid = models.AutoField(primary_key=True)
-    email = models.EmailField()
-    password = models.CharField(max_length=16)
-    phone = models.CharField(max_length=10)

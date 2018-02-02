@@ -3,9 +3,9 @@ Website to display the weather station data
 
 ## Endpoints
 1. "" - Displays basic text index page
-2. "/restUrl" - Displays basic json response
-3. "/htmlTemplate" - Displays basic html template response
-3. "/currentweather" - Displays temperature, wind speed, pressure, and humidity
+2. "/accounts/login/" - Displays login form
+3. "/accounts/create/" - Displays create account form
+3. "/currentweather/" - Displays temperature, wind speed, pressure, and humidity
 
 ## How to start development environment if you have installed it previously
 1. Navigate to the weather-station-site folder with your terminal.

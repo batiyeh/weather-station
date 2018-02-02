@@ -31,30 +31,6 @@ $(document).ready(function(){
 
     });
 
-    $('#loginForm').submit(function (e) {
-        e.preventDefault();
-
-        $.ajax({
-            type: 'POST',
-            url: 'verifyLogin',
-            data: {
-                email: $('#email').val(),
-                password: $('#password').val(),
-                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
-            },
-            success: function (data) {
-                console.log(data.responseJSON);
-                location.href = "/currentweather";
-            },
-            error: function (data) {
-                console.log(data.responseJSON);
-            },
-            failure: function (data) {
-                console.log(data.responseJSON);
-            }
-        });
-    });
-
     $('#createForm').submit(function (e) {
         //on submit, POST data from page
         e.preventDefault();
@@ -62,11 +38,12 @@ $(document).ready(function(){
 
         $.ajax({
             type: 'POST',
-            url: 'create',
+            url: '',
             data: {
+                username: $('#username').val(),
                 email: $('#email').val(),
-                phone: $('#phone').val(),
                 password: $('#password').val(),
+                // phone: $('#phone').val(),
                 csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
             },
             success: function (data) {

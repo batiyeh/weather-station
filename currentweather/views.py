@@ -1,42 +1,22 @@
 # The views page is used to get data from the backend and send it as either JSON data (for a REST API)
 # or directly to an HTML page to be
 
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import MultipleObjectsReturned
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
-from currentweather.models import UserAccount, ApiWeather
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from currentweather.models import ApiWeather
 import json
 import requests
 import random
 
-# This is an example of a RESTful API endpoint
-def restUrl(request):
-    # if request.GET:
-    # Select data from database and construct dictionary, test json dictionary below
-    response = {'attribute1': 'TestData', 'attribute2': 'MoreTestData'}
-
-    # if request.POST:
-    # Insert/Update/Delete data from database here
-
-    # Return either a HttpResponse that contains your json data
-    # or just a HttpResponse with a success (200) code if you were doing insert/update/delete
-    return HttpResponse(json.dumps(response), content_type='application/json')
-
-
-# This is an example of an HTML file being served to display data
-def htmlTemplate(request):
-    # Select data from database up here if you want and build a context dictionary
-    context = {'contextAttribute': '1414', 'someStuff': 'Testing'}
-
-    return render(request, "templates/templateFile.html", context)
-
-
 # Get weather data from the weather underground api and display *some* of it. This could be built dynamically with different cities or GPS coordinates.
+@login_required
 def getCurrentWeatherJson(request):
     context = {"temperature": 0, "wind_speed": 0, "humidity": 0, "pressure": 0, "desc": "", "location": ""}
     try:
@@ -51,16 +31,10 @@ def getCurrentWeatherJson(request):
         context["wind_speed"] = data["wind"]["speed"]
         context["humidity"] = data["main"]["humidity"]
         context["pressure"] = data["main"]["pressure"]
-
-
-        q = Weather(temperature= 'data["main"]["temp"]',wind_speed= data["wind"]["speed"], humidity= data["main"]["humidity"], pressure= data["main"]["pressure"] )
-        q.save()
-        #runs query and saves it to the database
-
         context["desc"] = data["weather"][0]["main"]
         context["location"] = data["name"]
 
-        q = ApiWeather(temperature = data["main"]["temp"], wind_speed = data["wind"]["speed"], humidity = data["main"]["humidity"], pressure = data["main"]["pressure"] )
+        q = ApiWeather(temperature = data["main"]["temp"], wind_speed = data["wind"]["speed"], humidity = data["main"]["humidity"],     pressure = data["main"]["pressure"] )
         q.save()
 
     except:
@@ -83,39 +57,27 @@ def testAlert(request):
     )
     return HttpResponse(json.dumps(response), content_type='application/json', status=200)
 
-
-def loginTemplate(request):
-    return render(request, "templates/login.html")
-
-def renderNewAccountTemplate(request):
-    return render(request, "templates/newAccount.html")
-
+# View to create a user account and redirect to the login page
 def createUser(request):
+    # Displays the create account template when just being directed by URL
+    if request.method == 'GET':
+        return render(request, "templates/registration/create.html")
+    
+    # This actually creates the account after clicking the create account button
     if request.method == 'POST':
-        email = request.POST['email']
-        phone = request.POST['phone']
-        password = request.POST['password']
+        username = request.POST.get('username', None)
+        email = request.POST.get('email', None)
+        # phone = request.POST.get('phone')
+        password = request.POST.get('password', None)
 
         try:
-            user = User.objects.create_user(email=email,
+            user = User.objects.create_user(username=username, email=email,
                                             password=password)
             user.save()
         except:
-            return HttpResponse(json.dumpsd({'error': 'Failed to create account'}), content_type='application/json', status=500)
+            return HttpResponse(json.dumps({'error': 'Failed to create account'}), content_type='application/json', status=500)
 
-        return HttpResponse(json.dumps({'success': 'Successfully created account'}), content_type='application/json', status=200)
-
-def login(request):
-    if request.method == 'POST':
-        email = request.POST['email']
-        password = request.POST['password']
-        
-        user = authenticate(email=email, password=password)
-        if user is not None:
-            return HttpResponse(json.dumps({'success': 'user authenticated'}), content_type='application/json', status=200)
-        else:
-            # No backend authenticated the credentials
-            return HttpResponse(json.dumps({'error': 'no such user.'}), content_type='application/json', status=200)
+        return HttpResponseRedirect("/accounts/login/")
 
 def randomPage(request):
     context = {"one":random.randint(1,101), "two":random.randint(1,101)}

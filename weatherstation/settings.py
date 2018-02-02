@@ -49,6 +49,10 @@ EMAIL_HOST_PASSWORD = 'wayne123'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
+# Redirect URLs after successfully logging in or out
+LOGIN_REDIRECT_URL = '/currentweather'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

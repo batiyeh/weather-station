@@ -1,0 +1,15 @@
+{% extends '../base_nonav.html' %}
+
+{% block content %}
+<div class="container">
+    <form id="createForm">
+        <div class="login-info mb-3">
+            <input id='username' name='username' type="text" class="form-control" placeholder="Username">
+            <input id='email' name='email' type="email" class="form-control" placeholder="Email" aria-label="Email">
+            <!-- <input id='phone' name='phone' type="text" class="form-control" placeholder="Phone Number" aria-label="Phone Number"> -->
+            <input id='password' name='password' type="password" class="form-control" placeholder="Password" aria-label="Password">
+        </div>
+        <button type="submit" class="btn btn-primary">Create Account</button>
+    </form>
+</div>
+{% endblock %}
