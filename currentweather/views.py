@@ -1,14 +1,15 @@
 # The views page is used to get data from the backend and send it as either JSON data (for a REST API)
 # or directly to an HTML page to be
+
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.core.mail import send_mail
 from django.conf import settings
-
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import MultipleObjectsReturned
 import json
 import requests
-from . import models
-
+from currentweather.models import UserAccount, ApiWeather
 
 # This is an example of a RESTful API endpoint
 def restUrl(request):
@@ -56,12 +57,16 @@ def getCurrentWeatherJson(request):
         context["desc"] = data["weather"][0]["main"]
         context["location"] = data["name"]
 
+        q = ApiWeather(temperature = data["main"]["temp"], wind_speed = data["wind"]["speed"], humidity = data["main"]["humidity"], pressure = data["main"]["pressure"] )
+        q.save()
+
     except:
         # TODO: Check for this in the currentWeather template and display an error on that page.
         context["error"] = "true"
 
 
     return render(request, "templates/currentweather.html", context)
+
 
 # Sends a test email to Trevor's email
 def testAlert(request):
@@ -75,3 +80,75 @@ def testAlert(request):
     )
     return HttpResponse(json.dumps(response), content_type='application/json', status=200)
 
+
+def login(request):
+    return render(request, "templates/login.html")
+
+def newAccount(request):
+    return render(request, "templates/newAccount.html")
+
+def createUser(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        phone = request.POST['phone']
+        password = request.POST['password']
+
+        try:
+            UserAccount.objects.get(email=email, phone=phone)
+        except ObjectDoesNotExist:
+            UserAccount.objects.create(
+                userid = None,
+                email = email,
+                phone = phone,
+                password = password
+            )
+            return HttpResponse(json.dumps({'success': 'Successfully created account'}), content_type='application/json', status=200)
+
+    return HttpResponse(json.dumpsd({'error': 'Failed to create account'}), content_type='application/json', status=500)
+    #         print("Invalid Phone number")
+    #         return HttpResponse('')
+
+    #     print("Invalid Email")
+    #     return HttpResponse('')
+
+    # print("Invalid Username")
+    # return HttpResponse('')
+
+def verifyLogin(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        password = request.POST['password']
+
+        try:
+            UserAccount.objects.get(email=email, password=password)
+        except ObjectDoesNotExist:
+            return HttpResponse(json.dumps({'error': 'Incorrect login information'}), content_type='application/json', status=500)
+            #return HttpResponse(json.dumps({‘error’: ‘no rows given.’}), content_type=‘application/json’, status=500)
+        except MultipleObjectsReturned:
+            return HttpResponse(json.dumps({'error': 'Database is broken'}), content_type='application/json', status=500)
+
+        return HttpResponse(json.dumps({'success': 'User has logged in'}), content_type='application/json', status=200)
+        # try:
+        #     u = UserAccount.objects.get(name=name)
+        # except ObjectDoesNotExist:
+        #     print("Incorrect login information")
+        #     return HttpResponse('')
+        # except MultipleObjectsReturned:
+        #     print("Error in database, duplicate user names not allowed")
+        #     return HttpResponse('')
+
+        # try:
+        #     p = UserAccount.objects.get(password=password)
+        # except ObjectDoesNotExist:
+        #     print("Incorrect login information")
+        #     return HttpResponse('')
+        # except MultipleObjectsReturned:
+        #     print("Incorrect login information")
+        #     return HttpResponse('')
+
+        # if(u==p):
+        #     print("User has logged in")
+        #     return HttpResponse('')
+        # else:
+        #     print("Incorrect login information")
+        #     return HttpResponse('')

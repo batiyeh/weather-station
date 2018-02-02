@@ -1,16 +1,32 @@
 from django.db import models
 from django.utils import timezone
 
+# Abstract Model to determine the fields we want to store for all types of weather data
+class AbstractWeather(models.Model):
+    wid = models.AutoField(primary_key=True)  # Auto incremented key
+    created_at = models.DateTimeField(default=timezone.now)
+    temperature = models.FloatField(blank=True, null=True)
+    pressure = models.FloatField(blank=True, null=True)
+    humidity = models.FloatField(blank=True, null=True)
 
-# The models file is used for creating database schemas that you can use to query the database
-class Weather(models.Model):
-    id = models.IntegerField(primary_key=True)
-    temperature = models.CharField(max_length=100)
+    class Meta:
+        abstract = True
+
+# Model to store extra fields for weather data received from a station
+class StationWeather(AbstractWeather):
+    stationid = models.CharField(max_length=100, blank=False, null=False)
+
+
+# Model to store extra fields for weather data received from the API
+class ApiWeather(AbstractWeather):
     wind_speed = models.CharField(max_length=100)
-    humidity = models.CharField(max_length=100)
-    pressure = models.CharField(max_length=100)
-    date_time = models.DateTimeField(timezone.now())
 
     def __set__(self):
         return self.temperature + ' - ' + self.wind_speed + ' - ' + self.humidity + ' - ' + self.pressure + ' - ' + self.date_time  #this shows data clear in shell
 
+# Model to store users for our site
+class UserAccount(models.Model):
+    userid = models.AutoField(primary_key=True)
+    email = models.EmailField()
+    password = models.CharField(max_length=16)
+    phone = models.CharField(max_length=10)

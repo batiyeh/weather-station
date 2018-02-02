@@ -7,4 +7,8 @@ urlpatterns = [
     path('htmlTemplate', views.htmlTemplate, name='htmlTemplate'),
     path('currentweather', views.getCurrentWeatherJson, name='currentWeather'),
     path('testAlert', views.testAlert, name='testAlert'),
+    path('login', views.login, name='login'),
+    path('newAccount', views.newAccount, name='newAccount'),
+    path('create', views.createUser),
+    path('verifyLogin',views.verifyLogin),
 ]

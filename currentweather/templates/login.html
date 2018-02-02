@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"> 
+  <title>Login</title>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  </head>
+
+  <body>
+    <form id="loginForm">{% csrf_token %}
+        <div class="login-info mb-3">
+            <input id='email' name='email' type="email" class="form-control" placeholder="Email" aria-label="Email">
+            <input id='password' name='password' type="text" class="form-control" placeholder="Password" aria-label="Password">
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+
+    <a href = "{% url 'newAccount'%}">Need an account?</a>
+  </body>
+
+  <script type = "text/javascript" src="../static/js/jquery-3.3.1.min.js"></script>
+  <script type = "text/javascript" src="../static/js/scripts.js"></script>
+
+</html>
