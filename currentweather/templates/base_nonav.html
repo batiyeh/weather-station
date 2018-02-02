@@ -1,5 +1,4 @@
-{% extends 'base.html' %}
-
+{% load static %} {% csrf_token %}
 <!DOCTYPE html>
 
 <html lang="en">
@@ -25,14 +24,7 @@
     <script src="{% static 'js/scripts.js' %}"></script>
 </head>
 <body>
-    <form id="loginForm">{% csrf_token %}
-        <div class="login-info mb-3">
-            <input id='email' name='email' type="email" class="form-control" placeholder="Email" aria-label="Email">
-            <input id='password' name='password' type="text" class="form-control" placeholder="Password" aria-label="Password">
-        </div>
-        <button type="submit" class="btn btn-primary">Login</button>
-    </form>
-
-    <a href = "{% url 'newAccount'%}">Need an account?</a>
+    {% block content %} 
+    {% endblock %}
   </body>
 </html>

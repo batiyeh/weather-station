@@ -7,10 +7,12 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import MultipleObjectsReturned
-import random
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from currentweather.models import UserAccount, ApiWeather
 import json
 import requests
-from currentweather.models import UserAccount, ApiWeather
+import random
 
 # This is an example of a RESTful API endpoint
 def restUrl(request):
@@ -82,10 +84,10 @@ def testAlert(request):
     return HttpResponse(json.dumps(response), content_type='application/json', status=200)
 
 
-def login(request):
+def loginTemplate(request):
     return render(request, "templates/login.html")
 
-def newAccount(request):
+def renderNewAccountTemplate(request):
     return render(request, "templates/newAccount.html")
 
 def createUser(request):
@@ -95,32 +97,25 @@ def createUser(request):
         password = request.POST['password']
 
         try:
-            UserAccount.objects.get(email=email, phone=phone)
-        except ObjectDoesNotExist:
-            UserAccount.objects.create(
-                userid = None,
-                email = email,
-                phone = phone,
-                password = password
-            )
-            return HttpResponse(json.dumps({'success': 'Successfully created account'}), content_type='application/json', status=200)
+            user = User.objects.create_user(email=email,
+                                            password=password)
+            user.save()
+        except:
+            return HttpResponse(json.dumpsd({'error': 'Failed to create account'}), content_type='application/json', status=500)
 
-    return HttpResponse(json.dumpsd({'error': 'Failed to create account'}), content_type='application/json', status=500)
+        return HttpResponse(json.dumps({'success': 'Successfully created account'}), content_type='application/json', status=200)
 
-def verifyLogin(request):
+def login(request):
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
-
-        try:
-            UserAccount.objects.get(email=email, password=password)
-        except ObjectDoesNotExist:
-            return HttpResponse(json.dumps({'error': 'Incorrect login information'}), content_type='application/json', status=500)
-            #return HttpResponse(json.dumps({‘error’: ‘no rows given.’}), content_type=‘application/json’, status=500)
-        except MultipleObjectsReturned:
-            return HttpResponse(json.dumps({'error': 'Database is broken'}), content_type='application/json', status=500)
-
-        return HttpResponse(json.dumps({'success': 'User has logged in'}), content_type='application/json', status=200)
+        
+        user = authenticate(email=email, password=password)
+        if user is not None:
+            return HttpResponse(json.dumps({'success': 'user authenticated'}), content_type='application/json', status=200)
+        else:
+            # No backend authenticated the credentials
+            return HttpResponse(json.dumps({'error': 'no such user.'}), content_type='application/json', status=200)
 
 def randomPage(request):
     context = {"one":random.randint(1,101), "two":random.randint(1,101)}
@@ -131,4 +126,3 @@ def randomNum(request):
     context = {"one":random.randint(1,101), "two":random.randint(1,101)}
 
     return(request, context)
-

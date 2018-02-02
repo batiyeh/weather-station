@@ -64,7 +64,11 @@ ROOT_URLCONF = 'weatherstation.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['currentweather/', 'weatherstation/'],
+        'DIRS': [
+            'currentweather/',
+            'weatherstation/',
+            './templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

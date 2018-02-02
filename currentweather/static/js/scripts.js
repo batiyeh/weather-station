@@ -30,53 +30,54 @@ $(document).ready(function(){
         });
 
     });
-});
-$(document).on('submit','#createForm',function(e){
-    //on submit, POST data from page
 
-    e.preventDefault();
-    //stops page from refreshing
+    $('#loginForm').submit(function (e) {
+        e.preventDefault();
 
-    $.ajax({
-        type: 'POST',
-        url: 'create',
-        data:{
-            email:$('#email').val(),
-            phone:$('#phone').val(),
-            password:$('#password').val(),
-            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
-        },
-        success:function(data){
-            console.log(data.responseJSON);
-        },
-        error:function(data){
-            console.log(data.responseJSON);
-        },
-        failure:function(data){
-            console.log(data.responseJSON);
-        }
+        $.ajax({
+            type: 'POST',
+            url: 'verifyLogin',
+            data: {
+                email: $('#email').val(),
+                password: $('#password').val(),
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function (data) {
+                console.log(data.responseJSON);
+                location.href = "/currentweather";
+            },
+            error: function (data) {
+                console.log(data.responseJSON);
+            },
+            failure: function (data) {
+                console.log(data.responseJSON);
+            }
+        });
     });
-});
-$(document).on('submit','#loginForm',function(e){
-    e.preventDefault();
 
-    $.ajax({
-        type: 'POST',
-        url: 'verifyLogin',
-        data:{
-            email:$('#email').val(),
-            password:$('#password').val(),
-            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
-        },
-        success:function(data){
-            console.log(data.responseJSON);
-            location.href="/currentweather";
-        },
-        error:function(data){
-            console.log(data.responseJSON);
-        },
-        failure:function(data){
-            console.log(data.responseJSON);
-        }
+    $('#createForm').submit(function (e) {
+        //on submit, POST data from page
+        e.preventDefault();
+        //stops page from refreshing
+
+        $.ajax({
+            type: 'POST',
+            url: 'create',
+            data: {
+                email: $('#email').val(),
+                phone: $('#phone').val(),
+                password: $('#password').val(),
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function (data) {
+                console.log(data.responseJSON);
+            },
+            error: function (data) {
+                console.log(data.responseJSON);
+            },
+            failure: function (data) {
+                console.log(data.responseJSON);
+            }
+        });
     });
 });

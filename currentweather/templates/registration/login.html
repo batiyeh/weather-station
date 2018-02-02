@@ -1,0 +1,11 @@
+{% extends '../base_nonav.html' %}
+
+{% block content %}
+  <form id="loginForm">{% csrf_token %}
+    <div class="login-info mb-3">
+      <input id='email' name='email' type="email" class="form-control" placeholder="Email" aria-label="Email">
+      <input id='password' name='password' type="text" class="form-control" placeholder="Password" aria-label="Password">
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+  </form>
+{% endblock %}
