@@ -18,6 +18,10 @@ nav a {
     color: #F3F3F3 !important;
 }
 
+#email-btn {
+    margin-top: 25px;
+}
+
 .current .container {
     width: 40%;
 }
