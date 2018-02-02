@@ -5,19 +5,11 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.core.mail import send_mail
 from django.conf import settings
-<<<<<<< Updated upstream
-
-import json
-import requests
-from . import models
-
-=======
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import MultipleObjectsReturned
 import json
 import requests
-from currentweather.models import UserAccount
->>>>>>> Stashed changes
+from currentweather.models import UserAccount, ApiWeather
 
 # This is an example of a RESTful API endpoint
 def restUrl(request):
@@ -59,7 +51,7 @@ def getCurrentWeatherJson(request):
         context["desc"] = data["weather"][0]["main"]
         context["location"] = data["name"]
 
-        q = Weather(temperature = 'data["main"]["temp"]',wind_speed = data["wind"]["speed"], humidity = data["main"]["humidity"], pressure = data["main"]["pressure"] )
+        q = ApiWeather(temperature = data["main"]["temp"], wind_speed = data["wind"]["speed"], humidity = data["main"]["humidity"], pressure = data["main"]["pressure"] )
         q.save()
 
     except:
@@ -105,16 +97,16 @@ def createUser(request):
                 password = password
             )
             return HttpResponse(json.dumps({'success': 'Successfully created account'}), content_type='application/json', status=200)
-        
+
     return HttpResponse(json.dumpsd({'error': 'Failed to create account'}), content_type='application/json', status=500)
-        #         print("Invalid Phone number")
-        #         return HttpResponse('')
+    #         print("Invalid Phone number")
+    #         return HttpResponse('')
 
-        #     print("Invalid Email")
-        #     return HttpResponse('')
+    #     print("Invalid Email")
+    #     return HttpResponse('')
 
-        # print("Invalid Username")
-        # return HttpResponse('')
+    # print("Invalid Username")
+    # return HttpResponse('')
 
 def verifyLogin(request):
     if request.method == 'POST':
@@ -128,7 +120,7 @@ def verifyLogin(request):
             #return HttpResponse(json.dumps({‘error’: ‘no rows given.’}), content_type=‘application/json’, status=500)
         except MultipleObjectsReturned:
             return HttpResponse(json.dumps({'error': 'Database is broken'}), content_type='application/json', status=500)
-        
+
         return HttpResponse(json.dumps({'success': 'User has logged in'}), content_type='application/json', status=200)
         # try:
         #     u = UserAccount.objects.get(name=name)
@@ -138,7 +130,7 @@ def verifyLogin(request):
         # except MultipleObjectsReturned:
         #     print("Error in database, duplicate user names not allowed")
         #     return HttpResponse('')
-        
+
         # try:
         #     p = UserAccount.objects.get(password=password)
         # except ObjectDoesNotExist:
@@ -147,7 +139,7 @@ def verifyLogin(request):
         # except MultipleObjectsReturned:
         #     print("Incorrect login information")
         #     return HttpResponse('')
-        
+
         # if(u==p):
         #     print("User has logged in")
         #     return HttpResponse('')
