@@ -31,8 +31,10 @@ $(document).ready(function(){
 
     });
 
-    $('#createForm').submit(function (e) {
+    $('#subButton').click(function(e){
+        //.submit(function (e) {
         //on submit, POST data from page
+        
         e.preventDefault();
         //stops page from refreshing
 

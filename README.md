@@ -133,16 +133,18 @@ cd weather-station-site
 ```sh
 . \weather-station-site\env\Scripts>activate
 ```
-7. Install the requirements that come with the project:
+7. cd back to the main directory of the weatherstation
+
+8. Install the requirements that come with the project:
 ```sh
 pip install -r requirements.txt
 ```
-8. Create the initial migration of the database: 
+9. Create the initial migration of the database: 
 ```sh
 \weather-station-site>python manage.py makemigrations
 \weather-station-site>python manage.py migrate
 ```
-9. Run the server and navigate to the given IP address in your web browser (normally http://127.0.0.1:8000) 
+10. Run the server and navigate to the given IP address in your web browser (normally http://127.0.0.1:8000) 
 ```sh
 python3 manage.py runserver
 ```
