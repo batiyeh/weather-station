@@ -27,7 +27,7 @@ OPEN_WEATHER_KEY = 'bfa43dcbd89779767af6b8769b3b4fc6'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 

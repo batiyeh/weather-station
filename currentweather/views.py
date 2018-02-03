@@ -88,3 +88,10 @@ def randomNum(request):
     context = {"one":random.randint(1,101), "two":random.randint(1,101)}
 
     return(request, context)
+
+def stationListener(request):
+    if request.method == 'POST':
+        print(request.POST.get('randomNum'))
+
+        response = {'success': 'received data'}
+        return HttpResponse(json.dumps(response), content_type='application/json', status=200)
