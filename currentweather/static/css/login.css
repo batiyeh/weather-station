@@ -1,3 +1,4 @@
+
 html, body {
     font-family: 'Roboto Mono', monospace;
     width: 100%;
@@ -7,7 +8,25 @@ html, body {
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     background: linear-gradient(to bottom, #3C3973, #43C6AC);
+
+
 }
 
 
+html, input
+{
+    width: 70%;
+    }
+
+html, .container{
+     width: 400px;
+        clear: both;
+    text-align-all: center;
+
+    }
+
+html, .container input {
+        width: 100%;
+        clear: both;
+    }
 

@@ -10,6 +10,11 @@
             <input id='password' name='password' type="password" class="form-control" placeholder="Password" aria-label="Password">
         </div>
         <button id = "subButton" type="submit" class="btn btn-primary">Create Account</button>
+
     </form>
 </div>
 {% endblock %}
+
+
+ <a href = "{% url 'createUser' %}">Need an account?</a><br/>
+ <button type="button" class="btn btn-primary">Login</button>
