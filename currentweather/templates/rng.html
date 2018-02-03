@@ -3,57 +3,29 @@
 {% block content %}
 
 <div class="container">
-    
     <div id="piOne"> Pi One Number:</div><span class="num1"> </span>
     <div id="piTwo"> Pi Two Number:</div><span class='num2'> </span>
 
     <script type="text/javascript">
-    setInterval(updateRng, 5000);
-
-    function updateRng(){
-        $.ajax({
-
-            type:'POST',
-            url: '',
-            data: {
-                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
-            },
-            success: function(data){
-                console.log(data);
-                //$('.nums').innerHTML = data.one;
-                $('.num1').contents()[0].textContent = data.one;
-                $('.num2').contents()[0].textContent = data.two;
-            }
-        });
-    };
-
-    </script>
-
-    <!--script type=“text/javascript”>
-        
-        //setInterval({updateRng()}, 5000);
-        //console.log("logging");
-        alert("HEY");
+        setInterval(updateRng, 5000);
 
         function updateRng(){
-        //    $.ajax({
-        //        type: 'POST',
-        //       url: 'random/',
-        //        data: {},
-        //        success: function(data){
-        //           console.log(data);
-        //            // $('.nums').contents()[0].textContent = data.one + " " + data.two
-        //        }
-        //    });
-        //};
+            $.ajax({
 
-    </script-->
-
+                type:'POST',
+                url: '',
+                data: {
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(data){
+                    console.log(data);
+                    //$('.nums').innerHTML = data.one;
+                    $('.num1').contents()[0].textContent = data.one;
+                    $('.num2').contents()[0].textContent = data.two;
+                }
+            });
+        };
+    </script>
 </div>
-
-
-
-{% block scripts %}
-{% endblock scripts %}
 
 {% endblock %}

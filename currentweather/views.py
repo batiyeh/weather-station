@@ -10,6 +10,7 @@ from django.core.exceptions import MultipleObjectsReturned
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.http import JsonResponse
 from currentweather.models import ApiWeather
 
@@ -82,19 +83,20 @@ def createUser(request):
         return HttpResponseRedirect("/accounts/login/")
 
 def randomPage(request):
-    # context = {"one":random.randint(1,101), "two":random.randint(1,101)}
-    print("In random page function")
-    
     if request.method == 'GET':
         return render(request, "rng.html")
 
     elif request.is_ajax():
         return JsonResponse({"one":random.randint(1,101), "two":random.randint(1,101)})
 
+@csrf_exempt
 def stationListener(request):
+    if request.method == 'GET':
+        return HttpResponse(json.dumps({'success': 'you are at the listener page'}), content_type='application/json', status=200)
+
     if request.method == 'POST':
-        print(request.POST.get('randomNum'))
+        q = StationWeather(stationid = request.POST.get('stationid', None), temperature = request.POST.get('temperature', None), humidity = request.POST.get('temperature', None),     pressure = request.POST.get('pressure', None) )
+        q.save()
 
         response = {'success': 'received data'}
         return HttpResponse(json.dumps(response), content_type='application/json', status=200)
-
