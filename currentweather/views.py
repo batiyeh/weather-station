@@ -10,7 +10,9 @@ from django.core.exceptions import MultipleObjectsReturned
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from currentweather.models import ApiWeather
+
 import json
 import requests
 import random
@@ -80,14 +82,14 @@ def createUser(request):
         return HttpResponseRedirect("/accounts/login/")
 
 def randomPage(request):
-    context = {"one":random.randint(1,101), "two":random.randint(1,101)}
+    # context = {"one":random.randint(1,101), "two":random.randint(1,101)}
+    print("In random page function")
+    
+    if request.method == 'GET':
+        return render(request, "rng.html")
 
-    return render(request, "rng.html", context)
-
-def randomNum(request):
-    context = {"one":random.randint(1,101), "two":random.randint(1,101)}
-
-    return(request, context)
+    elif request.is_ajax():
+        return JsonResponse({"one":random.randint(1,101), "two":random.randint(1,101)})
 
 def stationListener(request):
     if request.method == 'POST':
@@ -95,3 +97,4 @@ def stationListener(request):
 
         response = {'success': 'received data'}
         return HttpResponse(json.dumps(response), content_type='application/json', status=200)
+
