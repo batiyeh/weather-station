@@ -39,7 +39,7 @@
 
 {% block script %}
   <script>
-    var socket = new WebSocket('ws://' + window.location.host + '/weatherstations/');
+    var socket = new ReconnectingWebSocket('ws://' + window.location.host + '/weatherstations/');
 
     socket.onopen = function open() {
       console.log('WebSockets connection created.');

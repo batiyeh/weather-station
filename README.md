@@ -50,6 +50,11 @@ brew install python3
 brew install mysql
 brew services start mysql
 ```
+3. Redis (installed via [Homebrew](https://brew.sh))
+```sh
+brew install redis
+brew services start redis
+```
 
 After you have installed the above dependencies:
 
@@ -91,9 +96,9 @@ pip install -r requirements.txt
 ./manage.py makemigrations
 ./manage.py migrate
 ```
-9. Run the server and navigate to the given IP address in your web browser (normally http://127.0.0.1:8000) 
+9. Run the server and then navigate to the given IP address in your web browser (http://0.0.0.0:8000) 
 ```sh
-python3 manage.py runserver
+python3 manage.py runserver 0.0.0.0:8000
 ```
 
 ### Windows: 
