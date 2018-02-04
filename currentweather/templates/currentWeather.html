@@ -36,3 +36,17 @@
     </div>
 </div>
 {% endblock %}
+
+{% block script %}
+  <script>
+    var socket = new WebSocket('ws://' + window.location.host + '/weatherstations/');
+
+    socket.onopen = function open() {
+      console.log('WebSockets connection created.');
+    };
+
+    if (socket.readyState == WebSocket.OPEN) {
+      socket.onopen();
+    }
+  </script>
+{% endblock script %}
