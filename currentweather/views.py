@@ -13,6 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.http import JsonResponse
 from currentweather.models import ApiWeather
+from currentweather.models import Stations
 
 import json
 import requests
@@ -86,10 +87,15 @@ def createUser(request):
 
 def randomPage(request):
     if request.method == 'GET':
-        return render(request, "rng.html")
+        data = ApiWeather.objects.all()
+        context = {
+            "wid": data
+        }
+        return render(request, "rng.html", context)
+
 
     elif request.is_ajax():
-        return JsonResponse({"one":random.randint(1,101), "two":random.randint(1,101)})
+        return JsonResponse({"one":random.randint(1,101), "two":random.randint(1,101)},context)
 
 @csrf_exempt
 def stationListener(request):

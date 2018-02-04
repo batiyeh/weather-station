@@ -6,6 +6,10 @@
     <div id="piOne"> Pi One Number:</div><span class="num1"> </span>
     <div id="piTwo"> Pi Two Number:</div><span class='num2'> </span>
 
+    {%for station in wid%}
+        {{ station.temperature}}
+    {% endfor %}
+
     <script type="text/javascript">
         setInterval(updateRng, 5000);
 
