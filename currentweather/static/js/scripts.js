@@ -32,8 +32,7 @@ $(document).ready(function(){
     });
 
     $('#subButton').click(function(e){
-        //.submit(function (e) {
-        //on submit, POST data from page
+        //on click, POST data from page
         
         e.preventDefault();
         //stops page from refreshing
@@ -45,7 +44,6 @@ $(document).ready(function(){
                 username: $('#username').val(),
                 email: $('#email').val(),
                 password: $('#password').val(),
-                // phone: $('#phone').val(),
                 csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
             },
             success: function (data) {
