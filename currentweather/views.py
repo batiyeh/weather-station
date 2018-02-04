@@ -93,6 +93,16 @@ def randomPage(request):
         #the random int functions
         return JsonResponse({"one":random.randint(1,101), "two":random.randint(1,101)})
 
+# def forgotPage(request):
+#     if request.method == 'GET':
+#         return render(request, 'templates/registration/forgot.html')
+    
+#     elif request.method == 'POST':
+#         email = request.POST.get('email', None)
+        
+#         return HttpResponse(json.dumps(email), content_type='application/json', status=200)
+
+
 @csrf_exempt
 def stationListener(request):
     if request.method == 'GET':
