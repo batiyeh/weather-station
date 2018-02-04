@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
+
 # Abstract Model to determine the fields we want to store for all types of weather data
 class AbstractWeather(models.Model):
     wid = models.AutoField(primary_key=True)  # Auto incremented key
@@ -12,16 +13,16 @@ class AbstractWeather(models.Model):
     class Meta:
         abstract = True
 
+
 # Model to store extra fields for weather data received from a station
 class StationWeather(AbstractWeather):
     stationid = models.CharField(max_length=100, blank=False, null=False)
 
-#Model to store when the station is connected
+
+# Model to store when the station is connected
 class Stations(AbstractWeather):
     connected_at = models.DateTimeField(default=timezone.now)
     stationid = models.CharField(max_length=100, blank=False, null=False)
-
-
 
 
 # Model to store extra fields for weather data received from the API

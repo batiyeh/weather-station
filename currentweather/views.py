@@ -77,8 +77,7 @@ def createUser(request):
         password = request.POST.get('password', None)
 
         try:
-            user = User.objects.create_user(username=username, email=email,
-                                            password=password)
+            user = User.objects.create_user(username=username, email=email, password=password)
             user.save()
         except:
             return HttpResponse(json.dumps({'error': 'Failed to create account'}), content_type='application/json', status=500)
