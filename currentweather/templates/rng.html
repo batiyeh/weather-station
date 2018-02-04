@@ -12,10 +12,10 @@
 
     <script type="text/javascript">
         setInterval(updateRng, 5000);
-
+        //called function updateRng every 5000 miliseconds (5 seconds)
         function updateRng(){
+        //retrieves data from views.randomPage and will update html page without refresh
             $.ajax({
-
                 type:'POST',
                 url: '',
                 data: {
@@ -23,9 +23,9 @@
                 },
                 success: function(data){
                     console.log(data);
-                    //$('.nums').innerHTML = data.one;
                     $('.num1').contents()[0].textContent = data.one;
                     $('.num2').contents()[0].textContent = data.two;
+                    //updates span num1 and num2 with strings made from the json data
                 }
             });
         };

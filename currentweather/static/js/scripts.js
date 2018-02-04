@@ -31,8 +31,7 @@ $(document).ready(function(){
     });
 
     $('#subButton').click(function(e){
-        //.submit(function (e) {
-        //on submit, POST data from page
+        //on click, POST data from page
         
         e.preventDefault();
         //stops page from refreshing
@@ -44,7 +43,6 @@ $(document).ready(function(){
                 username: $('#username').val(),
                 email: $('#email').val(),
                 password: $('#password').val(),
-                // phone: $('#phone').val(),
                 csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
             },
             success: function (data) {
@@ -58,4 +56,21 @@ $(document).ready(function(){
             }
         });
     });
+    // $('#forgotButton').click(function(e){
+    //     e.preventDefault();
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: '',
+    //         data: {
+    //             email: $('#email').val(),
+    //             csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+    //         },
+    //         success: function(data){
+    //             console.log(data.responseJSON);
+    //         },
+    //         failure: function(){
+    //             console.log(data.responseJSON);
+    //         },
+    //     });
+    // });
 });

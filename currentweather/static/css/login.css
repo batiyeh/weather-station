@@ -66,3 +66,33 @@ html, .container input {
     text-decoration: none;
 }
 
+.col-6{
+    margin-bottom: 17px;
+}
+
+.email_f{
+    margin-top: 75px;
+    color: white;
+    text-align: center !important;
+    margin-top: 300px;
+    width: 40%;
+    margin-left: 420px;
+}
+
+html h1{
+     color: white;
+}
+
+html h2{
+     color: white;
+    margin-top: 300px;
+    margin-left: 500px;
+}
+
+.pas4{
+    color: white;
+    width: 60%;
+    margin-left: 10px;
+
+}
+
