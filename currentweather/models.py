@@ -16,6 +16,13 @@ class AbstractWeather(models.Model):
 class StationWeather(AbstractWeather):
     stationid = models.CharField(max_length=100, blank=False, null=False)
 
+#Model to store when the station is connected
+class Stations(AbstractWeather):
+    connected_at = models.DateTimeField(default=timezone.now)
+    stationid = models.CharField(max_length=100, blank=False, null=False)
+
+
+
 
 # Model to store extra fields for weather data received from the API
 class ApiWeather(AbstractWeather):
