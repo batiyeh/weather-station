@@ -93,7 +93,6 @@ def randomPage(request):
         return render(request, "rng.html", context)
 
     elif request.is_ajax():
-
         data = Stations.objects.all()
         test = Stations.objects.all().values()
         context = {}
