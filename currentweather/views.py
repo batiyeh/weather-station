@@ -84,14 +84,25 @@ def createUser(request):
 
 def randomPage(request):
     if request.method == 'GET':
-        #returns rng.html when the page gets loaded initially
-        return render(request, "rng.html")
+        data = Stations.objects.all()
+        context = {
+            "wid": data
+        }
+        return render(request, "rng.html", context)
 
     elif request.is_ajax():
-        #returns json data with 2 random integers
-        #this is where the data from the raspberry pi's will be put in place of
-        #the random int functions
-        return JsonResponse({"one":random.randint(1,101), "two":random.randint(1,101)})
+
+        data = Stations.objects.all()
+        test = Stations.objects.all().values()
+        context = {}
+        x = 0
+        for a in test:
+            row = a['wid'] + ' ' + a['stationid'] + ' ' + str(a['temperature']) + ' ' + str(a['pressure']) + ' ' + str(a['humidity'])
+            context[x] = row
+            x = x + 1
+        return JsonResponse(context)
+        #return render(request, "rng.html", context)
+        #return JsonResponse({"one":random.randint(1,101), "two":random.randint(1,101)})
 
 # def forgotPage(request):
 #     if request.method == 'GET':
