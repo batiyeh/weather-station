@@ -56,21 +56,4 @@ $(document).ready(function(){
             }
         });
     });
-    // $('#forgotButton').click(function(e){
-    //     e.preventDefault();
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: '',
-    //         data: {
-    //             email: $('#email').val(),
-    //             csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
-    //         },
-    //         success: function(data){
-    //             console.log(data.responseJSON);
-    //         },
-    //         failure: function(){
-    //             console.log(data.responseJSON);
-    //         },
-    //     });
-    // });
 });

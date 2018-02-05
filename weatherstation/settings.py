@@ -51,7 +51,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 # Redirect URLs after successfully logging in or out
-LOGIN_REDIRECT_URL = '/currentweather'
+LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 MIDDLEWARE = [

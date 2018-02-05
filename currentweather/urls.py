@@ -3,7 +3,7 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
-    path('currentweather/', views.getCurrentWeatherJson, name='currentweather'),
+    path('', views.getCurrentWeatherJson, name='currentweather'),
     path('currentweather/testAlert/', views.testAlert, name='testAlert'),
     path('random/', views.randomPage, name='random'),
     path('accounts/', include('django.contrib.auth.urls')),

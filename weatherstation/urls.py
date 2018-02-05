@@ -18,7 +18,8 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
+     # Parameters: ('url/path/after/domain', views.functionName, 'NameAccessibleToJavascript')
     path('admin/', admin.site.urls),
-    path('', views.index, name='index'),  # Parameters: ('url/path/after/domain', views.functionName, 'NameAccessibleToJavascript')
+    # path('', views.index, name='index'), 
     path('', include('currentweather.urls')) # This will include all the urls from ./currentweather/urls.py
 ]
