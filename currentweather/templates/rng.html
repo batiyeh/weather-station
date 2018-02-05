@@ -4,9 +4,10 @@
 {% csrf_token %}
 <div class="container">
     
-    <div id="piOne"> Pi One Number:</div><span class="num1"> </span>
-    <div id="piTwo"> Pi Two Number:</div><span class='num2'> </span>
+    <div id="piOne"> Wid | Station Id | Temperature | Pressure | Humidity</div><span class="chart"> </span>
+
     <script type="text/javascript">
+        
         setInterval(updateRng, 5000);
         //called function updateRng every 5000 miliseconds (5 seconds)
         function updateRng(){
@@ -19,14 +20,22 @@
                 },
                 success: function(data){
                     console.log(data);
-
-                    $('.num1').contents()[0].textContent = data[0];
-                    $('.num2').contents()[0].textContent = data[1];
-                    //updates span num1 and num2 with strings made from the json data
+                    x = 0
+                    rows = ""
+                    while(data[x]){
+                        rows = rows + " " + data[x];
+                        document.createElement("p")
+                        //formatting
+                        x = x + 1
+                    };
+                    $('.chart').contents()[0].textContent = rows;
+                    //updates 'chart' with string rows
+                    //this will essentially refresh every single piece of data on the screen
+                    //regardless of if it was changed or not
                 },
                 failure: function(data){
                     console.log(data);
-                }
+                },
             });
         };
     </script>

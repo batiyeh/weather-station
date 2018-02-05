@@ -88,32 +88,25 @@ def randomPage(request):
     if request.method == 'GET':
         data = Stations.objects.all()
         context = {
-            "wid": data
+            "wid": data,
+            "stationid": data,
+            "temperature": data,
+            "humidity" : data,
+            "pressure" : data,
         }
         return render(request, "rng.html", context)
 
     elif request.is_ajax():
-        data = Stations.objects.all()
-        test = Stations.objects.all().values()
+        data = Stations.objects.all().values()
+        #gets all entries from Stations as a QuerySet of dictionaries
         context = {}
         x = 0
-        for a in test:
-            row = a['wid'] + ' ' + a['stationid'] + ' ' + str(a['temperature']) + ' ' + str(a['pressure']) + ' ' + str(a['humidity'])
-            context[x] = row
+        for a in data:
+            context[x] = str(a['wid']) + ' ' + str(a['stationid']) + ' ' + str(a['temperature']) + ' ' + str(a['pressure']) + ' ' + str(a['humidity'])
+            #turns all data in a single row into one string and stores it in a dictionary
             x = x + 1
         return JsonResponse(context)
-        #return render(request, "rng.html", context)
-        #return JsonResponse({"one":random.randint(1,101), "two":random.randint(1,101)})
-
-# def forgotPage(request):
-#     if request.method == 'GET':
-#         return render(request, 'templates/registration/forgot.html')
-    
-#     elif request.method == 'POST':
-#         email = request.POST.get('email', None)
-        
-#         return HttpResponse(json.dumps(email), content_type='application/json', status=200)
-
+        #serializes dictionary as json data
 
 @csrf_exempt
 def stationListener(request):
