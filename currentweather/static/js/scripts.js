@@ -18,10 +18,9 @@ $(document).ready(function(){
 
         $.ajax({
             type: "POST",
-            url: 'testAlert/',// This is the url to the django view in urls.py
+            url: 'currentweather/testAlert/',// This is the url to the django view in urls.py
             dataType: 'json',
             data: {
-               email: email
             },
             success: function (data) {
                 console.log(data);
