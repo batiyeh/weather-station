@@ -86,19 +86,13 @@ def createUser(request):
 
 def randomPage(request):
     if request.method == 'GET':
-<<<<<<< HEAD
         data = Stations.objects.all()
-=======
-        data = ApiWeather.objects.all()
->>>>>>> 7d8a3e4fff8d93228b456e532c168ab5a8fc2bc0
         context = {
             "wid": data
         }
         return render(request, "rng.html", context)
-<<<<<<< HEAD
 
     elif request.is_ajax():
-
         data = Stations.objects.all()
         test = Stations.objects.all().values()
         context = {}
@@ -110,12 +104,6 @@ def randomPage(request):
         return JsonResponse(context)
         #return render(request, "rng.html", context)
         #return JsonResponse({"one":random.randint(1,101), "two":random.randint(1,101)})
-=======
-
-
-    elif request.is_ajax():
-        return JsonResponse({"one":random.randint(1,101), "two":random.randint(1,101)}, context)
->>>>>>> 7d8a3e4fff8d93228b456e532c168ab5a8fc2bc0
 
 # def forgotPage(request):
 #     if request.method == 'GET':
