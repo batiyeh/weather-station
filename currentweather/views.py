@@ -54,13 +54,13 @@ def testAlert(request):
     response = {'success': 'email sent'}
     if request.user.is_authenticated:
         email = request.user.email
-    send_mail(
-        'Weather Alert!',
-        'The Weather is BAD!',
-        'WStationTestdod@gmail.com',
-        [email],
-        fail_silently=False,
-    )
+        send_mail(
+            'Weather Alert!',
+            'The Weather is BAD!',
+            'WStationTestdod@gmail.com',
+            [email],
+            fail_silently=False,
+        )
     return HttpResponse(json.dumps(response), content_type='application/json', status=200)
 
 # View to create a user account and redirect to the login page
@@ -84,6 +84,7 @@ def createUser(request):
 
         return HttpResponseRedirect("/accounts/login/")
 
+@login_required
 def randomPage(request):
     if request.method == 'GET':
         data = Stations.objects.all()

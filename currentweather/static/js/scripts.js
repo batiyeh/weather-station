@@ -18,10 +18,9 @@ $(document).ready(function(){
 
         $.ajax({
             type: "POST",
-            url: 'testAlert/',// This is the url to the django view in urls.py
+            url: 'currentweather/testAlert/',// This is the url to the django view in urls.py
             dataType: 'json',
             data: {
-               email: email
             },
             success: function (data) {
                 console.log(data);
@@ -56,21 +55,4 @@ $(document).ready(function(){
             }
         });
     });
-    // $('#forgotButton').click(function(e){
-    //     e.preventDefault();
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: '',
-    //         data: {
-    //             email: $('#email').val(),
-    //             csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
-    //         },
-    //         success: function(data){
-    //             console.log(data.responseJSON);
-    //         },
-    //         failure: function(){
-    //             console.log(data.responseJSON);
-    //         },
-    //     });
-    // });
 });

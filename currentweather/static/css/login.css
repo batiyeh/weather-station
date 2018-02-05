@@ -13,8 +13,12 @@ html, input{
     width: 70%;
 }
 
-html, .container{
+.container{
     width: 400px;
+}
+
+.dod-img{
+    margin: auto;
     text-align: center;
 }
 
@@ -24,7 +28,6 @@ html, .container{
 
 html, .container input {
     width: 100%;
-    clear: both;
 }
 
 .title{
@@ -32,6 +35,19 @@ html, .container input {
     color: white;
     text-align: left !important;
     margin-bottom: 35px; 
+}
+
+.login-info{
+    color: white;
+}
+
+#forgot {
+    font-size: 8pt;
+    color: white !important;
+}
+
+.forgot-container{
+    margin-bottom: 5px;
 }
 
 #login{
@@ -71,22 +87,33 @@ html, .container input {
 }
 
 .email_f{
-    margin-top: 75px;
     color: white;
-    text-align: center !important;
-    margin-top: 300px;
-    width: 40%;
-    margin-left: 420px;
+}
+
+.forgot-password{
+    margin-top: 75px;
 }
 
 html h1{
-     color: white;
+    color: white;
 }
 
 html h2{
-     color: white;
+    color: white;
     margin-top: 300px;
-    margin-left: 500px;
+}
+
+h3{
+    color: white;
+    margin-top: 300px;
+}
+
+li{
+    font-size: 8pt;
+}
+
+#return-login{
+    color: white;
 }
 
 .pas4{
