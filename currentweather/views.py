@@ -18,6 +18,7 @@ from currentweather.models import Stations
 import json
 import requests
 import random
+import datetime
 
 # Get weather data from the weather underground api and display *some* of it. This could be built dynamically with different cities or GPS coordinates.
 @login_required
@@ -49,7 +50,7 @@ def getCurrentWeatherJson(request):
     return render(request, "templates/currentweather.html", context)
 
 
-# Sends a test email to Trevor's email
+# Sends a test email to the current user's email
 def testAlert(request):
     response = {'success': 'email sent'}
     if request.user.is_authenticated:
@@ -81,11 +82,14 @@ def createUser(request):
             user.save()
         except:
             return HttpResponse(json.dumps({'error': 'Failed to create account'}), content_type='application/json', status=500)
+        
+        print('test')
+        return HttpResponseRedirect("/")
 
-        return HttpResponseRedirect("/accounts/login/")
-
+# Displays the list of connected stations and their sensor value
 @login_required
-def randomPage(request):
+def stations(request):
+    # Navigating to the page and returning the template
     if request.method == 'GET':
         data = Stations.objects.all()
         context = {
@@ -95,28 +99,10 @@ def randomPage(request):
             "humidity" : data,
             "pressure" : data,
         }
-        return render(request, "rng.html", context)
+        return render(request, "stations.html", context)
 
+    # Updating values on the page
     elif request.is_ajax():
-        data = Stations.objects.all().values()
-        #gets all entries from Stations as a QuerySet of dictionaries
-        context = {}
-        x = 0
-        for a in data:
-            context[x] = str(a['wid']) + ' ' + str(a['stationid']) + ' ' + str(a['temperature']) + ' ' + str(a['pressure']) + ' ' + str(a['humidity'])
-            #turns all data in a single row into one string and stores it in a dictionary
-            x = x + 1
-        return JsonResponse(context)
-        #serializes dictionary as json data
-
-@csrf_exempt
-def stationListener(request):
-    if request.method == 'GET':
-        return HttpResponse(json.dumps({'success': 'you are at the listener page'}), content_type='application/json', status=200)
-
-    if request.method == 'POST':
-        q = StationWeather(stationid = request.POST.get('stationid', None), temperature = request.POST.get('temperature', None), humidity = request.POST.get('temperature', None),     pressure = request.POST.get('pressure', None) )
-        q.save()
-
-        response = {'success': 'received data'}
-        return HttpResponse(json.dumps(response), content_type='application/json', status=200)
+        # Serializes dictionary as json data
+        return JsonResponse(dict(stations=list(Stations.objects.all().values())))
+        

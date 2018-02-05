@@ -22,6 +22,14 @@ nav a {
     margin-top: 25px;
 }
 
+#station-table {
+    margin-top: 30px;
+}
+
+#station-table tbody tr {
+    text-align: center;
+}
+
 .current .container {
     width: 40%;
 }

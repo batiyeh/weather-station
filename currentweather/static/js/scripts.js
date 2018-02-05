@@ -31,9 +31,6 @@ $(document).ready(function(){
 
     $('#subButton').click(function(e){
         //on click, POST data from page
-        
-        e.preventDefault();
-        //stops page from refreshing
 
         $.ajax({
             type: 'POST',
@@ -46,6 +43,7 @@ $(document).ready(function(){
             },
             success: function (data) {
                 console.log(data.responseJSON);
+                location.href = '/';
             },
             error: function (data) {
                 console.log(data.responseJSON);
