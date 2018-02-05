@@ -13,6 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.http import JsonResponse
 from currentweather.models import ApiWeather
+from currentweather.models import Stations
 
 import json
 import requests
@@ -51,11 +52,13 @@ def getCurrentWeatherJson(request):
 # Sends a test email to Trevor's email
 def testAlert(request):
     response = {'success': 'email sent'}
+    if request.user.is_authenticated:
+        email = request.user.email
     send_mail(
         'Weather Alert!',
         'The Weather is BAD!',
         'WStationTestdod@gmail.com',
-        ['tmalarkey14@gmail.com'],
+        [email],
         fail_silently=False,
     )
     return HttpResponse(json.dumps(response), content_type='application/json', status=200)
@@ -74,8 +77,7 @@ def createUser(request):
         password = request.POST.get('password', None)
 
         try:
-            user = User.objects.create_user(username=username, email=email,
-                                            password=password)
+            user = User.objects.create_user(username=username, email=email, password=password)
             user.save()
         except:
             return HttpResponse(json.dumps({'error': 'Failed to create account'}), content_type='application/json', status=500)
@@ -84,11 +86,16 @@ def createUser(request):
 
 def randomPage(request):
     if request.method == 'GET':
+<<<<<<< HEAD
         data = Stations.objects.all()
+=======
+        data = ApiWeather.objects.all()
+>>>>>>> 7d8a3e4fff8d93228b456e532c168ab5a8fc2bc0
         context = {
             "wid": data
         }
         return render(request, "rng.html", context)
+<<<<<<< HEAD
 
     elif request.is_ajax():
 
@@ -103,6 +110,12 @@ def randomPage(request):
         return JsonResponse(context)
         #return render(request, "rng.html", context)
         #return JsonResponse({"one":random.randint(1,101), "two":random.randint(1,101)})
+=======
+
+
+    elif request.is_ajax():
+        return JsonResponse({"one":random.randint(1,101), "two":random.randint(1,101)}, context)
+>>>>>>> 7d8a3e4fff8d93228b456e532c168ab5a8fc2bc0
 
 # def forgotPage(request):
 #     if request.method == 'GET':

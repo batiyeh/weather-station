@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels'
 ]
 
 SENDSMS_BACKEND = 'myapp.mysmsbackend.SmsBackend'
@@ -104,6 +105,16 @@ DATABASES = {
         'PASSWORD': 'ws1234',
         'HOST': 'localhost',
         'PORT': '3306',
+    }
+}
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'asgi_redis.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('localhost', 6379)],
+        },
+        'ROUTING': 'weatherstation.routing.channel_routing',
     }
 }
 

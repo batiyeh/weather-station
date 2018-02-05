@@ -6,7 +6,6 @@ $(document).ready(function(){
     }
     
     $('#email-btn').click(function() {
-        var email = "tmalarkey14@gmail.com";
         var csrftoken = Cookies.get('csrftoken');
         $.ajaxSetup({
             beforeSend: function (xhr, settings) {
@@ -19,7 +18,7 @@ $(document).ready(function(){
 
         $.ajax({
             type: "POST",
-            url: '/testAlert', // This is the url to the django view in urls.py
+            url: 'testAlert/',// This is the url to the django view in urls.py
             dataType: 'json',
             data: {
                email: email
