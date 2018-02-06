@@ -44,10 +44,10 @@ INSTALLED_APPS = [
 
 SENDSMS_BACKEND = 'myapp.mysmsbackend.SmsBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'WStationTestdod@gmail.com'
-EMAIL_HOST_PASSWORD = 'wayne123'
-EMAIL_PORT = 587
+EMAIL_HOST = 'smtp.gmail.com'   # googles email server to send from
+EMAIL_HOST_USER = 'WStationTestdod@gmail.com'   #the weather station email account to send from
+EMAIL_HOST_PASSWORD = 'wayne123'        #the password
+EMAIL_PORT = 587    # the port the email is being sent out on
 EMAIL_USE_TLS = True
 
 # Redirect URLs after successfully logging in or out

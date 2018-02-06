@@ -52,16 +52,17 @@ def getCurrentWeatherJson(request):
 
 # Sends a test email to the current user's email
 def testAlert(request):
-    response = {'success': 'email sent'}
+    # check to make sure it is an authenticated user
     if request.user.is_authenticated:
-        email = request.user.email
+        email = request.user.email  # get the users email to send too
         send_mail(
-            'Weather Alert!',
-            'The Weather is BAD!',
-            'WStationTestdod@gmail.com',
-            [email],
+            'Weather Alert!',       # email header
+            'The Weather is BAD!',  # email message
+            'WStationTestdod@gmail.com',    # email address that it is sending from
+            [email],        # the email address that it is sending too
             fail_silently=False,
         )
+        response = {'success': 'email sent'}    # success response after running function
     return HttpResponse(json.dumps(response), content_type='application/json', status=200)
 
 # View to create a user account and redirect to the login page
