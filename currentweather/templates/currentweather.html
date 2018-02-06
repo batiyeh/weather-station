@@ -36,26 +36,3 @@
     </div>
 </div>
 {% endblock %}
-
-{% block script %}
-  <script>
-    // var socket = new ReconnectingWebSocket('ws://' + window.location.host + '/weatherstations/');
-
-    // socket.onopen = function open() {
-    //   console.log('WebSockets connection created.');
-    // };
-
-    // if (socket.readyState == WebSocket.OPEN) {
-    //   socket.onopen();
-    // }
-    var ws_path = "/weatherstations/";
-    console.log("Connecting to " + ws_path);
-    var webSocketBridge = new channels.WebSocketBridge();
-    webSocketBridge.connect(ws_path);
-    
-    // Handle incoming messages
-    webSocketBridge.listen(function(data) {
-
-    });
-  </script>
-{% endblock script %}

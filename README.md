@@ -20,7 +20,8 @@ Website to display the weather station data
 ```sh
 pip install -r requirements.txt
 ```
-4. Run the server
+4. Ensure MySQL and Redis are running
+5. Run the server
 ```sh
 python manage.py runserver
 ```

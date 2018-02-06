@@ -7,6 +7,7 @@ from currentweather.models import Stations
 def ws_connect(message):
     Group('weatherstations').add(message.reply_channel)
     message.reply_channel.send({'accept': True})
+    return
 
 # Called when any data is sent via websocket. 
 # Decides which consumer to send it to once it receives data
@@ -30,16 +31,19 @@ def ws_receive(message):
         ws.save()
         message.reply_channel.send({'text': "data stored"})
 
-    # If we are just updating sensor data
+    # Delete the station before disconnecting
     elif (data['command'] == "delete_station"):
         # print("stationid: " + str(data['stationid']) + ", temperature: " + str(data['temperature']) + ", humidity: " + str(data['humidity']) + ", pressure: " + str(data['pressure']))
+        print("TESTING")
         ws = Stations.objects.get(wid=str(data['wid'])).delete()
         message.reply_channel.send({'text': "station deleted"})
+    
+    return
     
 
 # Called when the weatherstation is disconnected from our server
 # Method should remove the connected weatherstation from the table
 def ws_disconnect(message):
-    print(message.content)
     # Don't forget to delete the connected station when it disconnects in this function
-    Group('weatherstations').discard(message.reply_channel)   
+    Group('weatherstations').discard(message.reply_channel)
+    return

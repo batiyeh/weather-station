@@ -87,7 +87,7 @@ def createUser(request):
         return HttpResponseRedirect("/")
 
 # Displays the list of connected stations and their sensor value
-@login_required
+# @login_required
 def stations(request):
     # Navigating to the page and returning the template
     if request.method == 'GET':
