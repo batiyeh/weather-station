@@ -3,7 +3,8 @@
 {% block content %}
 <div class="container">
     <h1 class="title">Create Account</h1>
-    <form id="createForm">
+    <form id="createForm" action="{% url 'createUser' %}" method="post">
+        {% csrf_token %}
         <div class="login-info mb-3">
             <div class="form-group">
                 <input id='username' name='username' type="text" class="form-control" placeholder="Username">

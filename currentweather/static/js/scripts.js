@@ -26,31 +26,5 @@ $(document).ready(function(){
                 console.log(data);
             }
         });
-
-    });
-
-    $('#subButton').click(function(e){
-        //on click, POST data from page
-
-        $.ajax({
-            type: 'POST',
-            url: '',
-            data: {
-                username: $('#username').val(),
-                email: $('#email').val(),
-                password: $('#password').val(),
-                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
-            },
-            success: function (data) {
-                console.log(data.responseJSON);
-                location.href = '/';
-            },
-            error: function (data) {
-                console.log(data.responseJSON);
-            },
-            failure: function (data) {
-                console.log(data.responseJSON);
-            }
-        });
     });
 });
