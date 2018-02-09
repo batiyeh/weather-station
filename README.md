@@ -1,14 +1,17 @@
 # Weather Station
 Website to display the weather station data
 
+
 ## Endpoints
 1. "" - Displays basic text index page
+
 
 ## How to Start the Development Server
 1. Navigate into the root of the project directory with your terminal and run:
 ```sh
 yarn dev
 ```
+
 
 ## File Structure
 1. components/: Component classes which will be individually styled and placed into containers
@@ -17,9 +20,11 @@ yarn dev
 4. images/: All of our images are placed here
 5. test/: React test files are placed here  
 
+
 ## Install Node Server + Website
 This project requires the following dependencies before continuing the install:
 1. Node v9.5.0 - Install [here](https://nodejs.org/en/)
+2. Yarn v1.3.2 - Install [here](https://yarnpkg.com/en/docs/install)
 
 After you have installed the above dependencies:
 1. Using your terminal, cd into where you want to store your project directory.
@@ -51,6 +56,7 @@ cd ../
 yarn dev
 ```
 
+
 ## Install Client Code on Raspberry Pi
 This is meant to be used on a Raspberry Pi running Raspbian OS but can be installed for testing on Mac OS or Windows. We are officially supporting only Raspbian OS for now.
 
@@ -80,7 +86,7 @@ pip install -r requirements.txt
 6. Open up client.py in a text editor and ensure the websocket connection is going to the IP of your server. This will be changed in the future to be more automatic
 ```python
 uri = 'ws://localhost:5000/weatherstations/'
-# Change to be ws.connect (("ws://yourip:8000/weatherstations/"))
+# Change to be uri = 'ws://yourserverip:5000/weatherstations/'
 ```
 7. Run the program
 ```sh
