@@ -2,12 +2,14 @@
   "name": "weather-station",
   "version": "1.0.0",
   "scripts": {
-    "client": "cd website && yarn start",
+    "client": "cd website && npm run start",
     "server": "nodemon server.js",
-    "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\""
+    "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
   },
   "dependencies": {
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "knex": "^0.14.3",
+    "mysql": "^2.15.0"
   },
   "devDependencies": {
     "concurrently": "^3.5.1"

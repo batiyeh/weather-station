@@ -1,17 +1,14 @@
 # Weather Station
 Website to display the weather station data
 
-
 ## Endpoints
 1. "" - Displays basic text index page
-
 
 ## How to Start the Development Server
 1. Navigate into the root of the project directory with your terminal and run:
 ```sh
-yarn dev
+npm run dev
 ```
-
 
 ## File Structure
 1. components/: Component classes which will be individually styled and placed into containers
@@ -30,17 +27,47 @@ npm install packagename --save
 npm install packagename --save-dev
 ```
 
+## Migrating Databases
+1. Install knex, our query builder globally
+```sh
+npm install knex -g
+```
+2. Review the knex documentation for more information [here](http://knexjs.org/#Migrations)
+
 ## Install Node Server + Website
 This project requires the following dependencies before continuing the install:
 1. Node v9.5.0 - Install [here](https://nodejs.org/en/)
 2. Yarn v1.3.2 - Install [here](https://yarnpkg.com/en/docs/install)
+3. MySQL (On Mac OS, install via [homebrew](https://brew.sh). For Windows, go [here](https://dev.mysql.com/downloads/mysql/))
+```sh
+# Mac OS X only
+brew install mysql
+brew services start mysql
+```
+
+Database Setup:
+1. Create a MySQL user with the name "weatherstation" and password "ws1234".
+```sh
+# Log into your MySQL shell. If you have a password on your root account 
+# also add -p onto the end of the following command. 
+mysql -u root
+# Once logged in, create the user
+mysql > CREATE USER 'weatherstation'@'localhost' IDENTIFIED BY 'ws1234';
+# Grant all privileges to the new user you have created
+mysql > GRANT ALL PRIVILEGES ON * . * TO 'weatherstation'@'localhost';
+mysql > FLUSH PRIVILEGES;
+```
+2. Create a database with the name weatherstation while logged into your MySQL shell.
+```sh
+mysql > CREATE DATABASE weatherstation;
+```
 
 After you have installed the above dependencies:
 1. Using your terminal, cd into where you want to store your project directory.
 2. Install nodemon globally and the server dependencies:
 ```sh
 npm i nodemon -g
-yarn
+npm install
 ```
 3. Clone the git repository 
 ```sh
@@ -52,17 +79,21 @@ cd weather-station-site
 ```
 5. Install all required dependencies for both the server and the website
 ```sh
-yarn
+npm install
 cd website
-yarn
+npm install
 ```
 6. Return to the root directory
 ```sh
 cd ../
 ```
-7. Run the development server
+7. Create all necessary database tables
 ```sh
-yarn dev
+node schema.js
+```
+8. Run the development server
+```sh
+npm run dev
 ```
 
 
