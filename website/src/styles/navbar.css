@@ -1,0 +1,13 @@
+nav {
+    background: #191654;
+    background: -webkit-linear-gradient(to right, #3C3973, #43C6AC);
+    background: linear-gradient(to right, #3C3973, #43C6AC);
+}
+
+nav a {
+    color: #F3F3F3 !important;
+}
+
+.navbar {
+    justify-content: left !important;
+}
