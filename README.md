@@ -32,7 +32,15 @@ npm install packagename --save-dev
 ```sh
 npm install knex -g
 ```
-2. Review the knex documentation for more information [here](http://knexjs.org/#Migrations)
+2. Run latest migrations
+```sh
+npm run migrate
+```
+3. If you have any issues, rollback the database to the beginning
+```sh
+npm run rollback
+```
+4. Review the knex documentation for more information [here](http://knexjs.org/#Migrations)
 
 ## Install Node Server + Website
 This project requires the following dependencies before continuing the install:
@@ -79,19 +87,13 @@ cd weather-station-site
 ```
 5. Install all required dependencies for both the server and the website
 ```sh
-npm install
-cd website
-npm install
+npm install; cd website; npm install; cd ../
 ```
-6. Return to the root directory
+6. Create all necessary database tables
 ```sh
-cd ../
+npm run migrate
 ```
-7. Create all necessary database tables
-```sh
-node schema.js
-```
-8. Run the development server
+7. Run the development server
 ```sh
 npm run dev
 ```

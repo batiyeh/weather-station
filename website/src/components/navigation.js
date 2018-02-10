@@ -18,16 +18,16 @@ class Navigation extends Component {
                     </NavbarBrand>
                     <Nav>
                         <NavItem>
-                            <NavLink href="/stations/">stations</NavLink>
+                            <NavLink href="/stations">stations</NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink href="/forecast/">forecast</NavLink>
+                            <NavLink href="/forecast">forecast</NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink href="/map/">map</NavLink>
+                            <NavLink href="/map">map</NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink href="/historical/">historical</NavLink>
+                            <NavLink href="/historical">historical</NavLink>
                         </NavItem>
                     </Nav>
                 </Navbar>
