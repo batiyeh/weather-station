@@ -20,6 +20,15 @@ yarn dev
 4. images/: All of our images are placed here
 5. test/: React test files are placed here  
 
+## Installing New Dependencies
+1. If you want to install a new dependency to be used both in development and in production:
+```sh
+npm install packagename --save
+```
+2. If you want to install a new dependency only in development for testing purposes:
+```sh
+npm install packagename --save-dev
+```
 
 ## Install Node Server + Website
 This project requires the following dependencies before continuing the install:
