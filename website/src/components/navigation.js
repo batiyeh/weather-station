@@ -15,7 +15,7 @@ class Navigation extends Component {
             <div>
                 <Navbar className="react-nav" color="faded" light expand="md">
                     <NavbarBrand href="/">
-                        <img src={logo} width="30" height="30" alt=""></img>
+                        <Link to={'/stations'} className='nav-link'><img src={logo} width="30" height="30" alt=""></img></Link>
                     </NavbarBrand>
                     <Nav>
                         <NavItem>
