@@ -11,11 +11,20 @@ npm run dev
 ```
 
 ## File Structure
-1. components/: Component classes which will be individually styled and placed into containers
-2. containers/: Full page container (such as the "Connected Stations" page) which combines our components
-3. styles/: All of our .css files are placed here
-4. images/: All of our images are placed here
-5. test/: React test files are placed here  
+1. server
+  * controllers/: Contains all routes for each controller type.
+  * models/: Contains all bookshelf (our ORM) models for the database. Import these when accessing data.
+  * migrations/: Contains all knex database migrations as well as our initial db setup file.
+  * bookshelf.js & knex.js: Database configuration files
+  * server.js: Starts our express server and maps controllers to urls
+2. client/
+  * client.py: Runs the client code meant to go on the Raspberry Pi
+3. website/
+  * components/: Component classes which will be individually styled and placed into containers
+  * containers/: Full page container (such as the "Connected Stations" page) which combines our components
+  * styles/: All of our .css files are placed here
+  * images/: All of our images are placed here
+  * test/: React test files are placed here  
 
 ## Installing New Dependencies
 1. If you want to install a new dependency to be used both in development and in production:
