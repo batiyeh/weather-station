@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import '../styles/navbar.css';
-import logo from '../images/dod_logo.png';
+import logo from '../images/space-satellite-dish-512x512.png';
+import {Link} from 'react-router-dom';
 import {
     Navbar,
     NavbarBrand,
@@ -18,16 +19,16 @@ class Navigation extends Component {
                     </NavbarBrand>
                     <Nav>
                         <NavItem>
-                            <NavLink href="/stations">stations</NavLink>
+                            <Link to={'/stations'} className='nav-link'>stations</Link>
                         </NavItem>
                         <NavItem>
-                            <NavLink href="/forecast">forecast</NavLink>
+                            <Link to={'/forecast'} className='nav-link'>forecast</Link>
                         </NavItem>
                         <NavItem>
-                            <NavLink href="/map">map</NavLink>
+                            <Link to={'/map'} className='nav-link'>map</Link>
                         </NavItem>
                         <NavItem>
-                            <NavLink href="/historical">historical</NavLink>
+                            <Link to={'/historical'} className='nav-link'>historical</Link>
                         </NavItem>
                     </Nav>
                 </Navbar>

@@ -1,15 +1,22 @@
 import React, { Component } from 'react';
 import '../styles/App.css';
 import Navigation from '../components/navigation.js';
-import StationTable from '../components/stationTable.js';
+import Station from '../containers/stations.js';
+import Map from '../containers/map.js';
+import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <Navigation></Navigation>
-        <StationTable></StationTable>
-      </div>
+      <Router>
+        <div className="App">
+          <Navigation></Navigation>
+          <div className="main">
+            <Route path="/stations" component={Station}/>
+            <Route path="/map" component={Map}/>
+          </div>
+        </div>
+      </Router>
     );
   }
 }
