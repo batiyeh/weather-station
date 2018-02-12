@@ -1,64 +1,68 @@
-# weather-station-site
+# Weather Station
 Website to display the weather station data
 
 ## Endpoints
 1. "" - Displays basic text index page
-2. "/accounts/login/" - Displays login form
-3. "/accounts/create/" - Displays create account form
-3. "/currentweather/" - Displays temperature, wind speed, pressure, and humidity
 
-## How to start development environment if you have installed it previously
-1. Navigate to the weather-station-site folder with your terminal.
-2. Activate the source files in the env
+## How to Start the Development Server
+1. Navigate into the root of the project directory with your terminal and run:
 ```sh
-# Mac
-. ./env/bin/activate 
-# Windows
-. ./env/Scripts/activate 
-```
-3. If the requirements list has changed install the new ones: 
-```sh
-pip install -r requirements.txt
-```
-4. Ensure MySQL and Redis are running
-5. Run the server
-```sh
-python manage.py runserver
+npm run dev
 ```
 
-## What to do when any Django models are changed
+## File Structure
+1. server
+  * controllers/: Contains all routes for each controller type.
+  * models/: Contains all bookshelf (our ORM) models for the database. Import these when accessing data.
+  * migrations/: Contains all knex database migrations as well as our initial db setup file.
+  * bookshelf.js & knex.js: Database configuration files
+  * server.js: Starts our express server and maps controllers to urls
+2. client/
+  * client.py: Runs the client code meant to go on the Raspberry Pi
+3. website/
+  * components/: Component classes which will be individually styled and placed into containers
+  * containers/: Full page container (such as the "Connected Stations" page) which combines our components
+  * styles/: All of our .css files are placed here
+  * images/: All of our images are placed here
+  * test/: React test files are placed here  
+
+## Installing New Dependencies
+1. If you want to install a new dependency to be used both in development and in production:
 ```sh
-manage.py makemigrations
-manage.py migrate
+npm install packagename --save
+```
+2. If you want to install a new dependency only in development for testing purposes:
+```sh
+npm install packagename --save-dev
 ```
 
-## Saving newly installed requirements
+## Migrating Databases
+1. Install knex, our query builder globally
 ```sh
-pip freeze > requirements.txt
+npm install knex -g
 ```
+2. Run latest migrations
+```sh
+npm run migrate
+```
+3. If you have any issues, rollback the database to the beginning
+```sh
+npm run rollback
+```
+4. Review the knex documentation for more information [here](http://knexjs.org/#Migrations)
 
-
-## Install 
-
-### Mac OS:
+## Install Node Server + Website
 This project requires the following dependencies before continuing the install:
-1. Python 3.6 with venv (easily installed via [Homebrew](https://brew.sh))
+1. Node v9.5.0 - Install [here](https://nodejs.org/en/)
+2. Yarn v1.3.2 - Install [here](https://yarnpkg.com/en/docs/install)
+3. MySQL (On Mac OS, install via [homebrew](https://brew.sh). For Windows, go [here](https://dev.mysql.com/downloads/mysql/))
 ```sh
-brew install python3
-```
-2. MySQL (also easily installed via [Homebrew](https://brew.sh))
-```sh
+# Mac OS X only
 brew install mysql
 brew services start mysql
 ```
-3. Redis (installed via [Homebrew](https://brew.sh))
-```sh
-brew install redis
-brew services start redis
-```
 
-After you have installed the above dependencies:
-
+Database Setup:
 1. Create a MySQL user with the name "weatherstation" and password "ws1234".
 ```sh
 # Log into your MySQL shell. If you have a password on your root account 
@@ -74,83 +78,68 @@ mysql > FLUSH PRIVILEGES;
 ```sh
 mysql > CREATE DATABASE weatherstation;
 ```
-3. Open up terminal and navigate to where you want to store this project
-4. Clone the repository and navigate inside it.
+
+After you have installed the above dependencies:
+1. Using your terminal, cd into where you want to store your project directory.
+2. Install nodemon globally and the server dependencies:
+```sh
+npm i nodemon -g
+npm install
+```
+3. Clone the git repository 
 ```sh
 git clone https://github.com/batiyeh/weather-station-site
+```
+4. Navigate inside the weather-station directory:
+```sh
 cd weather-station-site
 ```
-5. Create a virtual envelope folder where we will install this project's requirements 
+5. Install all required dependencies for both the server and the website
+```sh
+npm install; cd website; npm install; cd ../
+```
+6. Create all necessary database tables
+```sh
+npm run migrate
+```
+7. Run the development server
+```sh
+npm run dev
+```
+
+
+## Install Client Code on Raspberry Pi
+This is meant to be used on a Raspberry Pi running Raspbian OS but can be installed for testing on Mac OS or Windows. We are officially supporting only Raspbian OS for now.
+
+### Raspberry Pi
+This project requires the following dependencies before continuing the install:
+1. Python 3.5+
+
+After you have installed the above dependencies:
+1. Open up terminal and navigate to where you want to store this project
+2. Clone the repository and navigate inside it.
+```sh
+git clone https://github.com/batiyeh/weather-station
+cd weather-station/client
+```
+3. Create a virtual envelope folder where we will install this project's requirements 
 ```sh
 python3 -m venv env
 ```
-6. Activate the files within your env. After this step you should now have (env) listed on the left hand side of your terminal:  
+4. Activate the files within your env. After this step you should now have (env) listed on the left hand side of your terminal:  
 ```sh
 . ./env/bin/activate
 ```
-7. Install the requirements that come with the project:
+5. Install the requirements that come with the project:
 ```sh
 pip install -r requirements.txt
 ```
-8. Create the initial migration of the database: 
-```sh
-./manage.py makemigrations
-./manage.py migrate
+6. Open up client.py in a text editor and ensure the websocket connection is going to the IP of your server. This will be changed in the future to be more automatic
+```python
+uri = 'ws://localhost:5000/weatherstations/'
+# Change to be uri = 'ws://yourserverip:5000/weatherstations/'
 ```
-9. Run the server and then navigate to the given IP address in your web browser (http://0.0.0.0:8000) 
+7. Run the program
 ```sh
-python3 manage.py runserver 0.0.0.0:8000
-```
-
-### Windows: 
-This project requires the following dependencies before continuing the install:
-1. Python 3.6 from https://www.python.org/downloads/
-
-2. MySQL from https://dev.mysql.com/downloads/mysql/  (make sure it is the MySQL Community Server)
-
-After you have installed the above dependencies:
-
-1. Create a MySQL user with the name "weatherstation" and password "ws1234".
-```sh
-# Log into your MySQL shell. If you have a password on your root account 
-# also add -p onto the end of the following command. 
-mysql -u root
-# Once logged in, create the user
-mysql > CREATE USER 'weatherstation'@'localhost' IDENTIFIED BY 'ws1234';
-# Grant all privileges to the new user you have created
-mysql > GRANT ALL PRIVILEGES ON * . * TO 'weatherstation'@'localhost';
-mysql > FLUSH PRIVILEGES;
-```
-2. Create a database with the name weatherstation while logged into your MySQL shell.
-```sh
-mysql > CREATE DATABASE weatherstation;
-```
-3. Open up terminal and navigate to where you want to store this project
-4. Clone the repository and navigate inside it.
-```sh
-git clone https://github.com/batiyeh/weather-station-site
-cd weather-station-site
-```
-5. Create a virtual envelope folder where we will install this project's requirements 
-```sh
-\weather-station-site\env\Scripts>python -m venv env
-```
-6. Activate the files within your env. After this step you should now have (env) listed on the left hand side of your terminal:  
-```sh
-. \weather-station-site\env\Scripts>activate
-```
-7. cd back to the main directory of the weatherstation
-
-8. Install the requirements that come with the project:
-```sh
-pip install -r requirements.txt
-```
-9. Create the initial migration of the database: 
-```sh
-\weather-station-site>python manage.py makemigrations
-\weather-station-site>python manage.py migrate
-```
-10. Run the server and navigate to the given IP address in your web browser (normally http://127.0.0.1:8000) 
-```sh
-python3 manage.py runserver
+python3 client.py
 ```

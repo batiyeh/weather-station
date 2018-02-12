@@ -1,0 +1,20 @@
+{
+  "name": "weather-station",
+  "version": "1.0.0",
+  "scripts": {
+    "client": "cd website && npm run start",
+    "server": "nodemon server.js",
+    "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
+    "migrate": "knex migrate:latest",
+    "rollback": "knex migrate:rollback"
+  },
+  "dependencies": {
+    "bookshelf": "^0.12.1",
+    "express": "^4.16.2",
+    "knex": "^0.14.3",
+    "mysql": "^2.15.0"
+  },
+  "devDependencies": {
+    "concurrently": "^3.5.1"
+  }
+}
