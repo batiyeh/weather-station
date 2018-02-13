@@ -18,6 +18,19 @@ exports.up = function(knex) {
             .catch((error) => {});
         }
     });
+    return knex.schema.hasTable('users').then(function(exists){
+        if (!exists) {
+            knex.schema.createTable('users', function(table){
+                table.increments('user_id');
+                table.string('user_name').unique();
+                table.string('password').unique();
+                table.boolean('isAdmin');
+                table.float('phone').unique();
+            })
+            .then(() => {})
+            .catch((error) => {});
+        }
+    });
 };
 
 // Drop all tables in case we need to undo a migration
@@ -28,7 +41,14 @@ exports.down = function(knex) {
             .then(() => {})
             .catch((error) => {});
         }
-    })
+    });
+    knex.schema.hadTable('users').then(function(exists) {
+        if (exists) {
+            knex.schema.dropTable('users')
+            .then(() => {})
+            .catch((error) => {});
+        }
+    });
 };
 
 // .then(function() {

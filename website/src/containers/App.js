@@ -3,6 +3,7 @@ import '../styles/App.css';
 import Navigation from '../components/navigation.js';
 import Station from '../containers/stations.js';
 import Map from '../containers/map.js';
+import Login from '../containers/login.js';
 import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
 
 class App extends Component {
@@ -14,6 +15,7 @@ class App extends Component {
           <div className="main">
             <Route path="/stations" component={Station}/>
             <Route path="/map" component={Map}/>
+            <Route path="/login" component={Login}/>
           </div>
         </div>
       </Router>
