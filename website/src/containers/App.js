@@ -17,8 +17,8 @@ class App extends Component {
           <div className="main">
             <Route path="/stations" component={Station}/>
             <Route path="/map" component={Map}/>
-            <Route path="/login" component={Login}/>
-            <Route path="/create" component={Create}/>  
+            <Route path="/user/login" component={Login}/>
+            <Route path="/user/create" component={Create}/>  
             {/*Move so that it doesnt have Nav bar*/}
             <Route path="/historical" component={Historical}/>
 

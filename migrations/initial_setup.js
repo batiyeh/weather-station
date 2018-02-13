@@ -1,54 +1,60 @@
 var knex = require('knex')(require('../knexfile'))
 
 // Create all tables for future use
-exports.up = function(knex) {
-    return knex.schema.hasTable('stations').then(function(exists) {
-        if (!exists) {
-            knex.schema.createTable('stations', function (table) {
-                table.increments('station_id');
-                table.timestamps();
-                table.string('mac_address');
-                table.string('station_name');
-                table.float('temperature');
-                table.float('humidity');
-                table.float('pressure');
-                table.boolean('connected');
-            })
-            .then(() => {})
-            .catch((error) => {});
-        }
-    });
-    return knex.schema.hasTable('users').then(function(exists){
-        if (!exists) {
-            knex.schema.createTable('users', function(table){
-                table.increments('user_id');
-                table.string('user_name').unique();
-                table.string('password').unique();
-                table.boolean('isAdmin');
-                table.float('phone').unique();
-            })
-            .then(() => {})
-            .catch((error) => {});
-        }
-    });
+exports.up = function(knex, Promise) {
+    return Promise.all([
+        knex.schema.hasTable('stations').then(function(exists) {
+            if (!exists) {
+                knex.schema.createTable('stations', function (table) {
+                    table.increments('station_id');
+                    table.timestamps();
+                    table.string('mac_address');
+                    table.string('station_name');
+                    table.float('temperature');
+                    table.float('humidity');
+                    table.float('pressure');
+                    table.boolean('connected');
+                })
+                .then(() => {})
+                .catch((error) => {});
+            }
+        }),
+        knex.schema.hasTable('users').then(function(exists){
+            if (!exists) {
+                knex.schema.createTable('users', function(table){
+                    table.increments('user_id');
+                    table.string('user_name').unique();
+                    table.string('password').unique();
+                    table.string('email').unique();
+                    table.boolean('isAdmin');
+                    table.float('phone').unique();
+                })
+                .then(() => {})
+                .catch((error) => {});
+            }
+        })
+    ])
 };
 
 // Drop all tables in case we need to undo a migration
-exports.down = function(knex) {
-    knex.schema.hasTable('stations').then(function(exists) {
-        if (exists) {
-            knex.schema.dropTable('stations')
-            .then(() => {})
-            .catch((error) => {});
-        }
-    });
-    knex.schema.hasTable('users').then(function(exists) {
-        if (exists) {
-            knex.schema.dropTable('users')
-            .then(() => {})
-            .catch((error) => {});
-        }
-    });
+exports.down = function(knex, Promise) {
+    return Promise.all([
+        knex.schema.hasTable('stations').then(function(exists) {
+            if (exists) {
+                knex.schema.dropTable('stations')
+                .then(() => {})
+                .catch((error) => {});
+            }
+        }),
+        //Only dropping 'stations' and not 'users' as well, unsure why
+        knex.schema.hasTable('users').then(function(exists) {
+            if (exists) {
+                knex.schema.dropTable('users')
+                .then(() => {})
+                .catch((error) => {});
+            }
+        })
+    ])
 };
 
 // .then(function() {

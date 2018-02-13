@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import '../styles/App.css';
+import LoginComp from '../components/loginComp';
 
 class Login extends Component {
   render() {
     return (
-        <div> login </div>
+        <LoginComp></LoginComp>
     );
   }
 }
