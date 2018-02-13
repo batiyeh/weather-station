@@ -4,7 +4,7 @@ import '../styles/App.css';
 class Login extends Component {
   render() {
     return (
-      <div>This is the login page</div>
+        <div> login </div>
     );
   }
 }

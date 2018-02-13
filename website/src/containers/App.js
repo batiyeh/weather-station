@@ -4,6 +4,7 @@ import Navigation from '../components/navigation.js';
 import Station from '../containers/stations.js';
 import Map from '../containers/map.js';
 import Login from '../containers/login.js';
+import Create from '../containers/create.js';
 import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
 
 class App extends Component {
@@ -16,6 +17,8 @@ class App extends Component {
             <Route path="/stations" component={Station}/>
             <Route path="/map" component={Map}/>
             <Route path="/login" component={Login}/>
+            <Route path="/create" component={Create}/>  
+            {/*Move so that it doesnt have Nav bar*/}
           </div>
         </div>
       </Router>

@@ -42,7 +42,7 @@ exports.down = function(knex) {
             .catch((error) => {});
         }
     });
-    knex.schema.hadTable('users').then(function(exists) {
+    knex.schema.hasTable('users').then(function(exists) {
         if (exists) {
             knex.schema.dropTable('users')
             .then(() => {})
