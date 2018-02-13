@@ -1,0 +1,18 @@
+.station-container{
+    text-align: left;
+    width: 30%;
+}
+
+.station-container-left{
+    text-align: left;
+    float: left;
+}
+
+.station-container-left{
+    text-align: right;
+    float: right;
+}
+
+.station-name{
+    font-size: 16pt;
+}
