@@ -3,24 +3,23 @@ import React, { Component } from 'react';
 
 class CreateComp extends Component {
 
-    constructor() {
-        super();
-        this.grabInfo = this.grabInfo.bind(this);
-    }
-    grabInfo(e){
-        e.preventDefault();
-        const data = new FormData(e.target);
+    // constructor() {
+    //     super();
+    // }
+    // grabInfo(e){
+    //     e.preventDefault();
+    //     const data = new FormData(e.target);
 
-        fetch('/api/create', {
-            method: 'POST',
-            body: data,
-        });
-    }
+    //     fetch('/api/create', {
+    //         method: 'POST',
+    //         body: data,
+    //     });
+    //}
 
     render(){
         return(
             <div className = 'container'>  
-            <form id='createForm' onSubmit={this.grabInfo}>
+            <form id='createForm' action='/api/create/' method='post'>
               <div className='login-info mb-3'>
                 <div className='form-group'>
                   <input id='username' name='username' type='text' className='form-control' placeholder='Username'/>

@@ -18,6 +18,9 @@ exports.up = function(knex) {
             .catch((error) => {});
         }
     });
+
+};
+exports.up = function(knex){
     return knex.schema.hasTable('users').then(function(exists){
         if (!exists) {
             knex.schema.createTable('users', function(table){
@@ -31,8 +34,7 @@ exports.up = function(knex) {
             .catch((error) => {});
         }
     });
-};
-
+}
 // Drop all tables in case we need to undo a migration
 exports.down = function(knex) {
     knex.schema.hasTable('stations').then(function(exists) {
