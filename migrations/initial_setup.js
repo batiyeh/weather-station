@@ -23,14 +23,12 @@ exports.up = function(knex, Promise) {
             if (!exists){
                 knex.schema.createTable('stationsWeather', function(table){
                     table.increments('station_id');
-                    table.increments('station_id');
                     table.timestamps();
                     table.string('mac_address');
                     table.string('station_name');
                     table.float('temperature');
                     table.float('humidity');
                     table.float('pressure');
-                    table.boolean('connected');
                 })
                     .then(() =>{})
             .catch((error) => {});
@@ -39,7 +37,6 @@ exports.up = function(knex, Promise) {
         knex.schema.hasTable('station').then(function(exists) {
             if (!exists){
                 knex.schema.createTable('station', function(table){
-                    table.timestamps('connected_at');
                     table.string('stationid');
                     table.increments('station_id');
                     table.timestamps();
@@ -48,7 +45,6 @@ exports.up = function(knex, Promise) {
                     table.float('temperature');
                     table.float('humidity');
                     table.float('pressure');
-                    table.boolean('connected');
                 })
                     .then(() =>{})
             .catch((error) => {});
@@ -58,6 +54,9 @@ exports.up = function(knex, Promise) {
             if (!exists){
                 knex.schema.createTable('apiWeather', function(table){
                     table.string('wind_speed');
+                    table.float('visibility');
+                    table.string('description');
+
                     table.increments('station_id');
                     table.timestamps();
                     table.string('mac_address');
