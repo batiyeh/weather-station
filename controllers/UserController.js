@@ -5,7 +5,7 @@ router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 var User = require('../models/User');
 const bcrypt = require('bcrypt');
-
+//const session = require('express-session');
 
 router.post('/create', function(req, res){
     bcrypt.hash(req.body.password, 10, function(err, hash) {
@@ -18,13 +18,15 @@ router.post('/create', function(req, res){
     });
     res.redirect('/user/confirm');
 });
-router.post('/login', function(req, res){
 
+router.post('/login', function(req, res){
     User.where({User_name: req.body.username}).fetch().then(function(login){
-        bcrypt.compare(req.body.password, login.attributes.password, function(err,res){
-            if(res){
-                console.log("Logged in successfully");
-                res.redirect('/stations');
+        bcrypt.compare(req.body.password, login.attributes.password, function(err,check){
+            if(check){
+                console.log('in login')
+                var sess=req.session;
+                sess.username = req.body.username;
+                res.redirect('/map');
             }
             else{
                 console.log("Incorrect username/password");

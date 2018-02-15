@@ -9,12 +9,16 @@
     "rollback": "knex migrate:rollback"
   },
   "dependencies": {
+    "bcrypt": "^1.0.3",
     "bookshelf": "^0.12.1",
     "express": "^4.16.2",
     "knex": "^0.14.3",
-    "mysql": "^2.15.0"
+    "morgan": "^1.9.0",
+    "mysql": "^2.15.0",
+    "session-file-store": "^1.2.0"
   },
   "devDependencies": {
-    "concurrently": "^3.5.1"
+    "concurrently": "^3.5.1",
+    "express-session": "^1.15.6"
   }
 }
