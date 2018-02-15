@@ -3,7 +3,7 @@ import '../styles/App.css';
 import Navigation from '../components/navigation.js';
 import Station from '../containers/stations.js';
 import Map from '../containers/map.js';
-import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
 
 class App extends Component {
   render() {

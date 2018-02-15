@@ -2,7 +2,7 @@ import requests
 import time
 import json
 
-station_name = "test"
+station_name = "Base Station"
 mac_address = "00:00:00:00:00:00"
 temperature = 0
 pressure = 0
@@ -27,4 +27,4 @@ while True:
     # Send a json object to be inserted into our database asynchronously
     r = requests.post('http://localhost:5000/api/stations/', data = weatherdata)	
 
-    time.sleep(5)
+    time.sleep(3)

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import Station from '../components/station';
+import Station from '../components/stationCard';
+import { FormGroup, Input } from 'reactstrap';
 
 // Station List component is a list of each station
 // Each connected station is built out of a single Station component in a loop here
@@ -62,41 +63,16 @@ class StationList extends Component {
     render() {
         return (
             <div className="container content">
-                {/* {
+                <FormGroup>
+                    <Input type="text" className="filterWidth" name="stationFilter" id="stationFilter" placeholder="Filter" />
+                </FormGroup>
+                {
                     this.state.stations.map(station => {
                         return (
                             <Station station={station}></Station>
                         );
                     })
-                } */}
-                <table className="table table-bordered table-striped">
-                    <thead>
-                    <tr>
-                        <th>Station Name</th>
-                        <th>Last Updated</th>
-                        <th>MAC Address</th>
-                        <th>Temperature</th>
-                        <th>Humidity</th>
-                        <th>Pressure</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    { 
-                        this.state.stations.map(station => {
-                            return (
-                            <tr key={station.station_id}>
-                                <td>{station.station_name}</td>
-                                <td>{station.updated_at}</td>
-                                <td>{station.mac_address}</td>
-                                <td>{station.temperature}</td>
-                                <td>{station.humidity}</td>
-                                <td>{station.pressure}</td>
-                            </tr>
-                            );
-                        })
-                    }
-                    </tbody>
-                </table>
+                }
             </div>
         );
   }
