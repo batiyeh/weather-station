@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import '../styles/stations.css';
-import { Card, CardImg, CardText, CardBody,
-    CardTitle, CardSubtitle, Button } from 'reactstrap';
+import { Card, CardText, CardTitle } from 'reactstrap';
 
 class StationCard extends Component {
     render() {
