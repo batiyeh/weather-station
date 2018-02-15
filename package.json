@@ -12,7 +12,8 @@
     "bookshelf": "^0.12.1",
     "express": "^4.16.2",
     "knex": "^0.14.3",
-    "mysql": "^2.15.0"
+    "mysql": "^2.15.0",
+    "nodemailer": "^4.4.2"
   },
   "devDependencies": {
     "concurrently": "^3.5.1"
