@@ -8,7 +8,7 @@ var User = require('../models/User');
 const bcrypt = require('bcrypt'); //is there a better place to put this? 
 
 
-router.post('/create', function(req){
+router.post('/create', function(req, res){
 
     // User.where('user_name', req.body.username).fetch().then(function(name){
     //     if(!name){
@@ -34,20 +34,21 @@ router.post('/create', function(req){
         }).save()
         .catch((error) => console.log('Duplicate Entry'));
     });
+    res.redirect('/user/login');
 });
-router.post('/login', function(req){
+router.post('/login', function(req, res){
 
     User.where({User_name: req.body.username}).fetch().then(function(login){
         bcrypt.compare(req.body.password, login.attributes.password, function(err,res){
             if(res){
                 console.log("Logged in successfully");
+                res.redirect('/stations');
             }
             else{
-                console.log("Failed to login");
+                console.log("Incorrect username/password");
             }
         })
     })
 });
-
 
 module.exports = router;
