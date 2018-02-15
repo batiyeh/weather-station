@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-
+// for validating entries use https://www.npmjs.com/package/react-validation
 
 class CreateComp extends Component {
-
-
     render(){
         return(
             <div className = 'container'>  
@@ -21,10 +19,9 @@ class CreateComp extends Component {
               </div>
               <div className='row'>
                 <div className='col-6'>
-                  {/* put return to login link here */}
-                </div>
+                  <a className='return-link' href='/user/login'><button type='button' className='btn btn-default return-btn'>Return</button></a>                </div>
                 <div className='col-6'>
-                  <button className="btn btn-default">Create Account</button>
+                  <button type='submit' className="btn btn-default" onClick='created()'>Create Account</button>
                 </div>
               </div>
             </form>

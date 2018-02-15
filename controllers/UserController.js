@@ -4,37 +4,19 @@ var bodyParser = require('body-parser');
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 var User = require('../models/User');
-
-const bcrypt = require('bcrypt'); //is there a better place to put this? 
+const bcrypt = require('bcrypt');
 
 
 router.post('/create', function(req, res){
-
-    // User.where('user_name', req.body.username).fetch().then(function(name){
-    //     if(!name){
-    //         User.where('email', req.body.email).fetch().then(function(mail){
-    //             if(!mail){
-    //                 bcrypt.hash(req.body.password, 10, function(err, hash) {
-    //                     new User({
-    //                         user_name: req.body.username,
-    //                         email: req.body.username,
-    //                         password: hash,
-    //                     }).save()
-    //                 });
-    //             }
-    //         });
-    //     }
-    // });
-    //How to alert user of invalid field?
     bcrypt.hash(req.body.password, 10, function(err, hash) {
         new User({
             user_name: req.body.username,
             email: req.body.username,
             password: hash,
         }).save()
-        .catch((error) => console.log('Duplicate Entry'));
+        .catch((error) => console.log('Duplicate Entry'));//to be handled by react in createComp.js
     });
-    res.redirect('/user/login');
+    res.redirect('/user/confirm');
 });
 router.post('/login', function(req, res){
 
