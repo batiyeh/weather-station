@@ -21,9 +21,6 @@ class Navigation extends Component {
                             <Link to={'/stations'} className='nav-link'>stations</Link>
                         </NavItem>
                         <NavItem>
-                            <Link to={'/forecast'} className='nav-link'>forecast</Link>
-                        </NavItem>
-                        <NavItem>
                             <Link to={'/map'} className='nav-link'>map</Link>
                         </NavItem>
                         <NavItem>
