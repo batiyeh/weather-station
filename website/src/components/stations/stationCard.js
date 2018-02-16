@@ -26,7 +26,7 @@ class StationCard extends Component {
                         <CardTitle>
                             <div className="row">
                                 <div className="col-6 no-padding-left">
-                                    <p class="station-name">
+                                    <p className="station-name">
                                         <ConnectionIndicator status={this.getConnectionStatus()}></ConnectionIndicator>
                                         {this.props.station.station_name}
                                     </p>

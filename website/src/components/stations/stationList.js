@@ -10,7 +10,8 @@ class StationList extends Component {
         super();
         this.state = {
             stations: [],
-            secondsElapsed: 0
+            secondsElapsed: 0,
+            filter: ''
         };
     }
 
@@ -19,7 +20,8 @@ class StationList extends Component {
     getInitialState() {
         return {
             stations: [],
-            secondsElapsed: 0
+            secondsElapsed: 0,
+            filter: ''
         };
     }
 
@@ -40,7 +42,7 @@ class StationList extends Component {
 
     // This will access our API to get updated data and then updates the state
     // of the page
-    updateStations = () => {
+    updateStations = async () => {
         this.getStations().then(res => {
             this.setState({ 
                 stations: res.stations, 
@@ -58,18 +60,34 @@ class StationList extends Component {
 
         return body;
     };
+
+    // Set the component's filter state whenever the filter input changes 
+    filterOnChange(e){
+        this.setState({
+            filter: e.target.value
+        })
+    }
+
+    // Returns false if the filter string is not in the station's name.
+    // Returns true if the filter is empty or is within the station's name.
+    filterStations(station){
+        if (this.state.filter !== '')
+            return station.station_name.toLowerCase().includes(this.state.filter.toLowerCase());
+        return true;
+    }
     
-    // Render just takes the HTML and renders it to the page
     render() {
         return (
             <div className="container content">
                 <FormGroup>
-                    <Input type="text" className="filterWidth" name="stationFilter" id="stationFilter" placeholder="Filter" />
+                    <Input type="text" className="filterWidth" name="stationFilter" id="stationFilter" placeholder="Filter" onChange={this.filterOnChange.bind(this)} />
                 </FormGroup>
                 {
-                    this.state.stations.map(station => {
+                    this.state.stations
+                    .filter(this.filterStations.bind(this))
+                    .map(station => {
                         return (
-                            <StationCard station={station}></StationCard>
+                            <StationCard key={station.station_id} station={station}></StationCard>
                         );
                     })
                 }

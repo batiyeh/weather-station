@@ -8,9 +8,9 @@ class ConnectionIndicator extends Component {
         super(props);
         var connectionStatusColor;
 
-        if (props.status == "green") connectionStatusColor = '#48db28';
-        if (props.status == "yellow") connectionStatusColor = '#fffa00';
-        if (props.status == "red") connectionStatusColor = '#e21f1f';
+        if (props.status === "green") connectionStatusColor = '#48db28';
+        if (props.status === "yellow") connectionStatusColor = '#fffa00';
+        if (props.status === "red") connectionStatusColor = '#e21f1f';
 
         this.state = {
             color: connectionStatusColor 
