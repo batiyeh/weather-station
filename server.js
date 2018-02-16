@@ -2,15 +2,17 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 5000;
 const session = require('express-session');
-const FileStore = require('session-file-store')(session);
+const MySQLStore = require('express-mysql-session')(session);
+const knex = require('./knexfile');
+
 
 app.use(require('morgan')('dev'));
 app.use(session({
         name: 'server-session-cookie-id',
         secret: 'TestSecret',
-        saveUninitialized: true,
+        saveUninitialized: false,
         resave: true,
-        store: new FileStore()
+        store: new MySQLStore(knex.connection)
     })
 );
 

@@ -12,7 +12,7 @@ class LoginComp extends Component {
                                 <input id='username' name='username' type='text' class='form-control' placeholder='Username'/>
                             </div>
                             <div className='form-group'>
-                                <input id='password' name='password' className='form-control' placeholder='Password'/>
+                                <input id='password' name='password' type='password' className='form-control' placeholder='Password'/>
                             </div>
                         </div>
                         <div className='row'>
