@@ -15,6 +15,7 @@ router.post('/', async function (req, res) {
     if (station){
         var result = await Station.where('mac_address', req.body.mac_address).save({
             station_name: req.body.station_name,
+            updated_at: req.body.updated_at,
             temperature: req.body.temperature,
             humidity: req.body.humidity,
             pressure: req.body.pressure,
@@ -51,6 +52,7 @@ router.route('/:id')
         var result = await Station.where('station_id', req.params.station_id).save({
             mac_address: req.body.mac_address,
             station_name: req.body.station_name,
+            updated_at: req.body.updated_at,
             temperature: req.body.temperature,
             humidity: req.body.humidity,
             pressure: req.body.pressure,

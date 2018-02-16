@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../styles/App.css';
-import StationList from '../components/stationList.js';
+import StationList from '../components/stations/stationList.js';
 
 class Stations extends Component {
   render() {

@@ -17,6 +17,12 @@
     font-size: 16pt;
 }
 
+.station-uptime{
+    font-size: 12pt;
+    float: right;
+    margin-top: 3px;
+}
+
 .station-card{
     margin: auto;
     background-color: #F9F9F9 !important;
@@ -26,12 +32,24 @@
     box-shadow: 0px 0px 20px 0px #e8e8e8;
 }
 
+.connection-indicator{
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: '#48DB28';
+    border: 1px solid #8e8e8e;
+    margin-right: 15px;
+    margin-bottom: 3px;
+}
+
 .bottom-card{
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 .station-info{
     margin-bottom: 5px;
+    font-size: 14pt;
 }
 
 .filterWidth{

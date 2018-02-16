@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Station from '../components/stationCard';
+import StationCard from './stationCard';
 import { FormGroup, Input } from 'reactstrap';
 
 // Station List component is a list of each station
@@ -69,7 +69,7 @@ class StationList extends Component {
                 {
                     this.state.stations.map(station => {
                         return (
-                            <Station station={station}></Station>
+                            <StationCard station={station}></StationCard>
                         );
                     })
                 }
