@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import '../styles/navbar.css';
 import logo from '../images/space-satellite-dish-512x512.png';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
     Navbar,
     NavbarBrand,
     Nav,
-    NavItem,
-    NavLink } from 'reactstrap';
+    NavItem } from 'reactstrap';
 
 class Navigation extends Component {
     render() {
@@ -20,9 +19,6 @@ class Navigation extends Component {
                     <Nav>
                         <NavItem>
                             <Link to={'/stations'} className='nav-link'>stations</Link>
-                        </NavItem>
-                        <NavItem>
-                            <Link to={'/forecast'} className='nav-link'>forecast</Link>
                         </NavItem>
                         <NavItem>
                             <Link to={'/map'} className='nav-link'>map</Link>
