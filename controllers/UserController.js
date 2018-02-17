@@ -14,15 +14,15 @@ router.post('/create', function(req, res){
             email: req.body.email,
             password: hash,
         }).save()
-        .catch((error) => console.log('Duplicate Entry'));//to be handled by react in createComp.js
+        .catch((error) => res.status(401));//to be handled by react in createComp.js
     });
+    return res.status(200);
 });
 
 router.post('/login', function(req, res){
     User.where({User_name: req.body.username}).fetch().then(function(login){
         bcrypt.compare(req.body.password, login.attributes.password, function(err,check){
             if(check){
-                console.log('in login')
                 req.session.username = req.body.username;
                 req.session.success = true;
                 req.session.save();
@@ -35,18 +35,20 @@ router.post('/login', function(req, res){
     })
 });
 
-router.get('/verify', function(req,res){
+router.post('/verify', function(req,res){
     Sessions.where({session_id: req.sessionID}).fetch().then(function(ver){
         if(!ver){
-            console.log('no session');
-            var data = false;
-            res.redirect('/user/login');
-            //return res.status(401).send({data});
+            // console.log('no session');
+            return res.status(401);
         }
         else{
-            console.log("session");
+            // console.log("session");
             return res.status(200);
         }
     })
+})
+router.post('/logout', function(req,res){
+    Sessions.where({session_id: req.sessionID}).destroy();
+    res.redirect('/user/login');
 })
 module.exports = router;

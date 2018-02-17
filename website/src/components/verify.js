@@ -5,15 +5,14 @@ class Verify extends Component{
         super();
         this.state = {};
     }
-    componentDidMount() {
-        this.veri();
+    componentDidMount(res) {        
+        this.veri()
     }      
     veri = async () => {
-        const response = await fetch('/api/user/verify', {method: 'get', credentials: 'include'});
-        const body = await response.json();
-    
-        if(response.status !== 200) throw Error(body.message);
-        return body;
+        await fetch('/api/user/verify', {method: 'post', redirect: 'follow', credentials: 'include'})
+        .then(res => {
+            // res.redirect('/user/login');
+        });
     }
     render(){
         return(null); 
