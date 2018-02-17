@@ -1,13 +1,20 @@
 import React, { Component } from 'react';
 import '../styles/App.css';
-import testAlert from '../../../controllers/testAlert'
+
+
 
 class Historical extends Component {
     render() {
         return (
-            <h1>This is the Historical data page.</h1>
+            <div>
+                <h1>This is the Historical data page.</h1>
+                <button type="button" className="btn btn-danger">Alert</button>
+            </div>
+
         );
     }
 }
+
+
 
 export default Historical;
