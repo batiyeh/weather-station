@@ -1,8 +1,8 @@
-// 'use strict';
-// var bookshelf = require('../bookshelf');
+'use strict';
+var bookshelf = require('../bookshelf');
 
-// let User = bookshelf.Model.extend({
-//     tableName: 'sessions'
-// });
+let Sessions = bookshelf.Model.extend({
+    tableName: 'sessions'
+});
 
-// module.exports = Sessions;
+module.exports = Sessions;

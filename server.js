@@ -4,14 +4,14 @@ const port = process.env.PORT || 5000;
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const knex = require('./knexfile');
+const cookieParser = require('cookie-parser');
 
-
-app.use(require('morgan')('dev'));
+app.use(cookieParser());
 app.use(session({
         name: 'server-session-cookie-id',
         secret: 'TestSecret',
         saveUninitialized: false,
-        resave: true,
+        resave: false,
         store: new MySQLStore(knex.connection)
     })
 );

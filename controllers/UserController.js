@@ -4,10 +4,8 @@ var bodyParser = require('body-parser');
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 var User = require('../models/User');
-var Sessions = require('../models/User');
-// var Sessions = require('../models/Sessions');
+var Sessions = require('../models/Sessions');
 const bcrypt = require('bcrypt');
-//const session = require('express-session');
 
 router.post('/create', function(req, res){
     bcrypt.hash(req.body.password, 10, function(err, hash) {
@@ -18,7 +16,6 @@ router.post('/create', function(req, res){
         }).save()
         .catch((error) => console.log('Duplicate Entry'));//to be handled by react in createComp.js
     });
-    res.redirect('/user/confirm');
 });
 
 router.post('/login', function(req, res){
@@ -27,8 +24,8 @@ router.post('/login', function(req, res){
             if(check){
                 console.log('in login')
                 req.session.username = req.body.username;
+                req.session.success = true;
                 req.session.save();
-                console.log(req.session.username);
                 res.redirect('/map');
             }
             else{
@@ -38,11 +35,17 @@ router.post('/login', function(req, res){
     })
 });
 
-router.post('/verify', function(req,res){
-    console.log('In verify');
-    Sessions.where({session_id: req.session.id}).fetch().then(function(ver){
+router.get('/verify', function(req,res){
+    Sessions.where({session_id: req.sessionID}).fetch().then(function(ver){
         if(!ver){
+            console.log('no session');
+            var data = false;
             res.redirect('/user/login');
+            //return res.status(401).send({data});
+        }
+        else{
+            console.log("session");
+            return res.status(200);
         }
     })
 })

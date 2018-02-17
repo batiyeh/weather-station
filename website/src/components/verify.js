@@ -6,12 +6,18 @@ class Verify extends Component{
         this.state = {};
     }
     componentDidMount() {
-        fetch('/api/user/verify', {
-            method: 'post',
-        })
+        this.veri();
+    }      
+    veri = async () => {
+        const response = await fetch('/api/user/verify', {method: 'get', credentials: 'include'});
+        const body = await response.json();
+    
+        if(response.status !== 200) throw Error(body.message);
+        return body;
     }
-    render() {
-        return null;
-  }
+    render(){
+        return(null); 
+    }
 }
+
 export default Verify;
