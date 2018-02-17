@@ -84,7 +84,6 @@ After you have installed the above dependencies:
 2. Install nodemon globally and the server dependencies:
 ```sh
 npm i nodemon -g
-npm install
 ```
 3. Clone the git repository 
 ```sh
