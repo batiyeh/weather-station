@@ -5,7 +5,9 @@ const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const knex = require('./knexfile');
 const cookieParser = require('cookie-parser');
+const expressValidator = require('express-validator');
 
+app.use(expressValidator());
 app.use(cookieParser());
 app.use(session({
         name: 'server-session-cookie-id',
