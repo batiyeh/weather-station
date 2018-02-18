@@ -9,3 +9,4 @@ var StationController = require('./controllers/StationController');
 app.use('/api/stations', StationController);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
+
