@@ -8,7 +8,6 @@ class Historical extends Component {
         return (
             <div>
                 <h1>This is the Historical data page.</h1>
-                <button type="button" className="btn btn-danger">Alert</button>
             </div>
 
         );
