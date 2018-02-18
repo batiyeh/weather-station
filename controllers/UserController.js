@@ -6,62 +6,97 @@ router.use(bodyParser.json());
 var User = require('../models/User');
 var Sessions = require('../models/Sessions');
 const bcrypt = require('bcrypt');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 
-// router.get('/create', function(req, res){
-//     res.render('/user/create', {success: false, errors: req.session.errors});
-//     res.session.errors = null;
-// })
-router.post('/create', function(req, res){
-    // var dbUsername = User.where({User_name: req.body.username}).fetch().then(function(u){
-    //     if(!u){
-    //         dbUsername.user_name = '';
-    //     }
-    // })
-    // var dbEmail = User.where({email: req.body.email}).fetch().then(function(u){
-    //     if(!u){
-    //         dbEmail.email = '';
-    //     }
-    // })
-
-    // req.check('username', 'Invalid username.').matches(/\w/).not().equals(dbUsername.user_name);
-    // req.check('email', 'Invalid email address.').isEmail().not().equals(dbEmail.email);
-    req.check('password','Password must be longer than 8 characters, cannot contain symbols, and must have at least 1 letter and 1 number.')
+router.post('/create', async function(req, res){
+    var username = req.body.username;
+    var email = req.body.email;
+    var username = req.body.username;
+    var password = req.body.password;
+    var dbUsername = null;
+    var dbEmail = null;
+    
+    await User.where({user_name: username}).fetch().then(function(u){
+        if(u){
+            dbUsername = u.attributes.user_name.toLowerCase();
+        }
+    })
+    await User.where({email: email}).fetch().then(function(u){
+        if(u){
+            dbEmail = u.attributes.email.toLowerCase();
+        }
+    })
+    
+    req.checkBody('username','Invalid username').notEmpty().matches(/\w/).not().equals(dbUsername);
+    req.checkBody('email', 'Invalid email').notEmpty().isEmail().not().equals(dbEmail);
+    req.checkBody('password','Password must be longer than 8 characters, cannot contain symbols, and must have at least 1 letter and 1 number.')
     .isLength({min: 8}).matches(/\d/).not().matches(/\W/);
 
     var errors = req.validationErrors();
+
     if(errors){
-        // req.session.errors = errors;
-        // req.session.success = false;
-        // console.log('before 401');
-        return res.status(401).json(errors);
+        //display errors on front end somehow
+        console.log(errors);
     }
     else{
-        bcrypt.hash(req.body.password, 10, function(err, hash) {
+        bcrypt.hash(password, 10, function(err, hash) {
             new User({
-                user_name: req.body.username,
-                email: req.body.email,
+                user_name: username,
+                email: email,
                 password: hash,
             }).save()
-            //.catch((error) => res.status(401));//to be handled by react in createComp.js
         });
-        return res.status(200).redirect('/user/login');//add confirm page?
+        
+        res.redirect('/user/login')
     }
 });
-
-router.post('/login', function(req, res){
-    User.where({User_name: req.body.username}).fetch().then(function(login){
-        bcrypt.compare(req.body.password, login.attributes.password, function(err,check){
-            if(check){
-                req.session.username = req.body.username;
-                req.session.success = true;
-                req.session.save();
-                res.redirect('/map');
+passport.serializeUser(function(user, done){
+    done(null, user.id);
+});
+passport.deserializeUser(function(id, done){
+    User.where({user_id: id}).fetch().then(function(user){
+        done(user.attributes.username);
+    })
+});
+passport.use(new LocalStrategy(
+    function(username, password, done) {
+        User.where({User_name: username}).fetch().then(function(user){
+            if(!user){
+                return done(null, false, {message: 'Invalid username/password'});
             }
             else{
-                console.log("Incorrect username/password");
+                bcrypt.compare(password, user.attributes.password, function(err, check){
+                    if(check){
+                        return done(null, user.attributes.username)
+                    }
+                    else{
+                        return done(null, false, {message: 'Invalid username/password'});
+                    }
+                })
             }
         })
-    })
+    }
+));
+router.post('/login', passport.authenticate('local', {successRedirect:'/map', failureRedirect:'/stations', failureFlash: true}), 
+function(req, res){
+    res.redirect('/map');
+    // var username = req.body.username;
+    // var password = req.body.password;
+
+    // User.where({User_name: username}).fetch().then(function(login){
+    //     bcrypt.compare(password, login.attributes.password, function(err,check){
+    //         if(check){
+    //             req.session.username = username;
+    //             req.session.success = true;
+    //             req.session.save();
+    //             res.redirect('/map');
+    //         }
+    //         else{
+    //             console.log("Incorrect username/password");
+    //         }
+    //     })
+    // })
 });
 
 router.post('/verify', function(req,res){
