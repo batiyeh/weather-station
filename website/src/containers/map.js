@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import '../styles/App.css';
-
+import stationMap from '../components/stationMap.js';
 class Map extends Component {
   render() {
     return (
-      <div>This is the map page</div>
+      <stationMap></stationMap>
     );
   }
 }
 
 export default Map;
+
+
+
