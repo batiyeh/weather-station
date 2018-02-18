@@ -5,15 +5,14 @@ import '../styles/map.css';
 export class MapContainer extends React.Component{
     render() {
         return (
+            <div className = "map-view">
             <Map google={this.props.google} zoom={8}>
             <Marker onClick = {this.onMarkerClick}
                     name={'Current Location'} />
               <InfoWindow onClose = {this.oninfoWindowClose}>
-              <div>
-                  <h1>{this.stat.selectedPlace.name}</h1>
-              </div>
                       </InfoWindow>
                       </Map>
+            </div>
         );
     }
 }

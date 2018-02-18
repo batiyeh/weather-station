@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import '../styles/App.css';
-import stationMap from '../components/stationMap.js';
+import StationMap from '../components/stationMap.js';
 class Map extends Component {
   render() {
     return (
-      <stationMap></stationMap>
+      <StationMap></StationMap>
     );
   }
 }
