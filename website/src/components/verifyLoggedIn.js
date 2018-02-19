@@ -9,16 +9,16 @@ class VerifyLoggedIn extends Component{
             redirect: false
         }
     }
+    //when component loads, calls function verify, if false is returned, sets redirect state to true
     componentDidMount = async () => {        
-        if(await this.veri()){
-            console.log("true");
-        }
-        else{
+        if(!await this.verify()){
             this.setState({redirect: true});
         }
     }      
-    veri = async () => {
-        var response = await fetch('/api/user/auth', {method: 'post', credentials: 'include'})
+    //does a fetch call that returns the username currently stored in the cookie
+    //if no username is stored, the user is not logged in and returns false
+    verify = async () => {
+        var response = await fetch('/api/user/verifyLoggedIn', {method: 'post', credentials: 'include'})
         var body = await response.json();
         this.user = body.user;
         if(this.user){
@@ -30,12 +30,12 @@ class VerifyLoggedIn extends Component{
     }
     render(){
         const { redirect } = this.state;
-
+        //if redirect state is set to true, redirects user to login
         if(redirect) {
             return <Redirect to='/user/login'/>;
         }
         else {
-            return null;
+            return true;
         }
     }
 }

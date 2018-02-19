@@ -5,14 +5,6 @@ import VerifyLoggedIn from '../components/verifyLoggedIn.js'
 
 
 class Map extends Component {
-  constructor() {
-    super();
-    this.isAuth();
-  }
-  isAuth = async () => {
-    var auth = await fetch('/api/user/auth', {method: 'post', credentials: 'include'});
-    console.log(auth);
-  }
   render() {
     return (
       <div className='MapPage'>

@@ -2,33 +2,28 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 5000;
 const session = require('express-session');
-const MySQLStore = require('express-mysql-session')(session);
 const knex = require('./knexfile');
 const cookieParser = require('cookie-parser');
 const expressValidator = require('express-validator');
 const passport = require('passport');
-const flash = require('connect-flash');
 
+//Express Validator allows us to verify the strings that the user enters during account creation
+//Ensureing they meet the requirements for a username/email/password
 app.use(expressValidator());
+
+//Creates the Cookie that will be used to store user information and create a session for the user
 app.use(cookieParser());
 app.use(session({
         name: 'WeatherStationSite',
         secret: 'TestSecret',
         saveUninitialized: false,
         resave: false,
-        store: new MySQLStore(knex.connection)
     })
 );
+
+//Facilitates logging in and creating sessions
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.use(flash());
-app.use(function (req, res, next){
-    res.locals.successMsg = req.flash('Success');
-    res.locals.errorMsg = req.flash('Error Msg');
-    res.locals.error = req.flash('error');
-    next();
-});//use these to display message after redirect
 
 // Import all of our controllers
 var StationController = require('./controllers/StationController');
