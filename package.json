@@ -18,17 +18,12 @@
     "express-sessions": "^1.0.6",
     "express-validator": "^5.0.1",
     "knex": "^0.14.3",
-<<<<<<< HEAD
-    "morgan": "^1.9.0",
     "mysql": "^2.15.0",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "react-router": "^4.2.0",
-    "session-file-store": "^1.2.0"
-=======
-    "mysql": "^2.15.0",
+    "session-file-store": "^1.2.0",
     "nodemailer": "^4.4.2"
->>>>>>> 507f2ad945b4950203892701e7398b2827ec1556
   },
   "devDependencies": {
     "concurrently": "^3.5.1"
