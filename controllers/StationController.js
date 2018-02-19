@@ -14,11 +14,12 @@ router.post('/', async function (req, res) {
     // TODO: There might be a better way to update where we don't have to select again
     if (station){
         var result = await Station.where('mac_address', req.body.mac_address).save({
-            station_name: req.body.station_name,
             updated_at: req.body.updated_at,
             temperature: req.body.temperature,
             humidity: req.body.humidity,
             pressure: req.body.pressure,
+            latitude: req.body.latitude,
+            longitude: req.body.longitude,
             connected: req.body.connected
         }, {patch:true});
     }
@@ -29,10 +30,11 @@ router.post('/', async function (req, res) {
         // with the 'patch' attribute
         var result = await new Station({
             mac_address: req.body.mac_address,
-            station_name: req.body.station_name,
             temperature: req.body.temperature,
             humidity: req.body.humidity,
             pressure: req.body.pressure,
+            latitude: req.body.latitude,
+            longitude: req.body.longitude,
             connected: req.body.connected
         }).save()
     }
@@ -56,11 +58,12 @@ router.route('/:id')
     .put(async function(req, res){
         var result = await Station.where('station_id', req.params.station_id).save({
             mac_address: req.body.mac_address,
-            station_name: req.body.station_name,
             updated_at: req.body.updated_at,
             temperature: req.body.temperature,
             humidity: req.body.humidity,
             pressure: req.body.pressure,
+            latitude: req.body.latitude,
+            longitude: req.body.longitude,
             connected: req.body.connected
         });
         return res.json({result});

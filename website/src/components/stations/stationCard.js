@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
 import '../../styles/stations.css';
-import { Card, CardText, CardTitle } from 'reactstrap';
+import { Input, Button, Card, CardText, CardTitle, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import ConnectionIndicator from './connectionIndicator';
 
 class StationCard extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            modal: false
+        }
+
+        this.toggleStationDetail = this.toggleStationDetail.bind(this);
+    }
     // Format the station's uptime for user viewing
     // TODO: Make this uptime not just last time data was received
     getUptime() {
@@ -18,21 +26,73 @@ class StationCard extends Component {
         return 'green';
     }
 
+    // Toggle the station detail modal open/closed
+    toggleStationDetail(){
+        // alert('test');
+        this.setState({
+            modal: !this.state.modal
+        });
+    }
+    
+    // Render the station name input with or without a value if it exists
+    renderNameInput(){
+        if (this.props.station.station_name !== undefined || this.props.station.station_name !== ""){
+            return <Input type="text" className="stationNameInput" name="stationNameInput" id="stationNameInput" placeholder="Name" value={this.props.station.station_name}></Input>
+        }
+
+        else{
+            return <Input type="text" className="stationNameInput" name="stationNameInput" id="stationNameInput" placeholder="Name"></Input>
+        }
+    }
+
     render() {
         return (
             <div className="col-12 station-container">
-                <Card className="station-card">
+                <Modal isOpen={this.state.modal} toggle={this.toggleStationDetail}>
+                    <ModalHeader toggle={this.toggleStationDetail}>Station Detail View</ModalHeader>
+                    <ModalBody>
+                        { this.renderNameInput() }
+                        <div className="station-detail-container">
+                            <div className="station-detail-row">
+                                <span class="left">MAC Address</span>
+                                <span class="right">{this.props.station.mac_address}</span>
+                            </div><br/>
+                            <div className="station-detail-row">
+                                <span class="left">Temperature</span>
+                                <span class="right">{this.props.station.temperature}</span>
+                            </div><br/>
+                            <div className="station-detail-row">
+                                <span class="left">Pressure</span>
+                                <span class="right">{this.props.station.pressure}</span>
+                            </div><br/>
+                            <div className="station-detail-row">
+                                <span class="left">Humidity</span>
+                                <span class="right">{this.props.station.humidity}</span>
+                            </div><br/>
+                            <div className="station-detail-row">
+                                <span class="left">Location</span>
+                                <span class="right">({this.props.station.latitude}, {this.props.station.longitude})</span>
+                            </div><br/>
+                        </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="primary" onClick={this.toggleStationDetail}>Save Changes</Button>{' '}
+                        <Button color="secondary" onClick={this.toggleStationDetail}>Cancel</Button>
+                    </ModalFooter>
+                </Modal>
+
+                <Card onClick={this.toggleStationDetail} className="station-card">
                     <div className="col-12">
                         <CardTitle>
                             <div className="row">
                                 <div className="col-6 no-padding-left">
                                     <p className="station-name">
                                         <ConnectionIndicator status={this.getConnectionStatus()}></ConnectionIndicator>
-                                        {this.props.station.station_name}
+                                        {this.props.station.mac_address}
                                     </p>
                                 </div>
                                 <div className="col-6 no-padding-right">
-                                    <p class="station-uptime">{this.getUptime()}</p>
+                                    <p className="station-uptime">{this.getUptime()}</p>
                                 </div>
                             </div>
                         </CardTitle>
@@ -40,9 +100,9 @@ class StationCard extends Component {
                             <div className="row">
                                 {/* Holds station data on the left side of the card */}
                                 <div className="col-6 no-padding-left">
-                                    <p class="station-info">temperature: {this.props.station.temperature} &deg;F</p>
-                                    <p class="station-info">pressure: {this.props.station.pressure} hPa</p>
-                                    <p class="station-info">humidity: {this.props.station.humidity}%</p>
+                                    <p className="station-info">temperature: {this.props.station.temperature} &deg;F</p>
+                                    <p className="station-info">pressure: {this.props.station.pressure} hPa</p>
+                                    <p className="station-info">humidity: {this.props.station.humidity}%</p>
                                 </div>
                                 {/* Holds API data on the right side of the card */}
                                 <div className="col-6 no-padding-right">

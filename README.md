@@ -142,3 +142,44 @@ uri = 'ws://localhost:5000/weatherstations/'
 ```sh
 python3 client.py
 ```
+
+### Sensors
+#### GPS
+1. Ensure the GPS sensor and RPI is near a window or outside.
+
+2. Install the necessary GPS libraries for data retrieval
+```sh
+sudo apt-get install gpsd gpsd-clients python-gps
+```
+
+3. Connect our device to the gpsd library socket
+```sh
+sudo gpsd /dev/ttyACM0 -F /var/run/gpsd.sock
+```
+
+4. Open the gpsd.sock file
+```sh
+sudo nano /etc/default/gpsd
+```
+
+5. Add the following lines to the bottom of the gpsd.sock file
+```sh
+# Other options you want to pass to gpsd
+START_DAEMON="true"
+GPSD_OPTIONS="/dev/ttyACM0"
+DEVICE=""
+USBAUTO="true"
+GPSD_SOCKET="/var/run/gpsd.sock"
+```
+
+6. Reboot the Raspberry Pi.
+```sh
+sudo reboot
+```
+
+7. Test that it is working
+```sh
+cpgs -s
+# Wait a minute or two for it to find a satellite
+# If it is not working, try running step #2 again
+```

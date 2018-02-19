@@ -74,10 +74,10 @@ class StationList extends Component {
     // Returns true if the filter is empty or is within the station's name.
     filterStations(station){
         if (this.state.filter !== '')
-            return station.station_name.toLowerCase().includes(this.state.filter.toLowerCase());
+            return station.mac_address.toLowerCase().includes(this.state.filter.toLowerCase());
         return true;
     }
-    
+
     render() {
         return (
             <div className="container content">
@@ -93,6 +93,7 @@ class StationList extends Component {
                         );
                     })
                 }
+                
             </div>
         );
   }
