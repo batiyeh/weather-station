@@ -54,24 +54,24 @@ class StationCard extends Component {
                         { this.renderNameInput() }
                         <div className="station-detail-container">
                             <div className="station-detail-row">
-                                <span class="left">MAC Address</span>
-                                <span class="right">{this.props.station.mac_address}</span>
+                                <span className="left">MAC Address</span>
+                                <span className="right">{this.props.station.mac_address}</span>
                             </div><br/>
                             <div className="station-detail-row">
-                                <span class="left">Temperature</span>
-                                <span class="right">{this.props.station.temperature}</span>
+                                <span className="left">Temperature</span>
+                                <span className="right">{this.props.station.temperature}</span>
                             </div><br/>
                             <div className="station-detail-row">
-                                <span class="left">Pressure</span>
-                                <span class="right">{this.props.station.pressure}</span>
+                                <span className="left">Pressure</span>
+                                <span className="right">{this.props.station.pressure}</span>
                             </div><br/>
                             <div className="station-detail-row">
-                                <span class="left">Humidity</span>
-                                <span class="right">{this.props.station.humidity}</span>
+                                <span className="left">Humidity</span>
+                                <span className="right">{this.props.station.humidity}</span>
                             </div><br/>
                             <div className="station-detail-row">
-                                <span class="left">Location</span>
-                                <span class="right">({this.props.station.latitude}, {this.props.station.longitude})</span>
+                                <span className="left">Location</span>
+                                <span className="right">({this.props.station.latitude}, {this.props.station.longitude})</span>
                             </div><br/>
                         </div>
                     </ModalBody>
