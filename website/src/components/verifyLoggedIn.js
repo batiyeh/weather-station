@@ -1,22 +1,22 @@
 import React, { Component } from 'react';
+import { cookies } from 'react-cookie';
 
-class Verify extends Component{
+class VerifyLoggedIn extends Component{
     constructor() {
         super();
+        console.log(cookies.get('name'));
         this.state = {};
     }
     componentDidMount(res) {        
         this.veri()
     }      
     veri = async () => {
-        await fetch('/api/user/verify', {method: 'post', redirect: 'follow', credentials: 'include'})
-        .then(res => {
-            // res.redirect('/user/login');
-        });
+        await fetch('/api/user/auth', {method: 'post', credentials: 'include'})
+        return true;
     }
     render(){
         return(null); 
     }
 }
 
-export default Verify;
+export default VerifyLoggedIn;

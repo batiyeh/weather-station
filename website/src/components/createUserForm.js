@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // for validating entries use https://www.npmjs.com/package/react-validation
 
-class CreateComp extends Component {
+class CreateUserForm extends Component {
     render(){
         return(
             <div className = 'container'>  
@@ -30,4 +30,4 @@ class CreateComp extends Component {
     }
 }
 
-export default CreateComp;
+export default CreateUserForm;

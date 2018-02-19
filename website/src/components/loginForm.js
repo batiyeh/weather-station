@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 
-class LoginComp extends Component {
+class LoginForm extends Component {
     render(){
         return(
             <div className='container'>
@@ -30,4 +30,4 @@ class LoginComp extends Component {
     }
 }
 
-export default LoginComp;
+export default LoginForm;

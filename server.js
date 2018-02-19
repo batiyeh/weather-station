@@ -12,7 +12,7 @@ const flash = require('connect-flash');
 app.use(expressValidator());
 app.use(cookieParser());
 app.use(session({
-        name: 'server-session-cookie-id',
+        name: 'WeatherStationSite',
         secret: 'TestSecret',
         saveUninitialized: false,
         resave: false,

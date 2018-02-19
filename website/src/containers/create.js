@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import '../styles/App.css';
-import CreateComp from '../components/createComp.js';
+import CreateUserForm from '../components/createUserForm.js';
 
 class Create extends Component {
   render() {
     return (
-        <CreateComp></CreateComp>
+        <CreateUserForm/>
     );
   }
 }

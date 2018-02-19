@@ -17,100 +17,79 @@ router.post('/create', async function(req, res){
     var dbUsername = null;
     var dbEmail = null;
     
-    await User.where({user_name: username}).fetch().then(function(u){
-        if(u){
-            dbUsername = u.attributes.user_name.toLowerCase();
-        }
-    })
-    await User.where({email: email}).fetch().then(function(u){
-        if(u){
-            dbEmail = u.attributes.email.toLowerCase();
-        }
-    })
+    var user = await User.where({user_name: username}).fetch()
+    if(user)
+        dbUsername = u.attributes.user_name.toLowerCase();
+
+    var em = await User.where({email: email}).fetch()
+    if(em)
+        dbEmail = u.attributes.email.toLowerCase();
+    //query db to make sure there aren't duplicate email/username
     
     req.checkBody('username','Invalid username').notEmpty().matches(/\w/).not().equals(dbUsername);
     req.checkBody('email', 'Invalid email').notEmpty().isEmail().not().equals(dbEmail);
     req.checkBody('password','Password must be longer than 8 characters, cannot contain symbols, and must have at least 1 letter and 1 number.')
     .isLength({min: 8}).matches(/\d/).not().matches(/\W/);
+    //Verifies that all User Account credentials meet the string requirements
 
     var errors = req.validationErrors();
+    //If one of the user inputs fails to meet the requirements it gets saved in errors
 
     if(errors){
         //display errors on front end somehow
         console.log(errors);
     }
     else{
-        bcrypt.hash(password, 10, function(err, hash) {
+        await bcrypt.hash(password, 10, function(err, hash) {
             new User({
                 user_name: username,
                 email: email,
                 password: hash,
             }).save()
         });
-        
         res.redirect('/user/login')
     }
 });
 passport.serializeUser(function(user, done){
-    done(null, user.id);
+    console.log('serialized');
+    done(null, user.attributes.user_name);
 });
-passport.deserializeUser(function(id, done){
-    User.where({user_id: id}).fetch().then(function(user){
-        done(user.attributes.username);
-    })
+
+passport.deserializeUser(async function(username, done){
+    console.log('deserialized');
+    var user = await User.where({user_name: username}).fetch()
+        if(user)
+            done(null, user.attributes.user_name);
 });
+
 passport.use(new LocalStrategy(
-    function(username, password, done) {
-        User.where({User_name: username}).fetch().then(function(user){
-            if(!user){
+    async function(username, password, done) {
+        var user = await User.where({User_name: username}).fetch()
+            if(!user)
                 return done(null, false, {message: 'Invalid username/password'});
-            }
-            else{
-                bcrypt.compare(password, user.attributes.password, function(check){
-                    if(check){
-                        return done(null, true)
-                    }
-                    else{
-                        return done(null, false, {message: 'Invalid username/password'});
-                    }
-                })
-            }
-        })
+            
+        var check = await bcrypt.compare(password, user.attributes.password);
+            if(check)
+                return done(null, user);
+            
+        return done(null, false, {message: 'Invalid username/password'});
     }
 ));
-router.post('/login', passport.authenticate('local', {successRedirect:'/map', failureRedirect:'/stations', failureFlash: true}), 
-function(req, res){
-    res.redirect('/map');
-    // var username = req.body.username;
-    // var password = req.body.password;
 
-    // User.where({User_name: username}).fetch().then(function(login){
-    //     bcrypt.compare(password, login.attributes.password, function(err,check){
-    //         if(check){
-    //             req.session.username = username;
-    //             req.session.success = true;
-    //             req.session.save();
-    //             res.redirect('/map');
-    //         }
-    //         else{
-    //             console.log("Incorrect username/password");
-    //         }
-    //     })
-    // })
+router.post('/login', passport.authenticate('local', {failureRedirect:'/user/login'}), 
+function(req, res){
+    req.session.user = req.body.username;
+    req.session.save();
+    console.log(req.session);
+    res.redirect('/map');
 });
 
-router.post('/verify', function(req,res){
-    Sessions.where({session_id: req.sessionID}).fetch().then(function(ver){
-        if(!ver){
-            console.log('no session');
-            return res.status(401);
-        }
-        else{
-            console.log("session");
-            return res.status(200);
-        }
-    })
+router.post('/auth', function(req,res){
+    console.log(req.session);
+
+    return true;
 })
+
 router.post('/logout', function(req,res){
     Sessions.where({session_id: req.sessionID}).destroy();
     res.redirect('/user/login');
