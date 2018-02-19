@@ -33,3 +33,4 @@ app.use('/api/stations', StationController);
 app.use('/api/user', UserController);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
+

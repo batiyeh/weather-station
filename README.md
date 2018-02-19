@@ -118,7 +118,7 @@ After you have installed the above dependencies:
 1. Open up terminal and navigate to where you want to store this project
 2. Clone the repository and navigate inside it.
 ```sh
-git clone https://github.com/batiyeh/weather-station
+git clone https://github.com/batiyeh/weather-station-site
 cd weather-station/client
 ```
 3. Create a virtual envelope folder where we will install this project's requirements 
@@ -141,4 +141,45 @@ uri = 'ws://localhost:5000/weatherstations/'
 7. Run the program
 ```sh
 python3 client.py
+```
+
+### Sensors
+#### GPS
+1. Ensure the GPS sensor and RPI is near a window or outside.
+
+2. Install the necessary GPS libraries for data retrieval
+```sh
+sudo apt-get install gpsd gpsd-clients python-gps
+```
+
+3. Connect our device to the gpsd library socket
+```sh
+sudo gpsd /dev/ttyACM0 -F /var/run/gpsd.sock
+```
+
+4. Open the gpsd.sock file
+```sh
+sudo nano /etc/default/gpsd
+```
+
+5. Add the following lines to the bottom of the gpsd.sock file
+```sh
+# Other options you want to pass to gpsd
+START_DAEMON="true"
+GPSD_OPTIONS="/dev/ttyACM0"
+DEVICE=""
+USBAUTO="true"
+GPSD_SOCKET="/var/run/gpsd.sock"
+```
+
+6. Reboot the Raspberry Pi.
+```sh
+sudo reboot
+```
+
+7. Test that it is working
+```sh
+cpgs -s
+# Wait a minute or two for it to find a satellite
+# If it is not working, try running step #2 again
 ```

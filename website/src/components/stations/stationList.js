@@ -28,8 +28,8 @@ class StationList extends Component {
     // Called when the component is first "mounted" (loaded) into the page
     // This fetches the stations from our API and adds them to our current state
     componentDidMount() {
-        this.getStations().then(res => { 
-            this.setState({ stations: res.stations });
+        this.getStations().then(stations => { 
+            this.setState({ stations: stations });
         });
         this.interval = setInterval(this.updateStations, 3000);
     }
@@ -43,9 +43,9 @@ class StationList extends Component {
     // This will access our API to get updated data and then updates the state
     // of the page
     updateStations = async () => {
-        this.getStations().then(res => {
+        this.getStations().then(stations => {
             this.setState({ 
-                stations: res.stations, 
+                stations: stations, 
                 secondsElapsed: this.state.secondsElapsed + 3
             });
         });
@@ -54,11 +54,13 @@ class StationList extends Component {
     // Async call to fetch everything from our stations endpoint while the page is still loading
     // Returns an array of stations
     getStations = async () => {
+        var stations = [];
         const response = await fetch('/api/stations');
         const body = await response.json();
-        if (response.status !== 200) throw Error(body.message);
-
-        return body;
+        if (response.status !== 200) throw Error(body.message); 
+        if (body.stations) stations = body.stations;
+        
+        return stations;
     };
 
     // Set the component's filter state whenever the filter input changes 
@@ -72,10 +74,10 @@ class StationList extends Component {
     // Returns true if the filter is empty or is within the station's name.
     filterStations(station){
         if (this.state.filter !== '')
-            return station.station_name.toLowerCase().includes(this.state.filter.toLowerCase());
+            return station.mac_address.toLowerCase().includes(this.state.filter.toLowerCase());
         return true;
     }
-    
+
     render() {
         return (
             <div className="container content">
@@ -91,6 +93,7 @@ class StationList extends Component {
                         );
                     })
                 }
+                
             </div>
         );
   }

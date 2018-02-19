@@ -9,40 +9,41 @@ exports.up = function(knex, Promise) {
                     table.increments('station_id');
                     table.timestamps(true, true);
                     table.string('mac_address');
-                    table.string('station_name');
                     table.float('temperature');
                     table.float('humidity');
                     table.float('pressure');
+                    table.string('latitude');
+                    table.string('longitude');
                     table.boolean('connected');
                 })
                 .then(() => {})
                 .catch((error) => {});
             }
         }),
-        knex.schema.hasTable('stationWeather').then(function(exists){
+        knex.schema.hasTable('weather').then(function(exists){
             if (!exists){
-                knex.schema.createTable('stationsWeather', function(table){
-                    table.increments('station_id');
+                knex.schema.createTable('weather', function(table){
+                    table.increments('weather_id');
                     table.timestamps(true, true);
                     table.string('mac_address');
-                    table.string('station_name');
                     table.float('temperature');
                     table.float('humidity');
                     table.float('pressure');
+                    table.string('latitude');
+                    table.string('longitude');
+                    table.boolean('connected');
                 })
                 .then(() =>{})
                 .catch((error) => {});
             }
         }),
-        knex.schema.hasTable('apiWeather').then(function(exists){
+        knex.schema.hasTable('station_names').then(function(exists){
             if (!exists){
-                knex.schema.createTable('apiWeather', function(table){
-                    table.increments('station_id');
+                knex.schema.createTable('station_names', function(table){
+                    table.increments('name_id');
                     table.timestamps(true, true);
                     table.string('mac_address');
-                    table.string('wind_speed');
-                    table.float('visibility');
-                    table.string('description');
+                    table.string('name');
                 })
                 .then(() =>{})
                 .catch((error) => {});
@@ -76,14 +77,14 @@ exports.down = function(knex, Promise) {
                 .catch((error) => {});
             }
         }),
-        knex.schema.hasTable('stationWeather').then(function(exists){
+        knex.schema.hasTable('weather').then(function(exists){
             if (exists) {
-                knex.schema.dropTable('stationWeather')
+                knex.schema.dropTable('weather')
                 .then(() => {})
                 .catch((error) => {});
             }
         }),
-        knex.schema.hasTable('apiWeather').then(function(exists){
+        knex.schema.hasTable('station_names').then(function(exists){
             if (exists) {
                 knex.schema.dropTable('apiWeather')
                     .then(() => {})

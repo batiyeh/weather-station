@@ -4,12 +4,25 @@
     margin-bottom: 30px;
 }
 
-.station-container-left{
+.station-container .col-12:hover{
+    cursor: pointer;
+}
+
+.station-detail-container{
+    padding: 0;
+}
+
+.station-detail-row{
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.left{
     text-align: left;
     float: left;
 }
 
-.station-container-left{
+.right{
     text-align: right;
     float: right;
 }
