@@ -85,9 +85,8 @@ function(req, res){
 });
 
 router.post('/auth', function(req,res){
-    console.log(req.session);
-
-    return true;
+    console.log(req.user);
+    res.json({user: req.user});
 })
 
 router.post('/logout', function(req,res){
