@@ -118,7 +118,7 @@ After you have installed the above dependencies:
 1. Open up terminal and navigate to where you want to store this project
 2. Clone the repository and navigate inside it.
 ```sh
-git clone https://github.com/batiyeh/weather-station
+git clone https://github.com/batiyeh/weather-station-site
 cd weather-station/client
 ```
 3. Create a virtual envelope folder where we will install this project's requirements 

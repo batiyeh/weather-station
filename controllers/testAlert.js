@@ -28,4 +28,4 @@ transporter.sendMail(message, (error, info) => {
     }
 });
 
-//export default transporter
+export default transporter

@@ -41,7 +41,12 @@ router.post('/', async function (req, res) {
 
 // Returns all stations in the database
 router.get('/', async function (req, res) {
-    var stations = await Station.fetchAll();
+    try{
+        var stations = await Station.fetchAll();
+    } catch(ex){
+        return res.json({});
+    }
+
     return res.json({ stations });
 });
 
