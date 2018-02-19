@@ -44,7 +44,6 @@ if __name__ == '__main__':
                 "updated_at": str(datetime.datetime.now()),
                 "latitude": latitude,
                 "longitude": longitude,
-                "station_name": station_name,
                 "mac_address": mac_address,
                 "temperature": temperature,
                 "pressure": pressure,
