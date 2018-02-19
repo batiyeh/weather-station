@@ -49,7 +49,21 @@ exports.up = function(knex, Promise) {
                 .catch((error) => {});
             }
         }),
-    ]);
+        knex.schema.hasTable('users').then(function(exists){
+            if (!exists) {
+                knex.schema.createTable('users', function(table){
+                    table.increments('user_id');
+                    table.string('user_name').unique();
+                    table.string('password').unique();
+                    table.string('email').unique();
+                    table.boolean('isAdmin');
+                    table.float('phone').unique();
+                })
+                .then(() => {})
+                .catch((error) => {});
+            }
+        })
+    ])
 };
 
 
@@ -72,7 +86,14 @@ exports.down = function(knex, Promise) {
         }),
         knex.schema.hasTable('station_names').then(function(exists){
             if (exists) {
-                knex.schema.dropTable('station_names')
+                knex.schema.dropTable('apiWeather')
+                    .then(() => {})
+                    .catch((error) => {});
+            }
+        }),
+        knex.schema.hasTable('users').then(function(exists) {
+            if (exists) {
+                knex.schema.dropTable('users')
                 .then(() => {})
                 .catch((error) => {});
             }

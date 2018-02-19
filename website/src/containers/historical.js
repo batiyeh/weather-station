@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import Navigation from '../components/navigation.js';
+import VerifyLoggedIn from '../components/verifyLoggedIn.js'
 import '../styles/App.css';
 
 
@@ -6,10 +8,11 @@ import '../styles/App.css';
 class Historical extends Component {
     render() {
         return (
-            <div>
+            <div className='NavBar'>
+                <VerifyLoggedIn/>
+                <Navigation/>
                 <h1>This is the Historical data page.</h1>
             </div>
-
         );
     }
 }
