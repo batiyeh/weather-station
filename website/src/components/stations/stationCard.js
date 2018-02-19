@@ -7,6 +7,9 @@ class StationCard extends Component {
     constructor(props){
         super(props);
         this.state = {
+            visibility: "n/a",
+            wind_speed: "n/a",
+            wind_direction: "n/a",
             modal: false
         }
 
@@ -28,10 +31,25 @@ class StationCard extends Component {
 
     // Toggle the station detail modal open/closed
     toggleStationDetail(){
-        // alert('test');
         this.setState({
             modal: !this.state.modal
         });
+    }
+
+    renderAdditionalData(){
+        if (this.props.station.latitude !== "n/a" && this.props.station.longitude !== "n/a"){
+            return (
+                <div className="col-6 no-padding-right">
+                    <p className="station-info">visibility: {this.state.visibility}</p>
+                    <p className="station-info">wind speed: {this.state.wind_speed}</p>
+                    <p className="station-info">wind direction: {this.state.wind_direction}</p>
+                </div>
+            )
+        }
+
+        else{
+            return <div className="col-6 no-padding-right"></div>
+        }
     }
     
     // Render the station name input with or without a value if it exists
@@ -76,7 +94,7 @@ class StationCard extends Component {
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" onClick={this.toggleStationDetail}>Save Changes</Button>{' '}
+                        <Button color="primary" className="primary-themed-btn" onClick={this.toggleStationDetail}>Save Changes</Button>{' '}
                         <Button color="secondary" onClick={this.toggleStationDetail}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
@@ -105,9 +123,7 @@ class StationCard extends Component {
                                     <p className="station-info">humidity: {this.props.station.humidity}%</p>
                                 </div>
                                 {/* Holds API data on the right side of the card */}
-                                <div className="col-6 no-padding-right">
-                                   
-                                </div>
+                                { this.renderAdditionalData() }
                             </div>
                         </CardText>
                     </div>

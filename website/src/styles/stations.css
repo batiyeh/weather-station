@@ -57,6 +57,11 @@
     margin-bottom: 3px;
 }
 
+.primary-themed-btn{
+    background-color: #43C6AC !important;
+    border-color: #43C6AC !important;
+}
+
 .bottom-card{
     margin-top: 15px;
 }

@@ -48,8 +48,8 @@ if __name__ == '__main__':
                 longitude = agps_thread.data_stream.lon
             # For running from a laptop and we just need fake data
             except:
-                latitude = 42.357346
-                longitude = -83.070093
+                latitude = "n/a"
+                longitude = "n/a"
 
             temperature += 5
             pressure += 5
