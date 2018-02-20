@@ -58,6 +58,8 @@ exports.up = function(knex, Promise) {
                     table.string('email').unique();
                     table.boolean('isAdmin');
                     table.float('phone').unique();
+                    table.string('reset_password_token');
+                    table.date('reset_password_expires');
                 })
                 .then(() => {})
                 .catch((error) => {});

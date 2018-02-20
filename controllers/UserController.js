@@ -5,6 +5,8 @@ router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 var User = require('../models/User');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const async = require('async');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
@@ -86,6 +88,30 @@ router.post('/verifyLoggedIn', function(req,res){
 
 router.post('/logout', function(req,res){
     //Add logout function here
+    //req.logout() maybe?
     res.redirect('/user/login');
+})
+
+router.post('/reset', function(req,res){
+    var email = req.body.email;
+    async.waterfall([
+        function(done){
+            crypto.randomBytes(20, function(err, buf){
+                var token = buf.toString('hex');
+                done(err,token); 
+            });
+        },
+        async function(token, done){
+            console.log(email);
+            date = Date.now() + 3600000;
+            var user = await User.where({email: email}).save({
+                reset_password_token: token,
+                // reset_password_expires: date,
+            },{method:'insert',patch:true});
+            console.log(user);
+        }
+    ])
+
+    //res.redirect('/user/login');
 })
 module.exports = router;
