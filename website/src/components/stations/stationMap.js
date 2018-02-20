@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Map,InfoWindow,Marker,GoogleApiWrapper} from 'google-maps-react';
-import '../styles/map.css';
+//import '../styles/map.css';
 
     export class MapContainer extends React.Component{
     render() {
@@ -10,7 +10,6 @@ import '../styles/map.css';
                                     name={'Current Location'} />
                   <InfoWindow onClose = {this.oninfoWindowClose}>
                           <div>
-                              <h1>{this.stat.selectedPlace.name}</h1>
                           </div>
                                   </InfoWindow>
                           </Map>
