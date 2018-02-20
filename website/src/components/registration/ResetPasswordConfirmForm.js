@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
+import '../../styles/login.css';
 
-import '../styles/login.css';
-
-
-     
 class ResetPasswordConfirmForm extends Component {
     constructor(props){
         super(props);
-        this.tokenUrl = '/api/user/resetConfirm/' + this.props.match.params.token;
+        this.tokenUrl = '/api/user/reset/' + this.props.match.params.token;
     }
     render(){
         return(
