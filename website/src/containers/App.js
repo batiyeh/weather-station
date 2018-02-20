@@ -21,9 +21,8 @@ class App extends Component {
             <Route path="/map" component={Map}/>
             <Route path="/user/login" component={Login}/>
             <Route path="/user/create" component={Create}/>  
-            <Route path='/user/reset' component={ResetPassword}/>
+            <Route path='/user/reset' component={ResetPassword} exact={true}/>
             <Route path="/user/reset/:token" component={ResetPassword}/>
-            {/* <Route path="/user/resetConfirm/:token" component={ResetPasswordConfirmForm}/> */}
             <Route path="/historical" component={Historical}/>
           </div>
         </div>

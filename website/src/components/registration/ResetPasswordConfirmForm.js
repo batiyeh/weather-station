@@ -4,7 +4,7 @@ import '../../styles/login.css';
 class ResetPasswordConfirmForm extends Component {
     constructor(props){
         super(props);
-        this.tokenUrl = '/api/user/reset/' + this.props.match.params.token;
+        this.tokenUrl = '/api/user/reset/' + this.props.token;
     }
     render(){
         return(

@@ -4,17 +4,16 @@ import ResetPasswordForm from '../components/registration/ResetPasswordForm.js';
 import ResetPasswordConfirmForm from '../components/registration/ResetPasswordConfirmForm.js';
 
 class ResetPassword extends Component {
-//   constructor(props){
-//     super(props);
-// }
+  constructor(props){
+    super(props);
+}
   render() {
-    // console.log(this.props.match.params);
-    // if(this.props.match.params.token){
-      return(<ResetPasswordForm/>);
-    // }
-    // else{
-    //   return (<ResetPasswordForm/>);
-    // }
+    if(this.props.match.params.token){
+      return(<ResetPasswordConfirmForm token={this.props.match.params.token}/>);
+    }
+    else{
+      return (<ResetPasswordForm/>);
+    }
   }
 }
 
