@@ -19,11 +19,11 @@
     "express-validator": "^5.0.1",
     "knex": "^0.14.3",
     "mysql": "^2.15.0",
+    "nodemailer": "^4.4.2",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "react-router": "^4.2.0",
-    "session-file-store": "^1.2.0",
-    "nodemailer": "^4.4.2"
+    "session-file-store": "^1.2.0"
   },
   "devDependencies": {
     "concurrently": "^3.5.1"
