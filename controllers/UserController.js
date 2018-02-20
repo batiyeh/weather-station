@@ -102,13 +102,15 @@ router.post('/reset/', function(req,res){
                 done(err,token); 
             });
         },
-        async function(token, done){
+        function(token, done){
             date = Date.now() + 3600000;
-            var user = await User.where({email: email}).save({
+            var user = User.where({email: email}).save({
                 reset_password_token: token,
                 // reset_password_expires: date,
-            },{method:'insert',patch:true});   
-            done(token, user, done);
+            },{patch:true});   
+            if(!user)
+                var err = 'No user';
+            done(err, token, user);
         },
         function(token, user, done){
             var transporter = nodemailer.createTransport({
@@ -126,17 +128,17 @@ router.post('/reset/', function(req,res){
                 subject: 'Weather Station Account Password Recovery',
                 text: 'You are receiving this message because you have initiated the password reset process.\n\n'+
                 'Please click the following link to complete this process:\n\n'+
-                'Http://' + req.headers.host + '/user/reset/' + token + '\n\n' +
+                'localhost:8000/user/resetConfirm/' + token + '\n\n' +
                 'If you did not request a password reset, please ignore this email.\n'
-            }
+            };
             transporter.sendMail(mailOptions,function(err){
                 //Alert user email has been sent
                 done(err, 'done');
-            })
+            });
         }
     ],function(err){
         if(err)
-        console.log("error");
+            console.log('Error:', err);
     })
     res.redirect('/user/login');
 })
@@ -144,26 +146,25 @@ router.post('/resetConfirm/:token', function(req, res){
     async.waterfall([ 
         function(done){
 
-            var user = User.where({reset_password_token: req.params.token}).fetch();
-            if(!user)
-                console.log("Error no user with that token");//redirect after
-
             req.checkBody('password','Password must be longer than 8 characters, cannot contain symbols, and must have at least 1 letter and 1 number.')
             .isLength({min: 8}).matches(/\d/).not().matches(/\W/).equals(req.body.password2);
 
             var errors = req.validationErrors();
             if(errors){
-                console.log("Password errors");
+                console.log(errors);
             }
             else{
-                user.save({
-                    password: req.body.password,
-                    reset_password_token: undefined
-                },{patch:true})
+                bcrypt.hash(req.body.password, 10, function(err,hash){
+                    var user = User.where({reset_password_token: req.params.token}).save({
+                        password: hash,
+                        reset_password_token: null
+                    },{patch:true})
+                    if(!user)
+                        console.log("Error no user with that token");//redirect after
+                })
                 console.log("Your password has been reset!");
                 res.redirect('/user/login');
             }
-
         }
     ])
 })
