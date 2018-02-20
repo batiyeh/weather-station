@@ -8,6 +8,7 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const async = require('async');
 const passport = require('passport');
+const nodemailer = require('nodemailer');
 const LocalStrategy = require('passport-local').Strategy;
 
 router.post('/create', async function(req, res){
@@ -92,7 +93,7 @@ router.post('/logout', function(req,res){
     res.redirect('/user/login');
 })
 
-router.post('/reset', function(req,res){
+router.post('/reset/', function(req,res){
     var email = req.body.email;
     async.waterfall([
         function(done){
@@ -102,16 +103,68 @@ router.post('/reset', function(req,res){
             });
         },
         async function(token, done){
-            console.log(email);
             date = Date.now() + 3600000;
             var user = await User.where({email: email}).save({
                 reset_password_token: token,
                 // reset_password_expires: date,
-            },{method:'insert',patch:true});
-            console.log(user);
+            },{method:'insert',patch:true});   
+            done(token, user, done);
+        },
+        function(token, user, done){
+            var transporter = nodemailer.createTransport({
+                host: 'smtp.gmail.com',
+                port: 587,
+                secure: false,
+                auth: {
+                    user: 'WStationTestdod@gmail.com',
+                    pass: 'wayne123'
+                }
+            });
+            var mailOptions = {
+                to: email,
+                from: 'wstationtestdod@gmail.com',
+                subject: 'Weather Station Account Password Recovery',
+                text: 'You are receiving this message because you have initiated the password reset process.\n\n'+
+                'Please click the following link to complete this process:\n\n'+
+                'Http://' + req.headers.host + '/user/reset/' + token + '\n\n' +
+                'If you did not request a password reset, please ignore this email.\n'
+            }
+            transporter.sendMail(mailOptions,function(err){
+                //Alert user email has been sent
+                done(err, 'done');
+            })
+        }
+    ],function(err){
+        if(err)
+        console.log("error");
+    })
+    res.redirect('/user/login');
+})
+router.post('/resetConfirm/:token', function(req, res){
+    async.waterfall([ 
+        function(done){
+
+            var user = User.where({reset_password_token: req.params.token}).fetch();
+            if(!user)
+                console.log("Error no user with that token");//redirect after
+
+            req.checkBody('password','Password must be longer than 8 characters, cannot contain symbols, and must have at least 1 letter and 1 number.')
+            .isLength({min: 8}).matches(/\d/).not().matches(/\W/).equals(req.body.password2);
+
+            var errors = req.validationErrors();
+            if(errors){
+                console.log("Password errors");
+            }
+            else{
+                user.save({
+                    password: req.body.password,
+                    reset_password_token: undefined
+                },{patch:true})
+                console.log("Your password has been reset!");
+                res.redirect('/user/login');
+            }
+
         }
     ])
-
-    //res.redirect('/user/login');
 })
 module.exports = router;
