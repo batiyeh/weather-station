@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import '../../styles/stations.css';
 import { Input, Button, Card, CardText, CardTitle, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import ConnectionIndicator from './connectionIndicator';
+import $ from 'jquery';
 
 class StationCard extends Component {
     constructor(props){
         super(props);
+        this.getAdditionalData();
         this.state = {
             visibility: "n/a",
             wind_speed: "n/a",
@@ -36,13 +38,32 @@ class StationCard extends Component {
         });
     }
 
+    getAdditionalData = async () => {
+        if (this.props.station.latitude !== "n/a" && this.props.station.longitude !== "n/a"){
+            var params = {'lat': this.props.station.latitude,
+                        'lon': this.props.station.longitude, 
+                        'units': 'imperial', 
+                        'appid': process.env.REACT_APP_OPEN_WEATHER_KEY};
+            var url = "http://api.openweathermap.org/data/2.5/weather?" + $.param(params);
+            const response = await fetch(url);
+            const body = await response.json();
+            if (response.status !== 200) throw Error(body.message); 
+
+            this.setState({ 
+                visibility: body['visibility'], 
+                wind_speed: body['wind']['speed'],
+                wind_direction: body['wind']['deg'],
+            });
+        }
+    }
+
     renderAdditionalData(){
         if (this.props.station.latitude !== "n/a" && this.props.station.longitude !== "n/a"){
             return (
                 <div className="col-6 no-padding-right">
                     <p className="station-info">visibility: {this.state.visibility}</p>
-                    <p className="station-info">wind speed: {this.state.wind_speed}</p>
-                    <p className="station-info">wind direction: {this.state.wind_direction}</p>
+                    <p className="station-info">wind speed: {this.state.wind_speed} mph</p>
+                    <p className="station-info">wind direction: {this.state.wind_direction}&deg;</p>
                 </div>
             )
         }
