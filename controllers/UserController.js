@@ -121,6 +121,7 @@ router.post('/reset/', function(req,res){
                 port: 587,
                 secure: false,
                 auth: {
+                    //Find better way to store user and pass for whole system.
                     user: 'WStationTestdod@gmail.com',
                     pass: 'wayne123'
                 }
