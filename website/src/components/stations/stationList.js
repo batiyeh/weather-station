@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import StationCard from './stationCard';
-import { FormGroup, Input } from 'reactstrap';
+import { FormGroup, Input, Alert } from 'reactstrap';
 
 // Station List component is a list of each station
 // Each connected station is built out of a single Station component in a loop here
@@ -84,14 +84,25 @@ class StationList extends Component {
         return true;
     }
 
+    // If there are no stations stored in the state, render
+    // the no stations alert.
+    renderAlert(){
+        if (this.state.stations.length === 0){
+            return (
+                <Alert className="no-stations-alert" color="primary">
+                    There are no stations to display.
+                </Alert>
+            );
+        }
+    }
+
     render() {
         return (
             <div className="container content">
                 <FormGroup>
                     <Input type="text" className="filterWidth" name="stationFilter" id="stationFilter" placeholder="Filter" onChange={this.filterOnChange.bind(this)} />
                 </FormGroup>
-                {
-                    this.state.stations
+                { this.state.stations
                     .filter(this.filterStations.bind(this))
                     .map(station => {
                         return (
@@ -99,9 +110,9 @@ class StationList extends Component {
                             // call another card which grabs the rows of the longitude and latitude
 
                         );
-                    })
-                }
-                
+                    }) 
+                }   
+                { this.renderAlert() }
             </div>
         );
   }

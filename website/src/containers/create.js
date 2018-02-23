@@ -5,7 +5,9 @@ import CreateUserForm from '../components/registration/createUserForm.js';
 class Create extends Component {
   render() {
     return (
-        <CreateUserForm/>
+        <div id="reset-page">
+          <CreateUserForm/>
+        </div>
     );
   }
 }

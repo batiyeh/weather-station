@@ -9,6 +9,7 @@ class ResetPasswordConfirmForm extends Component {
     render(){
         return(
             <div className="confirm-container">
+                <h2 className="login-title">Reset Password</h2> 
                 <form className='ResetPasswordForm' action={this.tokenUrl} method='post' >
                     <div className='form-group'>
                         <input id='password' name='password' type='password' class='form-control' placeholder='Password'/>
@@ -18,7 +19,7 @@ class ResetPasswordConfirmForm extends Component {
                     </div>
                     <div className='row'>
                         <div className='col-6'>
-                            <button type='submit' className='btn btn-info login-btn'>Reset Password</button>
+                            <button type='submit' className='btn btn-default btn-block login-btn'>Reset Password</button>
                         </div>
                     </div>
                 </form>

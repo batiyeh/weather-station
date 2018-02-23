@@ -9,10 +9,18 @@ class ResetPassword extends Component {
 }
   render() {
     if(this.props.match.params.token){
-      return(<ResetPasswordConfirmForm token={this.props.match.params.token}/>);
+      return(
+        <div id="reset-page">
+          <ResetPasswordConfirmForm token={this.props.match.params.token}/>
+        </div>
+      );
     }
     else{
-      return (<ResetPasswordForm/>);
+      return (
+        <div id="reset-page">
+          <ResetPasswordForm/>
+        </div>
+      );
     }
   }
 }

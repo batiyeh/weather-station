@@ -10,7 +10,6 @@ class Historical extends Component {
         return (
             <div className='NavBar'>
                 <VerifyLoggedIn/>
-                <Navigation/>
                 <h1>This is the Historical data page.</h1>
             </div>
         );

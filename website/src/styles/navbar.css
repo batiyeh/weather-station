@@ -1,11 +1,20 @@
 nav {
     background: #191654;
-    background: -webkit-linear-gradient(to right, #3C3973, #43C6AC);
-    background: linear-gradient(to right, #3C3973, #43C6AC);
+    background: -webkit-linear-gradient(to right, #3C3973, #27ACAC);
+    background: linear-gradient(to right, #3C3973, #27ACAC);
 }
 
 nav a {
     color: #F3F3F3 !important;
+}
+
+.user-menu {
+    min-width: 100px !important;
+    text-align: center !important;
+}
+
+.nav-link-dark {
+    color: #535353 !important;
 }
 
 .navbar {

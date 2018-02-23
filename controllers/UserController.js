@@ -52,16 +52,19 @@ router.post('/create', async function(req, res){
         res.redirect('/user/login')
     }
 });
+
 //writes username into cookie
 passport.serializeUser(function(user, done){
     done(null, user.attributes.user_name);
 });
+
 //erases username from cookie
 passport.deserializeUser(async function(username, done){
     var user = await User.where({user_name: username}).fetch()
         if(user)
             done(null, user.attributes.user_name);
 });
+
 //Verifies user login credentials
 passport.use(new LocalStrategy(
     async function(username, password, done) {
@@ -76,11 +79,13 @@ passport.use(new LocalStrategy(
         return done(null, false, {message: 'Invalid username/password'});
     }
 ));
+
 //calls passport authentication on login
 router.post('/login', passport.authenticate('local', {failureRedirect:'/user/login'}), 
-function(req, res){
-    res.redirect('/stations');
+    function(req, res){
+        res.redirect('/');
 });
+
 //used to verify user is logged in on each page
 router.post('/verifyLoggedIn', function(req,res){
     //returns username from cookie
@@ -88,13 +93,16 @@ router.post('/verifyLoggedIn', function(req,res){
 })
 
 router.post('/logout', function(req,res){
-    //Add logout function here
-    //req.logout() maybe?
-    res.redirect('/user/login');
+    req.session.destroy(response => {
+        res.json({response: response})
+    });
 })
 
 router.post('/reset/', function(req,res){
     var email = req.body.email;
+    //This waterfall will generate a token in the first function
+    //Assign that token to a user in the second function
+    //and email it to the user in the 3rd function
     async.waterfall([
         function(done){
             crypto.randomBytes(20, function(err, buf){
@@ -118,6 +126,7 @@ router.post('/reset/', function(req,res){
                 port: 587,
                 secure: false,
                 auth: {
+                    //Find better way to store user and pass for whole system.
                     user: 'WStationTestdod@gmail.com',
                     pass: 'wayne123'
                 }
@@ -142,18 +151,20 @@ router.post('/reset/', function(req,res){
     })
     res.redirect('/user/login');
 })
+
 router.post('/reset/:token', function(req, res){
     async.waterfall([ 
         function(done){
-
+            //makes sure new user password meets password requirements
             req.checkBody('password','Password must be longer than 8 characters, cannot contain symbols, and must have at least 1 letter and 1 number.')
             .isLength({min: 8}).matches(/\d/).not().matches(/\W/).equals(req.body.password2);
-
+            //if it doesnt meet requirements, throw error
             var errors = req.validationErrors();
             if(errors){
                 console.log(errors);
             }
             else{
+                //hash password, assign to user in db
                 bcrypt.hash(req.body.password, 10, function(err,hash){
                     var user = User.where({reset_password_token: req.params.token}).save({
                         password: hash,
@@ -168,4 +179,5 @@ router.post('/reset/:token', function(req, res){
         }
     ])
 })
+
 module.exports = router;
