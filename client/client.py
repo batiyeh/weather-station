@@ -48,8 +48,8 @@ if __name__ == '__main__':
                 longitude = agps_thread.data_stream.lon
             # For running from a laptop and we just need fake data
             except:
-                latitude = "n/a"
-                longitude = "n/a"
+                latitude = "42.3314"
+                longitude = "83.0458"
 
             temperature += 5
             pressure += 5
@@ -70,7 +70,7 @@ if __name__ == '__main__':
             print("Sending: " + json.dumps(weatherdata))
 
             # Send a json object to be inserted into our database
-            r = requests.post('http://localhost:5000/api/stations/', data = weatherdata)	
+            r = requests.post('http://35.16.31.232:5000/api/stations/', data = weatherdata)
 
             # Wait 3 seconds before restarting the loop
             time.sleep(3)

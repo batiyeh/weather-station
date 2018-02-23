@@ -11,7 +11,8 @@ class StationList extends Component {
         this.state = {
             stations: [],
             secondsElapsed: 0,
-            filter: ''
+            filter: '',
+            longlat: []
         };
     }
 
@@ -21,7 +22,8 @@ class StationList extends Component {
         return {
             stations: [],
             secondsElapsed: 0,
-            filter: ''
+            filter: '',
+            longlat: []
         };
     }
 
@@ -50,6 +52,7 @@ class StationList extends Component {
             });
         });
     }
+
     
     // Async call to fetch everything from our stations endpoint while the page is still loading
     // Returns an array of stations
@@ -69,6 +72,9 @@ class StationList extends Component {
             filter: e.target.value
         })
     }
+
+    // create a function that creates a marker on the map
+
 
     // Returns false if the filter string is not in the station's name.
     // Returns true if the filter is empty or is within the station's name.
@@ -90,6 +96,8 @@ class StationList extends Component {
                     .map(station => {
                         return (
                             <StationCard key={station.station_id} station={station}></StationCard>
+                            // call another card which grabs the rows of the longitude and latitude
+
                         );
                     })
                 }
