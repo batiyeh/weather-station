@@ -6,8 +6,14 @@ const knex = require('./knexfile');
 const cookieParser = require('cookie-parser');
 const expressValidator = require('express-validator');
 const passport = require('passport');
+var schedule = require('node-schedule');
+var saveToWeather = require('./Scripts/saveToWeather');
 var mysql = require('mysql');
 var MySQLStore = require('express-mysql-session')(session);
+
+schedule.scheduleJob('15 * * * *', function(){
+    saveToWeather.saveToWeather();
+})
 
 // Session storage options
 const options = {
