@@ -9,7 +9,6 @@ class Stations extends Component {
     return (
       <div className='StationList'>
         <VerifyLoggedIn/>
-        <Navigation/>
         <StationList/>
       </div>
     );

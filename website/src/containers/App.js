@@ -12,16 +12,51 @@ import ResetPassword from '../containers/resetPassword.js'
 import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
 
 class App extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      username: ''
+    }
+  }
+
+  componentWillMount() {
+    this.getUser().then(user => { 
+        this.setState({ username: user });
+    });
+  }
+
+  getUser = async() => {
+    var response = await fetch('/api/user/verifyLoggedIn', {method: 'post', credentials: 'include'})
+    var body = await response.json();
+    this.user = body.user;
+    if (this.user) return this.user;
+    else return 'nouser';
+  }
+
+  renderNav = (props) => {
+    if (!window.location.pathname.includes('/user')){
+      return (
+        <Navigation 
+          username={this.state.username}
+          {...props}
+        />
+      );
+    }
+
+    else return null;
+  }
+
   render() {
     return (
       <Router>
         <div className="App">
+          <Route path='/' username={this.state.username} render={this.renderNav}/>  
           <div className="main">
-            <Route path="/" component={Station} exact={true}/>
+            <Route path="/" component={Station} exact/>
             <Route path="/map" component={Map}/>
             <Route path="/user/login" component={Login}/>
             <Route path="/user/create" component={Create}/>  
-            <Route path='/user/reset' component={ResetPassword} exact={true}/>
+            <Route path='/user/reset' component={ResetPassword} exact/>
             <Route path="/user/reset/:token" component={ResetPassword}/>
             <Route path="/historical" component={Historical}/>
           </div>

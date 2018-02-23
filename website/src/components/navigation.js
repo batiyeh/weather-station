@@ -18,15 +18,8 @@ class Navigation extends Component {
         this.toggle = this.toggle.bind(this);
         this.state = {
             dropdownOpen: false,
-            redirect: false,
-            username: 'username'
+            redirect: false
         }
-    }
-
-    componentDidMount() {
-        this.getUser().then(user => { 
-            this.setState({ username: user });
-        });
     }
 
     toggle(){
@@ -42,14 +35,6 @@ class Navigation extends Component {
             redirect: true
         })
         return body;
-    }
-
-    getUser = async() => {
-        var response = await fetch('/api/user/verifyLoggedIn', {method: 'post', credentials: 'include'})
-        var body = await response.json();
-        this.user = body.user;
-        if (this.user) return this.user;
-        else return 'username';
     }
 
     render() {
@@ -78,7 +63,7 @@ class Navigation extends Component {
                         <Nav className="ml-auto" navbar>
                             <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggle} nav inNavbar>
                                 <DropdownToggle nav caret>
-                                {this.state.username}
+                                {this.props.username}
                                 </DropdownToggle>
                                 <DropdownMenu className="user-menu" right>
                                     <DropdownItem>
