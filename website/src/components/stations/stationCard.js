@@ -38,6 +38,8 @@ class StationCard extends Component {
         });
     }
 
+    // Retrieves additional visibility, wind speed, and wind direction data
+    // from Open Weather Map.
     getAdditionalData = async () => {
         if (this.props.station.latitude !== "n/a" && this.props.station.longitude !== "n/a"){
             var params = {'lat': this.props.station.latitude,
@@ -57,6 +59,8 @@ class StationCard extends Component {
         }
     }
 
+    // If the latitude and longitude are valid, we will render 
+    // the additional Open Weather Map data on the right side of the card.
     renderAdditionalData(){
         if (this.props.station.latitude !== "n/a" && this.props.station.longitude !== "n/a"){
             return (
@@ -66,10 +70,6 @@ class StationCard extends Component {
                     <p className="station-info">wind direction: {this.state.wind_direction}&deg;</p>
                 </div>
             )
-        }
-
-        else{
-            return <div className="col-6 no-padding-right"></div>
         }
     }
     

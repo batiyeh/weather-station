@@ -52,16 +52,19 @@ router.post('/create', async function(req, res){
         res.redirect('/user/login')
     }
 });
+
 //writes username into cookie
 passport.serializeUser(function(user, done){
     done(null, user.attributes.user_name);
 });
+
 //erases username from cookie
 passport.deserializeUser(async function(username, done){
     var user = await User.where({user_name: username}).fetch()
         if(user)
             done(null, user.attributes.user_name);
 });
+
 //Verifies user login credentials
 passport.use(new LocalStrategy(
     async function(username, password, done) {
@@ -76,11 +79,13 @@ passport.use(new LocalStrategy(
         return done(null, false, {message: 'Invalid username/password'});
     }
 ));
+
 //calls passport authentication on login
 router.post('/login', passport.authenticate('local', {failureRedirect:'/user/login'}), 
-function(req, res){
-    res.redirect('/stations');
+    function(req, res){
+        res.redirect('/');
 });
+
 //used to verify user is logged in on each page
 router.post('/verifyLoggedIn', function(req,res){
     //returns username from cookie
@@ -88,9 +93,9 @@ router.post('/verifyLoggedIn', function(req,res){
 })
 
 router.post('/logout', function(req,res){
-    //Add logout function here
-    //req.logout() maybe?
-    res.redirect('/user/login');
+    req.session.destroy(response => {
+        res.redirect('/user/login');
+    });
 })
 
 router.post('/reset/', function(req,res){
@@ -146,6 +151,7 @@ router.post('/reset/', function(req,res){
     })
     res.redirect('/user/login');
 })
+
 router.post('/reset/:token', function(req, res){
     async.waterfall([ 
         function(done){
@@ -173,4 +179,5 @@ router.post('/reset/:token', function(req, res){
         }
     ])
 })
+
 module.exports = router;
