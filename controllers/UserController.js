@@ -100,6 +100,9 @@ router.post('/logout', function(req,res){
 
 router.post('/reset/', function(req,res){
     var email = req.body.email;
+    //This waterfall will generate a token in the first function
+    //Assign that token to a user in the second function
+    //and email it to the user in the 3rd function
     async.waterfall([
         function(done){
             crypto.randomBytes(20, function(err, buf){
@@ -123,6 +126,7 @@ router.post('/reset/', function(req,res){
                 port: 587,
                 secure: false,
                 auth: {
+                    //Find better way to store user and pass for whole system.
                     user: 'WStationTestdod@gmail.com',
                     pass: 'wayne123'
                 }
@@ -151,15 +155,16 @@ router.post('/reset/', function(req,res){
 router.post('/reset/:token', function(req, res){
     async.waterfall([ 
         function(done){
-
+            //makes sure new user password meets password requirements
             req.checkBody('password','Password must be longer than 8 characters, cannot contain symbols, and must have at least 1 letter and 1 number.')
             .isLength({min: 8}).matches(/\d/).not().matches(/\W/).equals(req.body.password2);
-
+            //if it doesnt meet requirements, throw error
             var errors = req.validationErrors();
             if(errors){
                 console.log(errors);
             }
             else{
+                //hash password, assign to user in db
                 bcrypt.hash(req.body.password, 10, function(err,hash){
                     var user = User.where({reset_password_token: req.params.token}).save({
                         password: hash,
