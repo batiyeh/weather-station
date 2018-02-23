@@ -94,7 +94,7 @@ router.post('/verifyLoggedIn', function(req,res){
 
 router.post('/logout', function(req,res){
     req.session.destroy(response => {
-        res.redirect('/user/login');
+        res.json({response: response})
     });
 })
 
