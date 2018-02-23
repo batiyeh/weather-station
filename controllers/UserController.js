@@ -180,4 +180,7 @@ router.post('/reset/:token', function(req, res){
     ])
 })
 
+router.post('/editProfile', function(req, res){
+    
+})
 module.exports = router;
