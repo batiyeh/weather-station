@@ -7,12 +7,11 @@ import StationMap from '../components/stations/stationMap.js';
 class Map extends Component {
     render() {
             return (
-                  <div className='MapPage'>
-                        <VerifyLoggedIn/>
-                        <Navigation/>
-                        <StationMap></StationMap>
-
-                     </div>
+                <div className='MapPage'>
+                    <VerifyLoggedIn/>
+                    <Navigation/>
+                    <StationMap></StationMap>
+                </div>
         );
     }
 }
