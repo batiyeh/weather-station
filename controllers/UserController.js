@@ -182,20 +182,32 @@ router.post('/reset/:token', function(req, res){
 
 router.post('/editProfile', function(req, res){
     var username = req.body.username;
-    var password = req.body.password;
     var email = req.body.password;
     var phone = req.body.phone;
     var user = User.where({user_name: req.user}).fetch();
 
     if(username){
-        var dbUsername = '';
+        var dbUsername = null;
         username = username.toLowerCase();
 
         var newUser = User.where({user_name: username}).fetch();
         if(newUser){
-            dbUsername = user.attributes.user_name.toLowerCase();
+            dbUsername = newUser.attributes.user_name.toLowerCase();
         }
         req.checkBody('username','Invalid username').notEmpty().matches(/\w/).not().equals(dbUsername);
+    }
+    if(email){
+        var dbEmail = null;
+        email = email.toLowerCase();
+
+        var newUser = User.where({email: email}).fetch();
+        if(newUser){
+            dbEmail = newUser.attributes.email.toLowerCase();
+        }
+        req.checkBody('email', 'Invalid email').notEmpty().isEmail().not().equals(dbEmail);
+    }
+    if(phone){
+
     }
 })
 module.exports = router;
