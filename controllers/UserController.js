@@ -12,8 +12,8 @@ const nodemailer = require('nodemailer');
 const LocalStrategy = require('passport-local').Strategy;
 
 router.post('/create', async function(req, res){
-    var username = req.body.username;
-    var email = req.body.email;
+    var username = req.body.username.toLowerCase();
+    var email = req.body.email.toLowerCase();
     var username = req.body.username;
     var password = req.body.password;
     var dbUsername = null;
@@ -22,11 +22,11 @@ router.post('/create', async function(req, res){
     //Checks if Username and Email already exist in the database
     var user = await User.where({user_name: username}).fetch()
     if(user)
-        dbUsername = u.attributes.user_name.toLowerCase();
+        dbUsername = user.attributes.user_name.toLowerCase();
 
     var em = await User.where({email: email}).fetch()
     if(em)
-        dbEmail = u.attributes.email.toLowerCase();
+        dbEmail = em.attributes.email.toLowerCase();
     
     //Verifies that all User Account credentials meet the string requirements
     req.checkBody('username','Invalid username').notEmpty().matches(/\w/).not().equals(dbUsername);
@@ -181,6 +181,21 @@ router.post('/reset/:token', function(req, res){
 })
 
 router.post('/editProfile', function(req, res){
-    
+    var username = req.body.username;
+    var password = req.body.password;
+    var email = req.body.password;
+    var phone = req.body.phone;
+    var user = User.where({user_name: req.user}).fetch();
+
+    if(username){
+        var dbUsername = '';
+        username = username.toLowerCase();
+
+        var newUser = User.where({user_name: username}).fetch();
+        if(newUser){
+            dbUsername = user.attributes.user_name.toLowerCase();
+        }
+        req.checkBody('username','Invalid username').notEmpty().matches(/\w/).not().equals(dbUsername);
+    }
 })
 module.exports = router;
