@@ -6,8 +6,25 @@ const knex = require('./knexfile');
 const cookieParser = require('cookie-parser');
 const expressValidator = require('express-validator');
 const passport = require('passport');
+var schedule = require('node-schedule');
+var saveToWeather = require('./Scripts/saveToWeather');
 var mysql = require('mysql');
 var MySQLStore = require('express-mysql-session')(session);
+
+//calls every 0, 15, 30, and 45th to save data
+//in stations table to weather table
+schedule.scheduleJob('0 * * * *', function(){
+    saveToWeather.saveToWeather();
+})
+schedule.scheduleJob('15 * * * *', function(){
+    saveToWeather.saveToWeather();
+})
+schedule.scheduleJob('30 * * * *', function(){
+    saveToWeather.saveToWeather();
+})
+schedule.scheduleJob('45 * * * *', function(){
+    saveToWeather.saveToWeather();
+})
 
 // Session storage options
 const options = {
