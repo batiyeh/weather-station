@@ -87,9 +87,11 @@ router.post('/login', passport.authenticate('local', {failureRedirect:'/user/log
 });
 
 //used to verify user is logged in on each page
-router.post('/verifyLoggedIn', function(req,res){
-    //returns username from cookie
-    res.json({user: req.user});
+router.post('/getUserInfo', async function(req,res){
+    var user = await User.where({user_name: req.user}).fetch();
+
+    res.json({username: user.attributes.user_name, email: user.attributes.email,
+    phone: user.attributes.phone, isAdmin: user.attributes.isAdmin});
 })
 
 router.post('/logout', function(req,res){

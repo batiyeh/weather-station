@@ -16,22 +16,21 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      username: ''
+      username: '',
+      email: '',
+      phone: '',
+      isAdmin: false
     }
   }
 
   componentWillMount() {
-    this.getUser().then(user => { 
-        this.setState({ username: user });
-    });
+    this.getUser();
   }
 
   getUser = async() => {
-    var response = await fetch('/api/user/verifyLoggedIn', {method: 'post', credentials: 'include'})
+    var response = await fetch('/api/user/getUserInfo', {method: 'post', credentials: 'include'})
     var body = await response.json();
-    this.user = body.user;
-    if (this.user) return this.user;
-    else return 'nouser';
+    this.setState({username: body.username, email: body.email, phone: body.phone, isAdmin: body.isAdmin});
   }
 
   renderNav = (props) => {
@@ -59,7 +58,7 @@ class App extends Component {
             <Route path="/user/create" component={Create}/>  
             <Route path="/user/reset" component={ResetPassword} exact/>
             <Route path="/user/reset/:token" component={ResetPassword}/>
-            <Route path="/profile" component={Profile}/>
+            <Route path="/profile" component={Profile} {...props}/>
             <Route path="/historical" component={Historical}/>
             <Route path="/alerts" component={Alerts}/>
           </div>
