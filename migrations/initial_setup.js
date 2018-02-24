@@ -41,7 +41,6 @@ exports.up = function(knex, Promise) {
             if (!exists){
                 knex.schema.createTable('station_names', function(table){
                     table.increments('name_id');
-                    table.timestamps(true, true);
                     table.string('mac_address');
                     table.string('name');
                 })

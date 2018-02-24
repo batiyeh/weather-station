@@ -4,6 +4,8 @@ var bodyParser = require('body-parser');
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 var Station = require('../models/Station');
+var StationNames = require('../models/StationNames');
+var knex = require('knex')(require('../knexfile'))
 
 // Creates a new station via post request
 router.post('/', async function (req, res) {
@@ -44,8 +46,11 @@ router.post('/', async function (req, res) {
 // Returns all stations in the database
 router.get('/', async function (req, res) {
     try{
-        var stations = await Station.fetchAll();
+        var stations = await knex('stations')
+        .leftJoin('station_names', 'stations.mac_address', '=', 'station_names.mac_address')
+        .select('stations.mac_address', 'stations.created_at', 'stations.updated_at', 'stations.temperature', 'stations.humidity', 'stations.pressure', 'stations.latitude', 'stations.longitude', 'stations.connected', 'station_names.name')
     } catch(ex){
+        console.log(ex);
         return res.json({});
     }
 
@@ -73,6 +78,30 @@ router.route('/:id')
         var result = await Station.where('station_id', req.params.station_id).destroy();
         res.json({result});
     });
+
+// Endpoint to add or update a station name 
+router.post('/name', async function (req, res) {
+    // Checks if the MAC address already exists in the table. If it does,
+    // we update the row. If not, we create a new row.
+    console.log(req.body);
+    var name = await StationNames.where('mac_address', req.body.mac_address).fetch();
+    // If the name already exists, update it.
+    // TODO: There might be a better way to update where we don't have to select again
+    if (name){
+        var result = await StationNames.where('mac_address', req.body.mac_address).save({
+            name: req.body.name
+        }, {patch:true});
+    }
+
+    // If the name doesn't exist, create a new one and insert it.
+    else {
+        var result = await new StationNames({
+            mac_address: req.body.mac_address,
+            name: req.body.name
+        }).save()
+    }
+    return res.json({result});
+})
 
 
 module.exports = router;

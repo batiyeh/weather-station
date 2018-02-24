@@ -12,7 +12,8 @@ class StationCard extends Component {
             visibility: "n/a",
             wind_speed: "n/a",
             wind_direction: "n/a",
-            modal: false
+            modal: false,
+            name: this.props.station.name
         }
 
         this.toggleStationDetail = this.toggleStationDetail.bind(this);
@@ -36,6 +37,22 @@ class StationCard extends Component {
         this.setState({
             modal: !this.state.modal
         });
+    }
+
+    saveStationName = async() => {
+        var name = $('#stationNameInput').val();
+        console.log(name);
+        var response = await fetch('/api/stations/name', 
+            {method: 'post', 
+             body: JSON.stringify({name: name, mac_address: this.props.station.mac_address}),
+             headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+              }
+            });
+        var body = await response.json();
+        this.toggleStationDetail();
+        return body;
     }
 
     // Retrieves additional visibility, wind speed, and wind direction data
@@ -72,15 +89,34 @@ class StationCard extends Component {
             )
         }
     }
+
+    // Update the station name state on input change
+    onNameChange(value){
+        this.setState({
+             name: value
+        });
+    }
     
     // Render the station name input with or without a value if it exists
     renderNameInput(){
-        if (this.props.station.station_name !== undefined || this.props.station.station_name !== ""){
-            return <Input type="text" className="stationNameInput" name="stationNameInput" id="stationNameInput" placeholder="Name" value={this.props.station.station_name}></Input>
+        if (this.state.name !== undefined || this.state.name !== ""){
+            return <Input type="text" className="stationNameInput" name="stationNameInput" id="stationNameInput" placeholder="Name" onChange={e => this.onNameChange(e.target.value)} value={this.state.name}></Input>
         }
 
         else{
-            return <Input type="text" className="stationNameInput" name="stationNameInput" id="stationNameInput" placeholder="Name"></Input>
+            return <Input type="text" className="stationNameInput" name="stationNameInput" id="stationNameInput" onChange={e => this.onNameChange(e.target.value)} placeholder="Name"></Input>
+        }
+    }
+
+    // If there is no station name, render the mac address
+    // Otherwise, render the station name
+    renderStationName(){
+        if (this.state.name != null){
+            return this.state.name;
+        }
+
+        else {
+            return this.props.station.mac_address;
         }
     }
 
@@ -115,7 +151,7 @@ class StationCard extends Component {
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" className="primary-themed-btn" onClick={this.toggleStationDetail}>Save Changes</Button>{' '}
+                        <Button color="primary" className="primary-themed-btn" onClick={this.saveStationName}>Save Changes</Button>{' '}
                         <Button color="secondary" onClick={this.toggleStationDetail}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
@@ -127,7 +163,7 @@ class StationCard extends Component {
                                 <div className="col-6 no-padding-left">
                                     <p className="station-name">
                                         <ConnectionIndicator status={this.getConnectionStatus()}></ConnectionIndicator>
-                                        {this.props.station.mac_address}
+                                        { this.renderStationName() }
                                     </p>
                                 </div>
                                 <div className="col-6 no-padding-right">
