@@ -181,10 +181,10 @@ router.post('/reset/:token', function(req, res){
 })
 
 router.post('/editProfile', function(req, res){
-    var email = req.body.password;
+    var email = req.body.email;
     var phone = req.body.phone;
     var user = User.where({user_name: req.user}).fetch();
-
+    console.log(user.attributes.email);
     if(email){
         var dbEmail = null;
         email = email.toLowerCase();
@@ -195,22 +195,35 @@ router.post('/editProfile', function(req, res){
         }
         req.checkBody('email', 'Invalid email').notEmpty().isEmail().not().equals(dbEmail);
     }
+    else{
+        email = user.attributes.email;
+    }
     if(phone){
         //remove all non-digit characters
         phone = phone.replace(/\D/g, '');
 
         //Need better checking for phone numbers
         //Only 10 digit phone numbers however the user isn't required to have one
-        req.checkBody('phone', 'Invalid Phone').isLength({max: 10})
+        console.log(phone);
+        req.checkBody('phone', 'Invalid Phone').isLength({min: 11})
+    }
+    else{
+        if(user.attributes.phone){
+            phone = user.attributes.phone
+        }
+        else{
+            phone = null
+        }
     }
     var errors = req.validationErrors();
     if(errors){
         console.log(errors);
     }
     else{
-        var user = User.where({user_name: req.user}).save({
+        console.log("Before db");
+        var em = User.where({user_name: req.user}).save({
             email: email,
-            phone: phone,
+            //phone: phone,
         },{patch:true});
     }
 })
