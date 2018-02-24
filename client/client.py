@@ -4,6 +4,7 @@ import time
 import json
 import datetime
 import netifaces
+import Adafruit_DHT
 try:
     from gps3.agps3threaded import AGPS3mechanism
 except:
@@ -30,6 +31,8 @@ if __name__ == '__main__':
     temperature = 0
     pressure = 0
     humidity = 0
+    sensor = Adafruit_DHT.AM2302
+    pin = 14
     
     try:
         # Instantiate GPS data retrieval mechanism
@@ -50,10 +53,14 @@ if __name__ == '__main__':
             except:
                 latitude = "n/a"
                 longitude = "n/a"
+            #
+            try:
+                humidity, temperature = Adafruit_DHT.read(sensor, pin)
+            except:
+                temperature += 5
+                humidity += 5
 
-            temperature += 5
             pressure += 5
-            humidity += 5
 
             # Construct our weatherdata json object
             weatherdata = {
