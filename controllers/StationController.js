@@ -50,7 +50,6 @@ router.get('/', async function (req, res) {
         .leftJoin('station_names', 'stations.mac_address', '=', 'station_names.mac_address')
         .select('stations.mac_address', 'stations.created_at', 'stations.updated_at', 'stations.temperature', 'stations.humidity', 'stations.pressure', 'stations.latitude', 'stations.longitude', 'stations.connected', 'station_names.name')
     } catch(ex){
-        console.log(ex);
         return res.json({});
     }
 
@@ -83,7 +82,6 @@ router.route('/:id')
 router.post('/name', async function (req, res) {
     // Checks if the MAC address already exists in the table. If it does,
     // we update the row. If not, we create a new row.
-    console.log(req.body);
     var name = await StationNames.where('mac_address', req.body.mac_address).fetch();
     // If the name already exists, update it.
     // TODO: There might be a better way to update where we don't have to select again

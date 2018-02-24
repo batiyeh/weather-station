@@ -9,9 +9,8 @@ import Historical from '../containers/historical.js';
 import ResetPassword from '../containers/resetPassword.js';
 import Profile from '../containers/profile.js';
 import Alerts from '../containers/alerts.js'
-// import ResetPasswordConfirmForm from '../containers/ResetPasswordConfirmForm.js'
 
-import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
 
 class App extends Component {
   constructor(props){

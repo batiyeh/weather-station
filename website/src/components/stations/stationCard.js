@@ -7,7 +7,6 @@ import $ from 'jquery';
 class StationCard extends Component {
     constructor(props){
         super(props);
-        this.getAdditionalData();
         this.state = {
             visibility: "n/a",
             wind_speed: "n/a",
@@ -18,6 +17,20 @@ class StationCard extends Component {
 
         this.toggleStationDetail = this.toggleStationDetail.bind(this);
     }
+
+    // Called when the component is first "mounted" (loaded) into the page
+    // This fetches the stations from our API and adds them to our current state
+    componentDidMount() {
+        this.getAdditionalData();
+        this.interval = setInterval(this.getAdditionalData, 60000);
+    }
+
+    // Called when the component is destroyed and removed from the page
+    // I am removing the interval so it is not still called after the component disappears.
+    componentWillUnmount() {
+        clearInterval(this.interval);
+    }
+
     // Format the station's uptime for user viewing
     // TODO: Make this uptime not just last time data was received
     getUptime() {
@@ -160,13 +173,13 @@ class StationCard extends Component {
                     <div className="col-12">
                         <CardTitle>
                             <div className="row">
-                                <div className="col-6 no-padding-left">
+                                <div className="col-8 no-padding-left">
                                     <p className="station-name">
                                         <ConnectionIndicator status={this.getConnectionStatus()}></ConnectionIndicator>
                                         { this.renderStationName() }
                                     </p>
                                 </div>
-                                <div className="col-6 no-padding-right">
+                                <div className="col-4 no-padding-right">
                                     <p className="station-uptime">{this.getUptime()}</p>
                                 </div>
                             </div>

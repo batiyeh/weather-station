@@ -70,7 +70,10 @@ if __name__ == '__main__':
             print("Sending: " + json.dumps(weatherdata))
 
             # Send a json object to be inserted into our database
-            r = requests.post('http://localhost:5000/api/stations/', data = weatherdata)	
+            try:
+                r = requests.post('http://localhost:5000/api/stations/', data = weatherdata)	
+            except:
+                pass
 
             # Wait 3 seconds before restarting the loop
             time.sleep(3)
