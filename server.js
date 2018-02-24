@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 const expressValidator = require('express-validator');
 const passport = require('passport');
 var schedule = require('node-schedule');
-var saveToWeather = require('./scripts/saveToWeather');
+var saveToWeather = require('./Scripts/saveToWeather');
 var mysql = require('mysql');
 var MySQLStore = require('express-mysql-session')(session);
 
