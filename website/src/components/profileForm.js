@@ -12,12 +12,6 @@ class ProfileForm extends Component {
                             <a className="forgot-link" id="forgot" href="/user/reset">Forgot password?</a> 
                         </div>
                         <div className='form-group'>
-                            <input id='username' name='username' type='text' class='form-control' placeholder='Username'/>
-                        </div>
-                        <div className='form-group'>
-                            <input id='password' name='password' type='password' className='form-control' placeholder='Password'/>
-                        </div>
-                        <div className='form-group'>
                             <input id='email' name='email' type='email' className='form-control' placeholder='Email'/>
                         </div>
                         <div className='form-group'>

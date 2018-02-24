@@ -181,33 +181,70 @@ router.post('/reset/:token', function(req, res){
 })
 
 router.post('/editProfile', function(req, res){
-    var username = req.body.username;
     var email = req.body.password;
     var phone = req.body.phone;
     var user = User.where({user_name: req.user}).fetch();
 
-    if(username){
-        var dbUsername = null;
-        username = username.toLowerCase();
-
-        var newUser = User.where({user_name: username}).fetch();
-        if(newUser){
-            dbUsername = newUser.attributes.user_name.toLowerCase();
-        }
-        req.checkBody('username','Invalid username').notEmpty().matches(/\w/).not().equals(dbUsername);
-    }
     if(email){
         var dbEmail = null;
         email = email.toLowerCase();
 
-        var newUser = User.where({email: email}).fetch();
+        var newUser = User.where({email: user.attributes.email}).fetch();
         if(newUser){
             dbEmail = newUser.attributes.email.toLowerCase();
         }
         req.checkBody('email', 'Invalid email').notEmpty().isEmail().not().equals(dbEmail);
     }
     if(phone){
+        //remove all non-digit characters
+        phone = phone.replace(/\D/g, '');
 
+        //Need better checking for phone numbers
+        //Only 10 digit phone numbers however the user isn't required to have one
+        req.checkBody('phone', 'Invalid Phone').isLength({max: 10})
+    }
+    var errors = req.validationErrors();
+    if(errors){
+        console.log(errors);
+    }
+    else{
+        var user = User.where({user_name: req.user}).save({
+            email: email,
+            phone: phone,
+        },{patch:true});
+    }
+})
+router.post('/editPassword', async function(req, res){
+    var currPass = req.body.currPass;
+    var newPass = req.body.newPass;
+
+    var user = await User.where({user_name: req.user}).fetch()
+    if(!user)
+        console.log('Invalid username');//(this shouldnt happen ever)
+
+    var check = await bcrypt.compare(currPass, user.attributes.password);
+    if(!check){
+        console.log('Current Password is incorrect')
+    }
+    else{
+        //User can currently use current password as new password
+        req.checkBody('password','Password must be longer than 8 characters, cannot contain symbols, and must have at least 1 letter and 1 number.')
+        .isLength({min: 8}).matches(/\d/).not().matches(/\W/);
+
+        var errors = req.validationErrors();
+        if(errors){
+            console.log(errors);
+        }
+        else{
+            bcrypt.hash(newPass, 10, function(err,hash){
+                //var user = User.where({user_name: req.user})
+                user.save({
+                    password: hash,
+                },{patch:true})
+                if(!user)
+                    console.log("Invalid Username");//this shouldnt happen ever
+            })
+        }
     }
 })
 module.exports = router;
