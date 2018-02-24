@@ -22,16 +22,16 @@ class ProfileForm extends Component {
             <div className='profile-container'>
              <Modal isOpen={this.state.modal} toggle={this.toggleChangePassword}>
                 <ModalHeader toggle={this.toggleChangePassword}>Change Password</ModalHeader>
-                <ModalBody>
-                    <form id='passwordForm' action='/api/user/editPassword' method='post'>
-                        <input id='currPass' name='currPass' type='password' className='form-control' placeholder='Current Password'/>
-                        <input id='newPass' name='newPass' type='password' className='form-control' placeholder='New Password'/>
-                    </form>
-                </ModalBody>
-                <ModalFooter>
-                        <Button color="primary" className="primary-themed-btn" type='submit'>Change Password</Button>{' '}
-                        <Button color="secondary" onClick={this.toggleChangePassword}>Cancel</Button>
-                </ModalFooter>
+                <form id='passwordForm' action='/api/user/editPassword' method='post'>
+                    <ModalBody>
+                            <input id='currPass' name='currPass' type='password' className='form-control' placeholder='Current Password'/>
+                            <input id='newPass' name='newPass' type='password' className='form-control' placeholder='New Password'/>
+                    </ModalBody>
+                    <ModalFooter>
+                            <Button type='submit' color="primary" className="primary-themed-btn" >Change Password</Button>{' '}
+                            <Button type='button' color="secondary" onClick={this.toggleChangePassword}>Cancel</Button>
+                    </ModalFooter>
+                </form>
              </Modal>
                 <div id='profile'>
                     <form id='profileForm' action='/api/user/editProfile/'method='post'>

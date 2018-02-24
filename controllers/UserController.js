@@ -229,7 +229,7 @@ router.post('/editProfile', async function(req, res){
 router.post('/editPassword', async function(req, res){
     var currPass = req.body.currPass;
     var newPass = req.body.newPass;
-    
+
     var user = await User.where({user_name: req.user}).fetch()
     if(!user)
         console.log('Invalid username');//(this shouldnt happen ever)
@@ -239,8 +239,8 @@ router.post('/editPassword', async function(req, res){
         console.log('Current Password is incorrect')
     }
     else{
-        //User can currently use current password as new password
-        req.checkBody('password','Password must be longer than 8 characters, cannot contain symbols, and must have at least 1 letter and 1 number.')
+
+        req.checkBody('newPass','Password must be longer than 8 characters, cannot contain symbols, and must have at least 1 letter and 1 number.')
         .isLength({min: 8}).matches(/\d/).not().matches(/\W/);
 
         var errors = req.validationErrors();
@@ -248,14 +248,15 @@ router.post('/editPassword', async function(req, res){
             console.log(errors);
         }
         else{
-            bcrypt.hash(newPass, 10, function(err,hash){
-                //var user = User.where({user_name: req.user})
-                user.save({
+
+            await bcrypt.hash(newPass, 10, function(err,hash){
+                User.where({user_name: req.user}).save({
                     password: hash,
                 },{patch:true})
                 if(!user)
                     console.log("Invalid Username");//this shouldnt happen ever
             })
+            res.redirect('/profile');
         }
     }
 })
