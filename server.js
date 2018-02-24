@@ -63,9 +63,16 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static('website/build'));
+}
+
+app.use('/', express.static(`${__dirname}/website/build`));
+
 // Import all of our controllers
 var StationController = require('./controllers/StationController');
 var UserController = require('./controllers/UserController');
+
 // Route urls to our controllers
 app.use('/api/stations', StationController);
 app.use('/api/user', UserController);
