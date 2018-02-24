@@ -8,9 +8,6 @@ class ProfileForm extends Component {
                 <div id='profile'>
                     <form id='profileForm' action='/api/user/editProfile/'method='post'>
                         <div className='profile-info mb-3'>
-                        <div className='col-12 row'>
-                            <a className="forgot-link" id="forgot" href="/user/reset">Forgot password?</a> 
-                        </div>
                         <div className='form-group'>
                             <input id='email' name='email' type='email' className='form-control' placeholder='Email'/>
                         </div>
@@ -20,7 +17,7 @@ class ProfileForm extends Component {
                         </div>
                         <div className='row'>
                             <div className='col-6'>
-                                <button type='submit' className='btn btn-default btn-block profile-btn'>Submit</button>
+                                <button type='submit' className='btn btn-default btn-block profile-btn'>Save Changes</button>
                             </div>
                         </div>
                     </form>

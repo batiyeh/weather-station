@@ -8,6 +8,7 @@ import Create from '../containers/create.js';
 import Historical from '../containers/historical.js';
 import ResetPassword from '../containers/resetPassword.js';
 import Profile from '../containers/profile.js';
+import Alerts from '../containers/alerts.js'
 // import ResetPasswordConfirmForm from '../containers/ResetPasswordConfirmForm.js'
 
 import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
@@ -61,6 +62,7 @@ class App extends Component {
             <Route path="/user/reset/:token" component={ResetPassword}/>
             <Route path="/profile" component={Profile}/>
             <Route path="/historical" component={Historical}/>
+            <Route path="/alerts" component={Alerts}/>
           </div>
         </div>
       </Router>
