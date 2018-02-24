@@ -68,7 +68,7 @@ passport.deserializeUser(async function(username, done){
 //Verifies user login credentials
 passport.use(new LocalStrategy(
     async function(username, password, done) {
-        var user = await User.where({User_name: username}).fetch()
+        var user = await User.where({user_name: username}).fetch()
             if(!user)
                 return done(null, false, {message: 'Invalid username/password'});
             
@@ -180,16 +180,16 @@ router.post('/reset/:token', function(req, res){
     ])
 })
 
-router.post('/editProfile', function(req, res){
+router.post('/editProfile', async function(req, res){
     var email = req.body.email;
     var phone = req.body.phone;
-    var user = User.where({user_name: req.user}).fetch();
-    console.log(user.attributes.email);
+    var user = await User.where({user_name: req.user}).fetch()
+    
     if(email){
-        var dbEmail = null;
-        email = email.toLowerCase();
+        var dbEmail = "";
+        email = await email.toLowerCase();
 
-        var newUser = User.where({email: user.attributes.email}).fetch();
+        var newUser = await User.where({email: email}).fetch();
         if(newUser){
             dbEmail = newUser.attributes.email.toLowerCase();
         }
@@ -199,38 +199,37 @@ router.post('/editProfile', function(req, res){
         email = user.attributes.email;
     }
     if(phone){
+        var dbPhone = ""
         //remove all non-digit characters
         phone = phone.replace(/\D/g, '');
 
-        //Need better checking for phone numbers
-        //Only 10 digit phone numbers however the user isn't required to have one
-        console.log(phone);
-        req.checkBody('phone', 'Invalid Phone').isLength({min: 11})
+        var newUser = await User.where({phone: phone}).fetch();
+        if(newUser){
+            dbPhone = newUser.attributes.phone;
+        }
+        req.checkBody('phone', 'Invalid Phone').isLength({min: 10, max:10}).not().equals(dbPhone);
     }
     else{
-        if(user.attributes.phone){
-            phone = user.attributes.phone
-        }
-        else{
-            phone = null
-        }
+        phone = user.attributes.phone;
     }
+
     var errors = req.validationErrors();
     if(errors){
         console.log(errors);
     }
     else{
-        console.log("Before db");
-        var em = User.where({user_name: req.user}).save({
+        var em = await User.where({user_name: req.user}).save({
             email: email,
-            //phone: phone,
+            phone: phone,
         },{patch:true});
     }
+
+    res.redirect('/profile');
 })
 router.post('/editPassword', async function(req, res){
     var currPass = req.body.currPass;
     var newPass = req.body.newPass;
-
+    
     var user = await User.where({user_name: req.user}).fetch()
     if(!user)
         console.log('Invalid username');//(this shouldnt happen ever)
