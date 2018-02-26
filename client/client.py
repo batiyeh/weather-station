@@ -4,7 +4,10 @@ import time
 import json
 import datetime
 import netifaces
-import Adafruit_DHT
+try:
+    import Adafruit_DHT
+except:
+    pass
 try:
     from gps3.agps3threaded import AGPS3mechanism
 except:
@@ -31,7 +34,6 @@ if __name__ == '__main__':
     temperature = 0
     pressure = 0
     humidity = 0
-    sensor = Adafruit_DHT.AM2302
     pin = 14
     
     try:
@@ -55,7 +57,7 @@ if __name__ == '__main__':
                 longitude = "n/a"
             #
             try:
-                humidity, temperature = Adafruit_DHT.read(sensor, pin)
+                humidity, temperature = Adafruit_DHT.read(Adafruit_DHT.AM2302, pin)
             except:
                 temperature += 5
                 humidity += 5
