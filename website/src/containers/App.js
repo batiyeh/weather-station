@@ -58,7 +58,7 @@ class App extends Component {
             <Route path="/user/create" component={Create}/>  
             <Route path="/user/reset" component={ResetPassword} exact/>
             <Route path="/user/reset/:token" component={ResetPassword}/>
-            <Route path="/profile" component={Profile} {...props}/>
+            <Route path="/profile" component={Profile} username={this.state.username} email={this.state.email} phone={this.state.phone} isAdmin={this.state.isAdmin}/>
             <Route path="/historical" component={Historical}/>
             <Route path="/alerts" component={Alerts}/>
           </div>

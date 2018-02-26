@@ -8,10 +8,11 @@ class Profile extends Component {
         super(props);
     }
     render() {
+        console.log(this.props.route.username);
         return (
             <div className='ProfilePage'>
                 <VerifyLoggedIn/>
-                <ProfileForm {...props}/>
+                <ProfileForm/>
             </div>
         );
     }

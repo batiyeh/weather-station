@@ -8,7 +8,7 @@ class ProfileForm extends Component {
         this.state={
             modal: false
         }
-        //console.log(this.props);
+        // console.log(this.props);
         this.toggleChangePassword = this.toggleChangePassword.bind(this);
     }
     toggleChangePassword(){
