@@ -175,7 +175,7 @@ class StationCard extends Component {
                             <div className="row">
                                 <div className="col-8 no-padding-left">
                                     <p className="station-name">
-                                        <ConnectionIndicator status={this.getConnectionStatus()}></ConnectionIndicator>
+                                        <ConnectionIndicator updated={this.props.station.updated_at}></ConnectionIndicator>
                                         { this.renderStationName() }
                                     </p>
                                 </div>
