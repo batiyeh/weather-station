@@ -5,7 +5,7 @@ router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 var Station = require('../models/Station');
 var StationNames = require('../models/StationNames');
-var knex = require('knex')(require('../knexfile'))
+var knex = require('knex')(require('../knexfile'));
 
 // Creates a new station via post request
 router.post('/', async function (req, res) {
@@ -16,7 +16,7 @@ router.post('/', async function (req, res) {
     // TODO: There might be a better way to update where we don't have to select again
     if (station){
         var result = await Station.where('mac_address', req.body.mac_address).save({
-            updated_at: req.body.updated_at,
+            updated_at: new Date(),
             temperature: req.body.temperature,
             humidity: req.body.humidity,
             pressure: req.body.pressure,

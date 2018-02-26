@@ -66,7 +66,6 @@ if __name__ == '__main__':
 
             # Construct our weatherdata json object
             weatherdata = {
-                "updated_at": str(datetime.datetime.now()),
                 "latitude": latitude,
                 "longitude": longitude,
                 "mac_address": mac_address,
@@ -76,12 +75,12 @@ if __name__ == '__main__':
                 "connected": 1	
             }	
 
-            print("Sending: " + json.dumps(weatherdata))
-
             # Send a json object to be inserted into our database
             try:
-                r = requests.post('http://localhost:5000/api/stations/', data = weatherdata)	
+                r = requests.post('http://localhost:5000/api/stations/', data = weatherdata)
+                print("Sent: " + json.dumps(weatherdata))	
             except:
+                print("Lost connection to server...attemping reconnect.")
                 pass
 
             # Wait 3 seconds before restarting the loop
