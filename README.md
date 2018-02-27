@@ -121,26 +121,18 @@ After you have installed the above dependencies:
 git clone https://github.com/batiyeh/weather-station-site
 cd weather-station/client
 ```
-3. Create a virtual envelope folder where we will install this project's requirements 
+3. Install the requirements that come with the project:
 ```sh
-python3 -m venv env
+sudo pip install -r pi-requirements.txt
 ```
-4. Activate the files within your env. After this step you should now have (env) listed on the left hand side of your terminal:  
-```sh
-. ./env/bin/activate
-```
-5. Install the requirements that come with the project:
-```sh
-pip install -r requirements.txt
-```
-6. Open up client.py in a text editor and ensure the websocket connection is going to the IP of your server. This will be changed in the future to be more automatic
+4. Open up client.py in a text editor and ensure the websocket connection is going to the IP of your server. This will be changed in the future to be more automatic
 ```python
 uri = 'ws://localhost:5000/weatherstations/'
 # Change to be uri = 'ws://yourserverip:5000/weatherstations/'
 ```
-7. Run the program
+5. Run the program with sudo
 ```sh
-python3 client.py
+sudo python3 client.py
 ```
 
 ### Sensors
@@ -183,3 +175,14 @@ cpgs -s
 # Wait a minute or two for it to find a satellite
 # If it is not working, try running step #2 again
 ```
+#### Humidity and Temperature
+1. Make sure that the sensor is open and not being covered by anything.
+
+2. Connect the + wire to the 2 pin on the Pi which is for 5V of power.
+
+3. Connect the - wire to the 6 pin on the Pi which is for Ground.
+
+4. Connect the data wire to the 8 pin on the Pi which is for the GPIO 14.
+
+For pin numbering check this website with the GPIO Pinout Diagram
+https://www.jameco.com/Jameco/workshop/circuitnotes/raspberry-pi-circuit-note.html
