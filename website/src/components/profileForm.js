@@ -25,10 +25,16 @@ class ProfileForm extends Component {
                 <form id='passwordForm' action='/api/user/editPassword' method='post'>
                     <ModalBody>
                         <div className='form-group'>
-                            <input id='currPass' name='currPass' type='password' className='form-control' placeholder='Current Password'/>
+                            <label for="currPass" class="form-label">Current Password</label>
+                            <input id='currPass' name='currPass' type='password' className='form-control'/>
                         </div>
                         <div className='form-group'>
-                            <input id='newPass' name='newPass' type='password' className='form-control' placeholder='New Password'/>
+                            <label for="newPass" class="form-label">New Password</label>
+                            <input id='newPass' name='newPass' type='password' className='form-control'/>
+                        </div>
+                        <div className='form-group'>
+                            <label for="confirmPass" class="form-label">Confirm Password</label>
+                            <input id='confirmPass' name='confirmPass' type='password' className='form-control'/>
                         </div>
                     </ModalBody>
                     <ModalFooter>
