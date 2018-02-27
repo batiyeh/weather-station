@@ -8,7 +8,6 @@ class ProfileForm extends Component {
         this.state={
             modal: false
         }
-        // console.log(this.props);
         this.toggleChangePassword = this.toggleChangePassword.bind(this);
     }
     toggleChangePassword(){
@@ -18,6 +17,7 @@ class ProfileForm extends Component {
     }
 
     render(){
+        console.log(this.props);
         return(
             <div className='profile-container'>
              <Modal isOpen={this.state.modal} toggle={this.toggleChangePassword}>
@@ -37,10 +37,10 @@ class ProfileForm extends Component {
                     <form id='profileForm' action='/api/user/editProfile/'method='post'>
                         <div className='profile-info mb-3'>
                         <div className='form-group'>
-                            <input id='email' name='email' type='email' className='form-control' placeholder={this.state.email}/>
+                            <input id='email' name='email' type='email' className='form-control' placeholder={this.props.email}/>
                         </div>
                         <div className='form-group'>
-                            <input id='phone' name='phone' type='text' className='form-control' placeholder={this.state.phone}/>
+                            <input id='phone' name='phone' type='text' className='form-control' placeholder={this.props.phone}/>
                         </div>
                         </div>
                         <div className='row'>

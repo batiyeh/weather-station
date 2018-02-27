@@ -7,8 +7,8 @@ class Profile extends Component {
     constructor(props){
         super(props);
     }
-    render() {
-        console.log(this.props.route.username);
+    render(props) {
+        console.log(this.props);
         return (
             <div className='ProfilePage'>
                 <VerifyLoggedIn/>

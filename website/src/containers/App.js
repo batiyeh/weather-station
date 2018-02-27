@@ -9,6 +9,8 @@ import Historical from '../containers/historical.js';
 import ResetPassword from '../containers/resetPassword.js';
 import Profile from '../containers/profile.js';
 import Alerts from '../containers/alerts.js'
+import ProfileForm from '../components/profileForm.js';
+import VerifyLoggedIn from '../components/verifyLoggedIn.js'
 
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 
@@ -46,7 +48,22 @@ class App extends Component {
     else return null;
   }
 
-  render() {
+  renderProfile = (props) => {
+    return (
+    <div className='ProfilePage'>
+      <VerifyLoggedIn/>
+      <ProfileForm
+      username={this.state.username} 
+      email={this.state.email} 
+      phone={this.state.phone} 
+      isAdmin={this.state.isAdmin}
+      {...props}
+      />
+    </div>
+    )
+  }
+
+  render(props) {
     return (
       <Router>
         <div className="App">
@@ -58,7 +75,7 @@ class App extends Component {
             <Route path="/user/create" component={Create}/>  
             <Route path="/user/reset" component={ResetPassword} exact/>
             <Route path="/user/reset/:token" component={ResetPassword}/>
-            <Route path="/profile" component={Profile} username={this.state.username} email={this.state.email} phone={this.state.phone} isAdmin={this.state.isAdmin}/>
+            <Route path="/profile" render={this.renderProfile}/>
             <Route path="/historical" component={Historical}/>
             <Route path="/alerts" component={Alerts}/>
           </div>
