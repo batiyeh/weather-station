@@ -12,8 +12,8 @@ const nodemailer = require('nodemailer');
 const LocalStrategy = require('passport-local').Strategy;
 
 router.post('/create', async function(req, res){
-    var username = req.body.username;
-    var email = req.body.email;
+    var username = req.body.username.toLowerCase();
+    var email = req.body.email.toLowerCase();
     var username = req.body.username;
     var password = req.body.password;
     var dbUsername = null;
@@ -22,11 +22,11 @@ router.post('/create', async function(req, res){
     //Checks if Username and Email already exist in the database
     var user = await User.where({user_name: username}).fetch()
     if(user)
-        dbUsername = u.attributes.user_name.toLowerCase();
+        dbUsername = user.attributes.user_name.toLowerCase();
 
     var em = await User.where({email: email}).fetch()
     if(em)
-        dbEmail = u.attributes.email.toLowerCase();
+        dbEmail = em.attributes.email.toLowerCase();
     
     //Verifies that all User Account credentials meet the string requirements
     req.checkBody('username','Invalid username').notEmpty().matches(/\w/).not().equals(dbUsername);
@@ -68,7 +68,7 @@ passport.deserializeUser(async function(username, done){
 //Verifies user login credentials
 passport.use(new LocalStrategy(
     async function(username, password, done) {
-        var user = await User.where({User_name: username}).fetch()
+        var user = await User.where({user_name: username}).fetch()
             if(!user)
                 return done(null, false, {message: 'Invalid username/password'});
             
@@ -87,9 +87,16 @@ router.post('/login', passport.authenticate('local', {failureRedirect:'/user/log
 });
 
 //used to verify user is logged in on each page
-router.post('/verifyLoggedIn', function(req,res){
-    //returns username from cookie
-    res.json({user: req.user});
+router.post('/getUserInfo', async function(req,res){
+    if(req.user){
+        var user = await User.where({user_name: req.user}).fetch();
+
+        res.json({username: user.attributes.user_name, email: user.attributes.email,
+        phone: user.attributes.phone, isAdmin: user.attributes.isAdmin});
+    }
+    else{
+        res.json({username: undefined})
+    }
 })
 
 router.post('/logout', function(req,res){
@@ -180,4 +187,85 @@ router.post('/reset/:token', function(req, res){
     ])
 })
 
+router.post('/editProfile', async function(req, res){
+    var email = req.body.email;
+    var phone = req.body.phone;
+    var user = await User.where({user_name: req.user}).fetch()
+    
+    if(email){
+        var dbEmail = "";
+        email = await email.toLowerCase();
+
+        var newUser = await User.where({email: email}).fetch();
+        if(newUser){
+            dbEmail = newUser.attributes.email.toLowerCase();
+        }
+        //checks that their email is valid and not a duplicate
+        req.checkBody('email', 'Invalid email').notEmpty().isEmail().not().equals(dbEmail);
+    }
+    else{
+        email = user.attributes.email;
+    }
+    if(phone){
+        var dbPhone = ""
+        //remove all non-digit characters
+        phone = phone.replace(/\D/g, '');
+
+        var newUser = await User.where({phone: phone}).fetch();
+        if(newUser){
+            dbPhone = newUser.attributes.phone;
+        }
+        //must enter a 10 digit number, no duplicate phone numbers
+        req.checkBody('phone', 'Invalid Phone').isLength({min: 10, max:10}).not().equals(dbPhone);
+    }
+    else{
+        phone = user.attributes.phone;
+    }
+    //checks that the email/phone the user entered didnt return errors
+    var errors = req.validationErrors();
+    if(errors){
+        console.log(errors);
+    }
+    else{
+        //updates user profile
+        await User.where({user_name: req.user}).save({
+            email: email,
+            phone: phone,
+        },{patch:true});
+    }
+
+    res.redirect('/profile');
+})
+router.post('/editPassword', async function(req, res){
+    var currPass = req.body.currPass;
+    var newPass = req.body.newPass;
+
+    var user = await User.where({user_name: req.user}).fetch()
+    if(!user)
+        console.log('Invalid username');//(this shouldnt happen ever)
+
+    var check = await bcrypt.compare(currPass, user.attributes.password);
+    if(!check){
+        console.log('Current Password is incorrect')
+    }
+    else{
+
+        req.checkBody('newPass','Password must be longer than 8 characters, cannot contain symbols, and must have at least 1 letter and 1 number.')
+        .isLength({min: 8}).matches(/\d/).not().matches(/\W/);
+
+        var errors = req.validationErrors();
+        if(errors){
+            console.log(errors);
+        }
+        else{
+            //updates user password in db
+            await bcrypt.hash(newPass, 10, function(err,hash){
+                User.where({user_name: req.user}).save({
+                    password: hash,
+                },{patch:true})
+            })
+            res.redirect('/profile');
+        }
+    }
+})
 module.exports = router;
