@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import StationCard from './stationCard';
 import { FormGroup, Input, Alert } from 'reactstrap';
+import _ from 'lodash';
 
 // Station List component is a list of each station
 // Each connected station is built out of a single Station component in a loop here
@@ -73,8 +74,12 @@ class StationList extends Component {
     // Returns false if the filter string is not in the station's name.
     // Returns true if the filter is empty or is within the station's name.
     filterStations(station){
-        if (this.state.filter !== '')
+        console.log(station.name)
+        if (this.state.filter !== '' && !_.isNull(station.name))
+            return station.name.toLowerCase().includes(this.state.filter.toLowerCase());
+        else if (this.state.filter !== '' && _.isNull(station.name))
             return station.mac_address.toLowerCase().includes(this.state.filter.toLowerCase());
+
         return true;
     }
 
