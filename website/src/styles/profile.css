@@ -1,3 +1,22 @@
+.page-title{
+    margin-bottom: 75px;
+}
+
+.col-form-label{
+    text-align: left !important;
+}
+
+.btn-primary{
+    background-color: #27ACAC !important;
+    border-color: #27ACAC !important;
+}
+
+.btn-secondary{
+    background-color: #dbdbdb !important;
+    border-color: #dbdbdb !important;
+    color: #232323 !important;
+}
+
 .profile-container{
     max-width: 400px;
     margin: auto;

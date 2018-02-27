@@ -29,9 +29,7 @@ class StationCard extends Component {
     // props (station name in this case)
     componentWillReceiveProps(nextProps) {
         if ((this.state.name !== nextProps.station.name) && this.state.modal === false){
-            this.setState({
-                name: nextProps.station.name
-            })
+            this.onNameChange(nextProps.station.name);
         }
     }
 
