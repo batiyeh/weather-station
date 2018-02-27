@@ -46,10 +46,11 @@ export class MapContainer extends React.Component{
 
 
         render() {
-            const pos = {lat:42.35648, lng:-83.06937}
+            pos = {lat:42.35648, lng:-83.06937}
+            setPosition(latlng: weatherstation.latitude|weatherstation.longitude)
            return (
                         <div className={"google-maps"}>
-                                <Map google={this.props.google} zoom={12}>
+                                <Map google={this.props.google} zoom={3}>
                                         <Marker onClick = {this.onMarkerClick}/>
                                         <Marker position={pos} />
                                         <InfoWindow onClose = {this.oninfoWindowClose}></InfoWindow>
