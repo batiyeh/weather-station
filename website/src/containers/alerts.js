@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Navigation from '../components/navigation.js';
 import VerifyLoggedIn from '../components/verifyLoggedIn.js'
 import AlertsForm from '../components/alertsForm.js';
 

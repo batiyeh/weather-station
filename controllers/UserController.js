@@ -88,10 +88,15 @@ router.post('/login', passport.authenticate('local', {failureRedirect:'/user/log
 
 //used to verify user is logged in on each page
 router.post('/getUserInfo', async function(req,res){
-    var user = await User.where({user_name: req.user}).fetch();
+    if(req.user){
+        var user = await User.where({user_name: req.user}).fetch();
 
-    res.json({username: user.attributes.user_name, email: user.attributes.email,
-    phone: user.attributes.phone, isAdmin: user.attributes.isAdmin});
+        res.json({username: user.attributes.user_name, email: user.attributes.email,
+        phone: user.attributes.phone, isAdmin: user.attributes.isAdmin});
+    }
+    else{
+        res.json({username: undefined})
+    }
 })
 
 router.post('/logout', function(req,res){
@@ -195,6 +200,7 @@ router.post('/editProfile', async function(req, res){
         if(newUser){
             dbEmail = newUser.attributes.email.toLowerCase();
         }
+        //checks that their email is valid and not a duplicate
         req.checkBody('email', 'Invalid email').notEmpty().isEmail().not().equals(dbEmail);
     }
     else{
@@ -209,18 +215,20 @@ router.post('/editProfile', async function(req, res){
         if(newUser){
             dbPhone = newUser.attributes.phone;
         }
+        //must enter a 10 digit number, no duplicate phone numbers
         req.checkBody('phone', 'Invalid Phone').isLength({min: 10, max:10}).not().equals(dbPhone);
     }
     else{
         phone = user.attributes.phone;
     }
-
+    //checks that the email/phone the user entered didnt return errors
     var errors = req.validationErrors();
     if(errors){
         console.log(errors);
     }
     else{
-        var em = await User.where({user_name: req.user}).save({
+        //updates user profile
+        await User.where({user_name: req.user}).save({
             email: email,
             phone: phone,
         },{patch:true});
@@ -250,13 +258,11 @@ router.post('/editPassword', async function(req, res){
             console.log(errors);
         }
         else{
-
+            //updates user password in db
             await bcrypt.hash(newPass, 10, function(err,hash){
                 User.where({user_name: req.user}).save({
                     password: hash,
                 },{patch:true})
-                if(!user)
-                    console.log("Invalid Username");//this shouldnt happen ever
             })
             res.redirect('/profile');
         }

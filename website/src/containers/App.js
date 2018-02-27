@@ -32,7 +32,12 @@ class App extends Component {
   getUser = async() => {
     var response = await fetch('/api/user/getUserInfo', {method: 'post', credentials: 'include'})
     var body = await response.json();
-    this.setState({username: body.username, email: body.email, phone: body.phone, isAdmin: body.isAdmin});
+    if(!body.phone){
+      this.setState({username: body.username, email: body.email, phone: '3135555555', isAdmin: body.isAdmin});
+    }
+    else{
+      this.setState({username: body.username, email: body.email, phone: body.phone, isAdmin: body.isAdmin});      
+    }
   }
 
   renderNav = (props) => {

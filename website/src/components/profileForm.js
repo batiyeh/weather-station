@@ -8,6 +8,7 @@ class ProfileForm extends Component {
         this.state={
             modal: false
         }
+        
         this.toggleChangePassword = this.toggleChangePassword.bind(this);
     }
     toggleChangePassword(){
@@ -17,7 +18,6 @@ class ProfileForm extends Component {
     }
 
     render(){
-        console.log(this.props);
         return(
             <div className='profile-container'>
              <Modal isOpen={this.state.modal} toggle={this.toggleChangePassword}>
