@@ -5,6 +5,10 @@ import json
 import datetime
 import netifaces
 try:
+    import Adafruit_DHT
+except:
+    pass
+try:
     from gps3.agps3threaded import AGPS3mechanism
 except:
     pass
@@ -30,6 +34,7 @@ if __name__ == '__main__':
     temperature = 0
     pressure = 0
     humidity = 0
+    pin = 14
     
     try:
         # Instantiate GPS data retrieval mechanism
@@ -48,16 +53,24 @@ if __name__ == '__main__':
                 longitude = agps_thread.data_stream.lon
             # For running from a laptop and we just need fake data
             except:
+
                 latitude = "42.3314"
                 longitude = "83.0458"
 
-            temperature += 5
+                latitude = "n/a"
+                longitude = "n/a"
+            #
+            try:
+                humidity, temperature = Adafruit_DHT.read(Adafruit_DHT.AM2302, pin)
+            except:
+                temperature += 5
+                humidity += 5
+
+
             pressure += 5
-            humidity += 5
 
             # Construct our weatherdata json object
             weatherdata = {
-                "updated_at": str(datetime.datetime.now()),
                 "latitude": latitude,
                 "longitude": longitude,
                 "mac_address": mac_address,
@@ -67,10 +80,17 @@ if __name__ == '__main__':
                 "connected": 1	
             }	
 
-            print("Sending: " + json.dumps(weatherdata))
-
             # Send a json object to be inserted into our database
+
             r = requests.post('http://35.16.31.232:5000/api/stations/', data = weatherdata)
+
+            try:
+                r = requests.post('http://localhost:5000/api/stations/', data = weatherdata)
+                print("Sent: " + json.dumps(weatherdata))	
+            except:
+                print("Lost connection to server...attemping reconnect.")
+                pass
+
 
             # Wait 3 seconds before restarting the loop
             time.sleep(3)

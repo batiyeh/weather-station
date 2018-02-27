@@ -1,0 +1,17 @@
+.alert-method-container {
+    text-align: center;
+}
+
+.alert-method-box {
+    margin-right: 15px;
+}
+
+.AlertsPage {
+    margin-top: 75px;
+}
+
+.row {
+    margin: 0 auto !important;
+    max-width: 800px;
+    width: 100%;
+}

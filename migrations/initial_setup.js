@@ -41,7 +41,6 @@ exports.up = function(knex, Promise) {
             if (!exists){
                 knex.schema.createTable('station_names', function(table){
                     table.increments('name_id');
-                    table.timestamps(true, true);
                     table.string('mac_address');
                     table.string('name');
                 })
@@ -57,7 +56,7 @@ exports.up = function(knex, Promise) {
                     table.string('password').unique();
                     table.string('email').unique();
                     table.boolean('isAdmin');
-                    table.float('phone').unique();
+                    table.string('phone').unique();
                     table.string('reset_password_token');
                     table.date('reset_password_expires');
                 })

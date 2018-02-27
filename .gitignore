@@ -23,3 +23,7 @@ tests/report/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+client2.py
+client3.py
+client4.py

@@ -7,16 +7,38 @@ import $ from 'jquery';
 class StationCard extends Component {
     constructor(props){
         super(props);
-        this.getAdditionalData();
         this.state = {
             visibility: "n/a",
             wind_speed: "n/a",
             wind_direction: "n/a",
-            modal: false
+            modal: false,
+            name: this.props.station.name
         }
 
         this.toggleStationDetail = this.toggleStationDetail.bind(this);
     }
+
+    // Called when the component is first "mounted" (loaded) into the page
+    // This fetches the stations from our API and adds them to our current state
+    componentDidMount() {
+        this.getAdditionalData();
+        this.interval = setInterval(this.getAdditionalData, 60000);
+    }
+
+    // Each time the station list updates, pass down the new 
+    // props (station name in this case)
+    componentWillReceiveProps(nextProps) {
+        if ((this.state.name !== nextProps.station.name) && this.state.modal === false){
+            this.onNameChange(nextProps.station.name);
+        }
+    }
+
+    // Called when the component is destroyed and removed from the page
+    // I am removing the interval so it is not still called after the component disappears.
+    componentWillUnmount() {
+        clearInterval(this.interval);
+    }
+
     // Format the station's uptime for user viewing
     // TODO: Make this uptime not just last time data was received
     getUptime() {
@@ -36,6 +58,22 @@ class StationCard extends Component {
         this.setState({
             modal: !this.state.modal
         });
+    }
+
+    saveStationName = async() => {
+        var name = $('#stationNameInput').val();
+        console.log(name);
+        var response = await fetch('/api/stations/name', 
+            {method: 'post', 
+             body: JSON.stringify({name: name, mac_address: this.props.station.mac_address}),
+             headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+              }
+            });
+        var body = await response.json();
+        this.toggleStationDetail();
+        return body;
     }
 
     // Retrieves additional visibility, wind speed, and wind direction data
@@ -72,15 +110,34 @@ class StationCard extends Component {
             )
         }
     }
+
+    // Update the station name state on input change
+    onNameChange(value){
+        this.setState({
+             name: value
+        });
+    }
     
     // Render the station name input with or without a value if it exists
     renderNameInput(){
-        if (this.props.station.station_name !== undefined || this.props.station.station_name !== ""){
-            return <Input type="text" className="stationNameInput" name="stationNameInput" id="stationNameInput" placeholder="Name" value={this.props.station.station_name}></Input>
+        if (this.state.name !== undefined || this.state.name !== ""){
+            return <Input type="text" className="stationNameInput" name="stationNameInput" id="stationNameInput" placeholder="Name" onChange={e => this.onNameChange(e.target.value)} value={this.state.name}></Input>
         }
 
         else{
-            return <Input type="text" className="stationNameInput" name="stationNameInput" id="stationNameInput" placeholder="Name"></Input>
+            return <Input type="text" className="stationNameInput" name="stationNameInput" id="stationNameInput" onChange={e => this.onNameChange(e.target.value)} placeholder="Name"></Input>
+        }
+    }
+
+    // If there is no station name, render the mac address
+    // Otherwise, render the station name
+    renderStationName(){
+        if (this.state.name != null){
+            return this.state.name;
+        }
+
+        else {
+            return this.props.station.mac_address;
         }
     }
 
@@ -115,7 +172,7 @@ class StationCard extends Component {
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" className="primary-themed-btn" onClick={this.toggleStationDetail}>Save Changes</Button>{' '}
+                        <Button color="primary" className="primary-themed-btn" onClick={this.saveStationName}>Save Changes</Button>{' '}
                         <Button color="secondary" onClick={this.toggleStationDetail}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
@@ -124,13 +181,13 @@ class StationCard extends Component {
                     <div className="col-12">
                         <CardTitle>
                             <div className="row">
-                                <div className="col-6 no-padding-left">
+                                <div className="col-8 no-padding-left">
                                     <p className="station-name">
-                                        <ConnectionIndicator status={this.getConnectionStatus()}></ConnectionIndicator>
-                                        {this.props.station.mac_address}
+                                        <ConnectionIndicator updated={this.props.station.updated_at}></ConnectionIndicator>
+                                        { this.renderStationName() }
                                     </p>
                                 </div>
-                                <div className="col-6 no-padding-right">
+                                <div className="col-4 no-padding-right">
                                     <p className="station-uptime">{this.getUptime()}</p>
                                 </div>
                             </div>

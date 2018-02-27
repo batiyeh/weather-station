@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
 import '../../styles/map.css';
 
+
 /*
 export class MapContainer extends React.Component {
     componentDidUpdate(prevProps, prevState) {
@@ -43,7 +44,6 @@ export class MapContainer extends React.Component {
 
 
 export class MapContainer extends React.Component{
-
 
         render() {
             pos = {lat:42.35648, lng:-83.06937}

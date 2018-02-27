@@ -4,7 +4,7 @@ import { Redirect } from 'react-router';
 class VerifyLoggedIn extends Component{
     constructor() {
         super();
-        this.user = null;
+        this.username = null;
         this.state = {
             redirect: false
         }
@@ -18,10 +18,10 @@ class VerifyLoggedIn extends Component{
     //does a fetch call that returns the username currently stored in the cookie
     //if no username is stored, the user is not logged in and returns false
     verify = async () => {
-        var response = await fetch('/api/user/verifyLoggedIn', {method: 'post', credentials: 'include'})
+        var response = await fetch('/api/user/getUserInfo', {method: 'post', credentials: 'include'})
         var body = await response.json();
-        this.user = body.user;
-        if(this.user){
+        this.username = body.username;
+        if(this.username){
             return true;
         }
         else{

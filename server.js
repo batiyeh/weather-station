@@ -6,25 +6,14 @@ const knex = require('./knexfile');
 const cookieParser = require('cookie-parser');
 const expressValidator = require('express-validator');
 const passport = require('passport');
-var schedule = require('node-schedule');
-var saveToWeather = require('./scripts/saveToWeather');
-var mysql = require('mysql');
-var MySQLStore = require('express-mysql-session')(session);
+const mysql = require('mysql');
+const MySQLStore = require('express-mysql-session')(session);
+const scheduler = require('./scheduler');
+require('dotenv').config();
 
-//calls every 0, 15, 30, and 45th to save data
-//in stations table to weather table
-schedule.scheduleJob('0 * * * *', function(){
-    saveToWeather.saveToWeather();
-})
-schedule.scheduleJob('15 * * * *', function(){
-    saveToWeather.saveToWeather();
-})
-schedule.scheduleJob('30 * * * *', function(){
-    saveToWeather.saveToWeather();
-})
-schedule.scheduleJob('45 * * * *', function(){
-    saveToWeather.saveToWeather();
-})
+// Apply scheduled tasks
+scheduler.saveHistoricalData();
+scheduler.updateConnectedList();
 
 // Session storage options
 const options = {
@@ -63,9 +52,14 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+if (process.env.NODE_ENV === 'production') {
+    app.use('/', express.static(`${__dirname}/website/build`));
+}
+
 // Import all of our controllers
 var StationController = require('./controllers/StationController');
 var UserController = require('./controllers/UserController');
+
 // Route urls to our controllers
 app.use('/api/stations', StationController);
 app.use('/api/user', UserController);
