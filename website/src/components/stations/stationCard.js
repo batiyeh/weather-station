@@ -25,6 +25,16 @@ class StationCard extends Component {
         this.interval = setInterval(this.getAdditionalData, 60000);
     }
 
+    // Each time the station list updates, pass down the new 
+    // props (station name in this case)
+    componentWillReceiveProps(nextProps) {
+        if ((this.state.name !== nextProps.station.name) && this.state.modal === false){
+            this.setState({
+                name: nextProps.station.name
+            })
+        }
+    }
+
     // Called when the component is destroyed and removed from the page
     // I am removing the interval so it is not still called after the component disappears.
     componentWillUnmount() {

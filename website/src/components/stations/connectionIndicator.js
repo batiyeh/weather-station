@@ -36,21 +36,25 @@ class ConnectionIndicator extends Component {
 
         // If the last updated time was within the last 4 seconds 
         // the status color is green
-        if (((moment() - moment(updated)) > 0) &&
-                ((moment() - moment(updated)) < 4000)){
+        if (((moment() - moment(updated)) >= 0) && 
+        ((moment() - moment(updated)) < 5000)){
             connectionStatusColor = '#48db28';
         } 
 
         // If the last updated time was between the last 4 and 30 seconds,
         // the status color is yellow
-        else if (((moment() - moment(updated)) < 30000) &&
-                    ((moment() - moment(updated)) > 4000)) {
+        else if (((moment() - moment(updated)) < 30000) && 
+        ((moment() - moment(updated)) > 5000)) {
             connectionStatusColor = '#fffa00';
         }
 
         // If it has been more than 30 seoconds, color is red.
         else if ((moment() - moment(updated)) > 30000) {
             connectionStatusColor = '#e21f1f';
+        }
+
+        else {
+            connectionStatusColor = '#fffa00';
         }
 
         return connectionStatusColor;
