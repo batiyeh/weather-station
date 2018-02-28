@@ -3,7 +3,7 @@ import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
 import '../../styles/map.css';
 
 {/*import ReactDOM from 'react-dom'; */}
-
+{
 /*
 export class MapContainer extends React.Component {
     componentDidUpdate(prevProps, prevState) {
@@ -40,10 +40,10 @@ export class MapContainer extends React.Component {
         )
     }
 }
-*/
+*/ }
 
 
-export class MapContainer extends Component{
+export class MapContainer extends Component {
 
     constructor() {
         super();
@@ -51,57 +51,55 @@ export class MapContainer extends Component{
             stations: [],
         };
     }
+
+    getInitialState() {
+        return {
+            stations: []
+        };
+    }
+
     componentDidMount() {
         this.getStations().then(stations => {
-            this.setState({ stations: stations });
-        });
-        this.interval = setInterval(this.updateStations, 3000);
-    }
-    componentWillUnmount() {
-        clearInterval(this.interval);
-    }
-    updateStations = async () => {
-        this.getStations().then(stations => {
-            this.setState({
-                stations: stations,
-                secondsElapsed: this.state.secondsElapsed + 3
-            });
+            this.setState({stations: stations})
         });
     }
+
     getStations = async () => {
         var stations = [];
         const response = await fetch('/api/stations');
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
         if (body.stations) stations = body.stations;
+
+        console.log(body);
+        console.log(stations);
+        return stations;
     }
 
 
-
     render() {
-           /* pos = {lat:42.35648, lng:-83.06937} */
+        {/* pos = {lat:42.35648, lng:-83.06937} */ }
 
-           return (
-                        <div className={"google-maps"}>
-                                <Map google={this.props.google} zoom={3}>
-                                        <Marker onClick = {this.onMarkerClick}/>
-                                        <InfoWindow onClose = {this.oninfoWindowClose}></InfoWindow>
-                                </Map>
+        return (
+            <div className={"google-maps"}>
+                 <Map google={this.props.google} zoom={3}>
+                     <InfoWindow onClose = {this.oninfoWindowClose}> </InfoWindow>
+                     {this.state.stations
+                        .map(station => {
+                        return (
                             <Marker
-                            {this.state.stations
-                                .map(station => {
-                                    return (
-                                        <div>{station.longitude}{station.latitude}</div>
-                                        // call another card which grabs the rows of the longitude and latitude
+                                position={{lat: station.latitude, lng:station.longitude}}
+                            // call another card which grabs the rows of the longitude and latitude
+                            />
+                        );
+                    })
+                }
+                 </Map>
+            </div>
+        );
+    }
 
-                                    );
-                                })
-                            } />
-                        </div>
-                );
-        }
 }
-
     export default GoogleApiWrapper({
         apiKey: ('AIzaSyAzZjgldMQ9B4fp0NzKVrzECYzs8uwY78Q')
 }) (MapContainer)
