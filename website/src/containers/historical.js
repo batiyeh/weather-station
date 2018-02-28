@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import VerifyLoggedIn from '../components/verifyLoggedIn.js'
+import historicalGraph from '../components/historicalGraph'
 import '../styles/App.css';
 
 class Historical extends Component {
@@ -7,7 +8,7 @@ class Historical extends Component {
         return (
             <div className='NavBar'>
                 <VerifyLoggedIn/>
-                <h1>This is the Historical data page.</h1>
+                <historicalGraph></historicalGraph>
             </div>
         );
     }
