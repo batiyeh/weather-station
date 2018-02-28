@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
 import '../../styles/map.css';
 
+{/*import ReactDOM from 'react-dom'; */}
 
 /*
 export class MapContainer extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.google !== this.props.google) {
-            this.loadMap();
+            this.loadMap();`
         }
     }
 
@@ -43,18 +43,60 @@ export class MapContainer extends React.Component {
 */
 
 
-export class MapContainer extends React.Component{
+export class MapContainer extends Component{
 
-        render() {
-            pos = {lat:42.35648, lng:-83.06937}
-            setPosition(latlng: weatherstation.latitude|weatherstation.longitude)
+    constructor() {
+        super();
+        this.state = {
+            stations: [],
+        };
+    }
+    componentDidMount() {
+        this.getStations().then(stations => {
+            this.setState({ stations: stations });
+        });
+        this.interval = setInterval(this.updateStations, 3000);
+    }
+    componentWillUnmount() {
+        clearInterval(this.interval);
+    }
+    updateStations = async () => {
+        this.getStations().then(stations => {
+            this.setState({
+                stations: stations,
+                secondsElapsed: this.state.secondsElapsed + 3
+            });
+        });
+    }
+    getStations = async () => {
+        var stations = [];
+        const response = await fetch('/api/stations');
+        const body = await response.json();
+        if (response.status !== 200) throw Error(body.message);
+        if (body.stations) stations = body.stations;
+    }
+
+
+
+    render() {
+           /* pos = {lat:42.35648, lng:-83.06937} */
+
            return (
                         <div className={"google-maps"}>
                                 <Map google={this.props.google} zoom={3}>
                                         <Marker onClick = {this.onMarkerClick}/>
-                                        <Marker position={pos} />
                                         <InfoWindow onClose = {this.oninfoWindowClose}></InfoWindow>
                                 </Map>
+                            <Marker
+                            {this.state.stations
+                                .map(station => {
+                                    return (
+                                        <div>{station.longitude}{station.latitude}</div>
+                                        // call another card which grabs the rows of the longitude and latitude
+
+                                    );
+                                })
+                            } />
                         </div>
                 );
         }
