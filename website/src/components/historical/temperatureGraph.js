@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import '../../styles/historical.css';
-import * as d3 from 'd3'
 import { extent as d3ArrayExtent } from 'd3-array';
 import {
   scaleLinear as d3ScaleLinear,
   scaleTime as d3ScaleTime,
 } from 'd3-scale';
+import {
+    axisLeft as d3AxisLeft, axisBottom as d3AxisBottom } from 'd3-axis';
 import { line as d3Line } from 'd3-shape';
+import { select as d3Select } from 'd3-selection';
+
 
 
 class TemperatureGraph extends Component{
@@ -18,6 +21,7 @@ class TemperatureGraph extends Component{
             selectX: this.props.selectX,
             selectY: this.props.selectY,
             width: this.props.width,
+            margin: this.props.margin,
         }
     }
 
@@ -35,7 +39,14 @@ class TemperatureGraph extends Component{
         // These two functions select the scaled x and y values (respectively) of our data.
         const selectScaledX = datum => xScale(this.state.selectX(datum));
         const selectScaledY = datum => yScale(this.state.selectY(datum));
-
+        //creating the x axis using xscale
+        const xAxis = d3AxisBottom()
+            .scale(xScale)
+            .ticks(this.state.data.length /2 );
+        //creating the y axis using yscale
+        const yAxis = d3AxisLeft()
+            .scale(yScale)
+            .ticks(3);
         // Create a d3Line factory for our scales.
         const sparkLine = d3Line()
             .x(selectScaledX)
@@ -48,7 +59,11 @@ class TemperatureGraph extends Component{
                 className="container"
                 height={this.state.height}
                 width={this.state.width}
+
             >
+
+                <g className="xAxis" ref={node => d3Select(node).call(xAxis)} />
+                <g className="yAxis" ref={node => d3Select(node).call(yAxis)} />
                 {/* ADD: our spark line as a path (inside a group, for convenient styling) */}
                 <g className="line">
                     <path d={linePath} />
