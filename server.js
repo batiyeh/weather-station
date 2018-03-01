@@ -63,6 +63,7 @@ var UserController = require('./controllers/UserController');
 // Route urls to our controllers
 app.use('/api/stations', StationController);
 app.use('/api/user', UserController);
+app.use('/api/alerts', StationController);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
