@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import VerifyLoggedIn from '../components/verifyLoggedIn.js'
-import StationMap from '../components/map/stationMap.js';
+import StationMap from '../components/stations/stationMap.js';
 
 class Map extends Component {
     render() {
