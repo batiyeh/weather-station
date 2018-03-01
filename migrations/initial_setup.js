@@ -1,9 +1,9 @@
 var knex = require('knex')(require('../knexfile'))
 
 // Create all tables for future use
-exports.up = function(knex, Promise) {
+exports.up = async function(knex, Promise) {
     return Promise.all([
-        knex.schema.hasTable('stations').then(function(exists) {
+        await knex.schema.hasTable('stations').then(function(exists) {
             if (!exists) {
                 knex.schema.createTable('stations', function (table) {
                     table.increments('station_id');
@@ -20,7 +20,7 @@ exports.up = function(knex, Promise) {
                 .catch((error) => {});
             }
         }),
-        knex.schema.hasTable('weather').then(function(exists){
+        await knex.schema.hasTable('weather').then(function(exists){
             if (!exists){
                 knex.schema.createTable('weather', function(table){
                     table.increments('weather_id');
@@ -37,7 +37,7 @@ exports.up = function(knex, Promise) {
                 .catch((error) => {});
             }
         }),
-        knex.schema.hasTable('station_names').then(function(exists){
+        await knex.schema.hasTable('station_names').then(function(exists){
             if (!exists){
                 knex.schema.createTable('station_names', function(table){
                     table.increments('name_id');
@@ -48,7 +48,7 @@ exports.up = function(knex, Promise) {
                 .catch((error) => {});
             }
         }),
-        knex.schema.hasTable('users').then(function(exists){
+        await knex.schema.hasTable('users').then(function(exists){
             if (!exists) {
                 knex.schema.createTable('users', function(table){
                     table.increments('user_id');
@@ -59,6 +59,31 @@ exports.up = function(knex, Promise) {
                     table.string('phone').unique();
                     table.string('reset_password_token');
                     table.date('reset_password_expires');
+                })
+                .then(() => {})
+                .catch((error) => {});
+            }
+        }),
+        await knex.schema.hasTable('alerts').then(function(exists){
+            if(!exists) {
+                knex.schema.createTable('alerts', function(table){
+                    table.increments('alert_id');
+                    table.string('type');
+                    table.string('keyword');
+                    table.dateTime('last_triggered');
+                    table.foreign('value_id').references('value_id').inTable('alertvalues');
+                    table.foreign('user_name').references('user_name').inTable('users');
+                })
+                .then(() => {})
+                .catch((error) => {});
+            }
+        }),
+        await knex.schema.hasTable('alertvalues').then(function(exists){
+            if(!exists){
+                knex.schema.createTable('alertvalues', function(table){
+                    table.increments('value_id');
+                    table.float('value', 5, 2);
+                    table.foreign('alert_id').references('alert_id').inTable('alerts');
                 })
                 .then(() => {})
                 .catch((error) => {});
