@@ -54,8 +54,8 @@ if __name__ == '__main__':
             # For running from a laptop and we just need fake data
             except:
 
-                latitude = "42.3314"
-                longitude = "83.0458"
+                latitude = "n/a"
+                longitude = "n/a"
 
                 latitude = "n/a"
                 longitude = "n/a"
@@ -82,7 +82,7 @@ if __name__ == '__main__':
 
             # Send a json object to be inserted into our database
 
-            r = requests.post('http://35.16.31.232:5000/api/stations/', data = weatherdata)
+            r = requests.post('http://localhost:5000/api/stations/', data = weatherdata)
 
             try:
                 r = requests.post('http://localhost:5000/api/stations/', data = weatherdata)

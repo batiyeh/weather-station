@@ -12,8 +12,6 @@ class StationList extends Component {
         this.state = {
             stations: [],
             secondsElapsed: 0,
-            filter: '',
-            longlat: []
         };
     }
 
@@ -23,8 +21,7 @@ class StationList extends Component {
         return {
             stations: [],
             secondsElapsed: 0,
-            filter: '',
-            longlat: []
+
         };
     }
 
