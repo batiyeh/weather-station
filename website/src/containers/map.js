@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import VerifyLoggedIn from '../components/verifyLoggedIn.js'
-import StationMap from '../components/stations/stationMap.js';
-import StationSidebar from '../componenets/stations/stationSidebar.js';
+import VerifyLoggedIn from '../components/verifyLoggedIn.js';
+import StationSidebar from '../components/stations/stationSidebar.js';
 import MapContainer from '../components/map/mapContainer.js';
 
 class Map extends Component {
@@ -10,9 +9,8 @@ class Map extends Component {
             <div className='MapPage'>
                  <VerifyLoggedIn/>
 
-                <StationMap></StationMap>
-                <StationSidebar></StationSidebar>
                 <MapContainer></MapContainer>
+                <StationSidebar></StationSidebar>
 
             </div>
         );

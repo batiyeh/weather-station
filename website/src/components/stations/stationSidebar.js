@@ -4,7 +4,8 @@ class stationSidebar extends React.Component {
     constructor(){
         super();
         this.state = {
-            stations: []
+            stations: [],
+            filter: ''
         }
     }
 
@@ -16,10 +17,32 @@ class stationSidebar extends React.Component {
                 }
             ]});
     }
+    filterOnChange(e){
+        this.setState({
+            filter: e.target.value
+        })
+    }
+
+    filterStations(stations){
+        console.log(station.name)
+        if (this.state.filter !== '' && !_.isNull(station.name))
+            return station.name.toLowerCase() .includes(this.state.filter.toLocaleLowerCase());
+        else if (this.state.filter !== '' && _.isNull(station.name))
+            return station.mac_address.toLowerCase() .includes(this.state.filter.toLowerCase());
+        return true;
+    }
+
 
     render() {
         return(
+            <div className="container">
+                <FormGroup>
+                    <input type="text" className="filterWidth" name="stationFilter" id="stationFilter" placeholder="Station Filter" onChange={this.filterOnChange.bind(this)} />
+                </FormGroup>
             <u1 className = "sidebar_station_name">
+                {this.state.stations
+                    .filter(this.filterStations.bind(this)
+                    )};
                 <stationSidebar stations={this.state.stations} />
             </u1>
         );
