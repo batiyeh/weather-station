@@ -1,4 +1,5 @@
 import React from "react";
+import { FormGroup, Input} from 'reactstrap';
 
 class stationSidebar extends React.Component {
     constructor(){
@@ -37,7 +38,7 @@ class stationSidebar extends React.Component {
         return(
             <div className="container">
                 <FormGroup>
-                    <input type="text" className="filterWidth" name="stationFilter" id="stationFilter" placeholder="Station Filter" onChange={this.filterOnChange.bind(this)} />
+                    <Input type="text" className="filterWidth" name="stationFilter" id="stationFilter" placeholder="Station Filter" onChange={this.filterOnChange.bind(this)} />
                 </FormGroup>
             <u1 className = "sidebar_station_name">
                 {this.state.stations
@@ -45,6 +46,7 @@ class stationSidebar extends React.Component {
                     )};
                 <stationSidebar stations={this.state.stations} />
             </u1>
+            </div>
         );
     }
 }
