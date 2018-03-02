@@ -28,7 +28,7 @@ class HistoricalContainer extends Component{
         ]
 
         return(
-            <TemperatureGraph
+            <TemperatureGraph className="graph"
                 data={data}
                 height={300}
                 selectX={datum => new Date(datum.day)}

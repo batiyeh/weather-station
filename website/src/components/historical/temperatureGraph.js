@@ -42,7 +42,8 @@ class TemperatureGraph extends Component{
         //creating the x axis using xscale
         const xAxis = d3AxisBottom()
             .scale(xScale)
-            .ticks(this.state.data.length /2 );
+            .ticks(this.state.data.length /2 )
+
         //creating the y axis using yscale
         const yAxis = d3AxisLeft()
             .scale(yScale)
@@ -54,18 +55,19 @@ class TemperatureGraph extends Component{
 
             // Create a line path of for our data.
         const linePath = sparkLine(this.state.data);
+
+        const graph = d3Select("svg")
+            .attr("border", 1).style("stroke", 'blue')
+            .append("g").attr("transform", "translate(25,300)");
+        graph.call(yAxis);
+        graph.append("g")
+            .attr("transform", "translate(0,300)")
+            .call(xAxis);
+
         return(
-            <svg
-                className="container"
-                height={this.state.height}
-                width={this.state.width}
-
-            >
-
-                <g className="xAxis" ref={node => d3Select(node).call(xAxis)} />
-                <g className="yAxis" ref={node => d3Select(node).call(yAxis)} />
-                {/* ADD: our spark line as a path (inside a group, for convenient styling) */}
-                <g className="line">
+            <svg ref={node => this.node = node}
+                 width={1000} height={1000} >
+                <g>
                     <path d={linePath} />
                 </g>
             </svg>
