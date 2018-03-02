@@ -8,6 +8,7 @@ class Map extends Component {
             <div className='MapPage'>
                  <VerifyLoggedIn/>
                 <StationMap></StationMap>
+                <stationSidebar></stationSidebar>
             </div>
         );
     }
