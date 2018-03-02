@@ -18,7 +18,6 @@ router.post('/create', async function(req, res){
     var password = req.body.password;
     var dbUsername = null;
     var dbEmail = null;
-    
     //Checks if Username and Email already exist in the database
     var user = await User.where({user_name: username}).fetch()
     if(user)

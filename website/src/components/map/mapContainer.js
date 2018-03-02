@@ -31,8 +31,6 @@ export class MapContainer extends Component {
         if (response.status !== 200) throw Error(body.message);
         if (body.stations) stations = body.stations;
 
-        console.log(body);
-        console.log(stations);
         return stations;
     }
 
