@@ -59,11 +59,12 @@ if (process.env.NODE_ENV === 'production') {
 // Import all of our controllers
 var StationController = require('./controllers/StationController');
 var UserController = require('./controllers/UserController');
+var AlertsController = require('./controllers/AlertsController');
 
 // Route urls to our controllers
 app.use('/api/stations', StationController);
 app.use('/api/user', UserController);
-app.use('/api/alerts', StationController);
+app.use('/api/alerts', AlertsController);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
 

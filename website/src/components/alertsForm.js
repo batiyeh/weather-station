@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Label, Input} from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, Label, Input} from 'reactstrap';
 import '../styles/alerts.css';
 
 class AlertsForm extends Component {
@@ -45,8 +45,7 @@ class AlertsForm extends Component {
             <div className='form-group'> 
                 <Label for='values'>Value</Label>
                 <Input type='text' name='value1' id='value1'/>
-            </div>
-            )
+            </div>)
         }
     }
     render(){
@@ -54,22 +53,22 @@ class AlertsForm extends Component {
             <div className='container'>
             <Modal isOpen={this.state.modal} toggle={this.toggleAddAlert}>
                 <ModalHeader toggle={this.toggleAddAlert}>Add Alert Trigger</ModalHeader>
-                <form id='passwordForm' action='' method='post'>
+                <Form id='passwordForm' action='/api/alerts/create' method='post'>
                     <ModalBody>
                         <div className='form-group'>
                             <Label for='datatype'>Data Type</Label>
                             <Input type="select" name='datatype' id='datatype'>
-                                <option>Temperature</option>
-                                <option>Humidity</option>
-                                <option>Pressure</option>
+                                <option value='temperature'>Temperature</option>
+                                <option value='humidity'>Humidity</option>
+                                <option value='pressure'>Pressure</option>
                             </Input>
                         </div>
                         <div className='form-group'>
                             <Label for='keyword'>Keyword</Label>
                             <Input type='select' onChange={this.toggleValues} name='keyword' id='keyword'>
-                                <option>Above</option>
-                                <option>Below</option>
-                                <option>Between</option>
+                                <option value='above'>Above</option>
+                                <option value='below'>Below</option>
+                                <option value='between'>Between</option>
                             </Input>
 
                         </div>
@@ -80,7 +79,7 @@ class AlertsForm extends Component {
                             <Button type='submit' color="primary" className="primary-themed-btn" >Create Alert</Button>{' '}
                             <Button type='button' color="secondary" onClick={this.toggleAddAlert}>Cancel</Button>
                     </ModalFooter>
-                </form>
+                </Form>
             </Modal>
                 <div class="row">
                     <div class="col-4">
