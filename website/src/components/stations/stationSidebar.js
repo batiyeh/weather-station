@@ -1,5 +1,4 @@
 import React from "react";
-import StationBar from './stationBar';
 
 class stationSidebar extends React.Component {
     constructor(){
@@ -13,7 +12,7 @@ class stationSidebar extends React.Component {
         this.setState({stations: [
                 {
                     id: 1,
-                    title: "Station Name",
+                    title: "Title",
                 }
             ]});
     }
