@@ -11,7 +11,7 @@ class Alerts extends Component {
         return (
             <div className='AlertsPage'>
                 <VerifyLoggedIn/>
-                <AlertsForm username={this.props.username}/>
+                <AlertsForm/>
             </div>
 
         );

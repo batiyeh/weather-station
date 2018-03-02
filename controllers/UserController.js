@@ -87,7 +87,6 @@ router.post('/login', passport.authenticate('local', {failureRedirect:'/user/log
 
 //used to verify user is logged in on each page
 router.post('/getUserInfo', async function(req,res){
-    console.log('getting user info');
     if(req.user){
         var user = await User.where({user_name: req.user}).fetch();
 

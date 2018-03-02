@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, Label, Input} from 'reactstrap';
+import AlertCard from './alertCard';
 import '../styles/alerts.css';
 
 class AlertsForm extends Component {
@@ -8,20 +9,23 @@ class AlertsForm extends Component {
         this.state={
             modal: false,
             isBetween: false,
-            username: this.props.username
+            alerts: []
         };
         this.toggleAddAlert = this.toggleAddAlert.bind(this);
         this.toggleValues = this.toggleValues.bind(this);
+        
     }
-    componentDidMount() {
-        this.getAlerts();
+    componentDidMount = async () =>{
+        var alerts = await this.getAlerts();
+        this.setState({alerts: alerts});
     }
-    // componentWillReceiveProps(props){
-    //     console.log()
-    // }
     getAlerts = async () => {
-        //await fetch('/api/alerts');
-        console.log(this.state.username);
+        var alerts = [];
+        var response = await fetch('/api/alerts/', {method: 'post', credentials:'include'});
+        var body = await response.json();
+        alerts = body.alerts;
+        
+        return alerts;
     }
 
     toggleAddAlert(){
@@ -30,7 +34,6 @@ class AlertsForm extends Component {
         });
     }
     toggleValues(event){
-        console.log(event.target.value);
         if(event.target.value === 'Between'){
             this.setState({
                 isBetween: true
@@ -62,8 +65,6 @@ class AlertsForm extends Component {
     render(){
         return(
             <div className='container'>
-            {}
-            {console.log(this.props.username)}
             <Modal isOpen={this.state.modal} toggle={this.toggleAddAlert}>
                 <ModalHeader toggle={this.toggleAddAlert}>Add Alert Trigger</ModalHeader>
                 <Form id='passwordForm' action='/api/alerts/create' method='post'>
@@ -112,6 +113,14 @@ class AlertsForm extends Component {
                             <input type='checkbox' class="form-control alert-method-box" id='webpage' name='webpage' value='webpage'/>
                             <label class="form-check-label" for="webpage">webpage</label>
                         </div>
+                    </div>
+                    {console.log(this.state.alerts)}
+                    <div className='row'>
+                        {this.state.alerts.map(alerts => {
+                            return(
+                                <AlertCard alerts={alerts}/>
+                            );
+                        })}
                     </div>
                     <div className='row'>
                         <button type='button' className="btn btn-secondary btn-block profile-btn" onClick={this.toggleAddAlert}>Create Alert</button>

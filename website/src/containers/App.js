@@ -22,13 +22,10 @@ class App extends Component {
       phone: '',
       isAdmin: false
     }
-    console.log('In app constructor');
+  }
+  componentDidMount(){
     this.getUser();
   }
-
-  // componentWillMount() {
-  //   this.getUser();
-  // }
 
   getUser = async() => {
     var response = await fetch('/api/user/getUserInfo', {method: 'post', credentials: 'include'})
@@ -68,16 +65,6 @@ class App extends Component {
     </div>
     )
   }
-  renderAlert = (props) => {
-    return (
-      <div className='AlertsPage'>
-        <Alerts
-        username={this.state.username}
-        {...props}
-        />
-      </div>
-    )
-  }
 
   render(props) {
     return (
@@ -93,7 +80,7 @@ class App extends Component {
             <Route path="/user/reset/:token" component={ResetPassword}/>
             <Route path="/profile" render={this.renderProfile}/>
             <Route path="/historical" component={Historical}/>
-            <Route path="/alerts" render={this.renderAlert}/>
+            <Route path="/alerts" component={Alerts}/>
           </div>
         </div>
       </Router>

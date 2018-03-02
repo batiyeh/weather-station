@@ -34,14 +34,14 @@ router.post('/create', async function(req, res){
     res.redirect('/alerts');
 
 })
-router.get('/', async function(req, res){
-    console.log(req.user);
+router.post('/', async function(req, res){
+
     var alerts = await knex('alerts')
-    .where('station.user_name', req.user)
+    .where('alerts.user_name', req.user)
     .leftJoin('alertvalues', 'alerts.value_id', '=', 'alertvalues.value_id')
     .select('alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alertvalues.value')
 
-    console.log(alerts);
+    return res.json({alerts});
 })
 
 module.exports = router;
