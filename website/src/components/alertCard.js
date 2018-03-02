@@ -18,7 +18,7 @@ class AlertCard extends Component {
         });
     }
     toggleValues(event){
-        if(event.target.value === 'Between'){
+        if(event.target.value === 'between'){
             this.setState({
                 isBetween: true
             });
@@ -26,14 +26,14 @@ class AlertCard extends Component {
         else{
             this.setState({
                 isBetween: false
-            })
+            });
         }
     }
     renderValues(){
         if(this.state.isBetween){
             return (
             <div className='form-group'> 
-                <Label for='values'>Values</Label>
+                <Label>Values</Label>
                 <Input type='text' name='value1' id='value1'/>
                 <Input type='text' name='value2' id='value2'/>
             </div>)
@@ -41,12 +41,24 @@ class AlertCard extends Component {
         else{
             return (
             <div className='form-group'> 
-                <Label for='values'>Value</Label>
+                <Label>Value</Label>
                 <Input type='text' name='value1' id='value1'/>
             </div>)
         }
     }
+    getParams(){
+        if(this.props.upper){
+            return(
+                <div> {this.props.alerts.type} {this.props.alerts.keyword} {this.props.alerts.value} {this.props.upper} </div>
+            )
+        }
+        else{
+            return(
+                <div> {this.props.alerts.type} {this.props.alerts.keyword} {this.props.alerts.value} </div>
 
+            )
+        }
+    }
     render(){
         return(
             <div className='container'>
@@ -55,7 +67,7 @@ class AlertCard extends Component {
                     <Form id='AlertForm' action='/api/alerts/update' method='post'>
                         <ModalBody>
                             <div className='form-group'>
-                                <Label for='datatype'>Data Type</Label>
+                                <Label>Data Type</Label>
                                 <Input type="select" name='datatype' id='datatype'>
                                     <option value='temperature'>Temperature</option>
                                     <option value='humidity'>Humidity</option>
@@ -63,7 +75,7 @@ class AlertCard extends Component {
                                 </Input>
                             </div>
                             <div className='form-group'>
-                                <Label for='keyword'>Keyword</Label>
+                                <Label>Keyword</Label>
                                 <Input type='select' onChange={this.toggleValues} name='keyword' id='keyword'>
                                     <option value='above'>Above</option>
                                     <option value='below'>Below</option>
@@ -83,7 +95,8 @@ class AlertCard extends Component {
                 <Card onClick={this.toggleAlert} className='alertCard'>
                     <CardText className='cardText'>
                         <div className='col-12 no-padding-left'>
-                            {this.props.alerts.type} {this.props.alerts.keyword} {this.props.alerts.value} 
+                            {this.getParams()}
+                            {/* {this.props.alerts.type} {this.props.alerts.keyword} {this.props.alerts.value}  */}
                         </div>
                     </CardText>
                 </Card>

@@ -4,9 +4,6 @@ import AlertsForm from '../components/alertsForm.js';
 import '../styles/profile.css';
 
 class Alerts extends Component {
-    constructor(props){
-        super(props);
-    }
     render() {
         return (
             <div className='AlertsPage'>

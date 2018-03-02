@@ -34,7 +34,7 @@ class AlertsForm extends Component {
         });
     }
     toggleValues(event){
-        if(event.target.value === 'Between'){
+        if(event.target.value === 'between'){
             this.setState({
                 isBetween: true
             });
@@ -61,6 +61,24 @@ class AlertsForm extends Component {
                 <Input type='text' name='value1' id='value1'/>
             </div>)
         }
+    }
+    renderCards(){
+        var alertcards = []
+        for (var i = 0; i < this.state.alerts.length; i++){
+            if(this.state.alerts[i+1]){
+                if(this.state.alerts[i].alert_id === this.state.alerts[i+1].alert_id){
+                    alertcards.push(<AlertCard alerts={this.state.alerts[i]} upper={this.state.alerts[i+1].value}/>)
+                    i++;
+                }
+                else{
+                    alertcards.push(<AlertCard alerts={this.state.alerts[i]}/>)
+                }
+            }
+            else{
+                alertcards.push(<AlertCard alerts={this.state.alerts[i]}/>)
+            }
+        }
+        return alertcards
     }
     render(){
         return(
@@ -114,13 +132,9 @@ class AlertsForm extends Component {
                             <label class="form-check-label" for="webpage">webpage</label>
                         </div>
                     </div>
-                    {console.log(this.state.alerts)}
+                    {/* {console.log(this.state.alerts)} */}
                     <div className='row'>
-                        {this.state.alerts.map(alerts => {
-                            return(
-                                <AlertCard alerts={alerts}/>
-                            );
-                        })}
+                        {this.renderCards()}
                     </div>
                     <div className='row'>
                         <button type='button' className="btn btn-secondary btn-block profile-btn" onClick={this.toggleAddAlert}>Create Alert</button>

@@ -21,25 +21,25 @@ router.post('/create', async function(req, res){
         user_name: req.user
     }).save();
 
-    var newAlertValue = await new AlertValues({
+    await new AlertValues({
         value: value1,
         alert_id: newAlert.attributes.id
 
     }).save();
 
-    await Alerts.where({alert_id: newAlert.attributes.id}).save({
-        value_id: newAlertValue.attributes.id
-    },{patch:true});
-
-    res.redirect('/alerts');
-
+    if(value2){
+        await new AlertValues({
+            value: value2,
+            alert_id: newAlert.attributes.id
+        }).save();
+    }
 })
 router.post('/', async function(req, res){
 
     var alerts = await knex('alerts')
+    .select('alerts.alert_id', 'alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alertvalues.value')
+    .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
     .where('alerts.user_name', req.user)
-    .leftJoin('alertvalues', 'alerts.value_id', '=', 'alertvalues.value_id')
-    .select('alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alertvalues.value')
 
     return res.json({alerts});
 })
