@@ -24,11 +24,11 @@ class stationSidebar extends React.Component {
     }
 
     filterStations(stations){
-        console.log(station.name)
-        if (this.state.filter !== '' && !_.isNull(station.name))
-            return station.name.toLowerCase() .includes(this.state.filter.toLocaleLowerCase());
-        else if (this.state.filter !== '' && _.isNull(station.name))
-            return station.mac_address.toLowerCase() .includes(this.state.filter.toLowerCase());
+        console.log(stations.name)
+        if (this.state.filter !== '' && !_.isNull(stations.name))
+            return stations.name.toLowerCase() .includes(this.state.filter.toLocaleLowerCase());
+        else if (this.state.filter !== '' && _.isNull(stations.name))
+            return stations.mac_address.toLowerCase() .includes(this.state.filter.toLowerCase());
         return true;
     }
 
