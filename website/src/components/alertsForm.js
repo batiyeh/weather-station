@@ -7,12 +7,23 @@ class AlertsForm extends Component {
         super(props);
         this.state={
             modal: false,
-            isBetween: false
+            isBetween: false,
+            username: this.props.username
         };
-        
         this.toggleAddAlert = this.toggleAddAlert.bind(this);
         this.toggleValues = this.toggleValues.bind(this);
     }
+    componentDidMount() {
+        this.getAlerts();
+    }
+    // componentWillReceiveProps(props){
+    //     console.log()
+    // }
+    getAlerts = async () => {
+        //await fetch('/api/alerts');
+        console.log(this.state.username);
+    }
+
     toggleAddAlert(){
         this.setState({
             modal: !this.state.modal
@@ -51,6 +62,8 @@ class AlertsForm extends Component {
     render(){
         return(
             <div className='container'>
+            {}
+            {console.log(this.props.username)}
             <Modal isOpen={this.state.modal} toggle={this.toggleAddAlert}>
                 <ModalHeader toggle={this.toggleAddAlert}>Add Alert Trigger</ModalHeader>
                 <Form id='passwordForm' action='/api/alerts/create' method='post'>

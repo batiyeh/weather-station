@@ -5,6 +5,8 @@ router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 const Alerts = require('../models/Alerts');
 const AlertValues = require('../models/AlertValues');
+const knex = require('knex')(require('../knexfile'));
+
 
 
 router.post('/create', async function(req, res){
@@ -28,10 +30,18 @@ router.post('/create', async function(req, res){
     await Alerts.where({alert_id: newAlert.attributes.id}).save({
         value_id: newAlertValue.attributes.id
     },{patch:true});
-    // console.log(newAlertValue.attributes.id);
-    // newAlert.fetch().save({
-    //     value_id: newAlertValue.attributes.id
-    // });
+
+    res.redirect('/alerts');
+
+})
+router.get('/', async function(req, res){
+    console.log(req.user);
+    var alerts = await knex('alerts')
+    .where('station.user_name', req.user)
+    .leftJoin('alertvalues', 'alerts.value_id', '=', 'alertvalues.value_id')
+    .select('alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alertvalues.value')
+
+    console.log(alerts);
 })
 
 module.exports = router;
