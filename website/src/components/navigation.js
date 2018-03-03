@@ -70,6 +70,9 @@ class Navigation extends Component {
                                         <Link to={'/profile'} className='nav-link nav-link-dark'>profile</Link>
                                     </DropdownItem>
                                     <DropdownItem>
+                                        <Link to={'/admin'} className='nav-link nav-link-dark'>admin</Link>
+                                    </DropdownItem>
+                                    <DropdownItem>
                                         <Link to={'/alerts'} className='nav-link nav-link-dark'>alerts</Link>
                                     </DropdownItem>
                                     <DropdownItem>
