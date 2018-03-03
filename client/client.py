@@ -13,7 +13,7 @@ try:
 except:
     pass
 
-def getApiKey():
+def getApiKey(url):
     keyFile = Path("./.api-key.txt")
     if keyFile.is_file():
         with open('./.api-key.txt', 'r') as f:
@@ -25,7 +25,7 @@ def getApiKey():
             key = input("Enter your API Key: ")
             try:
                 print("Verifying key...")
-                r = requests.post('http://localhost:5000/api/weather/verifyKey', data = {"key": key})
+                r = requests.post(url + '/api/weather/verifyKey', data = {"key": key})
                 if (r.status_code == 200):
                     print("Key Verified.")
                     f = open('./.api-key.txt', 'w')
@@ -44,10 +44,11 @@ def getApiKey():
 
 
 if __name__ == '__main__':
+    url = "http://localhost:5000"
     temperature = 0
     pressure = 0
     humidity = 0
-    apikey = getApiKey()
+    apikey = getApiKey(url)
     pin = 14
     
     try:
@@ -90,7 +91,7 @@ if __name__ == '__main__':
             }	
 
             try:
-                r = requests.post('http://localhost:5000/api/weather/', data = weatherdata)
+                r = requests.post(url + '/api/weather', data = weatherdata)
                 if (r.status_code == 200):
                     print("Sent: " + json.dumps(weatherdata))
                 elif (r.status_code == 400):
