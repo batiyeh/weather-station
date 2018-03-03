@@ -10,6 +10,7 @@ class Alerts extends Component {
                 <VerifyLoggedIn/>
                 <AlertsForm/>
             </div>
+
         );
     }
 }
