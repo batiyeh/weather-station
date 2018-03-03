@@ -25,6 +25,7 @@ yarn-debug.log*
 yarn-error.log*
 
 data
+.api-key.txt
 client2.py
 client3.py
 client4.py

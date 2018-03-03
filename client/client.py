@@ -44,7 +44,6 @@ def getApiKey(url):
 
     return key
 
-<<<<<<< HEAD
 def constructWeatherString(weatherdata):
     index = 0
     data = ""
@@ -62,7 +61,8 @@ def checkDataDirectory():
     if dataDir.is_dir():
         return True
     else:
-        return False
+        os.makedirs(dataDir)
+        return True
 
 def storeOfflineWeather(weatherdata):
     today = datetime.date.today()
@@ -73,11 +73,9 @@ def storeOfflineWeather(weatherdata):
             with open(keyFile, 'a') as f:
                 f.write(data)
         else:
-            # with open(keyFile, 'w') as f:
             f = open(keyFile, 'w')
             f.write(data)
             f.close()
-            # f.write(data)
     return
 
 def sendOfflineWeather():
