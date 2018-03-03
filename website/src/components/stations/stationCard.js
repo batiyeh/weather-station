@@ -12,7 +12,7 @@ class StationCard extends Component {
             wind_speed: "n/a",
             wind_direction: "n/a",
             modal: false,
-            name: this.props.station.name
+            name: this.props.station.station_name
         }
 
         this.toggleStationDetail = this.toggleStationDetail.bind(this);
@@ -21,15 +21,15 @@ class StationCard extends Component {
     // Called when the component is first "mounted" (loaded) into the page
     // This fetches the stations from our API and adds them to our current state
     componentDidMount() {
-        this.getAdditionalData();
-        this.interval = setInterval(this.getAdditionalData, 60000);
+        // this.getAdditionalData();
+        // this.interval = setInterval(this.getAdditionalData, 60000);
     }
 
     // Each time the station list updates, pass down the new 
     // props (station name in this case)
     componentWillReceiveProps(nextProps) {
-        if ((this.state.name !== nextProps.station.name) && this.state.modal === false){
-            this.onNameChange(nextProps.station.name);
+        if ((this.state.name !== nextProps.station.station_name) && this.state.modal === false){
+            this.onNameChange(nextProps.station.station_name);
         }
     }
 
@@ -42,15 +42,9 @@ class StationCard extends Component {
     // Format the station's uptime for user viewing
     // TODO: Make this uptime not just last time data was received
     getUptime() {
-        var updatedAt = new Date(this.props.station.updated_at)
+        var updatedAt = new Date(this.props.station.created_at)
         var updatedString = updatedAt.getHours() + ":" + updatedAt.getMinutes() + ":" + updatedAt.getSeconds();
         return updatedString;
-    }
-
-    // TODO: Check the last time we received data from 
-    // this station and decide the color of the status
-    getConnectionStatus(){
-        return 'green';
     }
 
     // Toggle the station detail modal open/closed
@@ -61,16 +55,14 @@ class StationCard extends Component {
     }
 
     saveStationName = async() => {
-        var name = $('#stationNameInput').val();
-        console.log(name);
-        var response = await fetch('/api/stations/name', 
-            {method: 'post', 
-             body: JSON.stringify({name: name, mac_address: this.props.station.mac_address}),
+        var response = await fetch('/api/stations/' + this.props.station.key, 
+            {method: 'put', 
+             body: JSON.stringify({station_name: this.state.name}),
              headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json'
               }
-            });
+        });
         var body = await response.json();
         this.toggleStationDetail();
         return body;
@@ -78,24 +70,24 @@ class StationCard extends Component {
 
     // Retrieves additional visibility, wind speed, and wind direction data
     // from Open Weather Map.
-    getAdditionalData = async () => {
-        if (this.props.station.latitude !== "n/a" && this.props.station.longitude !== "n/a"){
-            var params = {'lat': this.props.station.latitude,
-                        'lon': this.props.station.longitude, 
-                        'units': 'imperial', 
-                        'appid': process.env.REACT_APP_OPEN_WEATHER_KEY};
-            var url = "http://api.openweathermap.org/data/2.5/weather?" + $.param(params);
-            const response = await fetch(url);
-            const body = await response.json();
-            if (response.status !== 200) throw Error(body.message); 
+    // getAdditionalData = async () => {
+    //     if (this.props.station.latitude !== "n/a" && this.props.station.longitude !== "n/a"){
+    //         var params = {'lat': this.props.station.latitude,
+    //                     'lon': this.props.station.longitude, 
+    //                     'units': 'imperial', 
+    //                     'appid': process.env.REACT_APP_OPEN_WEATHER_KEY};
+    //         var url = "http://api.openweathermap.org/data/2.5/weather?" + $.param(params);
+    //         const response = await fetch(url);
+    //         const body = await response.json();
+    //         if (response.status !== 200) throw Error(body.message); 
 
-            this.setState({ 
-                visibility: body['visibility'], 
-                wind_speed: body['wind']['speed'],
-                wind_direction: body['wind']['deg'],
-            });
-        }
-    }
+    //         this.setState({ 
+    //             visibility: body['visibility'], 
+    //             wind_speed: body['wind']['speed'],
+    //             wind_direction: body['wind']['deg'],
+    //         });
+    //     }
+    // }
 
     // If the latitude and longitude are valid, we will render 
     // the additional Open Weather Map data on the right side of the card.
@@ -183,7 +175,7 @@ class StationCard extends Component {
                             <div className="row">
                                 <div className="col-8 no-padding-left">
                                     <p className="station-name">
-                                        <ConnectionIndicator updated={this.props.station.updated_at}></ConnectionIndicator>
+                                        <ConnectionIndicator updated={this.props.station.created_at}></ConnectionIndicator>
                                         { this.renderStationName() }
                                     </p>
                                 </div>

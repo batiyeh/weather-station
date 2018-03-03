@@ -19,9 +19,9 @@ router.post('/create', async function(req, res){
     var dbUsername = null;
     var dbEmail = null;
     //Checks if Username and Email already exist in the database
-    var user = await User.where({user_name: username}).fetch()
+    var user = await User.where({username: username}).fetch()
     if(user)
-        dbUsername = user.attributes.user_name.toLowerCase();
+        dbUsername = user.attributes.username.toLowerCase();
 
     var em = await User.where({email: email}).fetch()
     if(em)
@@ -43,7 +43,7 @@ router.post('/create', async function(req, res){
         //hashes the password using bcrypt, then creates user and stores in database
         await bcrypt.hash(password, 10, function(err, hash) {
             new User({
-                user_name: username,
+                username: username,
                 email: email,
                 password: hash,
             }).save()
@@ -54,20 +54,20 @@ router.post('/create', async function(req, res){
 
 //writes username into cookie
 passport.serializeUser(function(user, done){
-    done(null, user.attributes.user_name);
+    done(null, user.attributes.username);
 });
 
 //erases username from cookie
 passport.deserializeUser(async function(username, done){
-    var user = await User.where({user_name: username}).fetch()
+    var user = await User.where({username: username}).fetch()
         if(user)
-            done(null, user.attributes.user_name);
+            done(null, user.attributes.username);
 });
 
 //Verifies user login credentials
 passport.use(new LocalStrategy(
     async function(username, password, done) {
-        var user = await User.where({user_name: username}).fetch()
+        var user = await User.where({username: username}).fetch()
             if(!user)
                 return done(null, false, {message: 'Invalid username/password'});
             
@@ -88,10 +88,10 @@ router.post('/login', passport.authenticate('local', {failureRedirect:'/user/log
 //used to verify user is logged in on each page
 router.post('/getUserInfo', async function(req,res){
     if(req.user){
-        var user = await User.where({user_name: req.user}).fetch();
+        var user = await User.where({username: req.user}).fetch();
 
-        res.json({username: user.attributes.user_name, email: user.attributes.email,
-        phone: user.attributes.phone, isAdmin: user.attributes.isAdmin});
+        res.json({username: user.attributes.username, email: user.attributes.email,
+        phone: user.attributes.phone, permissions: user.attributes.permissions});
     }
     else{
         res.json({username: undefined})
@@ -111,7 +111,7 @@ router.post('/reset/', function(req,res){
     //and email it to the user in the 3rd function
     async.waterfall([
         function(done){
-            crypto.randomBytes(20, function(err, buf){
+            crypto.randomBytes(10, function(err, buf){
                 var token = buf.toString('hex');
                 done(err,token); 
             });
@@ -189,7 +189,7 @@ router.post('/reset/:token', function(req, res){
 router.post('/editProfile', async function(req, res){
     var email = req.body.email;
     var phone = req.body.phone;
-    var user = await User.where({user_name: req.user}).fetch()
+    var user = await User.where({username: req.user}).fetch()
     
     if(email){
         var dbEmail = "";
@@ -227,7 +227,7 @@ router.post('/editProfile', async function(req, res){
     }
     else{
         //updates user profile
-        await User.where({user_name: req.user}).save({
+        await User.where({username: req.user}).save({
             email: email,
             phone: phone,
         },{patch:true});
@@ -239,7 +239,7 @@ router.post('/editPassword', async function(req, res){
     var currPass = req.body.currPass;
     var newPass = req.body.newPass;
 
-    var user = await User.where({user_name: req.user}).fetch()
+    var user = await User.where({username: req.user}).fetch()
     if(!user)
         console.log('Invalid username');//(this shouldnt happen ever)
 
@@ -259,7 +259,7 @@ router.post('/editPassword', async function(req, res){
         else{
             //updates user password in db
             await bcrypt.hash(newPass, 10, function(err,hash){
-                User.where({user_name: req.user}).save({
+                User.where({username: req.user}).save({
                     password: hash,
                 },{patch:true})
             })

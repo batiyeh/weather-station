@@ -10,6 +10,7 @@ import ResetPassword from '../containers/resetPassword.js';
 import Alerts from '../containers/alerts.js'
 import ProfileForm from '../components/profileForm.js';
 import VerifyLoggedIn from '../components/verifyLoggedIn.js'
+import Admin from '../containers/admin.js'
 
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 
@@ -82,6 +83,7 @@ class App extends Component {
             <Route path="/profile" render={this.renderProfile}/>
             <Route path="/historical" component={Historical}/>
             <Route path="/alerts" component={Alerts}/>
+            <Route path="/admin" component={Admin}/>
           </div>
         </div>
       </Router>
