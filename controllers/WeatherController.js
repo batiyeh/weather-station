@@ -52,5 +52,12 @@ router.get('/latest', async function (req, res) {
     return res.json({ weather });
 });
 
+// Returns the latest weather data for each station from the database
+router.post('/verifyKey', async function (req, res) {
+    var station = await Station.where('key', req.body.key).fetch();
+    if (station) res.status(200).send("Verified API key.")
+    else res.status(400).send('Invalid API key.')
+});
+
 
 module.exports = router;
