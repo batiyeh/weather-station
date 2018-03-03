@@ -5,6 +5,7 @@ router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 const Alerts = require('../models/Alerts');
 const AlertValues = require('../models/AlertValues');
+const Station = require('../models/Station')
 const knex = require('knex')(require('../knexfile'));
 
 
@@ -49,7 +50,9 @@ router.post('/', async function(req, res){
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
     .where('alerts.username', req.user)
 
-    return res.status(200).json({alerts});
+    var stations = await Station.fetchAll();
+
+    return res.status(200).json({alerts, stations});
 })
 
 //post used to update an alert based on the :id passed by the frontend

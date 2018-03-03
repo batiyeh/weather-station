@@ -12,7 +12,8 @@ class AlertsForm extends Component {
             keyword: 'above',
             value1: null,
             value2: null,
-            alerts: []
+            alerts: [],
+            stations: []
         };
         this.toggleAddAlert = this.toggleAddAlert.bind(this);
         
@@ -23,12 +24,13 @@ class AlertsForm extends Component {
     //gets all current alerts for the user and stores it in the state
     getAlerts = async () => {
         var alerts = [];
+        var stations = [];
         var response = await fetch('/api/alerts/', {method: 'post', credentials:'include'});
         var body = await response.json();
         alerts = body.alerts;
-        
-        this.setState({alerts: alerts});
+        stations = body.stations;
 
+        this.setState({alerts: alerts, stations: stations});
     }
     //takes the current data in the state and sends it to the backend, the page is then refreshed and the modal is closed
     createAlert = async () => {
@@ -120,6 +122,14 @@ class AlertsForm extends Component {
         }
         return alertcards
     }
+    renderStations(){
+        var options = []
+        this.state.stations.map(station => {
+            options.push(<option value={station.station_name}>{station.station_name}</option>)
+            //return(<option value={station.station_name}>{station.station_name}</option>)
+        })
+        return options;
+    }
     render(){
         return(
             <div className='container'>
@@ -128,6 +138,10 @@ class AlertsForm extends Component {
                 <Form>
                     <ModalBody>
                         <div className='form-group'>
+                            <Label>Station</Label>
+                            <Input type="select" name='station' id='station' onChange={e => this.onStationChange(e.target.value)}>
+                                {this.renderStations()}
+                            </Input>
                             <Label>Data Type</Label>
                             <Input type="select" name='datatype' id='datatype' onChange={e => this.onDatatypeChange(e.target.value)}>
                                 <option value='temperature'>Temperature</option>
