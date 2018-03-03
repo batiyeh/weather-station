@@ -45,7 +45,7 @@ class Navigation extends Component {
         else{
             return (
                 <div>
-                    <Navbar className="react-nav" color="faded" light expand="md">
+                    <Navbar className="react-nav" color="faded" fixed="top" light expand="md">
                         <NavbarBrand href="/">
                             <Link to={'/'} className='nav-link'><img src={logo} width="30" height="30" alt=""></img></Link>
                         </NavbarBrand>

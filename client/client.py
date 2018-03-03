@@ -12,6 +12,80 @@ try:
 except:
     pass
 
+def getApiKey(url):
+    keyFile = Path("./.api-key.txt")
+    if keyFile.is_file():
+        with open('./.api-key.txt', 'r') as f:
+            key = f.readline()
+        return key
+    else:
+        verified = False
+        while(not verified):
+            key = input("Enter your API Key: ")
+            key = "".join(key.split())
+            try:
+                print("Verifying key...")
+                r = requests.post(url + '/api/weather/verifyKey', data = {"key": key})
+                if (r.status_code == 200):
+                    print("Key Verified.")
+                    f = open('./.api-key.txt', 'w')
+                    f.write(key)
+                    f.close()
+                    verified = True
+                elif (r.status_code == 400):
+                    print("Invalid API key. Please try again.")
+                else:
+                    print("Something went wrong with the server.")
+            except:
+                print("Lost connection to server.")
+                pass
+
+    return key
+
+def constructWeatherString(weatherdata):
+    index = 0
+    data = ""
+    for val in weatherdata:
+        if (index == 0):
+            data = data + str(weatherdata[val])
+        else:
+            data = data + ", " + str(weatherdata[val])
+        index += 1
+    data = data + "\n"
+    return data
+
+def checkDataDirectory():
+    dataDir = Path("./data")
+    if dataDir.is_dir():
+        return True
+    else:
+        return False
+
+def storeOfflineWeather(weatherdata):
+    today = datetime.date.today()
+    data = constructWeatherString(weatherdata)
+    if(checkDataDirectory()):
+        keyFile = Path("./data/" + today.strftime('%d%m%Y') + ".txt")
+        if keyFile.is_file():
+            with open(keyFile, 'a') as f:
+                f.write(data)
+        else:
+            # with open(keyFile, 'w') as f:
+            f = open(keyFile, 'w')
+            f.write(data)
+            f.close()
+            # f.write(data)
+    return
+
+def sendOfflineWeather():
+    keyFile = Path("./data/.txt")
+    if keyFile.is_file():
+        with open('./.api-key.txt', 'r') as f:
+            key = f.readline()
+            return key
+
+    return
+
 if __name__ == '__main__':
     temperature = 0
     pressure = 0
@@ -54,12 +128,13 @@ if __name__ == '__main__':
 
             # Construct our weatherdata json object
             weatherdata = {
+                "created_at": datetime.datetime.now(),
                 "key": apikey,
-                "latitude": latitude,
-                "longitude": longitude,
                 "temperature": temperature,
+                "humidity": humidity,
                 "pressure": pressure,
-                "humidity": humidity
+                "latitude": latitude,
+                "longitude": longitude
             }	
 
             try:
@@ -69,7 +144,8 @@ if __name__ == '__main__':
                 elif (r.status_code == 400):
                     print("Invalid API key")
             except:
-                print("Lost connection to server...attemping reconnect.")
+                print("Lost connection to server...storing data locally.")
+                storeOfflineWeather(weatherdata)
                 pass
 
             # Wait 3 seconds before restarting the loop

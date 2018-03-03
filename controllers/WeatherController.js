@@ -13,6 +13,7 @@ router.post('/', async function (req, res) {
     if (station){
         var result = await new Weather({
             key: req.body.key,
+            created_at: req.body.created_at,
             temperature: req.body.temperature,
             humidity: req.body.humidity,
             pressure: req.body.pressure,
@@ -43,7 +44,7 @@ router.get('/latest', async function (req, res) {
     try{
         var weather = await knex('weather').select('w1.*', 'station_name', 'last_connected', 'connected').from('weather as w1').where('w1.created_at', function() {
             this.max('created_at').from('weather as w2').whereRaw('w2.key = w1.key')
-        }).leftJoin('stations', 'stations.key', 'w1.key').orderBy('w1.created_at')
+        }).leftJoin('stations', 'stations.key', 'w1.key').orderBy('w1.created_at', 'desc')
     } catch(ex){
         console.log(ex);
         return res.json({});
