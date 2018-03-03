@@ -44,4 +44,21 @@ router.post('/', async function(req, res){
     return res.json({alerts});
 })
 
+router.post('/:id', async function(req,res){
+    var datatype = req.body.datatype;
+    var keyword = req.body.keyword;
+    var value1 = req.body.value1;
+    var value2 = req.body.value2;
+
+    var alert = await Alerts.where({alert_id: req.params.id}).save({
+        datatype: datatype,
+        keyword: keyword
+    },{patch:true})
+
+    await AlertValues.where({alert_id: req.params.id}).destroy();
+
+    
+
+})
+
 module.exports = router;

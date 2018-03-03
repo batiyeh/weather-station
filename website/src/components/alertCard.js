@@ -7,7 +7,8 @@ class AlertCard extends Component {
         super(props);
         this.state = {
             modal: false,
-            isBetween: false
+            isBetween: false,
+            postString: '/api/alerts/' + this.props.alerts.alert_id
         }
         this.toggleAlert = this.toggleAlert.bind(this);
         this.toggleValues = this.toggleValues.bind(this);
@@ -64,7 +65,7 @@ class AlertCard extends Component {
             <div className='container'>
                 <Modal isOpen={this.state.modal} toggle={this.toggleAlert}>
                     <ModalHeader toggle={this.toggleAlert}>Update Alert Trigger</ModalHeader>
-                    <Form id='AlertForm' action='/api/alerts/update' method='post'>
+                    <Form id='AlertForm' action={this.state.postString} method='post'>
                         <ModalBody>
                             <div className='form-group'>
                                 <Label>Data Type</Label>
@@ -94,10 +95,8 @@ class AlertCard extends Component {
                 </Modal>
                 <Card onClick={this.toggleAlert} className='alertCard'>
                     <CardText className='cardText'>
-                        <div className='col-12 no-padding-left'>
                             {this.getParams()}
-                            {/* {this.props.alerts.type} {this.props.alerts.keyword} {this.props.alerts.value}  */}
-                        </div>
+
                     </CardText>
                 </Card>
             </div>
