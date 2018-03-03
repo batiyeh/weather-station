@@ -19,7 +19,7 @@ router.post('/create', async function(req, res){
     var newAlert = await new Alerts({
         type: datatype,
         keyword: keyword,
-        user_name: req.user
+        username: req.user
     }).save();
 
     await new AlertValues({
@@ -41,7 +41,7 @@ router.post('/', async function(req, res){
     var alerts = await knex('alerts')
     .select('alerts.alert_id', 'alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alertvalues.value')
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
-    .where('alerts.user_name', req.user)
+    .where('alerts.username', req.user)
 
     return res.json({alerts});
 })

@@ -8,11 +8,13 @@ class AlertsForm extends Component {
         super(props);
         this.state={
             modal: false,
-            isBetween: false,
+            datatype: 'temperature',
+            keyword: 'above',
+            value1: null,
+            value2: null,
             alerts: []
         };
         this.toggleAddAlert = this.toggleAddAlert.bind(this);
-        this.toggleValues = this.toggleValues.bind(this);
         
     }
     componentDidMount = async () =>{
@@ -31,37 +33,51 @@ class AlertsForm extends Component {
         await this.getAlerts();
         await this.toggleAddAlert();
     }
+    createAlert = async () => {
+        console.log(this.state.datatype, this.state.keyword, this.state.value1, this.state.value2);
+    }
     toggleAddAlert(){
         this.setState({
             modal: !this.state.modal
         });
     }
-    toggleValues(event){
-        if(event.target.value === 'between'){
-            this.setState({
-                isBetween: true
-            });
-        }
-        else{
-            this.setState({
-                isBetween: false
-            })
-        }
+    onDatatypeChange(value){
+        this.setState({
+            datatype: value
+        })
+    }
+    onKeywordChange(value){
+        this.setState({
+            keyword: value
+        })
+    }
+    onValue1Change(value){
+        this.setState({
+            value1: value
+        })
+    }
+    onValue2Chage(value){
+        this.setState({
+            value2: value
+        })
     }
     renderValues(){
-        if(this.state.isBetween){
+        if(this.state.keyword === 'between'){
             return (
             <div className='form-group'> 
                 <Label for='values'>Values</Label>
-                <Input type='text' name='value1' id='value1'/>
-                <Input type='text' name='value2' id='value2'/>
+                <Input type='text' name='value1' id='value1' onChange={e => this.onValue1Change(e.target.value)}/>
+                <Input type='text' name='value2' id='value2'onChange={e => this.onValue2Chage(e.target.value)}/>
             </div>)
         }
         else{
+            this.setState({
+                value2: null
+            });
             return (
             <div className='form-group'> 
                 <Label for='values'>Value</Label>
-                <Input type='text' name='value1' id='value1'/>
+                <Input type='text' name='value1' id='value1' onChange={e => this.onValue1Change(e.target.value)}/>
             </div>)
         }
     }
@@ -92,7 +108,7 @@ class AlertsForm extends Component {
                     <ModalBody>
                         <div className='form-group'>
                             <Label>Data Type</Label>
-                            <Input type="select" name='datatype' id='datatype'>
+                            <Input type="select" name='datatype' id='datatype' onChange={e => this.onDatatypeChange(e.target.value)}>
                                 <option value='temperature'>Temperature</option>
                                 <option value='humidity'>Humidity</option>
                                 <option value='pressure'>Pressure</option>
@@ -100,7 +116,7 @@ class AlertsForm extends Component {
                         </div>
                         <div className='form-group'>
                             <Label>Keyword</Label>
-                            <Input type='select' onChange={this.toggleValues} name='keyword' id='keyword'>
+                            <Input type='select' name='keyword' id='keyword' onChange={e => this.onKeywordChange(e.target.value)}>
                                 <option value='above'>Above</option>
                                 <option value='below'>Below</option>
                                 <option value='between'>Between</option>
@@ -108,10 +124,9 @@ class AlertsForm extends Component {
 
                         </div>
                         {this.renderValues()}
-
                     </ModalBody>
                     <ModalFooter>
-                            <Button type='submit' color="primary" onClick={this.updateAlerts} className="primary-themed-btn" >Create Alert</Button>{' '}
+                            <Button type='button' color="primary" onClick={this.createAlert} className="primary-themed-btn" >Create Alert</Button>{' '}
                             <Button type='button' color="secondary" onClick={this.toggleAddAlert}>Cancel</Button>
                     </ModalFooter>
                 </Form>
