@@ -42,7 +42,7 @@ class TemperatureGraph extends Component{
         //creating the x axis using xscale
         const xAxis = d3AxisBottom()
             .scale(xScale)
-            .ticks(this.state.data.length /2 )
+            .ticks(this.state.data.length /2 );
 
         //creating the y axis using yscale
         const yAxis = d3AxisLeft()
@@ -53,9 +53,7 @@ class TemperatureGraph extends Component{
             .x(selectScaledX)
             .y(selectScaledY);
 
-            // Create a line path of for our data.
-        const linePath = tempLine(this.state.data);
-
+        //Set the svg for the graph to be rendered
         const graph = d3Select("svg")
             .append("g").attr("transform", "translate(25,300)");
         graph.call(yAxis);
@@ -63,8 +61,10 @@ class TemperatureGraph extends Component{
             .attr("transform", "translate(0,300)")
             .call(xAxis);
         graph.append("path")
-            //.data(this.state.data)
-            .attr("d", tempLine);
+
+            .attr("d", tempLine(this.state.data))
+            .attr("stroke", 'black')
+            .attr("fill", 'none');
 
         return(
             <svg ref={node => this.node = node}
