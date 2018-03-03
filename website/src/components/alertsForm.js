@@ -16,8 +16,7 @@ class AlertsForm extends Component {
         
     }
     componentDidMount = async () =>{
-        var alerts = await this.getAlerts();
-        this.setState({alerts: alerts});
+        await this.getAlerts();
     }
     getAlerts = async () => {
         var alerts = [];
@@ -25,9 +24,13 @@ class AlertsForm extends Component {
         var body = await response.json();
         alerts = body.alerts;
         
-        return alerts;
+        this.setState({alerts: alerts});
+        return true;
     }
-
+    updateAlerts = async () =>{
+        await this.getAlerts();
+        await this.toggleAddAlert();
+    }
     toggleAddAlert(){
         this.setState({
             modal: !this.state.modal
@@ -108,7 +111,7 @@ class AlertsForm extends Component {
 
                     </ModalBody>
                     <ModalFooter>
-                            <Button type='submit' color="primary" className="primary-themed-btn" >Create Alert</Button>{' '}
+                            <Button type='submit' color="primary" onClick={this.updateAlerts} className="primary-themed-btn" >Create Alert</Button>{' '}
                             <Button type='button' color="secondary" onClick={this.toggleAddAlert}>Cancel</Button>
                     </ModalFooter>
                 </Form>

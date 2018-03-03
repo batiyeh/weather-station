@@ -10,6 +10,7 @@ const knex = require('knex')(require('../knexfile'));
 
 
 router.post('/create', async function(req, res){
+    
     var datatype = req.body.datatype;
     var keyword = req.body.keyword;
     var value1 = req.body.value1;
@@ -33,6 +34,7 @@ router.post('/create', async function(req, res){
             alert_id: newAlert.attributes.id
         }).save();
     }
+    console.log(newAlert);
 })
 router.post('/', async function(req, res){
 

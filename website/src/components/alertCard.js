@@ -96,7 +96,6 @@ class AlertCard extends Component {
                 <Card onClick={this.toggleAlert} className='alertCard'>
                     <CardText className='cardText'>
                             {this.getParams()}
-
                     </CardText>
                 </Card>
             </div>
