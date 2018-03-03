@@ -8,13 +8,13 @@ class AlertCard extends Component {
         this.state = {
             modal: false,
             keyword: this.props.alerts.keyword,
-            datatype: this.props.alerts.datatype,
+            datatype: this.props.alerts.type,
             value1: this.props.alerts.value,
             value2: this.props.value2,
-            // postString: '/api/alerts/' + this.props.alerts.alert_id
         }
         this.toggleAlert = this.toggleAlert.bind(this);
         this.toggleValues = this.toggleValues.bind(this);
+        this.resetValues = this.resetValues.bind(this);
     }
     updateAlert = async () => {
     await fetch('/api/alerts/' + this.props.alerts.alert_id, 
@@ -91,20 +91,29 @@ class AlertCard extends Component {
     getParams(){
         if(this.props.value2){
             return(
-                <div> {this.props.alerts.type} {this.props.alerts.keyword} {this.props.alerts.value} {this.props.value2} </div>
+                <div> {this.state.datatype} {this.state.keyword} {this.state.value1} {this.state.value2} </div>
             )
         }
         else{
             return(
-                <div> {this.props.alerts.type} {this.props.alerts.keyword} {this.props.alerts.value} </div>
+                <div> {this.state.datatype} {this.state.keyword} {this.state.value1} </div>
 
             )
         }
     }
+    resetValues(){
+        this.setState({
+            keyword: this.props.alerts.keyword,
+            datatype: this.props.alerts.type,
+            value1: this.props.alerts.value,
+            value2: this.props.value2,
+        })
+        this.toggleAlert();
+    }
     render(){
         return(
             <div className='container'>
-                <Modal isOpen={this.state.modal} toggle={this.toggleAlert}>
+                <Modal isOpen={this.state.modal} toggle={this.resetValues}>
                     <ModalHeader toggle={this.toggleAlert}>Update Alert Trigger</ModalHeader>
                     <Form id='AlertForm'>
                         <ModalBody>
@@ -128,7 +137,7 @@ class AlertCard extends Component {
                         </ModalBody>
                         <ModalFooter>
                                 <Button type='button' color="primary" onClick={this.updateAlert} className="primary-themed-btn" >Update Alert</Button>{' '}
-                                <Button type='button' color="secondary" onClick={this.toggleAlert}>Cancel</Button>
+                                <Button type='button' color="secondary" onClick={this.resetValues}>Cancel</Button>
                         </ModalFooter>
                     </Form>
                 </Modal>
