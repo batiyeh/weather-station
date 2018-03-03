@@ -13,9 +13,9 @@ class AlertCard extends Component {
             value2: this.props.value2,
         }
         this.toggleAlert = this.toggleAlert.bind(this);
-        this.toggleValues = this.toggleValues.bind(this);
         this.resetValues = this.resetValues.bind(this);
     }
+    //passes the new values to the backend of an alert that the user is editing
     updateAlert = async () => {
     await fetch('/api/alerts/' + this.props.alerts.alert_id, 
         {method: 'post', 
@@ -34,23 +34,13 @@ class AlertCard extends Component {
     this.toggleAlert();
 
     }
+    //toggles edit alert modal
     toggleAlert(){
         this.setState({
             modal: !this.state.modal
         });
     }
-    toggleValues(event){
-        if(event.target.value === 'between'){
-            this.setState({
-                isBetween: true
-            });
-        }
-        else{
-            this.setState({
-                isBetween: false
-            });
-        }
-    }
+    //when the user enters a new value, the state is updated with that value
     onDatatypeChange(value){
         this.setState({
             datatype: value
@@ -71,6 +61,7 @@ class AlertCard extends Component {
             value2: value
         })
     }
+    //if the user has a keyword selected the requires multiple inputs, it will display it dynamically
     renderValues(){
         if(this.state.keyword === 'between'){
             return (
@@ -88,8 +79,9 @@ class AlertCard extends Component {
             </div>)
         }
     }
+    //prints out the params currently stored in the state of the card
     getParams(){
-        if(this.props.value2){
+        if(this.state.keyword === 'between'){
             return(
                 <div> {this.state.datatype} {this.state.keyword} {this.state.value1} {this.state.value2} </div>
             )
@@ -101,6 +93,7 @@ class AlertCard extends Component {
             )
         }
     }
+    //resets state back to it's default values
     resetValues(){
         this.setState({
             keyword: this.props.alerts.keyword,

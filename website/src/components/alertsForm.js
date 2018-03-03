@@ -20,6 +20,7 @@ class AlertsForm extends Component {
     componentDidMount = async () =>{
         await this.getAlerts();
     }
+    //gets all current alerts for the user and stores it in the state
     getAlerts = async () => {
         var alerts = [];
         var response = await fetch('/api/alerts/', {method: 'post', credentials:'include'});
@@ -29,6 +30,7 @@ class AlertsForm extends Component {
         this.setState({alerts: alerts});
 
     }
+    //takes the current data in the state and sends it to the backend, the page is then refreshed and the modal is closed
     createAlert = async () => {
         await fetch('/api/alerts/create', 
             {method: 'post', 
@@ -48,11 +50,13 @@ class AlertsForm extends Component {
         await this.getAlerts();
         this.toggleAddAlert();
     }
+    //toggles modal for creating a new alert
     toggleAddAlert(){
         this.setState({
             modal: !this.state.modal
         });
     }
+    //when the user enters information the datatype, keyword, value1, value2 are updated in the state
     onDatatypeChange(value){
         this.setState({
             datatype: value
@@ -73,11 +77,12 @@ class AlertsForm extends Component {
             value2: value
         })
     }
+    //displays either one input box or two to the user depending on what keyword they currently have selected
     renderValues(){
         if(this.state.keyword === 'between'){
             return (
             <div className='form-group'> 
-                <Label for='values'>Values</Label>
+                <Label>Values</Label>
                 <Input type='text' name='value1' id='value1' onChange={e => this.onValue1Change(e.target.value)}/>
                 <Input type='text' name='value2' id='value2'onChange={e => this.onValue2Chage(e.target.value)}/>
             </div>)
@@ -90,11 +95,13 @@ class AlertsForm extends Component {
             }
             return (
             <div className='form-group'> 
-                <Label for='values'>Value</Label>
+                <Label>Value</Label>
                 <Input type='text' name='value1' id='value1' onChange={e => this.onValue1Change(e.target.value)}/>
             </div>)
         }
     }
+    //parses the current cards in this.state.alerts
+    //some alerts have multiple values so the id's need to be compared before they are added to the array
     renderCards(){
         var alertcards = []
         for (var i = 0; i < this.state.alerts.length; i++){
@@ -145,23 +152,23 @@ class AlertsForm extends Component {
                     </ModalFooter>
                 </Form>
             </Modal>
-                <div class="row">
-                    <div class="col-4">
+                <div className="row">
+                    <div className="col-4">
                         <div className="form-check form-check-inline alert-method-container">
-                            <input type='checkbox' class="form-control alert-method-box" id='email' name='email' value='email'/>
-                            <label class="form-check-label" for="email">email</label>
+                            <input type='checkbox' className="form-control alert-method-box" id='email' name='email' value='email'/>
+                            <label className="form-check-label">email</label>
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div className="col-4">
                         <div className="form-check form-check-inline alert-method-container">
-                            <input type='checkbox' class="form-control alert-method-box" id='sms' name='sms' value='sms'/>
-                            <label class="form-check-label" for="sms">sms</label>
+                            <input type='checkbox' className="form-control alert-method-box" id='sms' name='sms' value='sms'/>
+                            <label className="form-check-label">sms</label>
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div className="col-4">
                         <div className="form-check form-check-inline alert-method-container">
-                            <input type='checkbox' class="form-control alert-method-box" id='webpage' name='webpage' value='webpage'/>
-                            <label class="form-check-label" for="webpage">webpage</label>
+                            <input type='checkbox' className="form-control alert-method-box" id='webpage' name='webpage' value='webpage'/>
+                            <label className="form-check-label">webpage</label>
                         </div>
                     </div>
                     {/* {console.log(this.state.alerts)} */}
