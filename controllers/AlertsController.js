@@ -34,7 +34,7 @@ router.post('/create', async function(req, res){
             alert_id: newAlert.attributes.id
         }).save();
     }
-    console.log(newAlert);
+    return res.status(200).json({newAlert})
 })
 router.post('/', async function(req, res){
 
@@ -43,7 +43,7 @@ router.post('/', async function(req, res){
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
     .where('alerts.username', req.user)
 
-    return res.json({alerts});
+    return res.status(200).json({alerts});
 })
 
 router.post('/:id', async function(req,res){
@@ -70,7 +70,7 @@ router.post('/:id', async function(req,res){
             alert_id: req.params.id
         }).save();
     }
-
+    return res.status(200).json({success: 'success'})
 })
 
 module.exports = router;

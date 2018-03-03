@@ -27,14 +27,26 @@ class AlertsForm extends Component {
         alerts = body.alerts;
         
         this.setState({alerts: alerts});
-        return true;
-    }
-    updateAlerts = async () =>{
-        await this.getAlerts();
-        await this.toggleAddAlert();
+
     }
     createAlert = async () => {
-        console.log(this.state.datatype, this.state.keyword, this.state.value1, this.state.value2);
+        await fetch('/api/alerts/create', 
+            {method: 'post', 
+            body: JSON.stringify({
+                datatype: this.state.datatype,
+                keyword: this.state.keyword,
+                value1: this.state.value1,
+                value2: this.state.value2
+            }),
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+            credentials:'include'
+        });
+
+        await this.getAlerts();
+        this.toggleAddAlert();
     }
     toggleAddAlert(){
         this.setState({
@@ -56,7 +68,7 @@ class AlertsForm extends Component {
             value1: value
         })
     }
-    onValue2Chage(value){
+    onValue2Change(value){
         this.setState({
             value2: value
         })
@@ -71,9 +83,11 @@ class AlertsForm extends Component {
             </div>)
         }
         else{
-            this.setState({
-                value2: null
-            });
+            if(this.state.value2){
+                this.setState({
+                    value2: null
+                });
+            }
             return (
             <div className='form-group'> 
                 <Label for='values'>Value</Label>
@@ -86,7 +100,7 @@ class AlertsForm extends Component {
         for (var i = 0; i < this.state.alerts.length; i++){
             if(this.state.alerts[i+1]){
                 if(this.state.alerts[i].alert_id === this.state.alerts[i+1].alert_id){
-                    alertcards.push(<AlertCard alerts={this.state.alerts[i]} upper={this.state.alerts[i+1].value}/>)
+                    alertcards.push(<AlertCard alerts={this.state.alerts[i]} value2={this.state.alerts[i+1].value}/>)
                     i++;
                 }
                 else{
@@ -104,7 +118,7 @@ class AlertsForm extends Component {
             <div className='container'>
             <Modal isOpen={this.state.modal} toggle={this.toggleAddAlert}>
                 <ModalHeader toggle={this.toggleAddAlert}>Add Alert Trigger</ModalHeader>
-                <Form id='passwordForm' action='/api/alerts/create' method='post'>
+                <Form>
                     <ModalBody>
                         <div className='form-group'>
                             <Label>Data Type</Label>
