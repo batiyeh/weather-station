@@ -49,27 +49,26 @@ class TemperatureGraph extends Component{
             .scale(yScale)
             .ticks(3);
         // Create a d3Line factory for our scales.
-        const sparkLine = d3Line()
+        const tempLine = d3Line()
             .x(selectScaledX)
             .y(selectScaledY);
 
             // Create a line path of for our data.
-        const linePath = sparkLine(this.state.data);
+        const linePath = tempLine(this.state.data);
 
         const graph = d3Select("svg")
-            .attr("border", 1).style("stroke", 'blue')
             .append("g").attr("transform", "translate(25,300)");
         graph.call(yAxis);
         graph.append("g")
             .attr("transform", "translate(0,300)")
             .call(xAxis);
+        graph.append("path")
+            //.data(this.state.data)
+            .attr("d", tempLine);
 
         return(
             <svg ref={node => this.node = node}
                  width={1000} height={1000} >
-                <g>
-                    <path d={linePath} />
-                </g>
             </svg>
         );
     }

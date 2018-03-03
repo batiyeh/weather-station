@@ -1,7 +1,5 @@
-.graph div{
-    text-align: right;
-    padding: 3px;
-    margin: 1px;
-    color: white;
-    background-color: blue;
+.tempLine {
+    fill: none;
+    stroke: black;
+    stroke-width: 2px;
 }
