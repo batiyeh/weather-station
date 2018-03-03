@@ -7,8 +7,9 @@ class Map extends Component {
     render() {
         return (
             <div className='MapPage'>
-                 <VerifyLoggedIn/>
 
+                 <VerifyLoggedIn/>
+                <VerifyLoggedIn/>
                 <MapContainer></MapContainer>
                 <StationSidebar></StationSidebar>
 

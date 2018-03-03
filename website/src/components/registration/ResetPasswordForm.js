@@ -12,10 +12,10 @@ class ResetPasswordForm extends Component {
                         <input id='email' name='email' type='email' class='form-control' placeholder='Email'/>
                     </div>
                     <div className='row'>
-                        <div className='col-6'>
+                        <div className='col-6 no-padding-left'>
                             <a className='register-link' href='/user/login'><button type='button' className='btn btn-default btn-block register-btn'>Return</button></a>
                         </div>
-                        <div className='col-6'>
+                        <div className='col-6 no-padding-right'>
                             <button type='submit' className='btn btn-default btn-block login-btn'>Recover Password</button>
                         </div>
                     </div>
