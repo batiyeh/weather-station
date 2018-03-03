@@ -10,21 +10,21 @@ class LoginForm extends Component {
                     <img src={logo} className="login-logo" width="200" height="200" alt=""></img>
                     <form id='loginForm' action='/api/user/login/'method='post'>
                         <div className='login-info mb-3'>
-                        <div className='col-12 row'>
+                        <div className='col-12 row no-padding-left'>
                             <a className="forgot-link" id="forgot" href="/user/reset">Forgot password?</a> 
                         </div>
                         <div className='form-group'>
-                            <input id='username' name='username' type='text' class='form-control' placeholder='Username'/>
+                            <input id='username' name='username' type='text' className='form-control' placeholder='Username'/>
                         </div>
                         <div className='form-group'>
                             <input id='password' name='password' type='password' className='form-control' placeholder='Password'/>
                         </div>
                         </div>
                         <div className='row'>
-                            <div className='col-6'>
+                            <div className='col-6 no-padding-left'>
                                 <a className='register-link' href='/user/create'><button type='button' className='btn btn-default btn-block register-btn'>Register</button></a>
                             </div>
-                            <div className='col-6'>
+                            <div className='col-6 no-padding-right'>
                                 <button type='submit' className='btn btn-default btn-block login-btn'>Login</button>
                             </div>
                         </div>

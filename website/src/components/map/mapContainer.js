@@ -19,20 +19,20 @@ export class MapContainer extends Component {
     }
 
     componentDidMount() {
-        this.getStations().then(stations => {
+        this.getLatestWeather().then(stations => {
             this.setState({stations: stations})
         });
     }
 
-    getStations = async () => {
+    getLatestWeather = async () => {
         var stations = [];
-        const response = await fetch('/api/stations');
+        const response = await fetch('/api/weather/latest/');
         const body = await response.json();
-        if (response.status !== 200) throw Error(body.message);
-        if (body.stations) stations = body.stations;
+        if (response.status !== 200) throw Error(body.message); 
+        if (body.weather) stations = body.weather;
 
         return stations;
-    }
+    };
 
 
     render() {
@@ -40,14 +40,15 @@ export class MapContainer extends Component {
         return (
             <div className={"google-maps"}>
                 <Map google={this.props.google} zoom={3}>
-                    <InfoWindow onClose = {this.oninfoWindowClose}> </InfoWindow>
                     {this.state.stations
                         .map(station => {
                             return (
-                                <Marker
-                                    position={{lat: station.latitude, lng:station.longitude}}
-                                    // call another card which grabs the rows of the longitude and latitude
-                                />
+                                // <InfoWindow  key={station.station_name} onClose={this.oninfoWindowClose}>
+                                    <Marker
+                                        key={station.station_name}
+                                        position={{lat: station.latitude, lng:station.longitude}}
+                                    />
+                                // </InfoWindow>
                             );
                         })
                     }

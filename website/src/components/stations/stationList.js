@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import StationCard from './stationCard';
 import { FormGroup, Input, Alert } from 'reactstrap';
-import _ from 'lodash';
 
 // Station List component is a list of each station
 // Each connected station is built out of a single Station component in a loop here
@@ -29,7 +28,7 @@ class StationList extends Component {
     // Called when the component is first "mounted" (loaded) into the page
     // This fetches the stations from our API and adds them to our current state
     componentDidMount() {
-        this.getStations().then(stations => { 
+        this.getLatestWeather().then(stations => { 
             this.setState({ stations: stations });
         });
         this.interval = setInterval(this.updateStations, 3000);
@@ -44,7 +43,7 @@ class StationList extends Component {
     // This will access our API to get updated data and then updates the state
     // of the page
     updateStations = async () => {
-        this.getStations().then(stations => {
+        this.getLatestWeather().then(stations => {
             this.setState({ 
                 stations: stations, 
                 secondsElapsed: this.state.secondsElapsed + 3
@@ -54,13 +53,13 @@ class StationList extends Component {
     
     // Async call to fetch everything from our stations endpoint while the page is still loading
     // Returns an array of stations
-    getStations = async () => {
+    getLatestWeather = async () => {
         var stations = [];
-        const response = await fetch('/api/stations');
+        const response = await fetch('/api/weather/latest/');
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message); 
-        if (body.stations) stations = body.stations;
-        
+        if (body.weather) stations = body.weather;
+        console.log(stations);
         return stations;
     };
 
@@ -74,11 +73,8 @@ class StationList extends Component {
     // Returns false if the filter string is not in the station's name.
     // Returns true if the filter is empty or is within the station's name.
     filterStations(station){
-        console.log(station.name)
-        if (this.state.filter !== '' && !_.isNull(station.name))
-            return station.name.toLowerCase().includes(this.state.filter.toLowerCase());
-        else if (this.state.filter !== '' && _.isNull(station.name))
-            return station.mac_address.toLowerCase().includes(this.state.filter.toLowerCase());
+        if (this.state.filter !== '')
+            return station.station_name.toLowerCase().includes(this.state.filter.toLowerCase());
 
         return true;
     }
@@ -105,7 +101,7 @@ class StationList extends Component {
                     .filter(this.filterStations.bind(this))
                     .map(station => {
                         return (
-                            <StationCard key={station.station_id} station={station}></StationCard>
+                            <StationCard key={station.key} station={station}></StationCard>
                         );
                     }) 
                 }   

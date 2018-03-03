@@ -20,11 +20,11 @@ class CreateUserForm extends Component {
                 </div>
               </div>
               <div className='row'>
-                <div className='col-6'>
+                <div className='col-6 no-padding-left'>
                   <a className='return-link' href='/user/login'><button type='button' className='btn btn-default btn-block return-btn'>Return</button></a>                
                 </div>
-                <div className='col-6'>
-                  <button type='submit' className="btn btn-default btn-block" onClick='created()'>Create Account</button>
+                <div className='col-6 no-padding-right'>
+                  <button type='submit' className="btn btn-default btn-block" onClick='created()'>Submit</button>
                 </div>
               </div>
             </form>

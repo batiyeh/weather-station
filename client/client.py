@@ -3,7 +3,6 @@ import requests
 import time
 import json
 import datetime
-import netifaces
 try:
     import Adafruit_DHT
 except:
@@ -13,27 +12,11 @@ try:
 except:
     pass
 
-# Gets the ethernet0 mac address from the network interfaces
-# If it cannot find it, it will default to all 0s
-def getMacAddress():
-    interfaces = netifaces.interfaces()
-
-    try:
-        if ("eth0" in interfaces):
-            mac_address = netifaces.ifaddresses('eth0')[netifaces.AF_LINK][0]['addr']
-        else:
-            mac_address = "00:00:00:00:00:00" 
-
-    except:
-        mac_address = "00:00:00:00:00:00" 
-
-    return mac_address
-
 if __name__ == '__main__':
-    mac_address = getMacAddress()
     temperature = 0
     pressure = 0
     humidity = 0
+    apikey = 'bf1df01a9f633b9fece2'
     pin = 14
     
     try:
@@ -71,26 +54,23 @@ if __name__ == '__main__':
 
             # Construct our weatherdata json object
             weatherdata = {
+                "key": apikey,
                 "latitude": latitude,
                 "longitude": longitude,
-                "mac_address": mac_address,
                 "temperature": temperature,
                 "pressure": pressure,
-                "humidity": humidity,
-                "connected": 1	
+                "humidity": humidity
             }	
 
-            # Send a json object to be inserted into our database
-
-            r = requests.post('http://localhost:5000/api/stations/', data = weatherdata)
-
             try:
-                r = requests.post('http://localhost:5000/api/stations/', data = weatherdata)
-                print("Sent: " + json.dumps(weatherdata))	
+                r = requests.post('http://localhost:5000/api/weather/', data = weatherdata)
+                if (r.status_code == 200):
+                    print("Sent: " + json.dumps(weatherdata))
+                elif (r.status_code == 400):
+                    print("Invalid API key")
             except:
                 print("Lost connection to server...attemping reconnect.")
                 pass
-
 
             # Wait 3 seconds before restarting the loop
             time.sleep(3)
