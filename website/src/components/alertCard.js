@@ -88,8 +88,8 @@ class AlertCard extends Component {
 
                         </ModalBody>
                         <ModalFooter>
-                                <Button type='submit' color="primary" className="primary-themed-btn" >Update Alert</Button>{' '}
-                                <Button type='button' color="secondary" onClick={this.toggleAddAlert}>Cancel</Button>
+                                <Button type='submit' color="primary" onClick={this.toggleAlert} className="primary-themed-btn" >Update Alert</Button>{' '}
+                                <Button type='button' color="secondary" onClick={this.toggleAlert}>Cancel</Button>
                         </ModalFooter>
                     </Form>
                 </Modal>

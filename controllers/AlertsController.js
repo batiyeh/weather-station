@@ -50,14 +50,24 @@ router.post('/:id', async function(req,res){
     var value1 = req.body.value1;
     var value2 = req.body.value2;
 
-    var alert = await Alerts.where({alert_id: req.params.id}).save({
-        datatype: datatype,
+    await Alerts.where({alert_id: req.params.id}).save({
+        type: datatype,
         keyword: keyword
     },{patch:true})
-
+    
     await AlertValues.where({alert_id: req.params.id}).destroy();
 
-    
+    await new AlertValues({
+        value: value1,
+        alert_id: req.params.id
+    }).save();
+
+    if(value2){
+        await new AlertValues({
+            value: value2,
+            alert_id: req.params.id
+        }).save();
+    }
 
 })
 
