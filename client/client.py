@@ -64,7 +64,10 @@ if __name__ == '__main__':
 
             try:
                 r = requests.post('http://localhost:5000/api/weather/', data = weatherdata)
-                print("Sent: " + json.dumps(weatherdata))	
+                if (r.status_code == 200):
+                    print("Sent: " + json.dumps(weatherdata))
+                elif (r.status_code == 400):
+                    print("Invalid API key")
             except:
                 print("Lost connection to server...attemping reconnect.")
                 pass

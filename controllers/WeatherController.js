@@ -4,19 +4,27 @@ const bodyParser = require('body-parser');
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 const Weather = require('../models/Weather');
+const Station = require('../models/Station');
 const knex = require('knex')(require('../knexfile'));
 
 // Adds weather data to the db via post request
 router.post('/', async function (req, res) {
-    var result = await new Weather({
-        key: req.body.key,
-        temperature: req.body.temperature,
-        humidity: req.body.humidity,
-        pressure: req.body.pressure,
-        latitude: req.body.latitude,
-        longitude: req.body.longitude
-    }).save()
-    return res.json({result});
+    var station = await Station.where('key', req.body.key).fetch();
+    if (station){
+        var result = await new Weather({
+            key: req.body.key,
+            temperature: req.body.temperature,
+            humidity: req.body.humidity,
+            pressure: req.body.pressure,
+            latitude: req.body.latitude,
+            longitude: req.body.longitude
+        }).save()
+        return res.json({result});
+    }
+
+    else{
+        res.status(400).send('Invalid API key.')
+    }
 });
 
 // Returns all weather data from the database
