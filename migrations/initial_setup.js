@@ -6,15 +6,16 @@ exports.up = function(knex, Promise) {
         knex.schema.hasTable('stations').then(function(exists) {
             if (!exists) {
                 knex.schema.createTable('stations', function (table) {
-                    table.string('station_name', 64).primary();
+                    table.string('key', 20).primary();
+                    table.string('station_name', 64);
                     table.timestamp('created_at').defaultTo(knex.fn.now());
-                    table.string('key', 20);
+                    table.timestamp('last_connected').defaultTo(knex.fn.now());
                     table.dateTime('expiration');
                     table.boolean('connected');
                     table.string('username').references('username').inTable('users');
                 })
                 .then(() => {})
-                .catch((error) => {});
+                .catch((error) => {console.log(error)});
             }
         }),
         knex.schema.hasTable('weather').then(function(exists){
@@ -33,7 +34,7 @@ exports.up = function(knex, Promise) {
                     table.string('key', 20).references('key').inTable('stations');
                 })
                 .then(() =>{})
-                .catch((error) => {});
+                .catch((error) => {console.log(error)});
             }
         }),
         knex.schema.hasTable('users').then(function(exists){
@@ -48,7 +49,7 @@ exports.up = function(knex, Promise) {
                     table.integer('permissions').references('permission_id').inTable('permissions');
                 })
                 .then(() => {})
-                .catch((error) => {});
+                .catch((error) => {console.log(error)});
             }
         }),
         knex.schema.hasTable('permissions').then(function(exists){
@@ -58,7 +59,7 @@ exports.up = function(knex, Promise) {
                     table.string('type', 16);
                 })
                 .then(() => {})
-                .catch((error) => {});
+                .catch((error) => {console.log(error)});
             }
         }),
         knex.schema.hasTable('alerts').then(function(exists){
@@ -67,12 +68,12 @@ exports.up = function(knex, Promise) {
                     table.increments('alert_id').primary();
                     table.string('type');
                     table.string('keyword');
-                    table.dateTime('last_triggered');
+                    table.timestamp('last_triggered');
                     table.integer('value_id').references('value_id').inTable('alertvalues');
                     table.string('username').references('username').inTable('users');
                 })
                 .then(() => {})
-                .catch((error) => {});
+                .catch((error) => {console.log(error)});
             }
         }),
         knex.schema.hasTable('alertvalues').then(function(exists){
@@ -83,7 +84,7 @@ exports.up = function(knex, Promise) {
                     table.integer('alert_id').references('alert_id').inTable('alerts');
                 })
                 .then(() => {})
-                .catch((error) => {});
+                .catch((error) => {console.log(error)});
             }
         }),
         knex.schema.hasTable('alertmethods').then(function(exists){
@@ -94,7 +95,7 @@ exports.up = function(knex, Promise) {
                     table.integer('alert_id').references('alert_id').inTable('alerts');
                 })
                 .then(() => {})
-                .catch((error) => {});
+                .catch((error) => {console.log(error)});
             }
         })
     ])
@@ -115,42 +116,42 @@ exports.down = function(knex, Promise) {
             if (exists) {
                 knex.schema.dropTable('weather')
                 .then(() => {})
-                .catch((error) => {});
+                .catch((error) => {console.log(error)});
             }
         }),
         knex.schema.hasTable('users').then(function(exists) {
             if (exists) {
                 knex.schema.dropTable('users')
                 .then(() => {})
-                .catch((error) => {});
+                .catch((error) => {console.log(error)});
             }
         }),
         knex.schema.hasTable('permissions').then(function(exists){
             if (exists) {
                 knex.schema.dropTable('permissions')
                     .then(() => {})
-                    .catch((error) => {});
+                    .catch((error) => {console.log(error)});
             }
         }),
         knex.schema.hasTable('alerts').then(function(exists){
             if (exists) {
                 knex.schema.dropTable('alerts')
                     .then(() => {})
-                    .catch((error) => {});
+                    .catch((error) => {console.log(error)});
             }
         }),
         knex.schema.hasTable('alertvalues').then(function(exists){
             if (exists) {
                 knex.schema.dropTable('alertvalues')
                     .then(() => {})
-                    .catch((error) => {});
+                    .catch((error) => {console.log(error)});
             }
         }),
         knex.schema.hasTable('alertmethods').then(function(exists){
             if (exists) {
                 knex.schema.dropTable('alertmethods')
                     .then(() => {})
-                    .catch((error) => {});
+                    .catch((error) => {console.log(error)});
             }
         })
     ]);

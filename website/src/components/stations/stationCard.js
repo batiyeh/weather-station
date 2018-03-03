@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import '../../styles/stations.css';
 import { Input, Button, Card, CardText, CardTitle, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import ConnectionIndicator from './connectionIndicator';
-import $ from 'jquery';
+var moment = require('moment');
+moment().format();
 
 class StationCard extends Component {
     constructor(props){
@@ -42,9 +43,13 @@ class StationCard extends Component {
     // Format the station's uptime for user viewing
     // TODO: Make this uptime not just last time data was received
     getUptime() {
-        var updatedAt = new Date(this.props.station.created_at)
-        var updatedString = updatedAt.getHours() + ":" + updatedAt.getMinutes() + ":" + updatedAt.getSeconds();
-        return updatedString;
+        var uptime = "";
+        if (this.props.station.connected){
+            uptime = moment().diff(moment(this.props.station.last_connected))
+            uptime = moment.utc(uptime).format("HH:mm:ss");
+            // uptime = uptime.hours() + ":" + uptime.minutes() + ":" + uptime.seconds()
+        }
+        return uptime;
     }
 
     // Toggle the station detail modal open/closed
@@ -142,10 +147,6 @@ class StationCard extends Component {
                         { this.renderNameInput() }
                         <div className="station-detail-container">
                             <div className="station-detail-row">
-                                <span className="left">MAC Address</span>
-                                <span className="right">{this.props.station.mac_address}</span>
-                            </div><br/>
-                            <div className="station-detail-row">
                                 <span className="left">Temperature</span>
                                 <span className="right">{this.props.station.temperature}</span>
                             </div><br/>
@@ -175,7 +176,7 @@ class StationCard extends Component {
                             <div className="row">
                                 <div className="col-8 no-padding-left">
                                     <p className="station-name">
-                                        <ConnectionIndicator updated={this.props.station.created_at}></ConnectionIndicator>
+                                        <ConnectionIndicator updated={this.props.station.created_at} connected={this.props.station.connected} apikey={this.props.station.key}></ConnectionIndicator>
                                         { this.renderStationName() }
                                     </p>
                                 </div>

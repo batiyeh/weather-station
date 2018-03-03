@@ -16,7 +16,7 @@ if __name__ == '__main__':
     temperature = 0
     pressure = 0
     humidity = 0
-    apikey = '1780daaf72aa7bd51f0c'
+    apikey = 'bf1df01a9f633b9fece2'
     pin = 14
     
     try:

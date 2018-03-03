@@ -45,5 +45,15 @@ router.route('/:api_key')
         res.json({result});
     });
 
+router.route('/connected/:api_key')
+    // Update existing station 
+    .put(async function(req, res){
+        var result = await Station.where('key', req.params.api_key).save({
+            connected: req.body.connected,
+            last_connected: req.body.last_connected
+        }, {patch:true});
+        return res.json({result});
+    })
+
 
 module.exports = router;
