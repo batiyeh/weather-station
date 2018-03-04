@@ -2,14 +2,17 @@ const knex = require('knex')(require('../knexfile'))
 const nodemailer = require('nodemailer');
 
 getAlerts = async () =>{
+    //Gets all alerts currently in database and the user's email address/phone
     var alerts = await knex('alerts')
-    .select('alerts.alert_id', 'alerts.station_name', 'alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alertvalues.value', 'alertmethods.method', 'alerts.username', 'users.email')
+    .select('alerts.alert_id', 'alerts.station_name', 'alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alertvalues.value', 
+    'alertmethods.method', 'alerts.username', 'users.email', 'users.phone')
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
     .leftJoin('alertmethods', 'alerts.alert_id', '=', 'alertmethods.alert_id')
     .leftJoin('users', 'alerts.username', '=', 'users.username')
     return alerts;
 }
 getWeather = async () => {
+    //gets the most recent weather data from each station
     var weather = await knex('weather').select('w1.*', 'station_name', 'last_connected', 'connected').from('weather as w1').where('w1.created_at', function() {
         this.max('created_at').from('weather as w2').whereRaw('w2.apikey = w1.apikey')
     }).leftJoin('stations', 'stations.apikey', 'w1.apikey').orderBy('w1.created_at', 'desc')
@@ -20,7 +23,9 @@ comparison = async () => {
     var triggered = []
     var alerts = await getAlerts();
     var weather = await getWeather();
-    
+
+    //Checks each alert to see if it has been triggered
+    //Triggered alerts are added to an array
     alerts.map(alerts =>{
         weather.map(weather =>{
             if(alerts.keyword === 'above'){
@@ -38,7 +43,7 @@ comparison = async () => {
             }
         })
     })
-
+    //Checks the alert method on each triggered alert and calls the corresponding function
     triggered.map(triggered =>{
         if(triggered.method === 'email'){
             sendEmail(triggered, weather);
@@ -51,6 +56,9 @@ comparison = async () => {
         }
     })
 }
+//Sends the user an email for the triggered alert
+//Email includes the alert that was triggered and
+//the weather data at that station when it was triggered
 sendEmail = async (triggered, weather) =>{
     var triggeredStation = null;
     weather.map(weather=>{
@@ -58,7 +66,7 @@ sendEmail = async (triggered, weather) =>{
             triggeredStation = weather;
         }
     })
-    console.log(triggeredStation)
+
     var transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
@@ -73,7 +81,7 @@ sendEmail = async (triggered, weather) =>{
         to: triggered.email,
         from: 'wstationtestdod@gmail.com',
         subject: 'Inclement weather alert!',
-        text: 'You are receiving this message because the follwing alert was triggered:\n\n'+
+        text: 'You are receiving this message because the following alert was triggered:\n\n'+
         'The ' + triggered.type + ' is ' + triggered.keyword + ' ' + triggered.value + ' at station: ' + triggered.station_name + '\n\n'+
         'The current weather at ' + triggered.station_name + ' is: \n\n'+
         'Temperature: ' + triggeredStation.temperature + '\n' +
@@ -94,20 +102,3 @@ sendWebpage = async (triggered, weather) => {
 }
 
 comparison();
-
-
-
-
-/*
-
-1. Get all alerts + Values
-2. Get all weather stations
-3. 
-
-
-
-
-
-
-
-*/

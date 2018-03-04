@@ -177,7 +177,7 @@ class AlertsForm extends Component {
     }
     render(){
         return(
-            <div className='container'>
+            <div className='container alert-container'>
             <Modal isOpen={this.state.modal} toggle={this.resetValues}>
                 <ModalHeader toggle={this.toggleAddAlert}>Add Alert Trigger</ModalHeader>
                 <Form>
@@ -230,11 +230,15 @@ class AlertsForm extends Component {
                     </ModalFooter>
                 </Form>
             </Modal>
-                <div className='row'>
-                    {this.renderCards()}
+            <div className="row col-12 station-list-header">
+                <div className="col-8 left">
+                    <h5>Alert me when...</h5>
                 </div>
-                <div className='row'>
-                    <button type='button' className="btn btn-secondary btn-block profile-btn" onClick={this.toggleAddAlert}>Create Alert</button>
+                <div className="col-4 right">
+                    <Button type='button' className="btn btn-secondary btn-block add-btn" onClick={this.toggleAddAlert}>Add</Button>                    </div>
+                </div>
+                <div className='row'> 
+                    {this.renderCards()}
                 </div>
             </div>
         )

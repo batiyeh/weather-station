@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import '../styles/alerts.css';
 
 import { Input, Button, Card, CardText, Modal, ModalHeader, ModalBody, ModalFooter, Label, Form} from 'reactstrap';
 
@@ -99,12 +100,12 @@ class AlertCard extends Component {
     getParams(){
         if(this.state.keyword === 'between'){
             return(
-                <div> {this.state.station} {this.state.datatype} {this.state.keyword} {this.state.value1} {this.state.value2} </div>
+                <div> {this.state.station}'s {this.state.datatype} is {this.state.keyword} {this.state.value1} and {this.state.value2} </div>
             )
         }
         else{
             return(
-                <div> {this.state.station} {this.state.datatype} {this.state.keyword} {this.state.value1} </div>
+                <div> {this.state.station}'s {this.state.datatype} is {this.state.keyword} {this.state.value1} </div>
 
             )
         }
