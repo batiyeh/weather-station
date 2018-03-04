@@ -7,11 +7,14 @@ class AlertCard extends Component {
         super(props);
         this.state = {
             modal: false,
+            stations: this.props.stations,
+            station: this.props.alerts.station_name,
             keyword: this.props.alerts.keyword,
             datatype: this.props.alerts.type,
             value1: this.props.alerts.value,
             value2: this.props.value2,
         }
+        console.log(this.props.alerts);
         this.toggleAlert = this.toggleAlert.bind(this);
         this.resetValues = this.resetValues.bind(this);
     }
@@ -20,6 +23,7 @@ class AlertCard extends Component {
     await fetch('/api/alerts/' + this.props.alerts.alert_id, 
         {method: 'post', 
         body: JSON.stringify({
+            station: this.state.station,
             datatype: this.state.datatype,
             keyword: this.state.keyword,
             value1: this.state.value1,
@@ -41,6 +45,11 @@ class AlertCard extends Component {
         });
     }
     //when the user enters a new value, the state is updated with that value
+    onStationChange(value){
+        this.setState({
+            station: value
+        })
+    }
     onDatatypeChange(value){
         this.setState({
             datatype: value
@@ -79,16 +88,23 @@ class AlertCard extends Component {
             </div>)
         }
     }
+    renderStations(){
+        var options = []
+        this.state.stations.map(station => {
+            options.push(<option value={station.station_name}>{station.station_name}</option>)
+        })
+        return options;
+    }
     //prints out the params currently stored in the state of the card
     getParams(){
         if(this.state.keyword === 'between'){
             return(
-                <div> {this.state.datatype} {this.state.keyword} {this.state.value1} {this.state.value2} </div>
+                <div> {this.state.station} {this.state.datatype} {this.state.keyword} {this.state.value1} {this.state.value2} </div>
             )
         }
         else{
             return(
-                <div> {this.state.datatype} {this.state.keyword} {this.state.value1} </div>
+                <div> {this.state.station} {this.state.datatype} {this.state.keyword} {this.state.value1} </div>
 
             )
         }
@@ -96,6 +112,7 @@ class AlertCard extends Component {
     //resets state back to it's default values
     resetValues(){
         this.setState({
+            station: this.props.alerts.station_name,
             keyword: this.props.alerts.keyword,
             datatype: this.props.alerts.type,
             value1: this.props.alerts.value,
@@ -110,6 +127,12 @@ class AlertCard extends Component {
                     <ModalHeader toggle={this.toggleAlert}>Update Alert Trigger</ModalHeader>
                     <Form id='AlertForm'>
                         <ModalBody>
+                            <div className='form-group'>
+                                <Label>Station</Label>
+                                <Input type="select" name='station' id='station' value={this.state.station} onChange={e => this.onStationChange(e.target.value)}>
+                                    {this.renderStations()}
+                                </Input>
+                            </div>
                             <div className='form-group'>
                                 <Label>Data Type</Label>
                                 <Input type="select" name='datatype' id='datatype' value={this.state.datatype} onChange={e => this.onDatatypeChange(e.target.value)}>

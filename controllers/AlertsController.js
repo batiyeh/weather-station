@@ -70,6 +70,7 @@ router.post('/:id', async function(req,res){
 
     //finds alert based on id passed by frontend
     await Alerts.where({alert_id: req.params.id}).save({
+        station_name: station,
         type: datatype,
         keyword: keyword
     },{patch:true})

@@ -31,7 +31,7 @@ class AlertsForm extends Component {
         alerts = body.alerts;
         stations = body.stations;
 
-        this.setState({alerts: alerts, stations: stations});
+        this.setState({alerts: alerts, stations: stations, station:stations[0].station_name});
     }
     //takes the current data in the state and sends it to the backend, the page is then refreshed and the modal is closed
     createAlert = async () => {
@@ -116,15 +116,15 @@ class AlertsForm extends Component {
         for (var i = 0; i < this.state.alerts.length; i++){
             if(this.state.alerts[i+1]){
                 if(this.state.alerts[i].alert_id === this.state.alerts[i+1].alert_id){
-                    alertcards.push(<AlertCard alerts={this.state.alerts[i]} value2={this.state.alerts[i+1].value}/>)
+                    alertcards.push(<AlertCard stations={this.state.stations} alerts={this.state.alerts[i]} value2={this.state.alerts[i+1].value}/>)
                     i++;
                 }
                 else{
-                    alertcards.push(<AlertCard alerts={this.state.alerts[i]}/>)
+                    alertcards.push(<AlertCard stations={this.state.stations} alerts={this.state.alerts[i]}/>)
                 }
             }
             else{
-                alertcards.push(<AlertCard alerts={this.state.alerts[i]}/>)
+                alertcards.push(<AlertCard stations={this.state.stations} alerts={this.state.alerts[i]}/>)
             }
         }
         return alertcards
@@ -148,6 +148,8 @@ class AlertsForm extends Component {
                             <Input type="select" name='station' id='station' onChange={e => this.onStationChange(e.target.value)}>
                                 {this.renderStations()}
                             </Input>
+                        </div>
+                        <div className='form-group'>
                             <Label>Data Type</Label>
                             <Input type="select" name='datatype' id='datatype' onChange={e => this.onDatatypeChange(e.target.value)}>
                                 <option value='temperature'>Temperature</option>
