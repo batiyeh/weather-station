@@ -3,6 +3,10 @@
     margin: auto;
 }
 
+.content{
+    margin-top: 125px;
+}
+
 .station-container{
     text-align: left;
     width: 30%;
