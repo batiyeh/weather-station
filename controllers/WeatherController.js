@@ -57,12 +57,13 @@ router.get('/temp', async function (req, res) {
     var dayBeginTime =  day+' 00:00:00';
     var dayEndTime =  day+' 24:00:00';
     try{
-        var weather = await knex('weather').select('temperature','key').from('weather').whereBetween('created_at', [dayBeginTime, dayEndTime]);
+        var temp = await knex('weather').select('temperature','key').from('weather').whereBetween('created_at', [dayBeginTime, dayEndTime])
+            .leftJoin('stations', 'stations.key', 'weather.key');
     } catch(ex){
         console.log(ex);
         return res.json({});
     }
-    return res.json({ weather });
+    return res.json({ temp });
 });
 
 // Returns the latest weather data for each station from the database
