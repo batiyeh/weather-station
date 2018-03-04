@@ -101,12 +101,12 @@ class AlertsForm extends Component {
             email: !this.state.email
         })
     }
-    onSMSChange(value){
+    onSMSChange(){
         this.setState({
             sms: !this.state.sms
         })
     }
-    onWebpageChange(value){
+    onWebpageChange(){
         this.setState({
             webpage: !this.state.webpage
         })
@@ -176,7 +176,6 @@ class AlertsForm extends Component {
         this.toggleAddAlert();
     }
     render(){
-        {console.log(this.state)}
         return(
             <div className='container alert-container'>
             <Modal isOpen={this.state.modal} toggle={this.resetValues}>

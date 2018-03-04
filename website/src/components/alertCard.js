@@ -14,14 +14,20 @@ class AlertCard extends Component {
             datatype: this.props.alerts.type,
             value1: this.props.alerts.value,
             value2: this.props.value2,
+            email: false,
+            sms: false,
+            webpage: false
         }
+        this.getAlertMethods = this.getAlertMethods.bind(this);
         this.updateAlert = this.updateAlert.bind(this);
         this.toggleAlert = this.toggleAlert.bind(this);
         this.resetValues = this.resetValues.bind(this);
+        this.onEmailChange = this.onEmailChange.bind(this);
+        this.onSMSChange = this.onSMSChange.bind(this);
+        this.onWebpageChange = this.onWebpageChange.bind(this);
     }
     //passes the new values to the backend of an alert that the user is editing
     updateAlert = async () => {
-        console.log('updatealerts');
         await fetch('/api/alerts/' + this.props.alerts.alert_id, 
             {method: 'post', 
             body: JSON.stringify({
@@ -29,7 +35,10 @@ class AlertCard extends Component {
                 datatype: this.state.datatype,
                 keyword: this.state.keyword,
                 value1: this.state.value1,
-                value2: this.state.value2
+                value2: this.state.value2,
+                email: this.state.email,
+                sms: this.state.sms,
+                webpage: this.state.webpage
             }),
             headers: {
                 'Accept': 'application/json, text/plain, */*',
@@ -39,6 +48,28 @@ class AlertCard extends Component {
         });
         this.toggleAlert();
 
+    }
+    getAlertMethods = async () => {
+        var response = await fetch('/api/alerts/' + this.props.alerts.alert_id, {method: 'get'})
+        var body = await response.json();
+        body.methods.map(methodType=> {
+            if(methodType.method === 'email'){
+                this.setState({
+                    email: true
+                })
+            }
+            else if(methodType.method === 'sms'){
+                this.setState({
+                    sms: true
+                })
+            }
+            else if(methodType.method === 'webpage'){
+                this.setState({
+                    webpage: true
+                })
+            }
+        } )
+        this.toggleAlert();
     }
     //toggles edit alert modal
     toggleAlert(){
@@ -70,6 +101,21 @@ class AlertCard extends Component {
     onValue2Change(value){
         this.setState({
             value2: value
+        })
+    }
+    onEmailChange(){
+        this.setState({
+            email: !this.state.email
+        })
+    }
+    onSMSChange(){
+        this.setState({
+            sms: !this.state.sms
+        })
+    }
+    onWebpageChange(){
+        this.setState({
+            webpage: !this.state.webpage
         })
     }
     //if the user has a keyword selected the requires multiple inputs, it will display it dynamically
@@ -119,6 +165,9 @@ class AlertCard extends Component {
             datatype: this.props.alerts.type,
             value1: this.props.alerts.value,
             value2: this.props.value2,
+            email: false,
+            sms: false,
+            webpage: false
         })
         this.toggleAlert();
     }
@@ -129,6 +178,23 @@ class AlertCard extends Component {
                     <ModalHeader toggle={this.toggleAlert}>Update Alert Trigger</ModalHeader>
                     <Form id='AlertForm'>
                         <ModalBody>
+                            <div className ='form-group'>
+                                <Label>Alert Method</Label>
+                                <div className='row'>
+                                    <div className='form-check form-check-inline alert-method-container'>
+                                        <Label>Email</Label>
+                                        <Input type='checkbox' className='form-control alert-method-box' checked={this.state.email} onChange={this.onEmailChange} id='email' name='email'/>
+                                    </div>
+                                    <div className='form-check form-check-inline alert-method-container'>    
+                                        <Label>SMS</Label>
+                                        <Input type='checkbox' className='form-control alert-method-box' checked={this.state.sms} onChange={this.onSMSChange} id='sms' name='sms'/>
+                                    </div>
+                                        <Label>Webpage</Label>
+                                    <div className='form-check form-check-inline alert-method-container'>
+                                        <Input type='checkbox' className='form-control alert-method-box' checked={this.state.webpage} onChange={this.onWebpageChange} id='webpage' name='webpage'/>
+                                    </div>
+                                </div>
+                            </div>
                             <div className='form-group'>
                                 <Label>Station</Label>
                                 <Input type="select" name='station' id='station' value={this.state.station} onChange={e => this.onStationChange(e.target.value)}>
@@ -159,7 +225,7 @@ class AlertCard extends Component {
                         </ModalFooter>
                     </Form>
                 </Modal>
-                <Card onClick={this.toggleAlert} className='alertCard'>
+                <Card onClick={this.getAlertMethods} className='alertCard'>
                     <CardText className='cardText'>
                             {this.getParams()}
                     </CardText>

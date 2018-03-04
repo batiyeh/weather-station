@@ -27,7 +27,6 @@ router.post('/create', async function(req, res){
     }
 
     if(value1 && (email || sms || webpage)){
-        console.log('before alert creation');
         var newAlert = await new Alerts({
             station_name: station,
             type: datatype,
@@ -77,15 +76,20 @@ router.post('/', async function(req, res){
 
     //selects all alerts for user, joins alerts and alertvalues based on alert_id
     var alerts = await knex('alerts')
-    .select('alerts.alert_id', 'alerts.station_name', 'alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alertvalues.value', 'alertmethods.method')
+    .select('alerts.alert_id', 'alerts.station_name', 'alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alertvalues.value')
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
-    .leftJoin('alertmethods', 'alerts.alert_id', '=', 'alertmethods.alert_id')
     .where('alerts.username', req.user)
-    console.log(alerts);
 
     var stations = await Station.fetchAll();
 
     return res.status(200).json({alerts, stations});
+})
+router.get('/:id', async function(req, res){
+    var methods = await knex('alertmethods')
+    .select('alertmethods.method')
+    .where('alertmethods.alert_id','=', req.params.id);
+
+    return res.status(200).json({methods})
 })
 
 //post used to update an alert based on the :id passed by the frontend
@@ -101,9 +105,12 @@ router.post('/:id', async function(req,res){
     var sms = req.body.sms;
     var webpage = req.body.webpage;
 
+    if(keyword === 'between' && !value2){
+        return res.status(404);
+    }
+
     //finds alert based on id passed by frontend
-    if(value1){
-        console.log(value1, value2);
+    if(value1 && (email || sms || webpage)){
         await Alerts.where({alert_id: req.params.id}).save({
             station_name: station,
             type: datatype,
@@ -112,7 +119,7 @@ router.post('/:id', async function(req,res){
         
         //deletes old values associated with that alert
         await AlertValues.where({alert_id: req.params.id}).destroy();
-        await AlertMethods.where({alert_id: req.param.id}).destroy();
+        await AlertMethods.where({alert_id: req.params.id}).destroy();
 
         //stores new values, associates to alert by foreign key
         await new AlertValues({
@@ -138,13 +145,13 @@ router.post('/:id', async function(req,res){
                 alert_id: req.params.id
             }).save();
         }
-    }
-    //if two values are passed, creates row for second alert as well
-    if(value2){
-        await new AlertValues({
-            value: value2,
-            alert_id: req.params.id
-        }).save();
+            //if two values are passed, creates row for second alert as well
+        if(value2){
+            await new AlertValues({
+                value: value2,
+                alert_id: req.params.id
+            }).save();
+        }
     }
     return res.status(200).json({success: 'success'})
 })
