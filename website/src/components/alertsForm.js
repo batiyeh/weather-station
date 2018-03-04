@@ -15,7 +15,7 @@ class AlertsForm extends Component {
             value2: null,
             alerts: [],
             stations: [],
-            email: false,
+            email: true,
             sms: false,
             webpage: false,
         };
@@ -169,13 +169,14 @@ class AlertsForm extends Component {
             keyword: 'above',
             value1: null,
             value2: null,
-            email: false,
+            email: true,
             sms: false,
             webpage: false,
         })
         this.toggleAddAlert();
     }
     render(){
+        {console.log(this.state)}
         return(
             <div className='container alert-container'>
             <Modal isOpen={this.state.modal} toggle={this.resetValues}>

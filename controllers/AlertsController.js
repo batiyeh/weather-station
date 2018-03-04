@@ -22,43 +22,49 @@ router.post('/create', async function(req, res){
     var sms = req.body.sms;
     var webpage = req.body.webpage;
 
-    //creating new alert
-    var newAlert = await new Alerts({
-        station_name: station,
-        type: datatype,
-        keyword: keyword,
-        username: req.user
-    }).save();
-    //assigns values to new alert via foreign key
-    await new AlertValues({
-        value: value1,
-        alert_id: newAlert.attributes.id
+    if(keyword === 'between' && !value2){
+        return res.status(404);
+    }
 
-    }).save();
-    //if second value is passes, also assigns to new alert via foreign key
-    if(value2){
+    if(value1 && (email || sms || webpage)){
+        console.log('before alert creation');
+        var newAlert = await new Alerts({
+            station_name: station,
+            type: datatype,
+            keyword: keyword,
+            username: req.user
+        }).save();
+        //assigns values to new alert via foreign key
         await new AlertValues({
-            value: value2,
+            value: value1,
             alert_id: newAlert.attributes.id
+
         }).save();
-    }
-    if(email){
-        await new AlertMethods({
-            method: 'email',
-            alert_id: newAlert.attributes.id
-        }).save();
-    }
-    if(sms){
-        await new AlertMethods({
-            method: 'sms',
-            alert_id: newAlert.attributes.id
-        }).save();
-    }
-    if(webpage){
-        await new AlertMethods({
-            method: 'webpage',
-            alert_id: newAlert.attributes.id
-        }).save();
+
+        if(email){
+            await new AlertMethods({
+                method: 'email',
+                alert_id: newAlert.attributes.id
+            }).save();
+        }
+        if(sms){
+            await new AlertMethods({
+                method: 'sms',
+                alert_id: newAlert.attributes.id
+            }).save();
+        }
+        if(webpage){
+            await new AlertMethods({
+                method: 'webpage',
+                alert_id: newAlert.attributes.id
+            }).save();
+        }
+        if(value2){
+            await new AlertValues({
+                value: value2,
+                alert_id: newAlert.attributes.id
+            }).save();
+        }
     }
 
     //success
@@ -96,22 +102,43 @@ router.post('/:id', async function(req,res){
     var webpage = req.body.webpage;
 
     //finds alert based on id passed by frontend
-    await Alerts.where({alert_id: req.params.id}).save({
-        station_name: station,
-        type: datatype,
-        keyword: keyword
-    },{patch:true})
-    
-    //deletes old values associated with that alert
-    await AlertValues.where({alert_id: req.params.id}).destroy();
-    await AlertMethods.where({alert_id: req.param.id}).destroy();
+    if(value1){
+        console.log(value1, value2);
+        await Alerts.where({alert_id: req.params.id}).save({
+            station_name: station,
+            type: datatype,
+            keyword: keyword
+        },{patch:true})
+        
+        //deletes old values associated with that alert
+        await AlertValues.where({alert_id: req.params.id}).destroy();
+        await AlertMethods.where({alert_id: req.param.id}).destroy();
 
-    //stores new values, associates to alert by foreign key
-    await new AlertValues({
-        value: value1,
-        alert_id: req.params.id
-    }).save();
+        //stores new values, associates to alert by foreign key
+        await new AlertValues({
+            value: value1,
+            alert_id: req.params.id
+        }).save();
 
+        if(email){
+            await new AlertMethods({
+                method: 'email',
+                alert_id: req.params.id
+            }).save();
+        }
+        if(sms){
+            await new AlertMethods({
+                method: 'sms',
+                alert_id: req.params.id
+            }).save();
+        }
+        if(webpage){
+            await new AlertMethods({
+                method: 'webpage',
+                alert_id: req.params.id
+            }).save();
+        }
+    }
     //if two values are passed, creates row for second alert as well
     if(value2){
         await new AlertValues({
@@ -119,25 +146,6 @@ router.post('/:id', async function(req,res){
             alert_id: req.params.id
         }).save();
     }
-    if(email){
-        await new AlertMethods({
-            method: 'email',
-            alert_id: req.params.id
-        }).save();
-    }
-    if(sms){
-        await new AlertMethods({
-            method: 'sms',
-            alert_id: req.params.id
-        }).save();
-    }
-    if(webpage){
-        await new AlertMethods({
-            method: 'webpage',
-            alert_id: req.params.id
-        }).save();
-    }
-
     return res.status(200).json({success: 'success'})
 })
 

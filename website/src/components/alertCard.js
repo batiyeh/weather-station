@@ -15,28 +15,29 @@ class AlertCard extends Component {
             value1: this.props.alerts.value,
             value2: this.props.value2,
         }
-        console.log(this.props.alerts);
+        this.updateAlert = this.updateAlert.bind(this);
         this.toggleAlert = this.toggleAlert.bind(this);
         this.resetValues = this.resetValues.bind(this);
     }
     //passes the new values to the backend of an alert that the user is editing
     updateAlert = async () => {
-    await fetch('/api/alerts/' + this.props.alerts.alert_id, 
-        {method: 'post', 
-        body: JSON.stringify({
-            station: this.state.station,
-            datatype: this.state.datatype,
-            keyword: this.state.keyword,
-            value1: this.state.value1,
-            value2: this.state.value2
-        }),
-        headers: {
-            'Accept': 'application/json, text/plain, */*',
-            'Content-Type': 'application/json'
-        },
-        credentials:'include'
-    });
-    this.toggleAlert();
+        console.log('updatealerts');
+        await fetch('/api/alerts/' + this.props.alerts.alert_id, 
+            {method: 'post', 
+            body: JSON.stringify({
+                station: this.state.station,
+                datatype: this.state.datatype,
+                keyword: this.state.keyword,
+                value1: this.state.value1,
+                value2: this.state.value2
+            }),
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+            credentials:'include'
+        });
+        this.toggleAlert();
 
     }
     //toggles edit alert modal
