@@ -44,7 +44,7 @@ class ConnectionIndicator extends Component {
         // If the last updated time was within the last 4 seconds 
         // the status color is green
         if (((now - moment(updated)) >= 0) && 
-        ((now - moment(updated)) < 14000)){
+        ((now - moment(updated)) < 9000)){
             connectionStatusColor = '#48db28';
             if (this.state.connected === 0){
                 this.updateConnectedStatus();
@@ -54,7 +54,7 @@ class ConnectionIndicator extends Component {
         // If the last updated time was between the last 4 and 30 seconds,
         // the status color is yellow
         else if (((now - moment(updated)) < 30000) && 
-        ((now - moment(updated)) > 14000)) {
+        ((now - moment(updated)) > 9000)) {
             connectionStatusColor = '#fffa00';
         }
 

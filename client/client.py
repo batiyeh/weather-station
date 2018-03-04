@@ -154,7 +154,7 @@ def sendStoredWeather():
 if __name__ == '__main__':
     os.environ['TZ'] = 'America/Detroit'
     time.tzset()
-    url = "http://67.205.153.103:5000"
+    url = "http://localhost:5000"
     temperature = 0
     pressure = 0
     humidity = 0
@@ -224,7 +224,7 @@ if __name__ == '__main__':
                 pass
 
             # Wait 3 seconds before restarting the loop
-            time.sleep(10)
+            time.sleep(5)
 
     except(KeyboardInterrupt, SystemExit):
         print("\nKilling Thread...")
