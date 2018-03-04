@@ -6,6 +6,8 @@ router.use(bodyParser.json());
 const Weather = require('../models/Weather');
 const Station = require('../models/Station');
 const knex = require('knex')(require('../knexfile'));
+var moment = require('moment');
+moment().format();
 
 // Adds weather data to the db via post request
 router.post('/', async function (req, res) {
@@ -54,16 +56,16 @@ router.get('/latest', async function (req, res) {
 
 // Returns the temperature for the last 24 from each station from the database
 router.get('/temp', async function (req, res) {
-    var day = new Date(year, month, day);
+    var day = moment().format("YYYY-MM-DD");
     var dayBeginTime =  day+' 00:00:00';
-    var dayEndTime =  day+' 24:00:00';
+    var dayEndTime =  day+' 23:59:59';
     try{
-        var temp = await knex('weather').select('temperature','key').from('weather').whereBetween('created_at', [dayBeginTime, dayEndTime])
-            .leftJoin('stations', 'stations.key', 'weather.key');
+        var temp = await knex('weather').select('temperature','created_at').from('weather').whereBetween('created_at', [dayBeginTime.toString(), dayEndTime.toString()]);
     } catch(ex){
         console.log(ex);
         return res.json({});
     }
+    console.log(temp);
     return res.json({ temp });
 });
 
