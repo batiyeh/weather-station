@@ -8,6 +8,7 @@ class AlertsForm extends Component {
         super(props);
         this.state={
             modal: false,
+            station: '',
             datatype: 'temperature',
             keyword: 'above',
             value1: null,
@@ -37,6 +38,7 @@ class AlertsForm extends Component {
         await fetch('/api/alerts/create', 
             {method: 'post', 
             body: JSON.stringify({
+                station: this.state.station,
                 datatype: this.state.datatype,
                 keyword: this.state.keyword,
                 value1: this.state.value1,
@@ -59,6 +61,11 @@ class AlertsForm extends Component {
         });
     }
     //when the user enters information the datatype, keyword, value1, value2 are updated in the state
+    onStationChange(value){
+        this.setState({
+            station: value
+        })
+    }
     onDatatypeChange(value){
         this.setState({
             datatype: value
@@ -126,7 +133,6 @@ class AlertsForm extends Component {
         var options = []
         this.state.stations.map(station => {
             options.push(<option value={station.station_name}>{station.station_name}</option>)
-            //return(<option value={station.station_name}>{station.station_name}</option>)
         })
         return options;
     }

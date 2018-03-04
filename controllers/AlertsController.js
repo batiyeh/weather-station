@@ -12,10 +12,12 @@ const knex = require('knex')(require('../knexfile'));
 //post request that creates a new alert for the user
 router.post('/create', async function(req, res){
     //values passed by frontend
+    var station = req.body.station;
     var datatype = req.body.datatype;
     var keyword = req.body.keyword;
     var value1 = req.body.value1;
     var value2 = req.body.value2;
+    console.log(station);
     //creating new alert
     var newAlert = await new Alerts({
         type: datatype,
