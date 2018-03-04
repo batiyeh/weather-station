@@ -14,6 +14,7 @@ class AlertCard extends Component {
             value1: this.props.alerts.value,
             value2: this.props.value2,
         }
+        console.log(this.props.alerts);
         this.toggleAlert = this.toggleAlert.bind(this);
         this.resetValues = this.resetValues.bind(this);
     }

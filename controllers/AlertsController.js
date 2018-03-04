@@ -71,8 +71,9 @@ router.post('/', async function(req, res){
 
     //selects all alerts for user, joins alerts and alertvalues based on alert_id
     var alerts = await knex('alerts')
-    .select('alerts.alert_id', 'alerts.station_name', 'alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alertvalues.value')
+    .select('alerts.alert_id', 'alerts.station_name', 'alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alertvalues.value', 'alertmethods.method')
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
+    .leftJoin('alertmethods', 'alerts.alert_id', '=', 'alertmethods.alert_id')
     .where('alerts.username', req.user)
 
     var stations = await Station.fetchAll();
