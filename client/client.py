@@ -1,3 +1,4 @@
+
 # TODO Refactor code into a file wrapper class and a sensor data class
 import os
 import requests
@@ -10,6 +11,7 @@ try:
     import Adafruit_DHT
 except:
     pass
+from sense_hat import SenseHat
 try:
     from gps3.agps3threaded import AGPS3mechanism
 except:
@@ -70,7 +72,7 @@ def checkDataDirectory():
     if dataDir.is_dir():
         return True
     else:
-        os.makedirs(dataDir)
+        os.makedirs(str(dataDir))
         return True
 
 # Store data in a text file if we are not connected to the internet or the server is down
@@ -81,10 +83,10 @@ def storeOfflineWeather(weatherdata):
     if(checkDataDirectory()):
         file = Path("./data/" + today.strftime('%d%m%Y') + ".txt")
         if file.is_file():
-            with open(file, 'a') as f:
+            with open(str(file), 'a') as f:
                 f.write(data)
         else:
-            f = open(file, 'w')
+            f = open(str(file), 'w')
             f.write(data)
             f.close()
     return
@@ -94,9 +96,9 @@ def sendStoredWeather():
     dataDir = Path("./data")
     if (dataDir.is_dir()):
         # Iterate through each existing file in our data directory
-        for filename in os.listdir(dataDir):
+        for filename in os.listdir(str(dataDir)):
             # Open the file for reading
-            with open(os.path.join(dataDir, filename), 'r') as f:
+            with open(os.path.join(str(dataDir), str(filename)), 'r') as f:
                 weatherdata = []
                 lineIndex = 0
                 # Iterate through each line of the file
@@ -138,11 +140,12 @@ def sendStoredWeather():
                     print("Lost connection to server...unable to send stored data.")
                     pass
             # Remove the file once everything is sent over 
-            os.remove(os.path.join(dataDir, filename))
-    return
+            os.remove(os.path.join(str(dataDir), str(filename)))
 
 if __name__ == '__main__':
-    url = "http://localhost:5000"
+    os.environ['TZ'] = 'America/Detroit'
+    time.tzset()
+    url = "http://10.0.0.243:5000"
     temperature = 0
     pressure = 0
     humidity = 0
@@ -157,7 +160,11 @@ if __name__ == '__main__':
             agps_thread.run_thread()
         except:
             pass
-
+        
+        try:
+            sense = SenseHat()
+        except:
+            pass
         # Continuously loop
         while True:
             # Try to get latitude and longitude data from our receiver
@@ -176,7 +183,12 @@ if __name__ == '__main__':
                 temperature += 5
                 humidity += 5
 
-            pressure += 5
+            if (sense):
+                humidity = sense.humidity
+                temperature = sense.temperature
+                pressure = sense.pressure
+            else:
+                pressure += 5
 
             # Construct our weatherdata json object
             weatherdata = {
