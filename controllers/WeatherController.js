@@ -65,7 +65,6 @@ router.get('/temp', async function (req, res) {
         console.log(ex);
         return res.json({});
     }
-    console.log(temp);
     return res.json({ temp });
 });
 

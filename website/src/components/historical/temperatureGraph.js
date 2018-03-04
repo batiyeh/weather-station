@@ -15,6 +15,7 @@ import { select as d3Select } from 'd3-selection';
 class TemperatureGraph extends Component{
     constructor(props){
         super(props);
+        console.log(props);
         this.state = {
             data: this.props.data,
             height: this.props.height,
