@@ -75,6 +75,7 @@ router.post('/', async function(req, res){
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
     .leftJoin('alertmethods', 'alerts.alert_id', '=', 'alertmethods.alert_id')
     .where('alerts.username', req.user)
+    console.log(alerts);
 
     var stations = await Station.fetchAll();
 
