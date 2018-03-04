@@ -191,17 +191,17 @@ if __name__ == '__main__':
                 temperature = (9.0/5.0) * sense.temperature + 32
                 pressure = sense.pressure
             except:
-                temperature += 5
+                temperature = random.uniform(68.0, 78.0)
                 humidity = random.uniform(45.0, 55.0)
-                pressure += 5
+                pressure = random.uniform(900.0, 1075.0)
 
             # Construct our weatherdata json object
             weatherdata = {
                 "created_at": str(datetime.datetime.now()),
                 "apikey": apikey,
-                "temperature": temperature,
-                "humidity": humidity,
-                "pressure": pressure,
+                "temperature": round(temperature, 2),
+                "humidity": round(humidity, 2),
+                "pressure": round(pressure, 2),
                 "latitude": latitude,
                 "longitude": longitude
             }	
