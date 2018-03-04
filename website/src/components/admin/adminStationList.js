@@ -12,7 +12,7 @@ class AdminStationList extends Component {
         this.state = {
             stations: [],
             modal: false,
-            key: '',
+            apikey: '',
             name: ''
         };
         this.toggleAddStationModal = this.toggleAddStationModal.bind(this);
@@ -61,7 +61,7 @@ class AdminStationList extends Component {
     addStation = async() => {
         var response = await fetch('/api/stations/', 
             {method: 'post', 
-             body: JSON.stringify({station_name: this.state.name, api_key: this.state.key}),
+             body: JSON.stringify({station_name: this.state.name, api_key: this.state.apikey}),
              headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json'
@@ -99,7 +99,7 @@ class AdminStationList extends Component {
             var token = buf.toString('hex');
             this.setState({
                 modal: !this.state.modal,
-                key: token
+                apikey: token
             });
         }.bind(this));
     }
@@ -117,7 +117,7 @@ class AdminStationList extends Component {
                                 </div>
                                 <div className='form-group'>
                                     <label>API Key:</label>
-                                    <input id='api_key' name='api_key' type='text' className='form-control' placeholder='' value={this.state.key} disabled/>
+                                    <input id='api_key' name='api_key' type='text' className='form-control' placeholder='' value={this.state.apikey} disabled/>
                                 </div>
                             </form>
                         </ModalBody>

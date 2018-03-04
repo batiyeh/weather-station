@@ -9,7 +9,7 @@ class ConnectionIndicator extends Component {
         this.state = {
             color: '#e21f1f',
             connected: this.props.connected,
-            key: this.props.apikey
+            apikey: this.props.apikey
         }
     }
 
@@ -74,7 +74,7 @@ class ConnectionIndicator extends Component {
     }
 
     updateConnectedStatus = async() => {
-        var response = await fetch('/api/stations/connected/' + this.state.key, 
+        var response = await fetch('/api/stations/connected/' + this.state.apikey, 
             {method: 'put', 
              body: JSON.stringify({
                 connected: !this.state.connected,
