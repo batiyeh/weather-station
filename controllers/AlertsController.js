@@ -20,6 +20,7 @@ router.post('/create', async function(req, res){
     console.log(station);
     //creating new alert
     var newAlert = await new Alerts({
+        station_name: station,
         type: datatype,
         keyword: keyword,
         username: req.user
@@ -48,7 +49,7 @@ router.post('/', async function(req, res){
 
     //selects all alerts for user, joins alerts and alertvalues based on alert_id
     var alerts = await knex('alerts')
-    .select('alerts.alert_id', 'alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alertvalues.value')
+    .select('alerts.alert_id', 'alerts.station_name', 'alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alertvalues.value')
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
     .where('alerts.username', req.user)
 
@@ -61,6 +62,7 @@ router.post('/', async function(req, res){
 router.post('/:id', async function(req,res){
 
     //values passed by frontend
+    var station = req.body.station;
     var datatype = req.body.datatype;
     var keyword = req.body.keyword;
     var value1 = req.body.value1;
