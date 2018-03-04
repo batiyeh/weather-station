@@ -224,7 +224,7 @@ if __name__ == '__main__':
                 pass
 
             # Wait 3 seconds before restarting the loop
-            time.sleep(3)
+            time.sleep(10)
 
     except(KeyboardInterrupt, SystemExit):
         print("\nKilling Thread...")

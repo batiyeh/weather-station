@@ -31,7 +31,7 @@ class StationList extends Component {
         this.getLatestWeather().then(stations => { 
             this.setState({ stations: stations });
         });
-        this.interval = setInterval(this.updateStations, 3000);
+        this.interval = setInterval(this.updateStations, 10000);
     }
 
     // Called when the component is destroyed and removed from the page
