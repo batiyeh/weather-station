@@ -6,6 +6,7 @@ import time
 import json
 import datetime
 import sys
+from collections import OrderedDict
 import random
 from pathlib import Path
 try:
@@ -63,9 +64,9 @@ def constructWeatherString(weatherdata):
     data = ""
     for val in weatherdata:
         if (index == 0):
-            data = data + str(weatherdata[val])
+            data = data + str(weatherdata[val]).replace('(', '').replace(')', '')
         else:
-            data = data + ", " + str(weatherdata[val])
+            data = data + ", " + str(weatherdata[val]).replace('(', '').replace(')', '').replace(',', '').replace('\'', '')
         index += 1
     data = data + "\n"
     return data
@@ -108,10 +109,14 @@ def sendStoredWeather():
                 # Iterate through each line of the file
                 for data in f:
                     colIndex = 0
-                    linedata = {
-                        "created_at": "", "apikey": "", "temperature": "", "humidity": "", 
-                        "pressure": "", "latitude": "", "longitude": ""
-                    }	
+                    linedata = OrderedDict()
+                    linedata["created_at"] = ""
+                    linedata["apikey"] = ""
+                    linedata["temperature"] = ""
+                    linedata["humidity"] = ""
+                    linedata["pressure"] = ""
+                    linedata["latitude"] = ""
+                    linedata["longtiude"] = ""
 
                     # Strip the commas and whitespace from each line and set our data in an array
                     data = data.rstrip('\n')
@@ -149,7 +154,7 @@ def sendStoredWeather():
 if __name__ == '__main__':
     os.environ['TZ'] = 'America/Detroit'
     time.tzset()
-    url = "http://localhost:5000"
+    url = "http://67.205.153.103:5000"
     temperature = 0
     pressure = 0
     humidity = 0
@@ -196,15 +201,14 @@ if __name__ == '__main__':
                 pressure = random.uniform(900.0, 1075.0)
 
             # Construct our weatherdata json object
-            weatherdata = {
-                "created_at": str(datetime.datetime.now()),
-                "apikey": apikey,
-                "temperature": round(temperature, 2),
-                "humidity": round(humidity, 2),
-                "pressure": round(pressure, 2),
-                "latitude": latitude,
-                "longitude": longitude
-            }	
+            weatherdata = OrderedDict()
+            weatherdata["created_at"] = str(datetime.datetime.now())
+            weatherdata["apikey"] = apikey
+            weatherdata["temperature"] = round(temperature, 2)
+            weatherdata["humidity"] = round(humidity, 2),
+            weatherdata["pressure"] = round(pressure, 2),
+            weatherdata["latitude"] = latitude,
+            weatherdata["longtiude"] = longitude
 
             try:
                 r = requests.post(url + '/api/weather', data = weatherdata)
