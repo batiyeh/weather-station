@@ -16,7 +16,7 @@ class checkboxes extends Component{
     };
 }
 
-checkboxChange (checked,option) {
+checkboxChange(checked,options) {
     const {options} = this.state;
     var conOptions = [...options];
     for (var i in conOptions){
@@ -33,11 +33,6 @@ render(){
     const {option} = this.state;
 
     return(
-        <div id="root"></div>
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.min.js"> </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.min.js"></script>
-
         <div>
             {
                 options.map(option => {
