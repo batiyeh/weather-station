@@ -24,11 +24,11 @@ except:
 # Get the API key for server requests
 # TODO: Encrypt the key in the file so it is not accessible
 def getApiKey(url):
-    keyFile = Path("./.api-key.txt")
+    keyFile = Path(os.path.dirname(os.path.abspath(__file__)) + "/.api-key.txt")
 
     # If the file already exists read from it
     if keyFile.is_file():
-        with open('./.api-key.txt', 'r') as f:
+        with open(str(os.path.dirname(os.path.abspath(__file__))) + "/.api-key.txt", 'r') as f:
             key = f.readline()
         return key
 
@@ -43,7 +43,7 @@ def getApiKey(url):
                 r = requests.post(url + '/api/weather/verifyKey', data = {"apikey": key})
                 if (r.status_code == 200):
                     print("Key Verified.")
-                    f = open('./.api-key.txt', 'w')
+                    f = open(str(os.path.dirname(os.path.abspath(__file__))) + "/.api-key.txt", 'w')
                     f.write(key)
                     f.close()
                     verified = True
@@ -72,7 +72,7 @@ def constructWeatherString(weatherdata):
 
 # Check if we have the data directory already. If we don't, make it
 def checkDataDirectory():
-    dataDir = Path("./data")
+    dataDir = Path(os.path.dirname(os.path.abspath(__file__)) + "/data")
     if dataDir.is_dir():
         return True
     else:
@@ -85,7 +85,7 @@ def storeOfflineWeather(weatherdata):
     today = datetime.date.today()
     data = constructWeatherString(weatherdata)
     if(checkDataDirectory()):
-        file = Path("./data/" + today.strftime('%d%m%Y') + ".txt")
+        file = Path(os.path.dirname(os.path.abspath(__file__)) + "/data" + today.strftime('%d%m%Y') + ".txt")
         if file.is_file():
             with open(str(file), 'a') as f:
                 f.write(data)
@@ -97,7 +97,7 @@ def storeOfflineWeather(weatherdata):
 
 # Send any stored weather data we may have left after reconnecting to the server
 def sendStoredWeather():
-    dataDir = Path("./data")
+    dataDir = Path(os.path.dirname(os.path.abspath(__file__)) + "/data")
     if (dataDir.is_dir()):
         # Iterate through each existing file in our data directory
         for filename in os.listdir(str(dataDir)):
