@@ -1,7 +1,8 @@
-import React from "react";
+import React, { Component } from 'react';
 import { FormGroup, Input} from 'reactstrap';
+import '../../styles/map.css';
 
-class stationSidebar extends React.Component {
+class StationSidebar extends Component {
     constructor(){
         super();
         this.state = {
@@ -9,6 +10,7 @@ class stationSidebar extends React.Component {
             filter: ''
         }
     }
+
 
     componentWillMount(){
         this.setState({stations: [
@@ -25,30 +27,38 @@ class stationSidebar extends React.Component {
     }
 
     filterStations(stations){
-        console.log(stations.name)
-        if (this.state.filter !== '' && !_.isNull(stations.name))
-            return stations.name.toLowerCase() .includes(this.state.filter.toLocaleLowerCase());
-        else if (this.state.filter !== '' && _.isNull(stations.name))
-            return stations.mac_address.toLowerCase() .includes(this.state.filter.toLowerCase());
+        if (this.state.filter !== '')
+            return stations.station_name.toLowerCase().includes(this.state.filter.toLowerCase());
+
         return true;
     }
 
 
     render() {
-        return(
-            <div className="container">
-                <FormGroup>
-                    <Input type="text" className="filterWidth" name="stationFilter" id="stationFilter" placeholder="Station Filter" onChange={this.filterOnChange.bind(this)} />
-                </FormGroup>
-            <u1 className = "sidebar_station_name">
-                {this.state.stations
-                    .filter(this.filterStations.bind(this)
-                    )};
-                <stationSidebar stations={this.state.stations} />
-            </u1>
-            </div>
-        );
-    }
+    return(
+        <div class = "left"> Station Name
+            <FormGroup>
+                <Input type="text" className="filterWidth" name="stationFilter" id="stationFilter" placeholder="Station Filter" onChange={this.filterOnChange.bind(this)} />
+            </FormGroup>
+
+        </div>
+
+    )}
 }
 
-export default stationSidebar;
+    // render() {
+    //     return(
+    //         <div class="left">
+    //
+    //         <div className="container">
+    //             <FormGroup>
+    //                 <Input type="text" className="filterWidth" name="stationFilter" id="stationFilter" placeholder="Station Filter" onChange={this.filterOnChange.bind(this)} />
+    //             </FormGroup>
+    //             {/*{this.state.stations*/}
+    //             {/*.map(stations => {*/}
+    //                 {/*key = {stations.key} station={station}*/}
+    //             {/*)}};*/}
+    //
+    //         </div>
+
+export default StationSidebar;

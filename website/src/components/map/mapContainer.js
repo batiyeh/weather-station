@@ -38,7 +38,7 @@ export class MapContainer extends Component {
     render() {
 
         return (
-            <div className={"google-maps"}>
+            <div id={"google-maps"} style={"width:100%;height:400px;"}>
                 <Map google={this.props.google} zoom={3}>
                     {this.state.stations
                         .map(station => {
