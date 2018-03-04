@@ -85,7 +85,7 @@ def storeOfflineWeather(weatherdata):
     today = datetime.date.today()
     data = constructWeatherString(weatherdata)
     if(checkDataDirectory()):
-        file = Path(os.path.dirname(os.path.abspath(__file__)) + "/data" + today.strftime('%d%m%Y') + ".txt")
+        file = Path(os.path.dirname(os.path.abspath(__file__)) + "/data/" + today.strftime('%d%m%Y') + ".txt")
         if file.is_file():
             with open(str(file), 'a') as f:
                 f.write(data)
