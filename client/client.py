@@ -6,12 +6,16 @@ import time
 import json
 import datetime
 import sys
+import random
 from pathlib import Path
 try:
     import Adafruit_DHT
 except:
     pass
-from sense_hat import SenseHat
+try:
+    from sense_hat import SenseHat
+except:
+    pass
 try:
     from gps3.agps3threaded import AGPS3mechanism
 except:
@@ -171,7 +175,6 @@ if __name__ == '__main__':
             try:
                 latitude = agps_thread.data_stream.lat
                 longitude = agps_thread.data_stream.lon
-            # For running from a laptop and we just need fake data
             except:
                 latitude = "n/a"
                 longitude = "n/a"
@@ -180,14 +183,16 @@ if __name__ == '__main__':
             try:
                 humidity, temperature = Adafruit_DHT.read(Adafruit_DHT.AM2302, pin)
             except:
-                temperature += 5
-                humidity += 5
+                pass
 
-            if (sense):
+            # Attempt to retrieve from sense hat
+            try:
                 humidity = sense.humidity
-                temperature = sense.temperature
+                temperature = (9.0/5.0) * sense.temperature + 32
                 pressure = sense.pressure
-            else:
+            except:
+                temperature += 5
+                humidity = random.uniform(45.0, 55.0)
                 pressure += 5
 
             # Construct our weatherdata json object

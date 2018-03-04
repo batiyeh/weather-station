@@ -44,7 +44,7 @@ router.get('/latest', async function (req, res) {
     try{
         var weather = await knex('weather').select('w1.*', 'station_name', 'last_connected', 'connected').from('weather as w1').where('w1.created_at', function() {
             this.max('created_at').from('weather as w2').whereRaw('w2.apikey = w1.apikey')
-        }).leftJoin('stations', 'stations.apikey', 'w1.apikey').orderBy('w1.created_at', 'desc')
+        }).leftJoin('stations', 'stations.apikey', 'w1.apikey').orderBy('stations.last_connected', 'asc')
     } catch(ex){
         console.log(ex);
         return res.json({});

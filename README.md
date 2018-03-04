@@ -112,7 +112,7 @@ This is meant to be used on a Raspberry Pi running Raspbian OS but can be instal
 
 ### Raspberry Pi
 This project requires the following dependencies before continuing the install:
-1. Python 3.5+
+1. Python 3.5+ (included on Raspberry Pi 3 Model B)
 
 After you have installed the above dependencies:
 1. Open up terminal and navigate to where you want to store this project
@@ -127,8 +127,8 @@ sudo pip install -r pi-requirements.txt
 ```
 4. Open up client.py in a text editor and ensure the websocket connection is going to the IP of your server. This will be changed in the future to be more automatic
 ```python
-uri = 'ws://localhost:5000/weatherstations/'
-# Change to be uri = 'ws://yourserverip:5000/weatherstations/'
+url = "http://localhost:5000"
+# Change to be url = "http://yourip:5000"
 ```
 5. Run the program with sudo
 ```sh
@@ -186,3 +186,16 @@ cpgs -s
 
 For pin numbering check this website with the GPIO Pinout Diagram
 https://www.jameco.com/Jameco/workshop/circuitnotes/raspberry-pi-circuit-note.html
+
+5. Follow [this](https://www.modmypi.com/blog/am2302-temphumidity-sensor) tutorial for installing the proper software 
+
+#### Sense Hat
+1. Install the sense hat library
+```sh
+sudo apt-get update
+sudo apt-get install sense-hat
+```
+2. Reboot Raspberry Pi
+```sh
+sudo reboot
+```
