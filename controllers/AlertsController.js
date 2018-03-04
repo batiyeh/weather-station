@@ -5,6 +5,7 @@ router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 const Alerts = require('../models/Alerts');
 const AlertValues = require('../models/AlertValues');
+const AlertMethods = require('../models/AlertMethods');
 const Station = require('../models/Station')
 const knex = require('knex')(require('../knexfile'));
 
@@ -17,7 +18,10 @@ router.post('/create', async function(req, res){
     var keyword = req.body.keyword;
     var value1 = req.body.value1;
     var value2 = req.body.value2;
-    console.log(station);
+    var email = req.body.email;
+    var sms = req.body.sms;
+    var webpage = req.body.webpage;
+
     //creating new alert
     var newAlert = await new Alerts({
         station_name: station,
@@ -35,6 +39,24 @@ router.post('/create', async function(req, res){
     if(value2){
         await new AlertValues({
             value: value2,
+            alert_id: newAlert.attributes.id
+        }).save();
+    }
+    if(email){
+        await new AlertMethods({
+            method: 'email',
+            alert_id: newAlert.attributes.id
+        }).save();
+    }
+    if(sms){
+        await new AlertMethods({
+            method: 'sms',
+            alert_id: newAlert.attributes.id
+        }).save();
+    }
+    if(webpage){
+        await new AlertMethods({
+            method: 'webpage',
             alert_id: newAlert.attributes.id
         }).save();
     }
@@ -67,6 +89,9 @@ router.post('/:id', async function(req,res){
     var keyword = req.body.keyword;
     var value1 = req.body.value1;
     var value2 = req.body.value2;
+    var email = req.body.email;
+    var sms = req.body.sms;
+    var webpage = req.body.webpage;
 
     //finds alert based on id passed by frontend
     await Alerts.where({alert_id: req.params.id}).save({
@@ -77,6 +102,7 @@ router.post('/:id', async function(req,res){
     
     //deletes old values associated with that alert
     await AlertValues.where({alert_id: req.params.id}).destroy();
+    await AlertMethods.where({alert_id: req.param.id}).destroy();
 
     //stores new values, associates to alert by foreign key
     await new AlertValues({
@@ -91,6 +117,25 @@ router.post('/:id', async function(req,res){
             alert_id: req.params.id
         }).save();
     }
+    if(email){
+        await new AlertMethods({
+            method: 'email',
+            alert_id: req.params.id
+        }).save();
+    }
+    if(sms){
+        await new AlertMethods({
+            method: 'sms',
+            alert_id: req.params.id
+        }).save();
+    }
+    if(webpage){
+        await new AlertMethods({
+            method: 'webpage',
+            alert_id: req.params.id
+        }).save();
+    }
+
     return res.status(200).json({success: 'success'})
 })
 

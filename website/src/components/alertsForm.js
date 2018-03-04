@@ -14,8 +14,15 @@ class AlertsForm extends Component {
             value1: null,
             value2: null,
             alerts: [],
-            stations: []
+            stations: [],
+            email: false,
+            sms: false,
+            webpage: false,
         };
+        this.resetValues = this.resetValues.bind(this);
+        this.onEmailChange = this.onEmailChange.bind(this);
+        this.onSMSChange = this.onSMSChange.bind(this);
+        this.onWebpageChange = this.onWebpageChange.bind(this);
         this.toggleAddAlert = this.toggleAddAlert.bind(this);
         
     }
@@ -42,7 +49,10 @@ class AlertsForm extends Component {
                 datatype: this.state.datatype,
                 keyword: this.state.keyword,
                 value1: this.state.value1,
-                value2: this.state.value2
+                value2: this.state.value2,
+                email: this.state.email,
+                sms: this.state.sms,
+                webpage: this.state.webpage
             }),
             headers: {
                 'Accept': 'application/json, text/plain, */*',
@@ -52,7 +62,7 @@ class AlertsForm extends Component {
         });
 
         await this.getAlerts();
-        this.toggleAddAlert();
+        this.resetValues();
     }
     //toggles modal for creating a new alert
     toggleAddAlert(){
@@ -86,6 +96,21 @@ class AlertsForm extends Component {
             value2: value
         })
     }
+    onEmailChange(){
+        this.setState({
+            email: !this.state.email
+        })
+    }
+    onSMSChange(value){
+        this.setState({
+            sms: !this.state.sms
+        })
+    }
+    onWebpageChange(value){
+        this.setState({
+            webpage: !this.state.webpage
+        })
+    }
     //displays either one input box or two to the user depending on what keyword they currently have selected
     renderValues(){
         if(this.state.keyword === 'between'){
@@ -93,7 +118,7 @@ class AlertsForm extends Component {
             <div className='form-group'> 
                 <Label>Values</Label>
                 <Input type='text' name='value1' id='value1' onChange={e => this.onValue1Change(e.target.value)}/>
-                <Input type='text' name='value2' id='value2'onChange={e => this.onValue2Chage(e.target.value)}/>
+                <Input type='text' name='value2' id='value2'onChange={e => this.onValue2Change(e.target.value)}/>
             </div>)
         }
         else{
@@ -136,13 +161,44 @@ class AlertsForm extends Component {
         })
         return options;
     }
+    resetValues(){
+        this.setState({
+            modal: false,
+            station: this.state.stations[0].station_name,
+            datatype: 'temperature',
+            keyword: 'above',
+            value1: null,
+            value2: null,
+            email: false,
+            sms: false,
+            webpage: false,
+        })
+        this.toggleAddAlert();
+    }
     render(){
         return(
             <div className='container'>
-            <Modal isOpen={this.state.modal} toggle={this.toggleAddAlert}>
+            <Modal isOpen={this.state.modal} toggle={this.resetValues}>
                 <ModalHeader toggle={this.toggleAddAlert}>Add Alert Trigger</ModalHeader>
                 <Form>
                     <ModalBody>
+                        <div className ='form-group'>
+                            <Label>Alert Method</Label>
+                            <div className='row'>
+                                <div className='form-check form-check-inline alert-method-container'>
+                                    <Label>Email</Label>
+                                    <Input type='checkbox' className='form-control alert-method-box' checked={this.state.email} onChange={this.onEmailChange} id='email' name='email'/>
+                                </div>
+                                <div className='form-check form-check-inline alert-method-container'>    
+                                    <Label>SMS</Label>
+                                    <Input type='checkbox' className='form-control alert-method-box' checked={this.state.sms} onChange={this.onSMSChange} id='sms' name='sms'/>
+                                </div>
+                                    <Label>Webpage</Label>
+                                <div className='form-check form-check-inline alert-method-container'>
+                                    <Input type='checkbox' className='form-control alert-method-box' checked={this.state.webpage} onChange={this.onWebpageChange} id='webpage' name='webpage'/>
+                                </div>
+                            </div>
+                        </div>
                         <div className='form-group'>
                             <Label>Station</Label>
                             <Input type="select" name='station' id='station' onChange={e => this.onStationChange(e.target.value)}>
@@ -170,39 +226,15 @@ class AlertsForm extends Component {
                     </ModalBody>
                     <ModalFooter>
                             <Button type='button' color="primary" onClick={this.createAlert} className="primary-themed-btn" >Create Alert</Button>{' '}
-                            <Button type='button' color="secondary" onClick={this.toggleAddAlert}>Cancel</Button>
+                            <Button type='button' color="secondary" onClick={this.resetValues}>Cancel</Button>
                     </ModalFooter>
                 </Form>
             </Modal>
-                <div className="row">
-                    <div className="col-4">
-                        <div className="form-check form-check-inline alert-method-container">
-                            <input type='checkbox' className="form-control alert-method-box" id='email' name='email' value='email'/>
-                            <label className="form-check-label">email</label>
-                        </div>
-                    </div>
-                    <div className="col-4">
-                        <div className="form-check form-check-inline alert-method-container">
-                            <input type='checkbox' className="form-control alert-method-box" id='sms' name='sms' value='sms'/>
-                            <label className="form-check-label">sms</label>
-                        </div>
-                    </div>
-                    <div className="col-4">
-                        <div className="form-check form-check-inline alert-method-container">
-                            <input type='checkbox' className="form-control alert-method-box" id='webpage' name='webpage' value='webpage'/>
-                            <label className="form-check-label">webpage</label>
-                        </div>
-                    </div>
-                    {/* {console.log(this.state.alerts)} */}
-                    <div className='row'>
-                        {this.renderCards()}
-                    </div>
-                    <div className='row'>
-                        <button type='button' className="btn btn-secondary btn-block profile-btn" onClick={this.toggleAddAlert}>Create Alert</button>
-
-                    </div>
+                <div className='row'>
+                    {this.renderCards()}
                 </div>
-                <div id='alerts'>
+                <div className='row'>
+                    <button type='button' className="btn btn-secondary btn-block profile-btn" onClick={this.toggleAddAlert}>Create Alert</button>
                 </div>
             </div>
         )
