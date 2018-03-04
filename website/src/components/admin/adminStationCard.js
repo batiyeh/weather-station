@@ -8,7 +8,7 @@ class AdminStationCard extends Component {
         this.state = {
             modal: false,
             name: props.station.station_name,
-            key: props.station.key
+            apikey: props.station.apikey
         }
 
         this.toggleEditStation = this.toggleEditStation.bind(this);
@@ -22,7 +22,7 @@ class AdminStationCard extends Component {
     }
 
     saveStationName = async() => {
-        var response = await fetch('/api/stations/' + this.props.station.key, 
+        var response = await fetch('/api/stations/' + this.props.station.apikey, 
             {method: 'put', 
              body: JSON.stringify({station_name: this.state.name}),
              headers: {
@@ -54,7 +54,7 @@ class AdminStationCard extends Component {
                         </div>
                         <div className='form-group'>
                             <label>API Key:</label>
-                            <input id='api_key' name='api_key' type='text' className='form-control' placeholder='' value={this.state.key} disabled/>
+                            <input id='api_key' name='api_key' type='text' className='form-control' placeholder='' value={this.state.apikey} disabled/>
                         </div>
                     </ModalBody>
                     <ModalFooter>

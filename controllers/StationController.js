@@ -11,7 +11,7 @@ router.post('/', async function (req, res) {
     // If the station doesn't exist, create a new one and insert it.
     var result = await new Station({
         station_name: req.body.station_name,
-        key: req.body.api_key,
+        apikey: req.body.api_key,
         expiration: req.body.expiration,
         connected: false,
         username: req.body.username
@@ -34,21 +34,21 @@ router.get('/', async function (req, res) {
 router.route('/:api_key')
     // Update existing station 
     .put(async function(req, res){
-        var result = await Station.where('key', req.params.api_key).save({
+        var result = await Station.where('apikey', req.params.api_key).save({
             station_name: req.body.station_name
         }, {patch:true});
         return res.json({result});
     })
     // Delete existing station
     .delete(async function(req, res) {
-        var result = await Station.where('key', req.params.api_key).destroy();
+        var result = await Station.where('apikey', req.params.api_key).destroy();
         res.json({result});
     });
 
 router.route('/connected/:api_key')
     // Update existing station 
     .put(async function(req, res){
-        var result = await Station.where('key', req.params.api_key).save({
+        var result = await Station.where('apikey', req.params.api_key).save({
             connected: req.body.connected,
             last_connected: req.body.last_connected
         }, {patch:true});

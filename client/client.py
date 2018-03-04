@@ -1,8 +1,10 @@
+# TODO Refactor code into a file wrapper class and a sensor data class
 import os
 import requests
 import time
 import json
 import datetime
+import sys
 from pathlib import Path
 try:
     import Adafruit_DHT
@@ -13,13 +15,18 @@ try:
 except:
     pass
 
+# Get the API key for server requests
+# TODO: Encrypt the key in the file so it is not accessible
 def getApiKey(url):
     keyFile = Path("./.api-key.txt")
+
+    # If the file already exists read from it
     if keyFile.is_file():
         with open('./.api-key.txt', 'r') as f:
             key = f.readline()
         return key
 
+    # If the file doesn't exist, ask for user input and verify that the key is usable
     else:
         verified = False
         while(not verified):
@@ -27,7 +34,7 @@ def getApiKey(url):
             key = "".join(key.split())
             try:
                 print("Verifying key...")
-                r = requests.post(url + '/api/weather/verifyKey', data = {"key": key})
+                r = requests.post(url + '/api/weather/verifyKey', data = {"apikey": key})
                 if (r.status_code == 200):
                     print("Key Verified.")
                     f = open('./.api-key.txt', 'w')
@@ -44,6 +51,7 @@ def getApiKey(url):
 
     return key
 
+# Constuct our string of weather data to be printed into the file
 def constructWeatherString(weatherdata):
     index = 0
     data = ""
@@ -56,6 +64,7 @@ def constructWeatherString(weatherdata):
     data = data + "\n"
     return data
 
+# Check if we have the data directory already. If we don't, make it
 def checkDataDirectory():
     dataDir = Path("./data")
     if dataDir.is_dir():
@@ -64,27 +73,72 @@ def checkDataDirectory():
         os.makedirs(dataDir)
         return True
 
+# Store data in a text file if we are not connected to the internet or the server is down
+# TODO: Look into encrypting this data in storage
 def storeOfflineWeather(weatherdata):
     today = datetime.date.today()
     data = constructWeatherString(weatherdata)
     if(checkDataDirectory()):
-        keyFile = Path("./data/" + today.strftime('%d%m%Y') + ".txt")
-        if keyFile.is_file():
-            with open(keyFile, 'a') as f:
+        file = Path("./data/" + today.strftime('%d%m%Y') + ".txt")
+        if file.is_file():
+            with open(file, 'a') as f:
                 f.write(data)
         else:
-            f = open(keyFile, 'w')
+            f = open(file, 'w')
             f.write(data)
             f.close()
     return
 
-def sendOfflineWeather():
-    keyFile = Path("./data/.txt")
-    if keyFile.is_file():
-        with open('./.api-key.txt', 'r') as f:
-            key = f.readline()
-            return key
+# Send any stored weather data we may have left after reconnecting to the server
+def sendStoredWeather():
+    dataDir = Path("./data")
+    if (dataDir.is_dir()):
+        # Iterate through each existing file in our data directory
+        for filename in os.listdir(dataDir):
+            # Open the file for reading
+            with open(os.path.join(dataDir, filename), 'r') as f:
+                weatherdata = []
+                lineIndex = 0
+                # Iterate through each line of the file
+                for data in f:
+                    colIndex = 0
+                    linedata = {
+                        "created_at": "", "apikey": "", "temperature": "", "humidity": "", 
+                        "pressure": "", "latitude": "", "longitude": ""
+                    }	
 
+                    # Strip the commas and whitespace from each line and set our data in an array
+                    data = data.rstrip('\n')
+                    data = [col.strip() for col in data.split(',')]
+
+                    # Iterate through the array of data and store in our linedata dictionary
+                    for col in linedata:
+                        linedata[col] = data[colIndex]
+                        colIndex += 1
+                    
+                    # Max number of rows in 1 day with data every 3 days is 28800
+                    # Send it in 4 chunks so 28800 / 4
+                    if (lineIndex == 7200): 
+                        try: 
+                            r = requests.post(url + '/api/weather/offlineData', json=weatherdata)
+                        except (requests.exceptions.ConnectionError):
+                            print("Lost connection to server...unable to send stored data.")
+                            pass
+                        weatherdata = []
+                        lineIndex = 0
+                    
+                    # Under 7200 so just add onto our array of dictionaries
+                    else:
+                        weatherdata.append(linedata)
+                
+                # Send whatever we have left if it is less than 7200 lines of data
+                try:
+                    r = requests.post(url + '/api/weather/offlineData', json=weatherdata)
+                except (requests.exceptions.ConnectionError):
+                    print("Lost connection to server...unable to send stored data.")
+                    pass
+            # Remove the file once everything is sent over 
+            os.remove(os.path.join(dataDir, filename))
     return
 
 if __name__ == '__main__':
@@ -126,8 +180,8 @@ if __name__ == '__main__':
 
             # Construct our weatherdata json object
             weatherdata = {
-                "created_at": datetime.datetime.now(),
-                "key": apikey,
+                "created_at": str(datetime.datetime.now()),
+                "apikey": apikey,
                 "temperature": temperature,
                 "humidity": humidity,
                 "pressure": pressure,
@@ -138,10 +192,12 @@ if __name__ == '__main__':
             try:
                 r = requests.post(url + '/api/weather', data = weatherdata)
                 if (r.status_code == 200):
+                    sendStoredWeather()
                     print("Sent: " + json.dumps(weatherdata))
                 elif (r.status_code == 400):
                     print("Invalid API key")
-            except:
+            # Exception if unable to connect to server for the post request
+            except (requests.exceptions.ConnectionError):
                 print("Lost connection to server...storing data locally.")
                 storeOfflineWeather(weatherdata)
                 pass
