@@ -9,7 +9,7 @@ class ConnectionIndicator extends Component {
         this.state = {
             color: '#e21f1f',
             connected: this.props.connected,
-            key: this.props.apikey
+            apikey: this.props.apikey
         }
     }
 
@@ -44,7 +44,7 @@ class ConnectionIndicator extends Component {
         // If the last updated time was within the last 4 seconds 
         // the status color is green
         if (((now - moment(updated)) >= 0) && 
-        ((now - moment(updated)) < 5000)){
+        ((now - moment(updated)) < 14000)){
             connectionStatusColor = '#48db28';
             if (this.state.connected === 0){
                 this.updateConnectedStatus();
@@ -54,7 +54,7 @@ class ConnectionIndicator extends Component {
         // If the last updated time was between the last 4 and 30 seconds,
         // the status color is yellow
         else if (((now - moment(updated)) < 30000) && 
-        ((now - moment(updated)) > 5000)) {
+        ((now - moment(updated)) > 14000)) {
             connectionStatusColor = '#fffa00';
         }
 
@@ -74,7 +74,7 @@ class ConnectionIndicator extends Component {
     }
 
     updateConnectedStatus = async() => {
-        var response = await fetch('/api/stations/connected/' + this.state.key, 
+        var response = await fetch('/api/stations/connected/' + this.state.apikey, 
             {method: 'put', 
              body: JSON.stringify({
                 connected: !this.state.connected,

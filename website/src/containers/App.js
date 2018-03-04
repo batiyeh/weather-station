@@ -24,8 +24,7 @@ class App extends Component {
       isAdmin: false
     }
   }
-
-  componentWillMount() {
+  componentDidMount(){
     this.getUser();
   }
 

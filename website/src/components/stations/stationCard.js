@@ -60,7 +60,7 @@ class StationCard extends Component {
     }
 
     saveStationName = async() => {
-        var response = await fetch('/api/stations/' + this.props.station.key, 
+        var response = await fetch('/api/stations/' + this.props.station.apikey, 
             {method: 'put', 
              body: JSON.stringify({station_name: this.state.name}),
              headers: {
@@ -176,7 +176,7 @@ class StationCard extends Component {
                             <div className="row">
                                 <div className="col-8 no-padding-left">
                                     <p className="station-name">
-                                        <ConnectionIndicator updated={this.props.station.created_at} connected={this.props.station.connected} apikey={this.props.station.key}></ConnectionIndicator>
+                                        <ConnectionIndicator updated={this.props.station.created_at} connected={this.props.station.connected} apikey={this.props.station.apikey}></ConnectionIndicator>
                                         { this.renderStationName() }
                                     </p>
                                 </div>
