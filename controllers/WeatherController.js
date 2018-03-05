@@ -7,19 +7,62 @@ const Weather = require('../models/Weather');
 const Station = require('../models/Station');
 const knex = require('knex')(require('../knexfile'));
 
+// Retrieves open weather map data before storing
+getOpenWeatherData = async (latitude, longitude) => {
+    var openWeatherData = {};
+    openWeatherData["visibility"] = "",
+    openWeatherData['wind_speed'] = "",
+    openWeatherData['wind_direction'] = ""
+
+    if (latitude !== "n/a" && longitude !== "n/a"){
+        var params = {'lat': latitude,
+                    'lon': longitude, 
+                    'units': 'imperial', 
+                    'appid': process.env.OPEN_WEATHER_KEY};
+        var url = "http://api.openweathermap.org/data/2.5/weather?" + $.param(params);
+        const response = await fetch(url);
+        const body = await response.json();
+        if (response.status !== 200) throw Error(body.message); 
+
+        openWeatherData["visibility"] = body['visibility'],
+        openWeatherData['wind_speed'] = body['wind']['speed'],
+        openWeatherData['wind_direction'] = body['wind']['deg']
+    }
+
+    return openWeatherData;
+}
+
 // Adds weather data to the db via post request
 router.post('/', async function (req, res) {
     var station = await Station.where('apikey', req.body.apikey).fetch();
     if (station){
-        var result = await new Weather({
-            apikey: req.body.apikey,
-            created_at: req.body.created_at,
-            temperature: req.body.temperature,
-            humidity: req.body.humidity,
-            pressure: req.body.pressure,
-            latitude: req.body.latitude,
-            longitude: req.body.longitude
-        }).save()
+        var openWeatherData = await getOpenWeatherData(req.body.latitude, req.body.longitude);
+        if (openWeatherData["visibility"] != "" || openWeatherData['wind_speed'] != "" || openWeatherData['wind_direction'] != ""){
+            var result = await new Weather({
+                apikey: req.body.apikey,
+                created_at: req.body.created_at,
+                temperature: req.body.temperature,
+                humidity: req.body.humidity,
+                pressure: req.body.pressure,
+                latitude: req.body.latitude,
+                longitude: req.body.longitude,
+                visibility: openWeatherData["visibility"],
+                wind_speed: openWeatherData['wind_speed'],
+                wind_direction: openWeatherData['wind_direction']
+            }).save()
+        }
+
+        else{
+            var result = await new Weather({
+                apikey: req.body.apikey,
+                created_at: req.body.created_at,
+                temperature: req.body.temperature,
+                humidity: req.body.humidity,
+                pressure: req.body.pressure,
+                latitude: req.body.latitude,
+                longitude: req.body.longitude,
+            }).save()
+        }
         return res.json({result});
     }
 

@@ -2,12 +2,6 @@
     height: 300px !important;
 }
 
-.left{
-    float:left;
-    width: 150px;
-    background: red;
-}
-
 .sidebar{
     width: 100%;
     height: 100%;

@@ -116,7 +116,7 @@ def sendStoredWeather():
                     linedata["humidity"] = ""
                     linedata["pressure"] = ""
                     linedata["latitude"] = ""
-                    linedata["longtiude"] = ""
+                    linedata["longitude"] = ""
 
                     # Strip the commas and whitespace from each line and set our data in an array
                     data = data.rstrip('\n')
@@ -154,7 +154,7 @@ def sendStoredWeather():
 if __name__ == '__main__':
     os.environ['TZ'] = 'America/Detroit'
     time.tzset()
-    url = "http://67.205.153.103:5000"
+    url = "http://localhost:5000"
     temperature = 0
     pressure = 0
     humidity = 0
@@ -208,7 +208,7 @@ if __name__ == '__main__':
             weatherdata["humidity"] = round(humidity, 2),
             weatherdata["pressure"] = round(pressure, 2),
             weatherdata["latitude"] = latitude,
-            weatherdata["longtiude"] = longitude
+            weatherdata["longitude"] = longitude
 
             try:
                 r = requests.post(url + '/api/weather', data = weatherdata)
@@ -224,7 +224,7 @@ if __name__ == '__main__':
                 pass
 
             # Wait 3 seconds before restarting the loop
-            time.sleep(10)
+            time.sleep(5)
 
     except(KeyboardInterrupt, SystemExit):
         print("\nKilling Thread...")
