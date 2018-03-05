@@ -18,11 +18,16 @@ export class MapContainer extends Component {
         };
     }
 
-    componentDidMount() {
+
+
+    componentDidMount()
+    {
         this.getLatestWeather().then(stations => {
             this.setState({stations: stations})
         });
     }
+
+   
 
     getLatestWeather = async () => {
         var stations = [];
@@ -34,11 +39,10 @@ export class MapContainer extends Component {
         return stations;
     };
 
-
     render() {
         const style = {
-            width: '600px',
-            height: '300px',
+            width: '1120px',
+            height: '890px',
             
         }
         return (
