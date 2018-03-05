@@ -1,5 +1,9 @@
-.tempLine {
-    fill: none;
-    stroke: black;
-    stroke-width: 2px;
+.page-title{
+    margin-top: 100px;
+    margin-bottom: 0;
+}
+.historical-container{
+    max-width: 400px;
+    margin: auto;
+    padding-top: 75px;
 }
