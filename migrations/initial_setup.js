@@ -7,13 +7,13 @@ exports.up = function(knex, Promise) {
             table.string('type', 16);
         })
         .createTable('users', function(table){
-            table.string('username', 64).primary();
+            table.string('username', 32).primary();
             table.string('password', 64).unique();
             table.string('email', 128).unique();
             table.string('phone', 10).unique();
             table.string('reset_password_token', 20);
             table.dateTime('reset_password_expires');
-            table.integer('permissions').references('permission_id').inTable('permissions').unsigned().onDelete('SET NULL').onUpdate('CASCADE');
+            table.integer('permission_id').references('permission_id').inTable('permissions').unsigned().onDelete('SET NULL').onUpdate('CASCADE');
         })
         .createTable('stations', function (table) {
             table.string('apikey', 20).primary();
@@ -26,7 +26,7 @@ exports.up = function(knex, Promise) {
         })
         .createTable('weather', function(table){
             table.increments('weather_id').primary();
-            table.timestamp('created_at').defaultTo(knex.fn.now());
+            table.timestamp('created_at').defaultTo(knex.fn.now()).notNullable().index();
             table.float('temperature', 5, 2);
             table.float('humidity', 5, 2);
             table.float('pressure', 6, 2);
@@ -42,6 +42,7 @@ exports.up = function(knex, Promise) {
             table.string('type');
             table.string('keyword');
             table.timestamp('last_triggered');
+            table.string('station_name', 64);
             table.string('username').references('username').inTable('users').onDelete('SET NULL').onUpdate('CASCADE');
         })
         .createTable('alertvalues', function(table){

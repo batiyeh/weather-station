@@ -6,6 +6,7 @@ router.use(bodyParser.json());
 const Weather = require('../models/Weather');
 const Station = require('../models/Station');
 const knex = require('knex')(require('../knexfile'));
+const openweather = require('../services/openWeatherMap');
 var moment = require('moment');
 moment().format();
 
@@ -13,15 +14,33 @@ moment().format();
 router.post('/', async function (req, res) {
     var station = await Station.where('apikey', req.body.apikey).fetch();
     if (station){
-        var result = await new Weather({
-            apikey: req.body.apikey,
-            created_at: req.body.created_at,
-            temperature: req.body.temperature,
-            humidity: req.body.humidity,
-            pressure: req.body.pressure,
-            latitude: req.body.latitude,
-            longitude: req.body.longitude
-        }).save()
+        var openWeatherData = await openweather.getOpenWeatherData(req.body.latitude, req.body.longitude);
+        if (openWeatherData["visibility"] != "" || openWeatherData['wind_speed'] != "" || openWeatherData['wind_direction'] != ""){
+            var result = await new Weather({
+                apikey: req.body.apikey,
+                created_at: req.body.created_at,
+                temperature: req.body.temperature,
+                humidity: req.body.humidity,
+                pressure: req.body.pressure,
+                latitude: req.body.latitude,
+                longitude: req.body.longitude,
+                visibility: openWeatherData["visibility"],
+                wind_speed: openWeatherData['wind_speed'],
+                wind_direction: openWeatherData['wind_direction']
+            }).save()
+        }
+
+        else{
+            var result = await new Weather({
+                apikey: req.body.apikey,
+                created_at: req.body.created_at,
+                temperature: req.body.temperature,
+                humidity: req.body.humidity,
+                pressure: req.body.pressure,
+                latitude: req.body.latitude,
+                longitude: req.body.longitude,
+            }).save()
+        }
         return res.json({result});
     }
 
@@ -46,7 +65,7 @@ router.get('/latest', async function (req, res) {
     try{
         var weather = await knex('weather').select('w1.*', 'station_name', 'last_connected', 'connected').from('weather as w1').where('w1.created_at', function() {
             this.max('created_at').from('weather as w2').whereRaw('w2.apikey = w1.apikey')
-        }).leftJoin('stations', 'stations.apikey', 'w1.apikey').orderBy('w1.created_at', 'desc')
+        }).leftJoin('stations', 'stations.apikey', 'w1.apikey').orderBy('station_name')
     } catch(ex){
         console.log(ex);
         return res.json({});
