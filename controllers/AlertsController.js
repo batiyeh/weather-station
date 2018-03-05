@@ -22,10 +22,11 @@ router.post('/create', async function(req, res){
     var sms = req.body.sms;
     var webpage = req.body.webpage;
 
+    //prevents user from submitting blank value
     if(keyword === 'between' && !value2){
         return res.status(404);
     }
-
+    //prevents user from submitting blank value or not selecting an alert method
     if(value1 && (email || sms || webpage)){
         var newAlert = await new Alerts({
             station_name: station,
@@ -84,6 +85,7 @@ router.post('/', async function(req, res){
 
     return res.status(200).json({alerts, stations});
 })
+//returns all alert methods selected for that alert
 router.get('/:id', async function(req, res){
     var methods = await knex('alertmethods')
     .select('alertmethods.method')
@@ -105,11 +107,12 @@ router.post('/:id', async function(req,res){
     var sms = req.body.sms;
     var webpage = req.body.webpage;
 
+    //prevents user from entering blank value
     if(keyword === 'between' && !value2){
         return res.status(404);
     }
 
-    //finds alert based on id passed by frontend
+    //Prevents user from submitting blank value or not selecting an alert method
     if(value1 && (email || sms || webpage)){
         await Alerts.where({alert_id: req.params.id}).save({
             station_name: station,
@@ -145,7 +148,6 @@ router.post('/:id', async function(req,res){
                 alert_id: req.params.id
             }).save();
         }
-            //if two values are passed, creates row for second alert as well
         if(value2){
             await new AlertValues({
                 value: value2,
@@ -154,6 +156,14 @@ router.post('/:id', async function(req,res){
         }
     }
     return res.status(200).json({success: 'success'})
+})
+router.delete('/:id', async function(req, res){
+    //deletes alerts with the id passed from front end
+    AlertValues.where({alert_id: req.params.id}).destroy();
+    AlertMethods.where({alert_id: req.params.id}).destroy();
+    Alerts.where({alert_id: req.params.id}).destroy();
+
+    res.status(200);
 })
 
 module.exports = router;

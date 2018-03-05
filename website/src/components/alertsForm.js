@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, Label, Input} from 'reactstrap';
+import { Alert, Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, Label, Input} from 'reactstrap';
 import AlertCard from './alertCard';
 import '../styles/alerts.css';
 
@@ -26,10 +26,11 @@ class AlertsForm extends Component {
         this.toggleAddAlert = this.toggleAddAlert.bind(this);
         
     }
+    //when component loads, will call getAlerts()
     componentDidMount = async () =>{
         await this.getAlerts();
     }
-    //gets all current alerts for the user and stores it in the state
+    //gets all current alerts and stations for the user and stores it in the state
     getAlerts = async () => {
         var alerts = [];
         var stations = [];
@@ -37,10 +38,11 @@ class AlertsForm extends Component {
         var body = await response.json();
         alerts = body.alerts;
         stations = body.stations;
-
+        
+        //puts alerts, stations in state. Sets station to first station in stations array
         this.setState({alerts: alerts, stations: stations, station:stations[0].station_name});
     }
-    //takes the current data in the state and sends it to the backend, the page is then refreshed and the modal is closed
+    //takes the current data in the state and sends it to the backend, the current alerts are updated and the modal is closed
     createAlert = async () => {
         await fetch('/api/alerts/create', 
             {method: 'post', 
@@ -70,7 +72,7 @@ class AlertsForm extends Component {
             modal: !this.state.modal
         });
     }
-    //when the user enters information the datatype, keyword, value1, value2 are updated in the state
+    //when the user enters information the datatype, keyword, value1, value2, email, sms, and webpage are updated in the state
     onStationChange(value){
         this.setState({
             station: value
@@ -121,7 +123,8 @@ class AlertsForm extends Component {
                 <Input type='text' name='value2' id='value2'onChange={e => this.onValue2Change(e.target.value)}/>
             </div>)
         }
-        else{
+        else{  
+            //ensures state of value2 is reset when switching between renders
             if(this.state.value2){
                 this.setState({
                     value2: null
@@ -152,8 +155,10 @@ class AlertsForm extends Component {
                 alertcards.push(<AlertCard stations={this.state.stations} alerts={this.state.alerts[i]}/>)
             }
         }
+        //returns array of AlertCards to render on the page
         return alertcards
     }
+    //populates the station name dropdown with all stations
     renderStations(){
         var options = []
         this.state.stations.map(station => {
@@ -161,6 +166,17 @@ class AlertsForm extends Component {
         })
         return options;
     }
+    //if there are no alerts for that user, this will be rendered on the page
+    renderEmpty(){
+        if (this.state.alerts.length === 0){
+            return (
+                <Alert className="no-alerts-alert" color="primary">
+                    There are no alerts to display.
+                </Alert>
+            );
+        }
+    }
+    //when the user closes the modal, the state is reset back to default values
     resetValues(){
         this.setState({
             modal: false,
@@ -239,6 +255,7 @@ class AlertsForm extends Component {
                 </div>
                 <div className='row'> 
                     {this.renderCards()}
+                    {this.renderEmpty()}
                 </div>
             </div>
         )

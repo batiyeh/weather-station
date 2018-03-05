@@ -25,6 +25,7 @@ class AlertCard extends Component {
         this.onEmailChange = this.onEmailChange.bind(this);
         this.onSMSChange = this.onSMSChange.bind(this);
         this.onWebpageChange = this.onWebpageChange.bind(this);
+        this.deleteAlert = this.deleteAlert.bind(this);
     }
     //passes the new values to the backend of an alert that the user is editing
     updateAlert = async () => {
@@ -49,6 +50,8 @@ class AlertCard extends Component {
         this.toggleAlert();
 
     }
+    //when the user opens the card modal, a fetch to get the alert methods for that alert is made
+    //the state is then updated with that 
     getAlertMethods = async () => {
         var response = await fetch('/api/alerts/' + this.props.alerts.alert_id, {method: 'get'})
         var body = await response.json();
@@ -171,6 +174,13 @@ class AlertCard extends Component {
         })
         this.toggleAlert();
     }
+    //Deletes the alert with the id passed to the backend
+    //Page does not update after deletion, needs to be fixed
+    deleteAlert(){
+        fetch('/api/alerts/' + this.props.alerts.alert_id, {method: 'delete'})
+
+        this.toggleAlert();
+    }
     render(){
         return(
             <div className='container'>
@@ -220,6 +230,9 @@ class AlertCard extends Component {
                             {this.renderValues()}
                         </ModalBody>
                         <ModalFooter>
+                            <div className='col-6 left'>
+                                <Button type='button' color="danger" onClick={this.deleteAlert}>Delete</Button>
+                            </div>
                                 <Button type='button' color="primary" onClick={this.updateAlert} className="primary-themed-btn" >Update Alert</Button>{' '}
                                 <Button type='button' color="secondary" onClick={this.resetValues}>Cancel</Button>
                         </ModalFooter>
@@ -230,6 +243,7 @@ class AlertCard extends Component {
                             {this.getParams()}
                     </CardText>
                 </Card>
+                
             </div>
         )
     }
