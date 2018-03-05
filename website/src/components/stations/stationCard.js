@@ -22,8 +22,13 @@ class StationCard extends Component {
     // Called when the component is first "mounted" (loaded) into the page
     // This fetches the stations from our API and adds them to our current state
     componentDidMount() {
-        // this.getAdditionalData();
-        // this.interval = setInterval(this.getAdditionalData, 60000);
+        if (this.props.station.latitude !== "n/a" && this.props.station.longitude !== "n/a"){
+            this.setState({
+                visibility: this.props.station.visibility,
+                wind_speed: this.props.station.wind_speed,
+                wind_direction: this.props.station.wind_direction,
+            })
+        }
     }
 
     // Each time the station list updates, pass down the new 
@@ -32,14 +37,16 @@ class StationCard extends Component {
         if ((this.state.name !== nextProps.station.station_name) && this.state.modal === false){
             this.onNameChange(nextProps.station.station_name);
         }
-    }
 
-    // Called when the component is destroyed and removed from the page
-    // I am removing the interval so it is not still called after the component disappears.
-    componentWillUnmount() {
-        clearInterval(this.interval);
+        if (this.props.station.latitude !== "n/a" && this.props.station.longitude !== "n/a"){
+            this.setState({
+                visibility: nextProps.station.visibility,
+                wind_speed: nextProps.station.wind_speed,
+                wind_direction: nextProps.station.wind_direction,
+            })
+        }
     }
-
+    
     // Format the station's uptime for user viewing
     // TODO: Make this uptime not just last time data was received
     getUptime() {
@@ -47,7 +54,6 @@ class StationCard extends Component {
         if (this.props.station.connected){
             uptime = moment().diff(moment(this.props.station.last_connected))
             uptime = moment.utc(uptime).format("HH:mm:ss");
-            // uptime = uptime.hours() + ":" + uptime.minutes() + ":" + uptime.seconds()
         }
         return uptime;
     }
@@ -72,27 +78,6 @@ class StationCard extends Component {
         this.toggleStationDetail();
         return body;
     }
-
-    // Retrieves additional visibility, wind speed, and wind direction data
-    // from Open Weather Map.
-    // getAdditionalData = async () => {
-    //     if (this.props.station.latitude !== "n/a" && this.props.station.longitude !== "n/a"){
-    //         var params = {'lat': this.props.station.latitude,
-    //                     'lon': this.props.station.longitude, 
-    //                     'units': 'imperial', 
-    //                     'appid': process.env.REACT_APP_OPEN_WEATHER_KEY};
-    //         var url = "http://api.openweathermap.org/data/2.5/weather?" + $.param(params);
-    //         const response = await fetch(url);
-    //         const body = await response.json();
-    //         if (response.status !== 200) throw Error(body.message); 
-
-    //         this.setState({ 
-    //             visibility: body['visibility'], 
-    //             wind_speed: body['wind']['speed'],
-    //             wind_direction: body['wind']['deg'],
-    //         });
-    //     }
-    // }
 
     // If the latitude and longitude are valid, we will render 
     // the additional Open Weather Map data on the right side of the card.

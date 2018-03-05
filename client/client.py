@@ -154,7 +154,7 @@ def sendStoredWeather():
 if __name__ == '__main__':
     os.environ['TZ'] = 'America/Detroit'
     time.tzset()
-    url = "http://localhost:5000"
+    url = "http://67.205.153.103:5000"
     temperature = 0
     pressure = 0
     humidity = 0
