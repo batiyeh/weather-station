@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import VerifyLoggedIn from '../components/verifyLoggedIn.js';
-import StationSidebar from '../components/stations/stationSidebar.js';
 import MapContainer from '../components/map/mapContainer.js';
-import checkbox from '../components/stations/checkbox.js';
+import StationSidebar from '../components/map/stationSidebar.js';
+// import checkbox from '../components/stations/checkbox.js';
 class Map extends Component {
     render() {
         return (
@@ -10,9 +10,19 @@ class Map extends Component {
 
                  <VerifyLoggedIn/>
                 <VerifyLoggedIn/>
-                <MapContainer></MapContainer>
-                <StationSidebar></StationSidebar>
-                <checkbox></checkbox>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="col-4">
+                            <StationSidebar></StationSidebar>
+                        </div>
+                        <div class="col-8">
+                            <MapContainer></MapContainer>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                {/* <checkbox></checkbox> */}
 
             </div>
         );

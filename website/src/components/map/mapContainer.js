@@ -36,10 +36,14 @@ export class MapContainer extends Component {
 
 
     render() {
-
+        const style = {
+            width: '600px',
+            height: '300px',
+            
+        }
         return (
-            <div id={"google-maps"} style={"width:100%;height:400px;"}>
-                <Map google={this.props.google} zoom={3}>
+            <div id={"google-maps"}  className="map-container">
+                <Map google={this.props.google} style={style} zoom={3}>
                     {this.state.stations
                         .map(station => {
                             return (

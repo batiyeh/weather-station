@@ -36,11 +36,14 @@ class StationSidebar extends Component {
 
     render() {
     return(
-        <div class = "left"> Station Name
-            <FormGroup>
-                <Input type="text" className="filterWidth" name="stationFilter" id="stationFilter" placeholder="Station Filter" onChange={this.filterOnChange.bind(this)} />
-            </FormGroup>
+        // <div class = "left"> Station Name
+        //     <FormGroup>
+        //         <Input type="text" className="filterWidth" name="stationFilter" id="stationFilter" placeholder="Station Filter" onChange={this.filterOnChange.bind(this)} />
+        //     </FormGroup>
 
+        // </div>
+        <div class="sidebar">
+        
         </div>
 
     )}
