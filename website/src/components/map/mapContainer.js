@@ -18,11 +18,16 @@ export class MapContainer extends Component {
         };
     }
 
-    componentDidMount() {
+
+
+    componentDidMount()
+    {
         this.getLatestWeather().then(stations => {
             this.setState({stations: stations})
         });
     }
+
+   
 
     getLatestWeather = async () => {
         var stations = [];
@@ -34,12 +39,15 @@ export class MapContainer extends Component {
         return stations;
     };
 
-
     render() {
-
+        const style = {
+            width: '1120px',
+            height: '890px',
+            
+        }
         return (
-            <div className={"google-maps"}>
-                <Map google={this.props.google} zoom={3}>
+            <div id={"google-maps"}  className="map-container">
+                <Map google={this.props.google} style={style} zoom={3}>
                     {this.state.stations
                         .map(station => {
                             return (
