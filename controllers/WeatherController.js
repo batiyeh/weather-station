@@ -7,6 +7,8 @@ const Weather = require('../models/Weather');
 const Station = require('../models/Station');
 const knex = require('knex')(require('../knexfile'));
 const openweather = require('../services/openWeatherMap');
+var moment = require('moment');
+moment().format();
 
 // Adds weather data to the db via post request
 router.post('/', async function (req, res) {
@@ -69,6 +71,20 @@ router.get('/latest', async function (req, res) {
         return res.json({});
     }
     return res.json({ weather });
+});
+
+// Returns the temperature for the last 24 from each station from the database
+router.get('/temp', async function (req, res) {
+    var day = moment().format("YYYY-MM-DD");
+    var dayBeginTime =  day+' 00:00:00';
+    var dayEndTime =  day+' 23:59:59';
+    try{
+        var temp = await knex('weather').select('temperature','created_at').from('weather').whereBetween('created_at', [dayBeginTime.toString(), dayEndTime.toString()]);
+    } catch(ex){
+        console.log(ex);
+        return res.json({});
+    }
+    return res.json({ temp });
 });
 
 // Returns the latest weather data for each station from the database
