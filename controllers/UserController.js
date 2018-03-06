@@ -28,16 +28,21 @@ router.post('/create', async function(req, res){
         dbEmail = em.attributes.email.toLowerCase();
     
     //Verifies that all User Account credentials meet the string requirements
-    req.checkBody('username','Invalid username').notEmpty().matches(/\w/).not().equals(dbUsername);
-    req.checkBody('email', 'Invalid email').notEmpty().isEmail().not().equals(dbEmail);
+    req.checkBody('username','Username cannot be blank').notEmpty()
+    req.checkBody('username','Username can only contain letters and numbers').matches(/\w/)
+    req.checkBody('username','Username already exists').not().equals(dbUsername);
+
+    req.checkBody('email', 'Email cannot be blank').notEmpty()
+    req.checkBody('email', 'Not a valid email').isEmail()
+    req.checkBody('email', 'Email already exists').not().equals(dbEmail);
+
     req.checkBody('password','Password must be longer than 8 characters, cannot contain symbols, and must have at least 1 letter and 1 number.')
     .isLength({min: 8}).matches(/\d/).not().matches(/\W/);
     
     //If one of the user inputs fails to meet the requirements it gets saved in errors
     var errors = req.validationErrors();
-
     if(errors){
-        //add a way to display errors on frontend
+        res.json({errors: errors, redirect: false});
     }
     else{
         //hashes the password using bcrypt, then creates user and stores in database
@@ -48,7 +53,7 @@ router.post('/create', async function(req, res){
                 password: hash,
             }).save()
         });
-        res.redirect('/user/login')
+        res.json({errors: [], redirect: true})
     }
 });
 
