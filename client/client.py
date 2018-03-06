@@ -37,7 +37,7 @@ def getApiKey(url):
     else:
         verified = False
         while(not verified):
-            key = input("Enter your API Key: ")
+            key = raw_input("Enter your API Key: ")
             key = "".join(key.split())
             try:
                 print("Verifying key...")
@@ -187,7 +187,7 @@ if __name__ == '__main__':
             # Attempt to retrieve humidity + temperature
             try:
                 humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, pin)
-                temperature = (9.0/5.0) % temperature + 32
+                temperature = (9.0/5.0) * temperature + 32
             except:
                 temperature = 0.0
                 humidity = 0.0
