@@ -186,9 +186,10 @@ if __name__ == '__main__':
             
             # Attempt to retrieve humidity + temperature
             try:
-                humidity, temperature = Adafruit_DHT.read(Adafruit_DHT.AM2302, pin)
+                humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, pin)
             except:
-                pass
+                temperature = 0.0
+                humidity = 0.0
 
             # Attempt to retrieve from sense hat
             try:
@@ -196,9 +197,10 @@ if __name__ == '__main__':
                 temperature = (9.0/5.0) * sense.temperature + 32
                 pressure = sense.pressure
             except:
-                temperature = random.uniform(68.0, 78.0)
-                humidity = random.uniform(45.0, 55.0)
-                pressure = random.uniform(900.0, 1075.0)
+                pass
+                #temperature = random.uniform(68.0, 78.0)
+                #humidity = random.uniform(45.0, 55.0)
+                #pressure = random.uniform(900.0, 1075.0)
 
             # Construct our weatherdata json object
             weatherdata = OrderedDict()
