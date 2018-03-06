@@ -11,6 +11,7 @@ class CreateUserForm extends Component {
             username: '',
             email: '',
             password: '',
+            confirmPass: '',
             errors: []
         };
         this.submitForm = this.submitForm.bind(this);
@@ -31,13 +32,19 @@ class CreateUserForm extends Component {
           password: value
         })
     }
+    onConfirmPassChange(value){
+        this.setState({
+            confirmPass: value
+        })
+    }
     submitForm = async () => {
         var response = await fetch('/api/user/create/', 
             {method: 'post', 
             body: JSON.stringify({
                 username: this.state.username,
                 email: this.state.email,
-                password: this.state.password
+                password: this.state.password,
+                confirmPass: this.state.confirmPass
             }),
             headers: {
                 'Accept': 'application/json, text/plain, */*',
@@ -56,7 +63,7 @@ class CreateUserForm extends Component {
         if(this.state.errors.length > 0){
             var allErrors = []
             this.state.errors.map(errors =>{
-              allErrors.push(<Alert className='error-alert'>{errors.msg}</Alert>)
+              allErrors.push(<Alert className='alert-danger error-alert'>{errors.msg}</Alert>)
           })
           return allErrors;
         }
@@ -81,6 +88,9 @@ class CreateUserForm extends Component {
                 </div>
                 <div className='form-group'>
                   <Input id='password' name='password' type='password' className='form-control' placeholder='Password' aria-label='Password' onChange={e => this.onPasswordChange(e.target.value)} />
+                </div>
+                <div className='form-group'>
+                  <Input id='confirmPass' name='confirmPass' type='password' className='form-control' placeholder='Confirm Password' aria-label='Confirm Password' onChange={e => this.onConfirmPassChange(e.target.value)} />
                 </div>
               </div>
               <div className='row'>
