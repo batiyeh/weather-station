@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 const Weather = require('../models/Weather');
+const LatestWeather = require('../models/LatestWeather');
 const Station = require('../models/Station');
 const knex = require('knex')(require('../knexfile'));
 const openweather = require('../services/openWeatherMap');
@@ -11,6 +12,8 @@ var moment = require('moment');
 moment().format();
 
 // Adds weather data to the db via post request
+// This is probably super slow but it makes it more efficient for the user on the stations page for now
+// TODO: Think of a more efficient way to structure our db
 router.post('/', async function (req, res) {
     var station = await Station.where('apikey', req.body.apikey).fetch();
     if (station){
@@ -41,6 +44,26 @@ router.post('/', async function (req, res) {
                 longitude: req.body.longitude,
             }).save()
         }
+
+        // Store our resulting row in latest weather so we can quickly get the latest weather
+        // for our main page
+        if (result.id){
+            var latest = await LatestWeather.where('apikey', req.body.apikey).fetch();
+            if (latest){
+                var result = await LatestWeather.where('apikey', req.body.apikey).save({
+                    weather_id: result.id,
+                    apikey: req.body.apikey,
+                }, {patch:true});
+            }
+
+            else{
+                var result = await new LatestWeather({
+                    weather_id: result.id,
+                    apikey: req.body.apikey,
+                }).save()
+            }
+        }
+
         return res.json({result});
     }
 
@@ -63,9 +86,10 @@ router.get('/', async function (req, res) {
 // Returns the latest weather data for each station from the database
 router.get('/latest', async function (req, res) {
     try{
-        var weather = await knex('weather').select('w1.*', 'station_name', 'last_connected', 'connected').from('weather as w1').where('w1.created_at', function() {
-            this.max('created_at').from('weather as w2').whereRaw('w2.apikey = w1.apikey')
-        }).leftJoin('stations', 'stations.apikey', 'w1.apikey').orderBy('station_name')
+        var weather = await knex('latestweather')
+            .join('weather', 'latestweather.weather_id', 'weather.weather_id')
+            .join('stations', 'latestweather.apikey', 'stations.apikey')
+            .select('weather.*', 'stations.station_name', 'stations.last_connected', 'stations.connected')
     } catch(ex){
         console.log(ex);
         return res.json({});

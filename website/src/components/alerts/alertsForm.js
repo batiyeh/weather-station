@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Alert, Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, Label, Input} from 'reactstrap';
 import AlertCard from './alertCard';
-import '../styles/alerts.css';
+import '../../styles/alerts.css';
 
 class AlertsForm extends Component {
     constructor(props){
@@ -243,10 +243,10 @@ class AlertsForm extends Component {
             </Modal>
             <div className="row col-12 station-list-header">
                 <div className="col-8 left">
-                    <h5>Alert me when...</h5>
+                    <h4>Alert me when...</h4>
                 </div>
                 <div className="col-4 right">
-                    <Button type='button' className="btn btn-secondary btn-block add-btn" onClick={this.toggleAddAlert}>Add</Button>                    </div>
+                    <Button type='button' className="btn btn-secondary add-btn" onClick={this.toggleAddAlert}>Add</Button></div>
                 </div>
                 <div className='row'> 
                     {this.renderCards()}

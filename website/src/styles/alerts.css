@@ -4,18 +4,22 @@
     margin-bottom: 30px;
     max-width: 600px !important;
 }
+.alert-container .container{
+    margin-bottom: 15px;
+}
 .no-alerts-alert{
     max-width: 600px;
     margin: auto;
 }
+.card-text{
+    font-size: 16px !important;
+}
 .alert-method-box {
     margin-right: 15px;
 }
-
 .AlertsPage {
     margin-top: 125px;
 }
-
 .row {
     margin: 0 auto !important;
     max-width: 800px;
@@ -27,8 +31,10 @@
     max-width: 600px;
     padding: 10px;
     border: none !important;
-    border-radius: 20px !important;
-    box-shadow: 0px 0px 20px 0px #e8e8e8;
+    border-radius: 10px !important;
+    box-shadow: 0px 0px 10px 0px #e8e8e8;
+    text-align: left;
+    padding-left: 25px;
 }
 .no-padding-left{
     padding-left: 0px !important;
