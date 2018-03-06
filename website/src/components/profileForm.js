@@ -1,14 +1,20 @@
 import React, { Component } from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Alert } from 'reactstrap';
 import '../styles/profile.css';
 
 class ProfileForm extends Component {
     constructor(props){
         super(props);
         this.state={
-            modal: false
+            modal: false,
+            email: this.props.email,
+            phone: null,
+            currPass: '',
+            newPass: '',
+            confirmPass: '',
+            messages: []
         }
-        
+        this.renderMessages = this.renderMessages.bind(this);
         this.toggleChangePassword = this.toggleChangePassword.bind(this);
     }
     toggleChangePassword(){
@@ -16,7 +22,45 @@ class ProfileForm extends Component {
             modal: !this.state.modal
         })
     }
+    onEmailChange(value){
+        this.setState({
+            email: value
+        })
+    }
+    onPhoneChange(value){
+        this.setState({
+            phone: value
+        })
+    }
+    updateProfile = async () =>{
+        var response = await fetch('/api/user/editProfile/', 
+            {method: 'post', 
+            body: JSON.stringify({
+                email: this.state.email,
+                phone: this.state.phone,
+            }),
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+            credentials:'include'
+            });
 
+        var body = await response.json();
+
+        this.setState({
+            messages: body.messages
+        })
+    }
+    renderMessages(){
+        if(this.state.messages.length > 0){
+            var allMessages = [];
+            this.state.messages.map(messages => {
+                allMessages.push(<Alert className='alert-danger'>{messages.msg}</Alert>)
+            })
+            return allMessages
+        }
+    }
     render(){
         return(
             <div className='profile-container'>
@@ -45,8 +89,9 @@ class ProfileForm extends Component {
              </Modal>
                 <div id='profile'>
                     <h2 className="page-title">User Profile</h2>
-                    <form id='profileForm' action='/api/user/editProfile/'method='post'>
+                    <form id='profileForm'>
                         <div className='profile-info mb-3'>
+                            {this.renderMessages()}
                             <div className='row'>
                                 <label for="username" class="col-sm-4 col-form-label">Username</label>
                                 <div class="form-group col-sm-8">
@@ -56,25 +101,25 @@ class ProfileForm extends Component {
                             <div className='row'>
                                 <label for="email" class="col-sm-4 col-form-label">Email</label>
                                 <div class="form-group col-sm-8">
-                                    <input id='email' name='email' type='email' className='form-control' placeholder={this.props.email}/>
+                                    <input id='email' name='email' type='email' className='form-control' onChange={e => this.onEmailChange(e.target.value)} placeholder={this.props.email}/>
                                 </div>
                             </div>
                             <div className='row'>
                                 <label for="phone" class="col-sm-4 col-form-label">Phone</label>
                                 <div class="form-group col-sm-8">
-                                    <input id='phone' name='phone' type='text' className='form-control' placeholder={this.props.phone}/>
+                                    <input id='phone' name='phone' type='text' className='form-control' onChange={e => this.onPhoneChange(e.target.value)} placeholder={this.props.phone}/>
                                 </div>
                             </div>
                             <div className='row'>
                                 <label for="phone" class="col-sm-4 col-form-label">Password</label>
                                 <div class="form-group col-sm-8">
-                                    <button type='button' className="btn btn-secondary btn-block profile-btn" onClick={this.toggleChangePassword}>Change</button>
+                                    <Button type='button' className="btn btn-secondary btn-block profile-btn" onClick={this.toggleChangePassword}>Change</Button>
                                 </div>
                             </div>
                         </div>
                         <div className='row'>
                             <div className='col-12'>
-                                <button type='submit' className='btn btn-primary btn-block profile-btn'>Save Changes</button>
+                                <Button onClick={this.updateProfile}type='button' className='btn btn-primary btn-block profile-btn'>Save Changes</Button>
                             </div>
                         </div>
                     </form>
