@@ -187,6 +187,7 @@ if __name__ == '__main__':
             # Attempt to retrieve humidity + temperature
             try:
                 humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, pin)
+                temperature = (9.0/5.0) % temperature + 32
             except:
                 temperature = 0.0
                 humidity = 0.0
