@@ -208,7 +208,8 @@ router.post('/editProfile', async function(req, res){
             dbEmail = newUser.attributes.email.toLowerCase();
         }
         //checks that their email is valid and not a duplicate
-        req.checkBody('email', 'Invalid email').notEmpty().isEmail().not().equals(dbEmail);
+        req.checkBody('email', 'Invalid email').notEmpty().isEmail()
+        req.checkBody('email','Email already exists').not().equals(dbEmail);
     }
     else{
         email = user.attributes.email;
@@ -232,6 +233,7 @@ router.post('/editProfile', async function(req, res){
     //checks that the email/phone the user entered didnt return errors
     var errors = req.validationErrors();
     if(errors){
+        res.json({messages: errors})
         console.log(errors);
     }
     else{
@@ -242,7 +244,7 @@ router.post('/editProfile', async function(req, res){
         },{patch:true});
     }
 
-    res.redirect('/profile');
+    res.json({messages: [{msg: 'Profile updated successfully!'}]});
 })
 router.post('/editPassword', async function(req, res){
     var currPass = req.body.currPass;
