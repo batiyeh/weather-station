@@ -123,16 +123,16 @@ cd weather-station/client
 ```
 3. Install the requirements that come with the project:
 ```sh
-sudo pip install -r pi-requirements.txt
+sudo pip3 install -r pi-requirements.txt
 ```
-4. Open up client.py in a text editor and ensure the websocket connection is going to the IP of your server. This will be changed in the future to be more automatic
-```python
-url = "http://localhost:5000"
-# Change to be url = "http://yourip:5000"
-```
-5. Run the program with sudo
+3. Go to the weather station website and obtain an API Key from the admin page
+4. Go back to your Raspberry Pi, run the program with sudo, and enter in your API Key when prompted
 ```sh
 sudo python3 client.py
+```
+5. Add the following line to the bottom of your .bashrc file in your home directory on the Raspberry Pi
+```sh
+/usr/bin/python3 /home/pi/dev/weather-station-site/client/client.py > /dev/null 2> /dev/null &
 ```
 
 ### Sensors

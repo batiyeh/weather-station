@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import VerifyLoggedIn from '../components/verifyLoggedIn.js'
-import AlertsForm from '../components/alertsForm.js';
-import '../styles/profile.css';
+import AlertsForm from '../components/alerts/alertsForm.js';
+import '../styles/alerts.css';
 
 class Alerts extends Component {
     render() {

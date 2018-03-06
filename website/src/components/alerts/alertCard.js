@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import '../styles/alerts.css';
+import '../../styles/alerts.css';
 
 import { Input, Button, Card, CardText, Modal, ModalHeader, ModalBody, ModalFooter, Label, Form} from 'reactstrap';
 

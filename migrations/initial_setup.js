@@ -37,6 +37,11 @@ exports.up = function(knex, Promise) {
             table.float('wind_direction', 5, 2);
             table.string('apikey', 20).references('apikey').inTable('stations').onDelete('SET NULL').onUpdate('CASCADE');
         })
+        .createTable('latestweather', function(table){
+            table.integer('weather_id').references('weather_id').inTable('weather').unsigned().onDelete('CASCADE').onUpdate('CASCADE');
+            table.string('apikey', 20).references('apikey').inTable('stations').onDelete('CASCADE').onUpdate('CASCADE');
+            table.primary(['weather_id', 'apikey']);
+        })
         .createTable('alerts', function(table){
             table.increments('alert_id').primary();
             table.string('type');
@@ -63,6 +68,7 @@ exports.down = function(knex, Promise) {
     return knex.schema.dropTable('alertvalues')
     .dropTable('alertmethods')
     .dropTable('alerts')
+    .dropTable('latestweather')
     .dropTable('weather')
     .dropTable('stations')
     .dropTable('users')
