@@ -16,6 +16,7 @@ router.post('/create', async function(req, res){
     var email = req.body.email.toLowerCase();
     var username = req.body.username;
     var password = req.body.password;
+    var confirmPass = req.body.confirmPass;
     var dbUsername = null;
     var dbEmail = null;
     //Checks if Username and Email already exist in the database
@@ -28,16 +29,23 @@ router.post('/create', async function(req, res){
         dbEmail = em.attributes.email.toLowerCase();
     
     //Verifies that all User Account credentials meet the string requirements
-    req.checkBody('username','Invalid username').notEmpty().matches(/\w/).not().equals(dbUsername);
-    req.checkBody('email', 'Invalid email').notEmpty().isEmail().not().equals(dbEmail);
-    req.checkBody('password','Password must be longer than 8 characters, cannot contain symbols, and must have at least 1 letter and 1 number.')
-    .isLength({min: 8}).matches(/\d/).not().matches(/\W/);
-    
+    req.checkBody('username','Username cannot be blank').notEmpty()
+    req.checkBody('username','Username can only contain letters and numbers').matches(/\w/)
+    req.checkBody('username','Username already exists').not().equals(dbUsername);
+
+    req.checkBody('email', 'Email cannot be blank').notEmpty()
+    req.checkBody('email', 'Not a valid email').isEmail()
+    req.checkBody('email', 'Email already exists').not().equals(dbEmail);
+
+    req.checkBody('password','Password must 8 characters or longer').isLength({min: 8});
+    req.checkBody('password','Password cannot contain symbols').not().matches(/\W/);
+    req.checkBody('password', 'Password must have at least 1 letter and 1 number').matches(/\d/);
+    req.checkBody('password', 'Passwords do not match').equals(confirmPass);
+
     //If one of the user inputs fails to meet the requirements it gets saved in errors
     var errors = req.validationErrors();
-
     if(errors){
-        //add a way to display errors on frontend
+        res.json({errors: errors, redirect: false});
     }
     else{
         //hashes the password using bcrypt, then creates user and stores in database
@@ -48,7 +56,7 @@ router.post('/create', async function(req, res){
                 password: hash,
             }).save()
         });
-        res.redirect('/user/login')
+        res.json({errors: [], redirect: true})
     }
 });
 
@@ -200,7 +208,8 @@ router.post('/editProfile', async function(req, res){
             dbEmail = newUser.attributes.email.toLowerCase();
         }
         //checks that their email is valid and not a duplicate
-        req.checkBody('email', 'Invalid email').notEmpty().isEmail().not().equals(dbEmail);
+        req.checkBody('email', 'Invalid email').notEmpty().isEmail()
+        req.checkBody('email','Email already exists').not().equals(dbEmail);
     }
     else{
         email = user.attributes.email;
@@ -215,7 +224,8 @@ router.post('/editProfile', async function(req, res){
             dbPhone = newUser.attributes.phone;
         }
         //must enter a 10 digit number, no duplicate phone numbers
-        req.checkBody('phone', 'Invalid Phone').isLength({min: 10, max:10}).not().equals(dbPhone);
+        req.checkBody('phone', 'Phone numbers must be 10 digits in length').isLength({min: 10, max:10})
+        req.checkBody('phone', 'Phone number already registered').not().equals(dbPhone);
     }
     else{
         phone = user.attributes.phone;
@@ -223,7 +233,7 @@ router.post('/editProfile', async function(req, res){
     //checks that the email/phone the user entered didnt return errors
     var errors = req.validationErrors();
     if(errors){
-        console.log(errors);
+        res.json({messages: errors})
     }
     else{
         //updates user profile
@@ -233,7 +243,7 @@ router.post('/editProfile', async function(req, res){
         },{patch:true});
     }
 
-    res.redirect('/profile');
+    res.json({messages: [{msg: 'Profile updated successfully!'}]});
 })
 router.post('/editPassword', async function(req, res){
     var currPass = req.body.currPass;

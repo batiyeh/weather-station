@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import '../../styles/login.css';
 import logo from '../../images/space-satellite-dish-512x512.png';
 
-class LoginForm extends Component {
+class LoginForm extends Component {z
     render(){
         return(
             <div className='login-container'>
