@@ -37,7 +37,7 @@ class ProfileForm extends Component {
             {method: 'post', 
             body: JSON.stringify({
                 email: this.state.email,
-                password: this.state.password,
+                phone: this.state.phone,
             }),
             headers: {
                 'Accept': 'application/json, text/plain, */*',

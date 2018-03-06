@@ -234,7 +234,6 @@ router.post('/editProfile', async function(req, res){
     var errors = req.validationErrors();
     if(errors){
         res.json({messages: errors})
-        console.log(errors);
     }
     else{
         //updates user profile
