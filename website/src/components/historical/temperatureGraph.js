@@ -27,22 +27,6 @@ class TemperatureGraph extends Component{
         }
     }
     
-    componentWillMount(){
-        this.getTemp();
-    }
-
-    getTemp = async () => {
-        var tempData;
-        const response = await fetch('/api/weather/temp/');
-        const body = await response.json();
-        if (response.status !== 200) throw Error(body.message);
-        if (body.temp) tempData = body.temp;
-        this.setState({
-            data: tempData,
-            selectX: datum => new Date(datum.created_at),
-            selectY: datum => parseFloat(datum.temperature)
-        });
-    };
 
     render(){
         console.log(this.state.data);
