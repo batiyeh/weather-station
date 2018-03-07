@@ -3,9 +3,8 @@
     margin-bottom: 0;
 }
 .filter{
-    margin-left: 200px;
-    margin-right: 200px;
-    
+    max-width: 600px;
+    float: left;
 }
 .btn-primary{
     background-color: #27ACAC !important;
@@ -17,7 +16,5 @@
     color: #232323 !important;
 }
 .historical-container{
-    max-width: 400px;
-    margin: auto;
-    padding-top: 75px;
+
 }
