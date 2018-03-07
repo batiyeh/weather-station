@@ -4,34 +4,12 @@ import Marker from './marker';
 import '../../styles/map.css';
 
 export class MapContainer extends PureComponent {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
-            stations: [],
+            stations: this.props.stations,
         };
     }
-
-    getInitialState() {
-        return {
-            stations: []
-        };
-    }
-
-    componentDidMount(){
-        this.getLatestWeather().then(stations => {
-            this.setState({stations: stations})
-        });
-    }
-
-    getLatestWeather = async () => {
-        var stations = [];
-        const response = await fetch('/api/weather/latest/');
-        const body = await response.json();
-        if (response.status !== 200) throw Error(body.message); 
-        if (body.weather) stations = body.weather;
-
-        return stations;
-    };
 
     render() {
         const style = {
@@ -41,11 +19,11 @@ export class MapContainer extends PureComponent {
         }
 
         return (
-            <div id={"google-maps"}  className="map-container">
+            <div className="map">
                 <GoogleMap
                         bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAPS_KEY}} // set if you need stats etc ...
                         center={[42.362968, -83.072342]}
-                        zoom={9}
+                        zoom={12}
                         style={style}>
                         {this.state.stations
                             .map(station => {
