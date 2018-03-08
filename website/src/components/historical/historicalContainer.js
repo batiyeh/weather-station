@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import '../../styles/historical.css';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap';
 import TemperatureGraph from './temperatureGraph'
-
-
+import DatePicker  from 'react-datepicker'
+require("react-datepicker/dist/react-datepicker-cssmodules.css");
 
 class HistoricalContainer extends Component{
     constructor(props){
@@ -12,16 +12,34 @@ class HistoricalContainer extends Component{
             data: [],
             modal: false,
             loading: true,
+            fromDate: '',
+            toDate: ''
         }
         this.toggleFilter = this.toggleFilter.bind(this);
+        this.handleToChange = this.handleToChange.bind(this);
+        this.handleFromChange = this.handleFromChange.bind(this);
     }
+
     toggleFilter(){
         this.setState({
             modal: !this.state.modal
         })
     }
+
     componentWillMount(){
         this.getTemp();
+    }
+
+    handleToChange(date) {
+        this.setState({
+            toDate: date
+        });
+    }
+
+    handleFromChange(date) {
+        this.setState({
+            fromDate: date
+        });
     }
 
     getTemp = async () => {
@@ -57,18 +75,38 @@ class HistoricalContainer extends Component{
 
                                 </div>
                                 <div className='form-group'>
-                                    <label for="dateBegin" class="form-label">From</label>
-                                    <input id='dateBegin' name='dateBegin' type='date' className='form-control'/>
-                                    <label for="dateEnd" class="form-label">To</label>
-                                    <input id='dateEnd' name='dateEnd' type='date' className='form-control'/>
+                                    <div className="row">
+                                        <div className="col-6 no-padding-left">
+                                            <label for="dateBegin" class="form-label">From</label>
+                                            <DatePicker
+                                                id='dateBegin' 
+                                                name='dateBegin'
+                                                dateFormat="YYYY-MM-DD"
+                                                className='form-control'
+                                                selected={this.state.fromDate}
+                                                onChange={this.handleFromChange} />
+                                        </div>
+                                        <div className="col-6 no-padding-right">
+                                            <label for="dateEnd" class="form-label">To</label>
+                                            <DatePicker
+                                                id='dateEnd' 
+                                                name='dateEnd'
+                                                dateFormat="YYYY-MM-DD"
+                                                className='form-control'
+                                                selected={this.state.toDate}
+                                                onChange={this.handleToChange} />
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className='form-group'>
-                                    <label for="stations" class="form-label">Stations</label>
-                                    <select id="stations" multiple>
-                                        <option value="Temperature">Station1</option>
-                                        <option value="Pressure">Station2</option>
-                                        <option value="Humidity">Station3</option>
-                                    </select>
+                                    <FormGroup>
+                                        <label for="stations" class="form-label">Stations</label>
+                                        <Input type="select" name="selectMulti" id="exampleSelectMulti" multiple>
+                                            <option value="Temperature">Station1</option>
+                                            <option value="Pressure">Station2</option>
+                                            <option value="Humidity">Station3</option>
+                                        </Input>
+                                    </FormGroup>
                                 </div>
                             </ModalBody>
                             <ModalFooter>
