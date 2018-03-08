@@ -66,16 +66,16 @@ class Navigation extends Component {
                                 {this.props.username}
                                 </DropdownToggle>
                                 <DropdownMenu className="user-menu" right>
-                                    <DropdownItem>
+                                    <DropdownItem tag='a'>
                                         <Link to={'/profile'} className='nav-link nav-link-dark'>profile</Link>
                                     </DropdownItem>
-                                    <DropdownItem>
+                                    <DropdownItem tag='a'>
                                         <Link to={'/admin'} className='nav-link nav-link-dark'>admin</Link>
                                     </DropdownItem>
-                                    <DropdownItem>
+                                    <DropdownItem tag='a'>
                                         <Link to={'/alerts'} className='nav-link nav-link-dark'>alerts</Link>
                                     </DropdownItem>
-                                    <DropdownItem>
+                                    <DropdownItem tag='a'>
                                         <a onClick={this.logout} className='nav-link nav-link-dark'>logout</a>
                                     </DropdownItem>
                                 </DropdownMenu>
