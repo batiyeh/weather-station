@@ -49,10 +49,30 @@ class HistoricalContainer extends Component{
                             <ModalBody>
                                 <div className='form-group'>
                                     <label for="dataType" class="form-label">Type</label>
-                                    <input id='currPass' name='currPass' type='password' className='form-control'/>
+                                    <select id='dataType' name='dataType'  className='form-control'>
+                                        <option value="Temperature">Temperature</option>
+                                        <option value="Pressure">Pressure</option>
+                                        <option value="Humidity">Humidity</option>
+                                    </select>
+
+                                </div>
+                                <div className='form-group'>
+                                    <label for="dateBegin" class="form-label">From</label>
+                                    <input id='dateBegin' name='dateBegin' type='date' className='form-control'/>
+                                    <label for="dateEnd" class="form-label">To</label>
+                                    <input id='dateEnd' name='dateEnd' type='date' className='form-control'/>
+                                </div>
+                                <div className='form-group'>
+                                    <label for="stations" class="form-label">Stations</label>
+                                    <select id="stations" multiple>
+                                        <option value="Temperature">Station1</option>
+                                        <option value="Pressure">Station2</option>
+                                        <option value="Humidity">Station3</option>
+                                    </select>
                                 </div>
                             </ModalBody>
                             <ModalFooter>
+                                <Button type='button' color="Primary" onClick={this.toggleFilter}>Submit</Button>
                                 <Button type='button' color="secondary" onClick={this.toggleFilter}>Cancel</Button>
                             </ModalFooter>
                         </form>
