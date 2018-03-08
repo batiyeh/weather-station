@@ -7,6 +7,7 @@
     float: left;
 }
 .btn-primary{
+    margin-left: 40px;
     background-color: #27ACAC !important;
     border-color: #27ACAC !important;
 }

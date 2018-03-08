@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../../styles/historical.css';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Alert } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import TemperatureGraph from './temperatureGraph'
 
 
@@ -12,8 +12,8 @@ class HistoricalContainer extends Component{
             data: [],
             modal: false,
             loading: true,
-
         }
+        this.toggleFilter = this.toggleFilter.bind(this);
     }
     toggleFilter(){
         this.setState({
@@ -43,8 +43,22 @@ class HistoricalContainer extends Component{
         if(this.state.loading == false){
             return(
                 <div>
+                    <Modal isOpen={this.state.modal} toggle={this.toggleFilter}>
+                        <ModalHeader toggle={this.toggleFilter}>Filter Historical Graph</ModalHeader>
+                        <form id='filterForm'>
+                            <ModalBody>
+                                <div className='form-group'>
+                                    <label for="dataType" class="form-label">Type</label>
+                                    <input id='currPass' name='currPass' type='password' className='form-control'/>
+                                </div>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button type='button' color="secondary" onClick={this.toggleFilter}>Cancel</Button>
+                            </ModalFooter>
+                        </form>
+                    </Modal>
                     <div className="filter row">
-                        <Button type='button' className="btn btn-primary">Filter</Button>
+                        <Button type='button' className="btn btn-primary" onClick={this.toggleFilter}>Filter</Button>
                     </div>
 
                     <TemperatureGraph className="filter row"
