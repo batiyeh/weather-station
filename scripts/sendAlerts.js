@@ -13,10 +13,10 @@ getAlerts = async () =>{
 }
 getWeather = async () => {
     //gets the most recent weather data from each station
-    var weather = await knex('weather').select('w1.*', 'station_name', 'last_connected', 'connected').from('weather as w1').where('w1.created_at', function() {
-        this.max('created_at').from('weather as w2').whereRaw('w2.apikey = w1.apikey')
-    }).leftJoin('stations', 'stations.apikey', 'w1.apikey').orderBy('w1.created_at', 'desc')
-
+    var weather = await knex('latestweather')
+    .join('weather', 'latestweather.weather_id', 'weather.weather_id')
+    .join('stations', 'latestweather.apikey', 'stations.apikey')
+    .select('weather.*', 'stations.station_name', 'stations.last_connected', 'stations.connected')
     return weather;
 }
 comparison = async () => {
@@ -28,6 +28,7 @@ comparison = async () => {
     //Triggered alerts are added to an array
     alerts.map(alerts =>{
         weather.map(weather =>{
+            console.log(weather[alerts.type])
             if(alerts.keyword === 'above'){
                 if(weather[alerts.type] > alerts.value){
                     triggered.push(alerts);
@@ -37,12 +38,13 @@ comparison = async () => {
                 
             }
             else if(alerts.keyword === 'below'){
-                if(weather[alerts.type] > alerts.value){
+                if(weather[alerts.type] < alerts.value){
                     triggered.push(alerts);
                 }
             }
         })
     })
+    console.log(triggered);
     //Checks the alert method on each triggered alert and calls the corresponding function
     triggered.map(triggered =>{
         if(triggered.method === 'email'){
@@ -100,5 +102,4 @@ sendSMS = async (triggered, weather) => {
 sendWebpage = async (triggered, weather) => {
 
 }
-
 comparison();
