@@ -192,16 +192,19 @@ class AlertCard extends Component {
                                 <Label>Alert Method</Label>
                                 <div className='row'>
                                     <div className='form-check form-check-inline alert-method-container'>
-                                        <Label>Email</Label>
+                                        <Label>Email
                                         <Input type='checkbox' className='form-control alert-method-box' checked={this.state.email} onChange={this.onEmailChange} id='email' name='email'/>
+                                        </Label>
                                     </div>
                                     <div className='form-check form-check-inline alert-method-container'>    
-                                        <Label>SMS</Label>
+                                        <Label>SMS
                                         <Input type='checkbox' className='form-control alert-method-box' checked={this.state.sms} onChange={this.onSMSChange} id='sms' name='sms'/>
+                                        </Label>
                                     </div>
-                                        <Label>Webpage</Label>
                                     <div className='form-check form-check-inline alert-method-container'>
+                                        <Label>Webpage
                                         <Input type='checkbox' className='form-control alert-method-box' checked={this.state.webpage} onChange={this.onWebpageChange} id='webpage' name='webpage'/>
+                                        </Label>
                                     </div>
                                 </div>
                             </div>
