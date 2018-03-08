@@ -59,7 +59,7 @@ class StationList extends Component {
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message); 
         if (body.weather) stations = body.weather;
-        console.log(stations);
+        
         return stations;
     };
 

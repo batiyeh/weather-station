@@ -2,8 +2,32 @@
     margin-top: 100px;
     margin-bottom: 0;
 }
+
+.filter{
+    max-width: 600px;
+    float: left;
+}
+
+.btn-primary{
+    margin-left: 40px;
+    background-color: #27ACAC !important;
+    border-color: #27ACAC !important;
+}
+
+.btn-secondary{
+    background-color: #dbdbdb !important;
+    border-color: #dbdbdb !important;
+    color: #232323 !important;
+}
+
+.no-padding-left{
+    padding-left: 0px;
+}
+
+.no-padding-right {
+    padding-right: 0px;
+}
+
 .historical-container{
-    max-width: 400px;
-    margin: auto;
-    padding-top: 75px;
+
 }
