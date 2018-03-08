@@ -18,12 +18,14 @@
     "path": "^0.12.7",
     "popper.js": "^1.12.9",
     "react": "^16.2.0",
+    "react-d3-basic": "^1.6.11",
     "react-datepicker": "^1.2.2",
     "react-dom": "^16.2.0",
     "react-router-dom": "^4.2.2",
     "react-test-renderer": "^16.2.0",
     "react-transition-group": "^2.2.1",
     "reactstrap": "^5.0.0-beta",
+    "recharts": "^1.0.0-beta.10",
     "url-loader": "^0.6.2"
   },
   "devDependencies": {
