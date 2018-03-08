@@ -28,7 +28,6 @@ comparison = async () => {
     //Triggered alerts are added to an array
     alerts.map(alerts =>{
         weather.map(weather =>{
-            console.log(weather[alerts.type])
             if(alerts.keyword === 'above'){
                 if(weather[alerts.type] > alerts.value){
                     triggered.push(alerts);
@@ -44,7 +43,6 @@ comparison = async () => {
             }
         })
     })
-    console.log(triggered);
     //Checks the alert method on each triggered alert and calls the corresponding function
     triggered.map(triggered =>{
         if(triggered.method === 'email'){
