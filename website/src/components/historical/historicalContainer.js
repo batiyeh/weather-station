@@ -110,8 +110,8 @@ class HistoricalContainer extends Component{
                                 </div>
                             </ModalBody>
                             <ModalFooter>
-                                <Button type='button' color="Primary" onClick={this.toggleFilter}>Submit</Button>
                                 <Button type='button' color="secondary" onClick={this.toggleFilter}>Cancel</Button>
+                                <Button type='button' color="Primary" onClick={this.toggleFilter}>Submit</Button>
                             </ModalFooter>
                         </form>
                     </Modal>
