@@ -189,8 +189,8 @@ if __name__ == '__main__':
                 humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, pin)
                 temperature = (9.0/5.0) * temperature + 32
             except:
-                temperature = 0.0
-                humidity = 0.0
+                temperature = 50.0
+                humidity = 50.0
 
             # Attempt to retrieve from sense hat
             try:

@@ -26,15 +26,26 @@ comparison = async () => {
 
     //Checks each alert to see if it has been triggered
     //Triggered alerts are added to an array
-    alerts.map(alerts =>{
-        weather.map(weather =>{
+    var nextIndex = null;
+    var value1 = null;
+    var value2 = null;
+    alerts.map((alerts, index) =>{
+        weather.map(weather => {
             if(alerts.keyword === 'above'){
                 if(weather[alerts.type] > alerts.value){
                     triggered.push(alerts);
                 }
             }
             else if(alerts.keyword === 'between'){
-                
+                if(nextIndex != index){
+                    value1 = alerts.value;
+                    nextIndex = index + 1;
+                }
+                else{
+                    value2 = alerts.value;
+                    alerts.firstValue = value1;
+                    triggered.push(alerts);
+                }
             }
             else if(alerts.keyword === 'below'){
                 if(weather[alerts.type] < alerts.value){
@@ -77,18 +88,35 @@ sendEmail = async (triggered, weather) =>{
             pass: 'wayne123'
         }
     });
-    var mailOptions = {
-        to: triggered.email,
-        from: 'wstationtestdod@gmail.com',
-        subject: 'Inclement weather alert!',
-        text: 'You are receiving this message because the following alert was triggered:\n\n'+
-        'The ' + triggered.type + ' is ' + triggered.keyword + ' ' + triggered.value + ' at station: ' + triggered.station_name + '\n\n'+
-        'The current weather at ' + triggered.station_name + ' is: \n\n'+
-        'Temperature: ' + triggeredStation.temperature + '\n' +
-        'Pressure: ' + triggeredStation.pressure + '\n' +
-        'Humidity: ' + triggeredStation.humidity + '\n'
-        
-    };
+    if(triggered.firstValue){
+        var mailOptions = {
+            to: triggered.email,
+            from: 'wstationtestdod@gmail.com',
+            subject: 'Inclement weather alert!',
+            text: 'You are receiving this message because the following alert was triggered:\n\n'+
+            'The ' + triggered.type + ' is ' + triggered.keyword + ' ' + triggered.firstValue + ' and ' + triggered.value + ' at station: ' + triggered.station_name + '\n\n'+
+            'The current weather at ' + triggered.station_name + ' is: \n\n'+
+            'Temperature: ' + triggeredStation.temperature + '\n' +
+            'Pressure: ' + triggeredStation.pressure + '\n' +
+            'Humidity: ' + triggeredStation.humidity + '\n'
+            
+        };
+    }
+    else{
+        var mailOptions = {
+            to: triggered.email,
+            from: 'wstationtestdod@gmail.com',
+            subject: 'Inclement weather alert!',
+            text: 'You are receiving this message because the following alert was triggered:\n\n'+
+            'The ' + triggered.type + ' is ' + triggered.keyword + ' ' + triggered.value + ' at station: ' + triggered.station_name + '\n\n'+
+            'The current weather at ' + triggered.station_name + ' is: \n\n'+
+            'Temperature: ' + triggeredStation.temperature + '\n' +
+            'Pressure: ' + triggeredStation.pressure + '\n' +
+            'Humidity: ' + triggeredStation.humidity + '\n'
+            
+        };
+    }
+
     transporter.sendMail(mailOptions,function(err){
         //Alert user email has been sent
         done(err, 'done');
