@@ -9,10 +9,11 @@ class Historical extends Component {
         return (
             <div className='NavBar'>
                 <VerifyLoggedIn/>
-                <div id="historical-container">
+                <div id="historical-container container">
                     <h2 className="page-title">Historical Graph</h2>
-
-                    <HistoricalContainer></HistoricalContainer>
+                    <div className="row">
+                        <HistoricalContainer></HistoricalContainer>
+                    </div>
                  </div>
             </div>
         );
