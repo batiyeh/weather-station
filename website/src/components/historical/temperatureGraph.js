@@ -23,6 +23,8 @@ class TemperatureGraph extends Component{
             <div className='graph'>
                 <LineChart width={this.state.width} height={this.state.height} data={this.state.data}>
                     <Line type="monotone" dataKey="temperature" stroke="#8884d8" />
+                    <XAxis dataKey={this.state.selectX}/>
+                    <YAxis dataKey="temperature"/>
                 </LineChart>
             </div>
         );

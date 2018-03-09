@@ -128,7 +128,7 @@ class HistoricalContainer extends Component{
                         height={400}
                         selectX={datum => datum.created_at}
                         selectY={datum => datum.temperature}
-                        width={500}
+                        width={700}
                     />
                 </div>
             )
