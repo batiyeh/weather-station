@@ -16,6 +16,7 @@ class HistoricalContainer extends Component{
             toDate: ''
         }
         this.toggleFilter = this.toggleFilter.bind(this);
+        this.componentWillMount = this.componentWillMount.bind(this);
         this.handleToChange = this.handleToChange.bind(this);
         this.handleFromChange = this.handleFromChange.bind(this);
     }
@@ -26,8 +27,8 @@ class HistoricalContainer extends Component{
         })
     }
 
-    componentWillMount(){
-        this.getTemp();
+    componentWillMount() {
+        this.getTemp()
     }
 
     handleToChange(date) {
@@ -43,17 +44,20 @@ class HistoricalContainer extends Component{
     }
 
     getTemp = async () => {
-        var tempData;
+        var Data;
         const response = await fetch('/api/weather/temp/');
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
-        if (body.temp) tempData = body.temp;
+        if (body.temp) Data = body.temp;
         this.setState({
-            data: tempData,
+            data: Data,
             selectX: datum => new Date(datum.created_at),
             selectY: datum => parseFloat(datum.temperature),
-            loading: false
-        });
+            loading: false});
+        console.log(Data);
+        console.log(this.state.data);
+
+
     };
 
 
