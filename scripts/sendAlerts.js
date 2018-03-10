@@ -1,5 +1,6 @@
 const knex = require('knex')(require('../knexfile'))
 const nodemailer = require('nodemailer');
+const Alerts = require('../models/Alerts');
 
 getAlerts = async () =>{
     //Gets all alerts currently in database and the user's email address/phone
@@ -54,18 +55,24 @@ comparison = async () => {
             }
         })
     })
-    //Checks the alert method on each triggered alert and calls the corresponding function
     triggered.map(triggered =>{
-        if(triggered.method === 'email'){
-            sendEmail(triggered, weather);
-        }
-        else if(triggered.method === 'sms'){
-            sendSMS(triggered, weather);
-        }
-        else if(triggered.method === 'webpage'){
-            sendWebpage(triggered, weather);
-        }
+        await Alerts.where({alert_id: triggered.alert_id}).save({
+            
+        })
+        console.log(triggered);
     })
+    //Checks the alert method on each triggered alert and calls the corresponding function
+    // triggered.map(triggered =>{
+    //     if(triggered.method === 'email'){
+    //         sendEmail(triggered, weather);
+    //     }
+    //     else if(triggered.method === 'sms'){
+    //         sendSMS(triggered, weather);
+    //     }
+    //     else if(triggered.method === 'webpage'){
+    //         sendWebpage(triggered, weather);
+    //     }
+    // })
 }
 //Sends the user an email for the triggered alert
 //Email includes the alert that was triggered and

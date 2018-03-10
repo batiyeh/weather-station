@@ -47,6 +47,7 @@ exports.up = function(knex, Promise) {
             table.string('type');
             table.string('keyword');
             table.string('threshold');
+            //dont set default value to time created
             table.timestamp('last_triggered');
             table.string('station_name', 64);
             table.string('username').references('username').inTable('users').onDelete('SET NULL').onUpdate('CASCADE');
