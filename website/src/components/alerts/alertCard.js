@@ -16,8 +16,10 @@ class AlertCard extends Component {
             value2: this.props.value2,
             email: false,
             sms: false,
-            webpage: false
+            webpage: false,
+            threshold: this.props.alerts.threshold
         }
+        
         this.getAlertMethods = this.getAlertMethods.bind(this);
         this.updateAlert = this.updateAlert.bind(this);
         this.toggleAlert = this.toggleAlert.bind(this);
@@ -39,7 +41,8 @@ class AlertCard extends Component {
                 value2: this.state.value2,
                 email: this.state.email,
                 sms: this.state.sms,
-                webpage: this.state.webpage
+                webpage: this.state.webpage,
+                threshold: this.state.threshold
             }),
             headers: {
                 'Accept': 'application/json, text/plain, */*',
@@ -121,6 +124,11 @@ class AlertCard extends Component {
             webpage: !this.state.webpage
         })
     }
+    onThresholdChange(value){
+        this.setState({
+            threshold: value
+        })
+    }
     //if the user has a keyword selected the requires multiple inputs, it will display it dynamically
     renderValues(){
         if(this.state.keyword === 'between'){
@@ -170,7 +178,8 @@ class AlertCard extends Component {
             value2: this.props.value2,
             email: false,
             sms: false,
-            webpage: false
+            webpage: false,
+            threshold: this.props.alerts.threshold
         })
         this.toggleAlert();
     }
@@ -207,6 +216,14 @@ class AlertCard extends Component {
                                         </Label>
                                     </div>
                                 </div>
+                            </div>
+                            <div className='form-group'>
+                                <Label>Alert me every...</Label>
+                                <Input type="select" name='threshold' id='threshold' value={this.state.threshold} onChange={e => this.onThresholdChange(e.target.value)}>
+                                    <option value='1 hour'>1 Hour</option>
+                                    <option value='12 hours'>12 Hours</option>
+                                    <option value='24 hours'>24 Hours</option>
+                                </Input>
                             </div>
                             <div className='form-group'>
                                 <Label>Station</Label>

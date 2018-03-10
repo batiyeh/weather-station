@@ -21,6 +21,7 @@ router.post('/create', async function(req, res){
     var email = req.body.email;
     var sms = req.body.sms;
     var webpage = req.body.webpage;
+    var threshold = req.body.threshold;
 
     //prevents user from submitting blank value
     if(keyword === 'between' && !value2){
@@ -32,6 +33,7 @@ router.post('/create', async function(req, res){
             station_name: station,
             type: datatype,
             keyword: keyword,
+            threshold: threshold,
             username: req.user
         }).save();
         //assigns values to new alert via foreign key
@@ -77,7 +79,7 @@ router.post('/', async function(req, res){
 
     //selects all alerts for user, joins alerts and alertvalues based on alert_id
     var alerts = await knex('alerts')
-    .select('alerts.alert_id', 'alerts.station_name', 'alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alertvalues.value')
+    .select('alerts.alert_id', 'alerts.station_name', 'alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alerts.threshold', 'alertvalues.value')
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
     .where('alerts.username', req.user)
 
@@ -106,6 +108,7 @@ router.post('/:id', async function(req,res){
     var email = req.body.email;
     var sms = req.body.sms;
     var webpage = req.body.webpage;
+    var threshold = req.body.threshold;
 
     //prevents user from entering blank value
     if(keyword === 'between' && !value2){
@@ -117,6 +120,7 @@ router.post('/:id', async function(req,res){
         await Alerts.where({alert_id: req.params.id}).save({
             station_name: station,
             type: datatype,
+            threshold: threshold,
             keyword: keyword
         },{patch:true})
         

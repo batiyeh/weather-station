@@ -18,6 +18,7 @@ class AlertsForm extends Component {
             email: true,
             sms: false,
             webpage: false,
+            threshold: '1 hour'
         };
         this.resetValues = this.resetValues.bind(this);
         this.onEmailChange = this.onEmailChange.bind(this);
@@ -54,7 +55,8 @@ class AlertsForm extends Component {
                 value2: this.state.value2,
                 email: this.state.email,
                 sms: this.state.sms,
-                webpage: this.state.webpage
+                webpage: this.state.webpage,
+                threshold : this.state.threshold
             }),
             headers: {
                 'Accept': 'application/json, text/plain, */*',
@@ -111,6 +113,11 @@ class AlertsForm extends Component {
     onWebpageChange(){
         this.setState({
             webpage: !this.state.webpage
+        })
+    }
+    onThresholdChange(value){
+        this.setState({
+            threshold: value
         })
     }
     //displays either one input box or two to the user depending on what keyword they currently have selected
@@ -183,6 +190,7 @@ class AlertsForm extends Component {
             email: true,
             sms: false,
             webpage: false,
+            threshold: '1 hour'
         })
         this.toggleAddAlert();
     }
@@ -212,6 +220,14 @@ class AlertsForm extends Component {
                                     </Label>
                                 </div>
                             </div>
+                        </div>
+                        <div className='form-group'>
+                            <Label>Alert me every...</Label>
+                            <Input type="select" name='threshold' id='threshold' onChange={e => this.onThresholdChange(e.target.value)}>
+                                <option value='1 hour'>1 Hour</option>
+                                <option value='12 hours'>12 Hours</option>
+                                <option value='24 hours'>24 Hours</option>
+                            </Input>
                         </div>
                         <div className='form-group'>
                             <Label>Station</Label>

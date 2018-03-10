@@ -46,8 +46,9 @@ exports.up = function(knex, Promise) {
             table.increments('alert_id').primary();
             table.string('type');
             table.string('keyword');
+            table.string('threshold');
             table.timestamp('last_triggered');
-            table.string('station_name', 64).references('station_name').inTable('stations').onDelete('SET NULL').onUpdate('CASCADE');
+            table.string('station_name', 64);
             table.string('username').references('username').inTable('users').onDelete('SET NULL').onUpdate('CASCADE');
         })
         .createTable('alertvalues', function(table){
