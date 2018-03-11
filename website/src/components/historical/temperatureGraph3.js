@@ -19,13 +19,31 @@ class TemperatureGraph3 extends Component{
     }
 
     render(){
+        var labels = this.state.selectY;
+        var temp = this.state.selectX;
+        var tempData = {
+            labels : this.state.selectX,
+            datasets :[{
+                data: this.state.selectY
+            }]
+        };
         return(
             <div className='graph'>
                 < Line
-                    data={this.state.data}
-                    options={{maintainAspectRatio: false}}
+                    data={tempData}
+                    options={{maintainAspectRatio: false,
+                        scales: {
+                            xAxes: [{
+                                type: 'time',
+                                time: {
+                                    displayFormats: {
+                                        quarter: 'hA'
+                                    }
+                                }
+                            }]
+                        }}}
                     width={this.state.width}
-                    height={this.state.height_}
+                    height={this.state.height}
                     />
             </div>
         );
