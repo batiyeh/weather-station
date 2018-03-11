@@ -3,6 +3,7 @@ import '../../styles/historical.css';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap';
 import TemperatureGraph from './temperatureGraph'
 import TemperatureGraph2 from './temperatureGraph2'
+import TemperatureGraph3 from './temperatureGraph3'
 import DatePicker  from 'react-datepicker'
 require("react-datepicker/dist/react-datepicker-cssmodules.css");
 
@@ -123,17 +124,13 @@ class HistoricalContainer extends Component{
                     <div className="filter row">
                         <Button type='button' className="btn btn-primary" onClick={this.toggleFilter}>Filter</Button>
                     </div>
-
-
-                    <div id="graphdiv">
-                        <TemperatureGraph2 className="filter row"
+                        <TemperatureGraph3 className="filter row"
                             data={this.state.data}
                             height={400}
                             selectX={datum => datum.created_at}
                             selectY={datum => datum.temperature}
                             width={700}
                         />
-                    </div>
                 </div>
             )
         }
