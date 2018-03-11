@@ -19,7 +19,16 @@ class TemperatureGraph2 extends Component{
         }
     }
     componentDidMount(){
-        new Dygraph('graphdiv', this.state.data, {labels: ["temperature", "created_at"]});
+        new Dygraph('graphdiv',[[71, 2009/8/12],
+            [new Date("2009/8/12"), 71 ], [new Date("2009/8/12"),72], [new Date("2009/8/12"),73], [new Date("2009/8/12"),74],
+                [new Date("2009/8/12"),71], [new Date("2009/8/12"), 65]], {labels: ["temperature", "created_at"],
+        axis :{
+            x :{
+
+                ticker: Dygraph.dateTicker
+            }
+        }
+        });
     }
     render(){
         return(
