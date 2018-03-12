@@ -1,6 +1,7 @@
 const knex = require('knex')(require('../knexfile'))
 const nodemailer = require('nodemailer');
 const Alerts = require('../models/Alerts');
+const WebpageAlerts = require('../models/WebpageAlerts');
 const moment = require('moment');
 moment().format();
 
@@ -160,7 +161,20 @@ sendSMS = async (triggered, weather) => {
 
 }
 sendWebpage = async (triggered, weather) => {
+    var triggeredStation = null;
+    weather.map(weather=>{
+        if(weather.station_name === triggered.station_name){
+            triggeredStation = weather;
+        }
+    })
 
+    await new WebpageAlerts({
+        read: false,
+        temperature: triggeredStation.temperature,
+        pressure: triggeredStation.pressure,
+        humidity: triggeredStation.humidity,
+        alert_id: triggered.alert_id
+    }).save()
 }
 sendAlerts();
 
