@@ -43,7 +43,7 @@ module.exports =  {
             checkConnected.checkConnected();
         })
     },
-
+    //checks all user alerts every minute
     checkAlerts(){
         schedule.scheduleJob('0 * * * * *', function(){
             sendAlerts.sendAlerts();

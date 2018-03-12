@@ -23,16 +23,15 @@ getWeather = async () => {
     return weather;
 }
 sendAlerts = async () => {
-    console.log('check')
     var triggered = []
     var alerts = await getAlerts();
     var weather = await getWeather();
+
     //Checks each alert to see if it has been triggered
     //Triggered alerts are added to an array
     var nextIndex = null;
     var value1 = null;
     var value2 = null;
-
     alerts.map((alerts, index) =>{
         weather.map(weather => {
             if(alerts.keyword === 'above'){
@@ -58,7 +57,9 @@ sendAlerts = async () => {
             }
         })
     })
-    // console.log(triggered);
+
+    //checks if any alerts in the triggered array have been triggered recently
+    //if the time is greater than the threshold, they are added to array newTrig
     var newTrig = [];
     triggered.map(triggered =>{
         if(triggered.threshold === '1 hour'){
@@ -77,8 +78,10 @@ sendAlerts = async () => {
             }
         }
     })
+    //triggered array changed to new values
     triggered = newTrig;
-    console.log(triggered);
+
+    //last_triggered value updated to current time on all triggered alerts
     triggered.map(triggered =>{
         Alerts.where({alert_id: triggered.alert_id}).save({
             last_triggered: knex.fn.now()
