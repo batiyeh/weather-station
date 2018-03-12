@@ -19,12 +19,15 @@ class TemperatureGraph3 extends Component{
     }
 
     render(){
-        var labels = this.state.selectY;
-        var temp = this.state.selectX;
+        console.log(this.state.selectX);
+        console.log(this.state.selectY);
         var tempData = {
-            labels : this.state.selectX,
+            labels: "temperature",
             datasets :[{
-                data: this.state.selectY
+                data: [{
+                    x: this.state.selectX,
+                    y: this.state.selectY
+                }]
             }]
         };
         return(
