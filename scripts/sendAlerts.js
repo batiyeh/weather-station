@@ -1,11 +1,13 @@
 const knex = require('knex')(require('../knexfile'))
 const nodemailer = require('nodemailer');
 const Alerts = require('../models/Alerts');
+const moment = require('moment');
+moment().format();
 
 getAlerts = async () =>{
     //Gets all alerts currently in database and the user's email address/phone
     var alerts = await knex('alerts')
-    .select('alerts.alert_id', 'alerts.station_name', 'alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alertvalues.value', 
+    .select('alerts.alert_id', 'alerts.station_name', 'alerts.type', 'alerts.keyword' ,'alerts.threshold' , 'alerts.last_triggered', 'alertvalues.value', 
     'alertmethods.method', 'alerts.username', 'users.email', 'users.phone')
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
     .leftJoin('alertmethods', 'alerts.alert_id', '=', 'alertmethods.alert_id')
@@ -24,20 +26,20 @@ comparison = async () => {
     var triggered = []
     var alerts = await getAlerts();
     var weather = await getWeather();
-
     //Checks each alert to see if it has been triggered
     //Triggered alerts are added to an array
     var nextIndex = null;
     var value1 = null;
     var value2 = null;
+
     alerts.map((alerts, index) =>{
         weather.map(weather => {
             if(alerts.keyword === 'above'){
-                if(weather[alerts.type] > alerts.value){
+                if((weather[alerts.type] > alerts.value) && (weather.station_name === alerts.station_name)){
                     triggered.push(alerts);
                 }
             }
-            else if(alerts.keyword === 'between'){
+            else if((alerts.keyword === 'between') && (weather.station_name === alerts.station_name)){
                 if(nextIndex != index){
                     value1 = alerts.value;
                     nextIndex = index + 1;
@@ -48,31 +50,52 @@ comparison = async () => {
                     triggered.push(alerts);
                 }
             }
-            else if(alerts.keyword === 'below'){
+            else if((alerts.keyword === 'below')  && (weather.station_name === alerts.station_name)){
                 if(weather[alerts.type] < alerts.value){
                     triggered.push(alerts);
                 }
             }
         })
     })
+    // console.log(triggered);
+    var newTrig = [];
     triggered.map(triggered =>{
-        await Alerts.where({alert_id: triggered.alert_id}).save({
-            
-        })
-        console.log(triggered);
+        if(triggered.threshold === '1 hour'){
+            if((1000 * 60 * 60) < (moment.utc() - triggered.last_triggered)){
+                newTrig.push(triggered);
+            }
+        }
+        else if(triggered.threshold === '12 hours'){
+            if((1000 * 60 * 60 * 12) < (moment.utc() - triggered.last_triggered)){
+                newTrig.push(triggered);
+            }
+        }
+        else if(triggered.threshold === '24 hours'){
+            if((1000 * 60 * 60 * 24) < (moment.utc() - triggered.last_triggered)){
+                newTrig.push(triggered);
+            }
+        }
     })
+    triggered = newTrig;
+    console.log(triggered);
+    triggered.map(triggered =>{
+        Alerts.where({alert_id: triggered.alert_id}).save({
+            last_triggered: knex.fn.now()
+        },{patch:true})
+    })
+
     //Checks the alert method on each triggered alert and calls the corresponding function
-    // triggered.map(triggered =>{
-    //     if(triggered.method === 'email'){
-    //         sendEmail(triggered, weather);
-    //     }
-    //     else if(triggered.method === 'sms'){
-    //         sendSMS(triggered, weather);
-    //     }
-    //     else if(triggered.method === 'webpage'){
-    //         sendWebpage(triggered, weather);
-    //     }
-    // })
+    triggered.map(triggered =>{
+        if(triggered.method === 'email'){
+            sendEmail(triggered, weather);
+        }
+        else if(triggered.method === 'sms'){
+            sendSMS(triggered, weather);
+        }
+        else if(triggered.method === 'webpage'){
+            sendWebpage(triggered, weather);
+        }
+    })
 }
 //Sends the user an email for the triggered alert
 //Email includes the alert that was triggered and
