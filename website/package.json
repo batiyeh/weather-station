@@ -43,7 +43,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "webpack",
-    "test": "react-scripts test --env=jsdom",
+    "test": "jest",
     "eject": "react-scripts eject"
   },
   "proxy": "http://localhost:5000/"
