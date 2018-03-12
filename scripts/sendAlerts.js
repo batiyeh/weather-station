@@ -22,7 +22,8 @@ getWeather = async () => {
     .select('weather.*', 'stations.station_name', 'stations.last_connected', 'stations.connected')
     return weather;
 }
-comparison = async () => {
+sendAlerts = async () => {
+    console.log('check')
     var triggered = []
     var alerts = await getAlerts();
     var weather = await getWeather();
@@ -158,4 +159,8 @@ sendSMS = async (triggered, weather) => {
 sendWebpage = async (triggered, weather) => {
 
 }
-comparison();
+sendAlerts();
+
+module.exports =  {
+    sendAlerts
+}
