@@ -6,11 +6,8 @@
     "babel-polyfill": "^6.26.0",
     "bootstrap": "^4.0.0",
     "chart.js": "^2.7.2",
-    "d3": "^4.13.0",
-    "d3-time-format": "^2.1.1",
     "dc": "^2.1.9",
     "dotenv": "^5.0.0",
-    "dygraphs": "^2.1.0",
     "file-loader": "^1.1.6",
     "font-awesome": "^4.7.0",
     "google-map-react": "^0.32.0",
@@ -27,7 +24,6 @@
     "react-test-renderer": "^16.2.0",
     "react-transition-group": "^2.2.1",
     "reactstrap": "^5.0.0-beta",
-    "recharts": "^1.0.0-beta.10",
     "url-loader": "^0.6.2"
   },
   "devDependencies": {
