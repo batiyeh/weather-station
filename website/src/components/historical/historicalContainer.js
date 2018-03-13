@@ -51,11 +51,7 @@ class HistoricalContainer extends Component{
         if (body.temp) Data = body.temp;
         this.setState({
             data: Data,
-            selectX: datum => new Date(datum.created_at),
-            selectY: datum => parseFloat(datum.temperature),
             loading: false});
-        console.log(Data);
-        console.log(this.state.data);
 
 
     };
@@ -124,9 +120,7 @@ class HistoricalContainer extends Component{
                     </div>
                         <TemperatureGraph className="filter row"
                             data={this.state.data}
-                            height={400}
-                            selectX={datum => datum.created_at}
-                            selectY={datum => datum.temperature}
+                            height={500}
                             width={700}
                         />
                 </div>

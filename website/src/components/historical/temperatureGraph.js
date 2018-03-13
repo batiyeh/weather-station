@@ -6,7 +6,16 @@ import { Line } from 'react-chartjs-2';
 class TemperatureGraph extends Component{
     constructor(props) {
         super(props);
-        // Do all this in a better place like comonentWillMount()
+        this.state = {
+            data: this.props.data,
+            height: this.props.height,
+            selectX: this.props.selectX,
+            selectY: this.props.selectY,
+            width: this.props.width,
+        }
+    }
+
+    componentWillMount(){
         var temperature = [];
         var labels = [];
         for (var i = 0; i < this.props.data.length; i++){
@@ -14,8 +23,8 @@ class TemperatureGraph extends Component{
             // Change this dynamically based on the range of times we get.
             // IE: if our date range is over a day set to every 15 minutes etc.
             if (i % 50 == 0){
-                
-                // Push ONLY the temperature into our array of temps so it will be of 
+
+
                 // form [72.6, 71.8, 80.0] etc.
                 temperature.push(this.props.data[i].temperature);
 
@@ -24,20 +33,16 @@ class TemperatureGraph extends Component{
                 labels.push(this.props.data[i].created_at);
             }
         }
-        this.state = {
-            data: temperature,
-            labels: labels,
-            height: this.props.height,
-            selectX: this.props.selectX,
-            selectY: this.props.selectY,
-            width: this.props.width,
-            margin: {top: 20, right: 20, bottom: 30, left: 50},
-        }
+        this.setState({
+            selectX: temperature,
+            selectY: labels
+
+        });
     }
 
     render(){
         const data = {
-            labels: this.state.labels, // Time labels
+            labels: this.state.selectY, // Time labels
 
             // This is an array of dataset objects. It currently only has one object hence the one line
             // To add more lines, just add more to the list with more data from the state
@@ -62,32 +67,9 @@ class TemperatureGraph extends Component{
                 pointHoverBorderWidth: 2,
                 pointRadius: 1,
                 pointHitRadius: 10,
-                data: this.state.data // Array of just temp data
+                data: this.state.selectX // Array of just temp data
             }]
 
-            // More lines could be drawn like this:
-            // You would do this in a loop of course with less options for styling
-            /*datasets: [{
-                label: 'Temperature Data',
-                fill: false,
-                lineTension: 0.1,
-                backgroundColor: 'rgba(75,192,192,0.4)',
-                borderColor: 'rgba(75,192,192,1)',
-                borderCapStyle: 'butt',
-                borderDash: [],
-                borderDashOffset: 0.0,
-                borderJoinStyle: 'miter',
-                pointBorderColor: 'rgba(75,192,192,1)',
-                pointBackgroundColor: '#fff',
-                pointBorderWidth: 1,
-                pointHoverRadius: 5,
-                pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-                pointHoverBorderColor: 'rgba(220,220,220,1)',
-                pointHoverBorderWidth: 2,
-                pointRadius: 1,
-                pointHitRadius: 10,
-                data: this.state.data // Array of just temp data
-            }*/
         };
         
         return(
@@ -96,6 +78,17 @@ class TemperatureGraph extends Component{
                     data={data}
                     width={this.state.width}
                     height={this.state.height}
+                    options={{maintainAspectRatio: false,
+                        scales: {
+                            xAxes: [{
+                                type: 'time',
+                                time: {
+                                    displayFormats: {
+                                        quarter: 'hA'
+                                    }
+                                }
+                            }]
+                        }}}
                 />
             </div>
         );
