@@ -54,19 +54,18 @@ class TemperatureGraph extends Component{
                 lineTension: 0.1,
                 backgroundColor: 'rgba(75,192,192,0.4)',
                 borderColor: 'rgba(75,192,192,1)',
-                borderCapStyle: 'butt',
-                borderDash: [],
-                borderDashOffset: 0.0,
+                borderDash: [8,4],
+                borderWidth: 2,
                 borderJoinStyle: 'miter',
+                pointRadius: 4,
+                pointHitRadius: 10,
                 pointBorderColor: 'rgba(75,192,192,1)',
                 pointBackgroundColor: '#fff',
-                pointBorderWidth: 1,
+                pointBorderWidth: 3,
                 pointHoverRadius: 5,
                 pointHoverBackgroundColor: 'rgba(75,192,192,1)',
                 pointHoverBorderColor: 'rgba(220,220,220,1)',
                 pointHoverBorderWidth: 2,
-                pointRadius: 1,
-                pointHitRadius: 10,
                 data: this.state.selectX // Array of just temp data
             }]
 
@@ -82,13 +81,34 @@ class TemperatureGraph extends Component{
                         scales: {
                             xAxes: [{
                                 type: 'time',
+                                gridLines: {
+                                    drawBorder: true
+                                },
+                                ticks: {
+                                    fontColor: '#000',
+                                    fontFamily: 'Roboto Mono',
+                                    fontSize: 15
+                                },
                                 time: {
                                     displayFormats: {
-                                        quarter: 'hA'
+                                        quarter: 'MMM D YYYY'    /*Displays month day year*/
                                     }
                                 }
+                            }],
+                            yAxes: [{
+                                type: 'linear',
+                                ticks: {
+                                    fontColor: '#000',
+                                    fontFamily: 'Roboto Mono',
+                                    fontSize: 15
+                                },
+                                gridLines: {
+                                    borderDash: [2,1],
+                                    drawBorder: false
+                                }
                             }]
-                        }}}
+                        },
+                    }}
                 />
             </div>
         );

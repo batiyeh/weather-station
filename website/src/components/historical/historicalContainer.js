@@ -121,7 +121,7 @@ class HistoricalContainer extends Component{
                         <TemperatureGraph className="filter row"
                             data={this.state.data}
                             height={500}
-                            width={700}
+                            width={800}
                         />
                 </div>
             )
