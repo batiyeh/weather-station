@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../../styles/historical.css';
-import { Line } from 'react-chartjs-2';
+import { Line, Chart} from 'react-chartjs-2';
 // import moment so we can get better time labels
 
 class TemperatureGraph extends Component{
@@ -70,7 +70,7 @@ class TemperatureGraph extends Component{
             }]
 
         };
-        
+
         return(
             <div className='graph'>
                 <Line
@@ -82,7 +82,7 @@ class TemperatureGraph extends Component{
                             xAxes: [{
                                 type: 'time',
                                 gridLines: {
-                                    drawBorder: true
+                                    drawBorder: true,
                                 },
                                 ticks: {
                                     fontColor: '#000',
@@ -93,20 +93,23 @@ class TemperatureGraph extends Component{
                                     displayFormats: {
                                         quarter: 'MMM D YYYY'    /*Displays month day year*/
                                     }
-                                }
+                                },
                             }],
                             yAxes: [{
                                 type: 'linear',
                                 ticks: {
                                     fontColor: '#000',
                                     fontFamily: 'Roboto Mono',
-                                    fontSize: 15
+                                    fontSize: 15,
+                                    callback: function(value, index, values) {
+                                        return value + '°';
+                                    }
                                 },
                                 gridLines: {
                                     borderDash: [2,1],
                                     drawBorder: false
                                 }
-                            }]
+                            }],
                         },
                     }}
                 />
