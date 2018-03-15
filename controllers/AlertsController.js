@@ -72,6 +72,14 @@ router.post('/create', async function(req, res){
     //success
     return res.status(200).json({newAlert})
 })
+router.post('/webpage', async function(req, res){
+    var alerts = await knex('webpagealerts')
+    .select('alerts.type','alerts.keyword', 'alerts.station_name', 'webpagealerts.read', 'webpagealerts.temperature', 'webpagealerts.humidity', 'webpagealerts.pressure', 'webpagealerts.triggered_at')
+    .leftJoin('alerts', 'webpagealerts.alert_id', '=', 'alerts.alert_id')
+    .where('alerts.username', req.user);
+
+    return res.status(200).json({alerts});
+})
 
 //post request to retrieve all alerts currently stored in the database for that user
 //this function is a post because we have to pass the user's session information

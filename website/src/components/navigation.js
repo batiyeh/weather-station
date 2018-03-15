@@ -10,21 +10,48 @@ import {
     Dropdown,
     DropdownToggle,
     DropdownMenu,
-    DropdownItem } from 'reactstrap';
+    DropdownItem,
+    Card } from 'reactstrap';
 
 class Navigation extends Component {
     constructor(props){
         super(props);
         this.toggle = this.toggle.bind(this);
+        this.toggleAlert = this.toggleAlert.bind(this);
+        this.renderAlerts = this.renderAlerts.bind(this);
+
         this.state = {
             dropdownOpen: false,
-            redirect: false
+            alertDropDown: false,
+            redirect: false,
+            alerts: [],
         }
+    }
+    componentWillMount = async () => {
+        await this.getWebpageAlerts();
+    }
+
+    getWebpageAlerts = async () => {
+        var alerts = [];
+
+        var response = await fetch('/api/alerts/webpage', {method: 'post', credentials: 'include'})
+        var body = await response.json();
+        alerts = body.alerts;
+
+        this.setState({alerts: alerts});
+        this.state.alerts.map(alerts => {
+            console.log(alerts);
+        })
     }
 
     toggle(){
         this.setState({
             dropdownOpen:!this.state.dropdownOpen
+        })
+    }
+    toggleAlert(){
+        this.setState({
+            alertDropDown: !this.state.alertDropDown
         })
     }
 
@@ -36,7 +63,14 @@ class Navigation extends Component {
         })
         return body;
     }
-
+    renderAlerts(){
+        var webpageAlertCards = [];
+        this.state.alerts.map(alerts =>{
+            webpageAlertCards.push(<DropdownItem><Card>Alert from: {alerts.station_name}</Card></DropdownItem>)
+        })
+        console.log(webpageAlertCards);
+        return webpageAlertCards;
+    }
     render() {
         if(this.state.redirect) {
             return <Redirect to='/user/login'/>;
@@ -59,6 +93,16 @@ class Navigation extends Component {
                             <NavItem>
                                 <Link to={'/historical'} className='nav-link'>historical</Link>
                             </NavItem>
+                        </Nav>
+                        <Nav className='ml-auto' navbar>
+                            <Dropdown isOpen={this.state.alertDropDown} toggle={this.toggleAlert} nav inNavbar>
+                                <DropdownToggle nav caret>
+                                img here
+                                </DropdownToggle>
+                                <DropdownMenu className="alert-menu" right>
+                                    {this.renderAlerts()}
+                                </DropdownMenu>
+                            </Dropdown>
                         </Nav>
                         <Nav className="ml-auto" navbar>
                             <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggle} nav inNavbar>
