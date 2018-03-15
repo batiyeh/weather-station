@@ -16,6 +16,7 @@ class HistoricalContainer extends Component{
             toDate: ''
         }
         this.toggleFilter = this.toggleFilter.bind(this);
+        this.componentWillMount = this.componentWillMount.bind(this);
         this.handleToChange = this.handleToChange.bind(this);
         this.handleFromChange = this.handleFromChange.bind(this);
     }
@@ -26,8 +27,8 @@ class HistoricalContainer extends Component{
         })
     }
 
-    componentWillMount(){
-        this.getTemp();
+    componentWillMount() {
+        this.getTemp()
     }
 
     handleToChange(date) {
@@ -43,17 +44,16 @@ class HistoricalContainer extends Component{
     }
 
     getTemp = async () => {
-        var tempData;
+        var data;
         const response = await fetch('/api/weather/temp/');
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
-        if (body.temp) tempData = body.temp;
+        if (body.temp) data = body.temp;
         this.setState({
-            data: tempData,
-            selectX: datum => new Date(datum.created_at),
-            selectY: datum => parseFloat(datum.temperature),
-            loading: false
-        });
+            data: data,
+            loading: false});
+
+
     };
 
 
@@ -116,16 +116,13 @@ class HistoricalContainer extends Component{
                         </form>
                     </Modal>
                     <div className="filter row">
-                        <Button type='button' className="btn btn-primary" onClick={this.toggleFilter}>Filter</Button>
+                        <Button type='button' color="primary" className="btn btn-primary" onClick={this.toggleFilter}>Filter</Button>
                     </div>
-
-                    <TemperatureGraph className="filter row"
-                        data={this.state.data}
-                        height={400}
-                        selectX={datum => datum.created_at}
-                        selectY={datum => datum.temperature}
-                        width={500}
-                    />
+                        <TemperatureGraph className="filter row"
+                            data={this.state.data}
+                            height={500}
+                            width={800}
+                        />
                 </div>
             )
         }
