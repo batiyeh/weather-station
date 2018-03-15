@@ -39,8 +39,7 @@ class TemperatureGraph extends Component{
 
         });
     }
-
-    render(){
+    createLines() {
         const data = {
             labels: this.state.selectY, // Time labels
 
@@ -54,7 +53,7 @@ class TemperatureGraph extends Component{
                 lineTension: 0.1,
                 backgroundColor: 'rgba(75,192,192,0.4)',
                 borderColor: 'rgba(75,192,192,1)',
-                borderDash: [8,4],
+                borderDash: [8, 4],
                 borderWidth: 2,
                 borderJoinStyle: 'miter',
                 pointRadius: 4,
@@ -67,14 +66,41 @@ class TemperatureGraph extends Component{
                 pointHoverBorderColor: 'rgba(220,220,220,1)',
                 pointHoverBorderWidth: 2,
                 data: this.state.selectX // Array of just temp data
-            }]
+            },
+                {
+                    label: 'Temperature Data2',
+                    fill: false,
+                    lineTension: 0.1,
+                    backgroundColor: 'rgba(75,192,192,0.4)',
+                    borderColor: 'red',
+                    borderDash: [8, 4],
+                    borderWidth: 2,
+                    borderJoinStyle: 'miter',
+                    pointRadius: 4,
+                    pointHitRadius: 10,
+                    pointBorderColor: 'rgba(75,192,192,1)',
+                    pointBackgroundColor: '#fff',
+                    pointBorderWidth: 3,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+                    pointHoverBorderColor: 'rgba(220,220,220,1)',
+                    pointHoverBorderWidth: 2,
+                    data: [70,70,70,70,70,70,70] // Array of just temp data
+                }]
 
         };
+        return data;
+    }
+
+
+
+    render(){
+        const lines = this.createLines();
 
         return(
             <div className='graph'>
                 <Line
-                    data={data}
+                    data={lines}
                     width={this.state.width}
                     height={this.state.height}
                     options={{maintainAspectRatio: false,

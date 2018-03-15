@@ -9,7 +9,7 @@ class HistoricalContainer extends Component{
     constructor(props){
         super(props);
         this.state = {
-            data: [],
+            stationsData: {},
             modal: false,
             loading: true,
             fromDate: '',
@@ -45,16 +45,21 @@ class HistoricalContainer extends Component{
 
     getTemp = async () => {
         var data;
+        var statDict = {};
         const response = await fetch('/api/weather/temp/');
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
         if (body.temp) data = body.temp;
+        for (var i = 0; i < data.length; i++){
+            var apik
+        }
         this.setState({
-            data: data,
+            stationsData: data,
             loading: false});
 
 
     };
+
 
 
     render(){
