@@ -44,13 +44,13 @@ class HistoricalContainer extends Component{
     }
 
     getTemp = async () => {
-        var Data;
+        var data;
         const response = await fetch('/api/weather/temp/');
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
-        if (body.temp) Data = body.temp;
+        if (body.temp) data = body.temp;
         this.setState({
-            data: Data,
+            data: data,
             loading: false});
 
 
