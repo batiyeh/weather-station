@@ -50,14 +50,17 @@ class HistoricalContainer extends Component{
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
         if (body.temp) data = body.temp;
-        for (var i = 0; i < data.length; i++){
-            var apik
+        for (var i = 0; i < data.length; i++) {
+            var apiKey = data[i].apikey;
+            if (!statDict[apiKey])
+                statDict[apiKey] = [];
+            statDict[apiKey].push(data[i].temperature, data[i].created_at);
         }
         this.setState({
-            stationsData: data,
-            loading: false});
-
-
+            stationsData: statDict,
+            loading: false
+        });
+        console.log(this.state.stationsData);
     };
 
 
@@ -124,7 +127,7 @@ class HistoricalContainer extends Component{
                         <Button type='button' color="primary" className="btn btn-primary" onClick={this.toggleFilter}>Filter</Button>
                     </div>
                         <TemperatureGraph className="filter row"
-                            data={this.state.data}
+                            data={this.state.stationsData}
                             height={500}
                             width={800}
                         />

@@ -12,32 +12,31 @@ class TemperatureGraph extends Component{
             selectX: this.props.selectX,
             selectY: this.props.selectY,
             width: this.props.width,
+            lines: []
         }
     }
 
     componentWillMount(){
         var temperature = [];
         var labels = [];
-        for (var i = 0; i < this.props.data.length; i++){
-            // Should grab a point every 2.5 minutes (50*3 / 60). We may want to
-            // Change this dynamically based on the range of times we get.
-            // IE: if our date range is over a day set to every 15 minutes etc.
-            if (i % 50 == 0){
+        var Data = [];
+        //var apiKey = '6157ac3cb9e0f98e813a';
+        for (var apiKey in this.state.data) {
+            Data = this.state.data[apiKey];
+            for(var i = 0; i < Data.length; i++) {
+                temperature.push(Data[i]);
 
+                    i++;
+                    labels.push(Data[i]);
+                }
 
-                // form [72.6, 71.8, 80.0] etc.
-                temperature.push(this.props.data[i].temperature);
+            this.setState({
+                selectX: temperature,
+                selectY: labels
 
-                // Create a formatted time string for each point here so it looks better
-                // Push to times array which is set in our state as labels
-                labels.push(this.props.data[i].created_at);
-            }
+            });
         }
-        this.setState({
-            selectX: temperature,
-            selectY: labels
 
-        });
     }
     createLines() {
         const data = {
