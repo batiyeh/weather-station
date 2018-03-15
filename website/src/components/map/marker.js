@@ -1,37 +1,50 @@
 import React, { Component } from 'react';
+import { MARKER_SIZE, getMarkerStyle, getContainerStyle, infoStyle, FadeAndSlideUp } from './markerStyles'
 import '../../styles/map.css';
 
-export class Marker extends Component {
+class Marker extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            station: this.props.station,
+            hover: this.props.hover
+        }
+    }
+
+    // Update the hover status when mousing over this marker
+    componentWillReceiveProps(nextProps){
+        var hover = nextProps.$hover;
+        if (hover !== this.state.hover){
+            this.updateHover(hover);
+        }
+    }
+
+    // Updates the hover state attribute
+    updateHover(hover) {
+        this.setState({
+            hover: hover
+        })
     }
 
     render() {
-        const height = 40;
-        const width = 40;
-
-        const markerContainerStyle = {
-            position: 'absolute',
-            width: width,
-            height: height,
-            left: -width / 2,
-            top: -height / 2,
-            textAlign: 'center',
-            padding: 4
-        };
-
-        const markerStyle ={
-            fontSize: 40,
-            fontWeight: 'bold',
-            color: '#e06253',
-        }
-
+        const cStyle = getContainerStyle(this.state.hover);
+        const mStyle = getMarkerStyle(this.state.hover, this.props.$getDimensions(this.props.markerId));
+        
         return (
-            <div style={markerContainerStyle} className="marker-container">
-                <i style={markerStyle} className="fa fa-map-marker" aria-hidden="true"></i>
+            <div style={cStyle} className="marker-container">
+                <FadeAndSlideUp in={this.state.hover}>
+                    <div className="col-12 row">
+                        <p className="marker-info-title">{this.state.station.station_name}</p>
+                    </div>
+                    <p className="marker-info-text">temperature: {this.props.station.temperature} &deg;F</p>
+                    <p className="marker-info-text">pressure: {this.props.station.pressure} hPa</p>
+                    <p className="marker-info-text">humidity: {this.props.station.humidity}%</p>
+                </FadeAndSlideUp>
+                <i style={mStyle} className="fa fa-map-marker" aria-hidden="true"></i>
             </div>
         ); 
     }
 
 }
-export default Marker
+
+export default Marker;
