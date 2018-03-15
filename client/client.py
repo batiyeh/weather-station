@@ -37,7 +37,7 @@ def getApiKey(url):
     else:
         verified = False
         while(not verified):
-            key = input("Enter your API Key: ")
+            key = raw_input("Enter your API Key: ")
             key = "".join(key.split())
             try:
                 print("Verifying key...")
@@ -154,7 +154,7 @@ def sendStoredWeather():
 if __name__ == '__main__':
     os.environ['TZ'] = 'America/Detroit'
     time.tzset()
-    url = "http://localhost:5000"
+    url = "http://67.205.153.103:5000"
     temperature = 0
     pressure = 0
     humidity = 0
@@ -187,7 +187,7 @@ if __name__ == '__main__':
             # Attempt to retrieve humidity + temperature
             try:
                 humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, pin)
-                temperature = (9.0/5.0) % temperature + 32
+                temperature = (9.0/5.0) * temperature + 32
             except:
                 temperature = 0.0
                 humidity = 0.0
