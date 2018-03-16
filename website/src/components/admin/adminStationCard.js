@@ -5,7 +5,6 @@ import { Button, Card, CardText, Modal, ModalHeader, ModalBody, ModalFooter } fr
 class AdminStationCard extends Component {
     constructor(props){
         super(props);
-        console.log(props);
         this.state = {
             modal: false,
             name: props.station.station_name,
