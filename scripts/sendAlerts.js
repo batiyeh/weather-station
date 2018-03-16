@@ -32,7 +32,6 @@ sendAlerts = async () => {
     //Triggered alerts are added to an array
     var nextIndex = null;
     var value1 = null;
-    var value2 = null;
     alerts.map((alerts, index) =>{
         weather.map(weather => {
             if(alerts.keyword === 'above'){
@@ -46,7 +45,6 @@ sendAlerts = async () => {
                     nextIndex = index + 1;
                 }
                 else{
-                    value2 = alerts.value;
                     alerts.firstValue = value1;
                     triggered.push(alerts);
                 }

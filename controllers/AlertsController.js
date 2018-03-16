@@ -74,8 +74,9 @@ router.post('/create', async function(req, res){
 })
 router.post('/webpage', async function(req, res){
     var alerts = await knex('webpagealerts')
-    .select('alerts.type','alerts.keyword', 'alerts.station_name', 'webpagealerts.read', 'webpagealerts.temperature', 'webpagealerts.humidity', 'webpagealerts.pressure', 'webpagealerts.triggered_at')
+    .select('alerts.alert_id', 'alerts.type','alerts.keyword', 'alerts.station_name', 'webpagealerts.read', 'webpagealerts.temperature', 'webpagealerts.humidity', 'webpagealerts.pressure', 'webpagealerts.triggered_at', 'alertvalues.value')
     .leftJoin('alerts', 'webpagealerts.alert_id', '=', 'alerts.alert_id')
+    .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
     .where('alerts.username', req.user);
 
     return res.status(200).json({alerts});

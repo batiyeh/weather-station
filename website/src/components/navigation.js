@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import '../styles/navbar.css';
 import logo from '../images/space-satellite-dish-512x512.png';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Redirect} from 'react-router-dom';
 import {
     Navbar,
     NavbarBrand,
@@ -11,23 +11,41 @@ import {
     DropdownToggle,
     DropdownMenu,
     DropdownItem,
-    Card } from 'reactstrap';
+    Card,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader,
+    Form,
+    Button } from 'reactstrap';
 
 class Navigation extends Component {
     constructor(props){
         super(props);
         this.toggle = this.toggle.bind(this);
         this.toggleAlert = this.toggleAlert.bind(this);
+        this.toggleAlertModal = this.toggleAlertModal.bind(this);
         this.renderAlerts = this.renderAlerts.bind(this);
+        this.renderHeader = this.renderHeader.bind(this);
 
         this.state = {
             dropdownOpen: false,
             alertDropDown: false,
             redirect: false,
             alerts: [],
+            modal: false,
+            temperature: null,
+            pressure: null,
+            humidity: null,
+            time: null,
+            station_name: null,
+            keyword: null,
+            type: null,
+            value1: null,
+            value2: null
         }
     }
-    componentWillMount = async () => {
+    componentDidMount = async () => {
         await this.getWebpageAlerts();
     }
 
@@ -39,9 +57,7 @@ class Navigation extends Component {
         alerts = body.alerts;
 
         this.setState({alerts: alerts});
-        this.state.alerts.map(alerts => {
-            console.log(alerts);
-        })
+        
     }
 
     toggle(){
@@ -54,6 +70,20 @@ class Navigation extends Component {
             alertDropDown: !this.state.alertDropDown
         })
     }
+    toggleAlertModal(station_name, type, keyword, value1, value2, temperature, pressure, humidity, time){
+        this.setState({
+            station_name: station_name,
+            type : type,
+            keyword: keyword,
+            value1: value1,
+            value2: value2,
+            temperature: temperature,
+            pressure: pressure,
+            humidity: humidity,
+            time: time,
+            modal: !this.state.modal
+        })
+    }
 
     logout = async() => {
         var response = await fetch('/api/user/logout', {method: 'post', credentials: 'include'})
@@ -63,12 +93,35 @@ class Navigation extends Component {
         })
         return body;
     }
+    renderHeader(){
+        console.log('header asdfasfsadfasd')
+        if(this.state.value2){
+            return(<ModalHeader toggle={this.toggleAlertModal}> {this.state.station_name}'s {this.state.type} is {this.state.keyword} {this.state.value1} and {this.state.value2} </ModalHeader>)
+        }
+        else{
+            return(<ModalHeader toggle={this.toggleAlertModal}> {this.state.station_name}'s {this.state.type} is {this.state.keyword} {this.state.value1} </ModalHeader>)
+        }
+    }
     renderAlerts(){
         var webpageAlertCards = [];
-        this.state.alerts.map(alerts =>{
-            webpageAlertCards.push(<DropdownItem><Card>Alert from: {alerts.station_name}</Card></DropdownItem>)
+        var nextIndex = null;
+        var value1 = null;
+        this.state.alerts.map((alerts, index) =>{
+            if(alerts.keyword === 'between'){
+                if(nextIndex != index){
+                    value1 = alerts.value;
+                    nextIndex = index + 1;
+                }
+                else{
+                    webpageAlertCards.push(<DropdownItem  onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, value1, alerts.value, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)}>
+                    <Card>Alert: {alerts.station_name}'s {alerts.type} is {alerts.keyword} {value1} and {alerts.value}</Card></DropdownItem>)
+                }
+            }
+            else{
+                webpageAlertCards.push(<DropdownItem onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, null, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)}>
+                <Card>Alert: {alerts.station_name}'s {alerts.type} is {alerts.keyword} {alerts.value}</Card></DropdownItem>)
+            }
         })
-        console.log(webpageAlertCards);
         return webpageAlertCards;
     }
     render() {
@@ -125,6 +178,24 @@ class Navigation extends Component {
                                 </DropdownMenu>
                             </Dropdown>
                         </Nav>
+                        <Modal isOpen={this.state.modal} toggle={this.toggleAlertModal}>
+                            {this.renderHeader()}
+                            <Form id='AlertForm'>
+                                <ModalBody>
+                                    <p>Weather Data for {this.state.station_name} at {this.state.time}:</p>
+                                    <p>Temperature: {this.state.temperature}</p>
+                                    <p>Pressure: {this.state.pressure}</p>
+                                    Humidity: {this.state.humidity}
+                                </ModalBody>
+                                <ModalFooter>
+                                    <div className='col-6 left'>
+                                    <Button type='button' color="danger" onClick={this.deleteAlert}>Delete</Button>
+                                    </div>
+                                    <Button type='button' color="primary" onClick={this.updateAlert} className="primary-themed-btn" >Update Alert</Button>{' '}
+                                    <Button type='button' color="secondary" onClick={this.resetValues}>Cancel</Button>
+                                </ModalFooter>
+                            </Form>
+                        </Modal>   
                     </Navbar>
                 </div>
             );
