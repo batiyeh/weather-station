@@ -33,11 +33,13 @@ class Sensors(object):
             self.agps_thread.stream_data()
             self.agps_thread.run_thread()
         except:
+            print("Failed initializing GPS")
             pass
         
         try:
             self.sense = SenseHat()
         except:
+            print("Failed initializing Sense Hat")
             pass
     
     def getSensorData(self, apikey):
@@ -58,7 +60,7 @@ class Sensors(object):
     def getWeather(self):
         # Attempt to retrieve humidity + temperature
         try:
-            self.humidity, self.temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, self.pin)
+            self.humidity, self.temperature = Adafruit_DHT.read(Adafruit_DHT.AM2302, self.pin)
             self.temperature = (9.0/5.0) * self.temperature + 32
         except:
             pass
@@ -69,10 +71,10 @@ class Sensors(object):
             self.temperature = (9.0/5.0) * self.sense.temperature + 32
             self.pressure = self.sense.pressure
         except:
-            # pass
-            self.temperature = random.uniform(68.0, 78.0)
-            self.humidity = random.uniform(45.0, 55.0)
-            self.pressure = random.uniform(900.0, 1075.0)
+            pass
+            # self.temperature = random.uniform(68.0, 78.0)
+            # self.humidity = random.uniform(45.0, 55.0)
+            # self.pressure = random.uniform(900.0, 1075.0)
 
     def getGpsCoords(self):
         # Try to get latitude and longitude data from our receiver
