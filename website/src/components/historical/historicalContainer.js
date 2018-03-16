@@ -45,22 +45,21 @@ class HistoricalContainer extends Component{
 
     getTemp = async () => {
         var data;
-        var statDict = {};
+        var stationsDict = {};
         const response = await fetch('/api/weather/temp/');
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
         if (body.temp) data = body.temp;
         for (var i = 0; i < data.length; i++) {
-            var apiKey = data[i].apikey;
-            if (!statDict[apiKey])
-                statDict[apiKey] = [];
-            statDict[apiKey].push(data[i].temperature, data[i].created_at);
+            var station_name = data[i].station_name;
+            if (!stationsDict[station_name]) stationsDict[station_name] = {"temp": [], "dates": []};
+            stationsDict[station_name]["temp"].push(data[i].temperature);
+            stationsDict[station_name]["dates"].push(data[i].created_at);
         }
         this.setState({
-            stationsData: statDict,
+            stationsData: stationsDict,
             loading: false
         });
-        console.log(this.state.stationsData);
     };
 
 
