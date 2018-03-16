@@ -5,6 +5,7 @@ import { Button, Card, CardText, Modal, ModalHeader, ModalBody, ModalFooter } fr
 class AdminStationCard extends Component {
     constructor(props){
         super(props);
+        console.log(props);
         this.state = {
             modal: false,
             name: props.station.station_name,
@@ -58,8 +59,15 @@ class AdminStationCard extends Component {
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" className="primary-themed-btn" onClick={this.saveStationName}>Save Changes</Button>
-                        <Button color="secondary" onClick={this.toggleEditStation}>Cancel</Button>
+                        <div className="col-12 row no-padding">
+                            <div className="delete-container left">
+                                <Button color="danger" className="btn btn-warning" onClick={() => {this.props.deleteStation(this.state.apikey); this.toggleEditStation()}}>Delete</Button>
+                            </div>
+                            <div className="save-changes-container right">
+                                <Button color="primary" className="primary-themed-btn" onClick={this.saveStationName}>Save Changes</Button>
+                                <Button color="secondary" className="cancel-btn" onClick={this.toggleEditStation}>Cancel</Button>
+                            </div>
+                        </div>
                     </ModalFooter>
                 </Modal>
 
@@ -67,11 +75,8 @@ class AdminStationCard extends Component {
                     <div className="col-12">
                         <CardText>
                             <div className="row">
-                                <div className="col-8 no-padding-left station-title">
+                                <div className="col-12 no-padding-left station-title">
                                     { this.state.name }
-                                </div>
-                                <div className="col-4 no-padding-right right delete-icon">
-                                    <span className="delete-btn"><i className="fa fa-times" aria-hidden="true"></i></span>
                                 </div>
                             </div>
                         </CardText>

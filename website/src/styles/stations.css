@@ -5,6 +5,7 @@
 
 .content{
     margin-top: 125px;
+    max-width: 700px;
 }
 
 .station-container{
@@ -84,6 +85,10 @@
 .filterWidth{
     margin: auto;
     max-width: 600px;
+}
+
+.no-padding{
+    padding: 0px !important;
 }
 
 .no-padding-left{
