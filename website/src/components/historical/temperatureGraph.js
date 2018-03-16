@@ -12,7 +12,8 @@ class TemperatureGraph extends Component{
             selectX: this.props.selectX,
             selectY: this.props.selectY,
             width: this.props.width,
-            lines: []
+            lines: [],
+            labels: []
         }
     }
 
@@ -20,7 +21,6 @@ class TemperatureGraph extends Component{
         var temperature = [];
         var labels = [];
         var Data = [];
-        //var apiKey = '6157ac3cb9e0f98e813a';
         for (var apiKey in this.state.data) {
             Data = this.state.data[apiKey];
             for(var i = 0; i < Data.length; i++) {
@@ -29,24 +29,18 @@ class TemperatureGraph extends Component{
                     i++;
                     labels.push(Data[i]);
                 }
-
             this.setState({
                 selectX: temperature,
-                selectY: labels
-
+                selectY: labels,
             });
+            console.log(this.state.selectX);
+            this.createLines();
         }
 
     }
     createLines() {
-        const data = {
-            labels: this.state.selectY, // Time labels
 
-            // This is an array of dataset objects. It currently only has one object hence the one line
-            // To add more lines, just add more to the list with more data from the state
-            // So you'll end up preprocessing all your data and adding a new dataset element to this array
-            // For each line you want. You'll also notice all the styles for the individual line are in here too.
-            datasets: [{
+        const newDataset = {
                 label: 'Temperature Data',
                 fill: false,
                 lineTension: 0.1,
@@ -64,38 +58,21 @@ class TemperatureGraph extends Component{
                 pointHoverBackgroundColor: 'rgba(75,192,192,1)',
                 pointHoverBorderColor: 'rgba(220,220,220,1)',
                 pointHoverBorderWidth: 2,
-                data: this.state.selectX // Array of just temp data
-            },
-                {
-                    label: 'Temperature Data2',
-                    fill: false,
-                    lineTension: 0.1,
-                    backgroundColor: 'rgba(75,192,192,0.4)',
-                    borderColor: 'red',
-                    borderDash: [8, 4],
-                    borderWidth: 2,
-                    borderJoinStyle: 'miter',
-                    pointRadius: 4,
-                    pointHitRadius: 10,
-                    pointBorderColor: 'rgba(75,192,192,1)',
-                    pointBackgroundColor: '#fff',
-                    pointBorderWidth: 3,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-                    pointHoverBorderColor: 'rgba(220,220,220,1)',
-                    pointHoverBorderWidth: 2,
-                    data: [70,70,70,70,70,70,70] // Array of just temp data
-                }]
-
-        };
-        return data;
+                data: this.state.selectX, // Array of just temp data
+            };
+        console.log(this.state.selectX);
+        this.state.labels.push(this.state.selectY);// Time labels
+        this.state.lines.push(newDataset);
     }
 
 
 
     render(){
-        const lines = this.createLines();
-
+        const lines = {
+            datasets: this.state.lines
+        };
+        console.log(lines);
+        console.log(this.state.datasets);
         return(
             <div className='graph'>
                 <Line
