@@ -1,3 +1,4 @@
+
 import React, { Component } from 'react';
 import '../styles/navbar.css';
 import logo from '../images/space-satellite-dish-512x512.png';
@@ -17,7 +18,10 @@ import {
     ModalFooter,
     ModalHeader,
     Form,
-    Button } from 'reactstrap';
+    Button,
+    Alert } from 'reactstrap';
+    
+var FontAwesome = require('react-fontawesome')
 
 class Navigation extends Component {
     constructor(props){
@@ -94,7 +98,6 @@ class Navigation extends Component {
         return body;
     }
     renderHeader(){
-        console.log('header asdfasfsadfasd')
         if(this.state.value2){
             return(<ModalHeader toggle={this.toggleAlertModal}> {this.state.station_name}'s {this.state.type} is {this.state.keyword} {this.state.value1} and {this.state.value2} </ModalHeader>)
         }
@@ -122,7 +125,12 @@ class Navigation extends Component {
                 <Card>Alert: {alerts.station_name}'s {alerts.type} is {alerts.keyword} {alerts.value}</Card></DropdownItem>)
             }
         })
-        return webpageAlertCards;
+        if(webpageAlertCards.length === 0){
+            return(<Alert>You have no alerts</Alert>)
+        }
+        else{
+            return webpageAlertCards;
+        }
     }
     render() {
         if(this.state.redirect) {
@@ -150,9 +158,9 @@ class Navigation extends Component {
                         <Nav className='ml-auto' navbar>
                             <Dropdown isOpen={this.state.alertDropDown} toggle={this.toggleAlert} nav inNavbar>
                                 <DropdownToggle nav caret>
-                                img here
+                                    <FontAwesome size='2x' name='bell'/>
                                 </DropdownToggle>
-                                <DropdownMenu className="alert-menu" right>
+                                <DropdownMenu className="user-menu" right>
                                     {this.renderAlerts()}
                                 </DropdownMenu>
                             </Dropdown>
@@ -188,11 +196,7 @@ class Navigation extends Component {
                                     Humidity: {this.state.humidity}
                                 </ModalBody>
                                 <ModalFooter>
-                                    <div className='col-6 left'>
-                                    <Button type='button' color="danger" onClick={this.deleteAlert}>Delete</Button>
-                                    </div>
-                                    <Button type='button' color="primary" onClick={this.updateAlert} className="primary-themed-btn" >Update Alert</Button>{' '}
-                                    <Button type='button' color="secondary" onClick={this.resetValues}>Cancel</Button>
+                                    <Button type='button' color="secondary" onClick={this.dismissAlert}>Dismiss</Button>
                                 </ModalFooter>
                             </Form>
                         </Modal>   
