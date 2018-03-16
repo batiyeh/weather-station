@@ -5,6 +5,8 @@ import { Link, Redirect } from 'react-router-dom';
 import {
     Navbar,
     NavbarBrand,
+    NavbarToggler,
+    Collapse,
     Nav,
     NavItem,
     Dropdown,
@@ -15,16 +17,24 @@ import {
 class Navigation extends Component {
     constructor(props){
         super(props);
-        this.toggle = this.toggle.bind(this);
         this.state = {
-            dropdownOpen: false,
+            dropdown: false,
+            navShown: false,
             redirect: false
         }
+        this.toggleDropdown = this.toggleDropdown.bind(this);
+        this.toggleNav = this.toggleNav.bind(this);
     }
 
-    toggle(){
+    toggleDropdown(){
         this.setState({
-            dropdownOpen:!this.state.dropdownOpen
+            dropdown:!this.state.dropdown
+        })
+    }
+
+    toggleNav(){
+        this.setState({
+            navShown:!this.state.navShown
         })
     }
 
@@ -49,38 +59,47 @@ class Navigation extends Component {
                         <NavbarBrand href="/">
                             <Link to={'/'} className='nav-link'><img src={logo} width="30" height="30" alt=""></img></Link>
                         </NavbarBrand>
-                        <Nav>
-                            <NavItem>
-                                <Link to={'/'} className='nav-link'>stations</Link>
-                            </NavItem>
-                            <NavItem>
-                                <Link to={'/map'} className='nav-link'>map</Link>
-                            </NavItem>
-                            <NavItem>
-                                <Link to={'/historical'} className='nav-link'>historical</Link>
-                            </NavItem>
-                        </Nav>
-                        <Nav className="ml-auto" navbar>
-                            <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggle} nav inNavbar>
-                                <DropdownToggle nav caret>
-                                {this.props.username}
-                                </DropdownToggle>
-                                <DropdownMenu className="user-menu" right>
-                                    <DropdownItem>
-                                        <Link to={'/profile'} className='nav-link nav-link-dark'>profile</Link>
-                                    </DropdownItem>
-                                    <DropdownItem>
-                                        <Link to={'/admin'} className='nav-link nav-link-dark'>admin</Link>
-                                    </DropdownItem>
-                                    <DropdownItem>
-                                        <Link to={'/alerts'} className='nav-link nav-link-dark'>alerts</Link>
-                                    </DropdownItem>
-                                    <DropdownItem>
-                                        <a onClick={this.logout} className='nav-link nav-link-dark'>logout</a>
-                                    </DropdownItem>
-                                </DropdownMenu>
-                            </Dropdown>
-                        </Nav>
+                        <NavbarToggler className="navbar-toggler-container ml-auto" onClick={this.toggleNav} />
+                        <Collapse isOpen={this.state.navShown} navbar>
+                            <Nav>
+                                <div className="col-xs-12 hidden-sm-up">
+                                    <NavItem>
+                                        <Link to={'/'} className='nav-link'>stations</Link>
+                                    </NavItem>
+                                </div>
+                                <div className="col-xs-12 hidden-sm-up">
+                                    <NavItem>
+                                        <Link to={'/map'} className='nav-link'>map</Link>
+                                    </NavItem>
+                                </div>
+                                <div className="col-xs-12 hidden-sm-up">
+                                    <NavItem>
+                                        <Link to={'/historical'} className='nav-link'>historical</Link>
+                                    </NavItem>
+                                </div>
+                            </Nav>
+                            <Nav className="ml-auto" navbar>
+                                <Dropdown isOpen={this.state.dropdown} toggle={this.toggleDropdown} nav inNavbar>
+                                    <DropdownToggle nav caret>
+                                    {this.props.username}
+                                    </DropdownToggle>
+                                    <DropdownMenu className="user-menu" right>
+                                        <DropdownItem>
+                                            <Link to={'/profile'} className='nav-link nav-link-dark'>profile</Link>
+                                        </DropdownItem>
+                                        <DropdownItem>
+                                            <Link to={'/admin'} className='nav-link nav-link-dark'>admin</Link>
+                                        </DropdownItem>
+                                        <DropdownItem>
+                                            <Link to={'/alerts'} className='nav-link nav-link-dark'>alerts</Link>
+                                        </DropdownItem>
+                                        <DropdownItem>
+                                            <a onClick={this.logout} className='nav-link nav-link-dark'>logout</a>
+                                        </DropdownItem>
+                                    </DropdownMenu>
+                                </Dropdown>
+                            </Nav>
+                        </Collapse>
                     </Navbar>
                 </div>
             );

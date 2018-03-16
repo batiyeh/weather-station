@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { MARKER_SIZE, getMarkerStyle, getContainerStyle, infoStyle, FadeAndSlideUp } from './markerStyles'
+import { getMarkerStyle, getContainerStyle, FadeAndSlideUp } from './markerStyles'
 import '../../styles/map.css';
 
 class Marker extends Component {

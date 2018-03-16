@@ -28,3 +28,8 @@ nav a {
 .nav-link:active {
     text-decoration: none;
 }
+
+.dropdown-item:active {
+    background-color: #ededed !important; 
+    color:#000;
+}
