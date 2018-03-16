@@ -11,7 +11,8 @@ class StationList extends Component {
         this.state = {
             stations: [],
             secondsElapsed: 0,
-            filter: ''
+            filter: '',
+            view: 'list'
         };
     }
 
@@ -79,6 +80,61 @@ class StationList extends Component {
         return true;
     }
 
+    handleViewChange(view){
+        if (view !== this.state.view){
+            this.setState({
+                view: view
+            })
+        }
+    }
+
+    renderFilters(){
+        return (
+            <div>
+                <div className="row options-row">
+                    <div className="view-options col-12 right">
+                        <button className="btn btn-secondary btn-sm view-icon" onClick={() => {this.handleViewChange('list')}}><i class="fa fa-th-list" aria-hidden="true"></i></button>
+                        <button className="btn btn-secondary btn-sm view-icon" onClick={() => {this.handleViewChange('grid')}}><i class="fa fa-th fa-fw " aria-hidden="true"></i></button>
+                    </div>
+                </div>
+                <FormGroup className="col-12">
+                    <Input type="text" className="filterWidth" name="stationFilter" id="stationFilter" placeholder="Filter" onChange={this.filterOnChange.bind(this)} />
+                </FormGroup>
+            </div>
+        );
+    }
+
+    renderStations(){
+        if (this.state.view === "list"){
+            return (this.state.stations
+                .filter(this.filterStations.bind(this))
+                .map(station => {
+                    return (
+                        <StationCard key={station.key} station={station}></StationCard>
+                    );
+                }) 
+            ); 
+        }
+
+        else{
+            return (
+                <div className="row col-12">
+                {
+                    this.state.stations
+                    .filter(this.filterStations.bind(this))
+                    .map((station, index) => {
+                        return (
+                            <div class="col-md-6 col-sm-12 no-padding">
+                                <StationCard key={station.key} station={station}></StationCard>
+                            </div>
+                        );
+                    }) 
+                }
+                </div>
+            ); 
+        }
+    }
+
     // If there are no stations stored in the state, render
     // the no stations alert.
     renderAlert(){
@@ -92,22 +148,25 @@ class StationList extends Component {
     }
 
     render() {
-        return (
-            <div className="container content">
-                <FormGroup>
-                    <Input type="text" className="filterWidth" name="stationFilter" id="stationFilter" placeholder="Filter" onChange={this.filterOnChange.bind(this)} />
-                </FormGroup>
-                { this.state.stations
-                    .filter(this.filterStations.bind(this))
-                    .map(station => {
-                        return (
-                            <StationCard key={station.key} station={station}></StationCard>
-                        );
-                    }) 
-                }   
-                { this.renderAlert() }
-            </div>
-        );
+        if (this.state.view === "list"){
+            return (
+                <div className="stations-container list-content">
+                    { this.renderFilters() }
+                    { this.renderStations() }
+                    { this.renderAlert() }
+                </div>
+            );
+        }
+
+        else{
+            return (
+                <div className="stations-container grid-content">
+                    { this.renderFilters() }
+                    { this.renderStations() }
+                    { this.renderAlert() }
+                </div>
+            );
+        }
   }
 }
 

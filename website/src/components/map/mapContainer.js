@@ -1,4 +1,4 @@
-import React, { Component, PureComponent } from 'react';
+import React, { Component } from 'react';
 import GoogleMap from 'google-map-react';
 import Marker from './marker';
 import { MARKER_SIZE } from './markerStyles'

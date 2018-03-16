@@ -12,9 +12,21 @@
     cursor: pointer;
 }
 
+.cancel-btn{
+    margin-left: 5px;
+}
+
 .delete-icon{
     line-height: 28px;
     color: #777777;
+}
+
+.save-changes-container{
+    width: 65%;
+}
+
+.delete-container{
+    width: 35%;
 }
 
 .admin-station-container{
@@ -45,8 +57,9 @@
     padding-right: 0px !important;
 }
 
-.content {
-    max-width: 700px !important;
+.admin-content {
+    margin-top: 125px;
+    max-width: 600px !important;
 }
 
 .add-btn{
