@@ -4,6 +4,9 @@ import { Line, Chart} from 'react-chartjs-2';
 var moment = require('moment');
 moment().format();
 
+var colorsGraph = ['#4bc0c0', '#c0864b', '#c04b4b','#c04b86', '#4b86c0'];
+var colorIndex = 0;
+
 class TemperatureGraph extends Component{
     constructor(props) {
         super(props);
@@ -52,18 +55,18 @@ class TemperatureGraph extends Component{
                 label: name,
                 fill: false,
                 lineTension: 0.1,
-                backgroundColor: 'rgba(75,192,192,0.4)',
-                borderColor: 'rgba(75,192,192,1)',
+                backgroundColor: colorsGraph[colorIndex],
+                borderColor: colorsGraph[colorIndex],
                 borderDash: [8, 4],
                 borderWidth: 2,
                 borderJoinStyle: 'miter',
                 pointRadius: 4,
                 pointHitRadius: 10,
-                pointBorderColor: 'rgba(75,192,192,1)',
+                pointBorderColor: colorsGraph[colorIndex],
                 pointBackgroundColor: '#fff',
                 pointBorderWidth: 3,
                 pointHoverRadius: 5,
-                pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+                pointHoverBackgroundColor: colorsGraph[colorIndex],
                 pointHoverBorderColor: 'rgba(220,220,220,1)',
                 pointHoverBorderWidth: 2,
                 data: temp,
@@ -72,6 +75,7 @@ class TemperatureGraph extends Component{
         this.setState({
             datasets: datasets
         });
+        colorIndex++;
     }
 
     render(){
