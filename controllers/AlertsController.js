@@ -6,7 +6,8 @@ router.use(bodyParser.json());
 const Alerts = require('../models/Alerts');
 const AlertValues = require('../models/AlertValues');
 const AlertMethods = require('../models/AlertMethods');
-const Station = require('../models/Station')
+const WebpageAlerts = require('../models/WebpageAlerts');
+const Station = require('../models/Station');
 const knex = require('knex')(require('../knexfile'));
 
 
@@ -85,14 +86,27 @@ router.post('/webpage', async function(req, res){
 
 router.post('/read', async function(req, res){
     //sets all alerts for req.user to read
-    var res = await knex('webpagealerts')
+    var response = await knex('webpagealerts')
     .update('webpagealerts.read', true).
     leftJoin('alerts', 'webpagealerts.alert_id','=','alerts.alert_id')
     .where('webpagealerts.read','=', false, 'alerts.username','=', req.user);
 
-    
+    return res.status(200);
 })
+router.delete('/webpage', async function(req, res){
+    //get all webpage id's for that user
+    var alerts = await knex('webpagealerts')
+    .select('webpage_id')
+    .leftJoin('alerts', 'webpagealerts.alert_id','=','alerts.alert_id')
+    .where('username', req.user)
 
+    //delete all webpage alerts for user
+    alerts.map(async (alerts) => {
+        await WebpageAlerts.where({webpage_id: alerts.webpage_id}).destroy();
+    })
+
+    return res.status(200);
+})
 //post request to retrieve all alerts currently stored in the database for that user
 //this function is a post because we have to pass the user's session information
 router.post('/', async function(req, res){

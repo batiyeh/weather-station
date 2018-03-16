@@ -28,6 +28,7 @@ class Navigation extends Component {
         super(props);
         this.toggle = this.toggle.bind(this);
         this.toggleAlert = this.toggleAlert.bind(this);
+        this.dismissAlerts = this.dismissAlerts.bind(this);
         this.toggleAlertModal = this.toggleAlertModal.bind(this);
         this.renderAlerts = this.renderAlerts.bind(this);
         this.renderHeader = this.renderHeader.bind(this);
@@ -50,8 +51,14 @@ class Navigation extends Component {
             unread: false,
         }
     }
+    //fetch all alerts when navbar mounts
     componentDidMount = async () => {
         await this.getWebpageAlerts();
+        this.interval = setInterval(this.getWebpageAlerts, 5000);
+    }
+    //clear interval when navbar unmounts
+    componentWillUnmount() {
+        clearInterval(this.interval);
     }
 
     getWebpageAlerts = async () => {
@@ -155,8 +162,15 @@ class Navigation extends Component {
             return(<Alert>You have no alerts</Alert>)
         }
         else{
+            webpageAlertCards.push(<DropdownItem onClick={this.dismissAlerts}> Dismiss all alerts </DropdownItem>)
             return webpageAlertCards;
         }
+    }
+    //deletes alerts from database and update page
+    dismissAlerts(){
+        fetch('/api/alerts/webpage', {method: 'delete', credentials: 'include'})
+
+        this.getWebpageAlerts();
     }
     render() {
         if(this.state.redirect) {
@@ -221,7 +235,7 @@ class Navigation extends Component {
                                     Humidity: {this.state.humidity}
                                 </ModalBody>
                                 <ModalFooter>
-                                    <Button type='button' color="secondary" onClick={this.dismissAlert}>Dismiss</Button>
+                                    <Button type='button' color="secondary" onClick={this.toggleAlertModal}>Close</Button>
                                 </ModalFooter>
                             </Form>
                         </Modal>   
