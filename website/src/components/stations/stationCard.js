@@ -84,8 +84,8 @@ class StationCard extends Component {
     renderAdditionalData(){
         if (this.props.station.latitude !== "n/a" && this.props.station.longitude !== "n/a"){
             return (
-                <div className="col-6 no-padding-right">
-                    <p className="station-info">visibility: {this.state.visibility}</p>
+                <div className="col-md-6 col-sm-12">
+                    <p className="station-info">visibility: {this.state.visibility} m</p>
                     <p className="station-info">wind speed: {this.state.wind_speed} mph</p>
                     <p className="station-info">wind direction: {this.state.wind_direction}&deg;</p>
                 </div>
@@ -133,15 +133,15 @@ class StationCard extends Component {
                         <div className="station-detail-container">
                             <div className="station-detail-row">
                                 <span className="left">Temperature</span>
-                                <span className="right">{this.props.station.temperature}</span>
+                                <span className="right">{this.props.station.temperature} &deg;F</span>
                             </div><br/>
                             <div className="station-detail-row">
                                 <span className="left">Pressure</span>
-                                <span className="right">{this.props.station.pressure}</span>
+                                <span className="right">{this.props.station.pressure} hPa</span>
                             </div><br/>
                             <div className="station-detail-row">
                                 <span className="left">Humidity</span>
-                                <span className="right">{this.props.station.humidity}</span>
+                                <span className="right">{this.props.station.humidity}%</span>
                             </div><br/>
                             <div className="station-detail-row">
                                 <span className="left">Location</span>
@@ -173,7 +173,7 @@ class StationCard extends Component {
                         <CardText className="bottom-card">
                             <div className="row">
                                 {/* Holds station data on the left side of the card */}
-                                <div className="col-6 no-padding-left">
+                                <div className="col-md-6 col-sm-12">
                                     <p className="station-info">temperature: {this.props.station.temperature} &deg;F</p>
                                     <p className="station-info">pressure: {this.props.station.pressure} hPa</p>
                                     <p className="station-info">humidity: {this.props.station.humidity}%</p>
