@@ -73,6 +73,7 @@ router.post('/create', async function(req, res){
     return res.status(200).json({newAlert})
 })
 router.post('/webpage', async function(req, res){
+    //gets all webpage alerts for user and returns them to frontend
     var alerts = await knex('webpagealerts')
     .select('alerts.alert_id', 'alerts.type','alerts.keyword', 'alerts.station_name', 'webpagealerts.read', 'webpagealerts.temperature', 'webpagealerts.humidity', 'webpagealerts.pressure', 'webpagealerts.triggered_at', 'alertvalues.value')
     .leftJoin('alerts', 'webpagealerts.alert_id', '=', 'alerts.alert_id')
@@ -83,6 +84,7 @@ router.post('/webpage', async function(req, res){
 })
 
 router.post('/read', async function(req, res){
+    //sets all alerts for req.user to read
     var res = await knex('webpagealerts')
     .update('webpagealerts.read', true).
     leftJoin('alerts', 'webpagealerts.alert_id','=','alerts.alert_id')

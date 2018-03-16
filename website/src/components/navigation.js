@@ -56,38 +56,37 @@ class Navigation extends Component {
 
     getWebpageAlerts = async () => {
         var alerts = [];
-
+        //fetch call to gather any triggered webpage alerts for user
         var response = await fetch('/api/alerts/webpage', {method: 'post', credentials: 'include'})
         var body = await response.json();
         alerts = body.alerts;
 
-        //check for unread here
+        //check for unread alerts here
         var unread = false;
         await alerts.map(alerts=>{
-            console.log(alerts);
             if(alerts.read === 0){
                 unread = true;
             }
         })
-        console.log(unread);
+
         this.setState({alerts: alerts, unread: unread});
-        
     }
 
     toggle(){
-
         this.setState({
             dropdownOpen:!this.state.dropdownOpen
         })
     }
     toggleAlert = async () => {
+        //fetch call to set alerts to read for user
         fetch('/api/alerts/read', {method: 'post', credentials: 'include'})
-        console.log('after fetch');
+
         this.setState({
             unread: false,
             alertDropDown: !this.state.alertDropDown
         })
     }
+    //when user clicks on alert from dropdown, modal will toggle and values will be set for that specific alert
     toggleAlertModal(station_name, type, keyword, value1, value2, temperature, pressure, humidity, time){
         this.setState({
             station_name: station_name,
@@ -111,6 +110,7 @@ class Navigation extends Component {
         })
         return body;
     }
+    //changes the bell icon depending on if there are unread alerts or not
     renderBell(){
         if(this.state.unread){
             return(<FontAwesome className='unread-bell' size='2x' name='bell'/>
@@ -120,6 +120,7 @@ class Navigation extends Component {
             return(<FontAwesome className='bell' size='2x' name='bell'/>)
         }
     }
+    //renders the header of the alert modal based on what alert the user is looking at
     renderHeader(){
         if(this.state.value2){
             return(<ModalHeader toggle={this.toggleAlertModal}> {this.state.station_name}'s {this.state.type} is {this.state.keyword} {this.state.value1} and {this.state.value2} </ModalHeader>)
@@ -128,6 +129,7 @@ class Navigation extends Component {
             return(<ModalHeader toggle={this.toggleAlertModal}> {this.state.station_name}'s {this.state.type} is {this.state.keyword} {this.state.value1} </ModalHeader>)
         }
     }
+    //renders the alert cards in the drop down for the user
     renderAlerts(){
         var webpageAlertCards = [];
         var nextIndex = null;
@@ -148,6 +150,7 @@ class Navigation extends Component {
                 <Card>Alert: {alerts.station_name}'s {alerts.type} is {alerts.keyword} {alerts.value}</Card></DropdownItem>)
             }
         })
+        //shows message if there are no alerts
         if(webpageAlertCards.length === 0){
             return(<Alert>You have no alerts</Alert>)
         }
@@ -159,7 +162,6 @@ class Navigation extends Component {
         if(this.state.redirect) {
             return <Redirect to='/user/login'/>;
         }
-
         else{
             return (
                 <div>
