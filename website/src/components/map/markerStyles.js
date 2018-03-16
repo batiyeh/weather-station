@@ -1,16 +1,18 @@
 import React from 'react';
 import { Transition } from 'react-transition-group';
 
-export const MARKER_SIZE = 40; // Size of the marker on the map
+export const MARKER_SIZE = 60; // Size of the marker on the map
 const duration = 200; // Duration of any animations
 
 // Function to return marker styles for a marker's location
 // and hover status
 export function getMarkerStyle(hover, origin) {
     var size = MARKER_SIZE;
+    var scale = hover ? 1.0 : .65;
     var zIndex = hover ? 999 : -1;
-    const sizeOriginX = size * origin.x;
-    const sizeOriginY = size * origin.y;
+    const sizeOriginX = size / 2 * origin.x;
+    const sizeOriginY = size / 2 * origin.y;
+    var translateDistance = hover ? 0 : -((size * scale) - size) / 2;
   
     return {
         position: 'absolute',
@@ -19,17 +21,17 @@ export function getMarkerStyle(hover, origin) {
         left: -MARKER_SIZE / 2,
         top: -(MARKER_SIZE),
         fontSize: size,
-        color: '#e06253',
+        color: '#27ACAC',
         zIndex: zIndex,
         padding: 4,
         cursor: 'pointer',
         willChange: 'transform',
         backgroundSize: `${size}px ${size}px`,
         backgroundRepeat: 'no-repeat',
+        transform: `scale(${scale} , ${scale}) translateY(${translateDistance}px)`,
+        WebkitTransform: `scale(${scale} , ${scale}) translateY(${translateDistance}px)`,
         transition: 'transform 0.25s ease',
         WebkitTransition: 'transform 0.25s ease',
-        transformOrigin: `${sizeOriginX}px ${sizeOriginY}px`,
-        WebkitTransformOrigin: `${sizeOriginX}px ${sizeOriginY}px`
     };
 }
 
@@ -44,13 +46,13 @@ export function getContainerStyle(hover){
 // Styles for the additional station info box that appears when 
 // hovering over a marker
 export const infoStyle = {
-    position: "relative",
-    bottom: "133px",
+    position: "absolute",
+    bottom: MARKER_SIZE + 2,
     left: "-27px",
     minWidth: "175px",
     fontSize: "10pt",
     padding: "10px",
-    backgroundColor: "#27ACAC",
+    backgroundColor: "#394c73",
     color: "#fff",
     boxShadow: "0px 0px 10px 0px #707070",
     cursor: "pointer",
