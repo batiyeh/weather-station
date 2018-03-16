@@ -46,7 +46,8 @@ class Navigation extends Component {
             keyword: null,
             type: null,
             value1: null,
-            value2: null
+            value2: null,
+            unread: false,
         }
     }
     componentDidMount = async () => {
@@ -60,17 +61,30 @@ class Navigation extends Component {
         var body = await response.json();
         alerts = body.alerts;
 
-        this.setState({alerts: alerts});
+        //check for unread here
+        var unread = false;
+        await alerts.map(alerts=>{
+            console.log(alerts);
+            if(alerts.read === 0){
+                unread = true;
+            }
+        })
+        console.log(unread);
+        this.setState({alerts: alerts, unread: unread});
         
     }
 
     toggle(){
+
         this.setState({
             dropdownOpen:!this.state.dropdownOpen
         })
     }
-    toggleAlert(){
+    toggleAlert = async () => {
+        fetch('/api/alerts/read', {method: 'post', credentials: 'include'})
+        console.log('after fetch');
         this.setState({
+            unread: false,
             alertDropDown: !this.state.alertDropDown
         })
     }
@@ -96,6 +110,15 @@ class Navigation extends Component {
             redirect: true
         })
         return body;
+    }
+    renderBell(){
+        if(this.state.unread){
+            return(<FontAwesome className='unread-bell' size='2x' name='bell'/>
+        )
+        }
+        else{
+            return(<FontAwesome className='bell' size='2x' name='bell'/>)
+        }
     }
     renderHeader(){
         if(this.state.value2){
@@ -158,7 +181,7 @@ class Navigation extends Component {
                         <Nav className='ml-auto' navbar>
                             <Dropdown isOpen={this.state.alertDropDown} toggle={this.toggleAlert} nav inNavbar>
                                 <DropdownToggle nav caret>
-                                    <FontAwesome size='2x' name='bell'/>
+                                    {this.renderBell()}
                                 </DropdownToggle>
                                 <DropdownMenu className="user-menu" right>
                                     {this.renderAlerts()}
