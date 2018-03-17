@@ -74,7 +74,8 @@ class AlertCard extends Component {
                     webpage: true
                 })
             }
-        } )
+            return null;
+        })
         this.toggleAlert();
     }
     //toggles edit alert modal
@@ -151,6 +152,7 @@ class AlertCard extends Component {
         var options = []
         this.state.stations.map(station => {
             options.push(<option value={station.station_name}>{station.station_name}</option>)
+            return null;
         })
         return options;
     }

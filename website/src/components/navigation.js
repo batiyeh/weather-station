@@ -78,6 +78,7 @@ class Navigation extends Component {
             if(alerts.read === 0){
                 unread = true;
             }
+            return null;
         })
 
         this.setState({alerts: alerts, unread: unread});
@@ -153,7 +154,7 @@ class Navigation extends Component {
         var value1 = null;
         this.state.alerts.map((alerts, index) =>{
             if(alerts.keyword === 'between'){
-                if(nextIndex != index){
+                if(nextIndex !== index){
                     value1 = alerts.value;
                     nextIndex = index + 1;
                 }
@@ -166,6 +167,7 @@ class Navigation extends Component {
                 webpageAlertCards.push(<DropdownItem onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, null, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)}>
                 <Card>Alert: {alerts.station_name}'s {alerts.type} is {alerts.keyword} {alerts.value}</Card></DropdownItem>)
             }
+            return null;
         })
         //shows message if there are no alerts
         if(webpageAlertCards.length === 0){

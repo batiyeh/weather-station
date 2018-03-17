@@ -165,6 +165,7 @@ class AlertsForm extends Component {
         var options = []
         this.state.stations.map(station => {
             options.push(<option value={station.station_name}>{station.station_name}</option>)
+            return null;
         })
         return options;
     }
