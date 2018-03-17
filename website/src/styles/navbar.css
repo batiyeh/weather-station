@@ -8,14 +8,28 @@ nav a {
     color: #F3F3F3 !important;
 }
 
+.alert-notification-card{
+    padding: 10px;
+    background-color: #F9F9F9 !important;
+    margin-bottom: 10px;
+    cursor: pointer;
+    text-align: left !important;
+    font-size: 12pt !important;
+}
+
+.dismiss-all{
+    font-size: 10pt;
+    text-align: right !important;
+    padding-right: 0px;
+}
+
 .user-menu {
     min-width: 100px !important;
     text-align: center !important;
 }
 
 .alerts-menu {
-    min-width: 300px !important;
-    text-align: center !important;
+    min-width: 350px !important;
 }
 
 .username-dropdown{

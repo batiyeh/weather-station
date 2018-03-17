@@ -94,10 +94,10 @@ class CreateUserForm extends Component {
                 </div>
               </div>
               <div className='row'>
-                <div className='col-6 no-padding-left'>
+                <div className='col-6'>
                   <a className='return-link' href='/user/login'><Button type='button' className='btn btn-default btn-block return-btn'>Return</Button></a>                
                 </div>
-                <div className='col-6 no-padding-right'>
+                <div className='col-6'>
                   <Button type='button' onClick={this.submitForm} className="btn btn-default btn-block">Submit</Button>
                 </div>
               </div>

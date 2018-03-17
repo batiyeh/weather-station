@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import '../styles/navbar.css';
 import logo from '../images/space-satellite-dish-512x512.png';
@@ -22,8 +21,6 @@ import {
     Form,
     Button,
     Alert } from 'reactstrap';
-    
-var FontAwesome = require('react-fontawesome')
 
 class Navigation extends Component {
     constructor(props){
@@ -163,6 +160,7 @@ class Navigation extends Component {
         var webpageAlertCards = [];
         var nextIndex = null;
         var value1 = null;
+
         this.state.alerts.map((alerts, index) =>{
             if(alerts.keyword === 'between'){
                 if(nextIndex != index){
@@ -170,21 +168,25 @@ class Navigation extends Component {
                     nextIndex = index + 1;
                 }
                 else{
-                    webpageAlertCards.push(<DropdownItem  onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, value1, alerts.value, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)}>
-                    <Card>Alert: {alerts.station_name}'s {alerts.type} is {alerts.keyword} {value1} and {alerts.value}</Card></DropdownItem>)
+                    webpageAlertCards.push(
+                        <Card onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, value1, alerts.value, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)}>{alerts.station_name}'s {alerts.type} is {alerts.keyword} {value1} and {alerts.value}</Card>
+                    );
                 }
             }
             else{
-                webpageAlertCards.push(<DropdownItem onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, null, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)}>
-                <Card>Alert: {alerts.station_name}'s {alerts.type} is {alerts.keyword} {alerts.value}</Card></DropdownItem>)
+                webpageAlertCards.push(
+                        <Card onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, null, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)} className="alert-notification-card">{alerts.station_name}'s {alerts.type} is {alerts.keyword} {alerts.value}</Card>
+                );
             }
         })
+
         //shows message if there are no alerts
         if(webpageAlertCards.length === 0){
             return(<Alert color="primary">You have no alerts</Alert>)
-        }
-        else{
-            webpageAlertCards.push(<DropdownItem onClick={this.dismissAlerts}> Dismiss all alerts </DropdownItem>)
+        } else{
+            webpageAlertCards.unshift(
+                <button className="btn btn-sm dismiss-all" onClick={this.dismissAlerts}> Dismiss all alerts </button>
+            );
             return webpageAlertCards;
         }
     }

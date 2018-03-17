@@ -6,7 +6,7 @@ const checkConnected = require('./scripts/checkConnected');
 module.exports =  {
     // Called every 0, 15, 30, and 45th minute to transfer data
     // from stations table to weather table
-    saveHistoricalData() {
+    /* saveHistoricalData() {
         schedule.scheduleJob('0 * * * *', function(){
             saveToWeather.saveToWeather();
         })
@@ -42,7 +42,7 @@ module.exports =  {
         schedule.scheduleJob('45 * * * * *', function(){
             checkConnected.checkConnected();
         })
-    },
+    }, */
     //checks all user alerts every minute
     checkAlerts(){
         schedule.scheduleJob('0 * * * * *', function(){
