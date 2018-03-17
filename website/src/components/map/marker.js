@@ -59,7 +59,7 @@ class Marker extends Component {
         return (
             <div style={cStyle} className="marker-container">
                 <FadeAndSlideUp in={this.state.hover}>
-                    <div className="col-12 row">
+                    <div className="col-12">
                         <p className="marker-info-title">{this.state.station.station_name}</p>
                     </div>
                     <p className="marker-info-text">temperature: {this.props.station.temperature} &deg;F</p>
