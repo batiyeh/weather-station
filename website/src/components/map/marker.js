@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getMarkerStyle, getContainerStyle, FadeAndSlideUp } from './markerStyles'
+import { getMarkerStyle, getContainerStyle, FadeAndSlideUp, labelStyle } from './markerStyles'
 import '../../styles/map.css';
 
 class Marker extends Component {
@@ -7,7 +7,8 @@ class Marker extends Component {
         super(props);
         this.state = {
             station: this.props.station,
-            hover: this.props.hover
+            hover: this.props.hover,
+            label: this.props.label
         }
     }
 
@@ -17,6 +18,11 @@ class Marker extends Component {
         if (hover !== this.state.hover){
             this.updateHover(hover);
         }
+
+        var label = nextProps.label;
+        if (label !== this.state.label){
+            this.updateLabel(label);
+        }
     }
 
     // Updates the hover state attribute
@@ -24,6 +30,26 @@ class Marker extends Component {
         this.setState({
             hover: hover
         })
+    }
+
+    updateLabel(label) {
+        this.setState({
+            label: label
+        })
+    }
+
+    renderLabel(label){
+        if (label){
+            return(
+                <div style={labelStyle} className="map-label">
+                    <div className="col-12 row">
+                        <p className="marker-info-title">{this.state.station.station_name}</p>
+                    </div>
+                </div>
+            );
+        }
+
+        else return null;
     }
 
     render() {
@@ -40,6 +66,7 @@ class Marker extends Component {
                     <p className="marker-info-text">pressure: {this.props.station.pressure} hPa</p>
                     <p className="marker-info-text">humidity: {this.props.station.humidity}%</p>
                 </FadeAndSlideUp>
+                { this.renderLabel(this.state.label) }
                 <i style={mStyle} className="fa fa-map-marker marker-icon" aria-hidden="true"></i>
             </div>
         ); 

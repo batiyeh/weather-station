@@ -60,7 +60,7 @@ class HistoricalContainer extends Component{
     render(){
         if(this.state.loading == false){
             return(
-                <div>
+                <div className="historical-container">
                     <Modal isOpen={this.state.modal} toggle={this.toggleFilter}>
                         <ModalHeader toggle={this.toggleFilter}>Filter Historical Graph</ModalHeader>
                         <form id='filterForm'>
@@ -118,7 +118,7 @@ class HistoricalContainer extends Component{
                     <div className="filter row">
                         <Button type='button' color="primary" className="btn btn-primary filter-btn" onClick={this.toggleFilter}>Filter</Button>
                     </div>
-                        <TemperatureGraph className="filter row"
+                        <TemperatureGraph className="row graph"
                             data={this.state.data}
                             height={500}
                             width={800}

@@ -4,27 +4,33 @@
     margin-bottom: 30px;
     max-width: 600px !important;
 }
+
+.alert-title{
+    top: 10px;
+}
+
 .alert-container .container{
     margin-bottom: 15px;
 }
+
 .no-alerts-alert{
     max-width: 600px;
+    width: 100%;
     margin: auto;
 }
+
 .card-text{
     font-size: 16px !important;
 }
+
 .alert-method-box {
     margin-right: 15px;
 }
+
 .AlertsPage {
     margin-top: 125px;
 }
-.row {
-    margin: 0 auto !important;
-    max-width: 800px;
-    width: 100%;
-}
+
 .alertCard{
     margin: auto;
     background-color: #F9F9F9 !important;
@@ -36,6 +42,7 @@
     text-align: left;
     padding-left: 25px;
 }
+
 .no-padding-left{
     padding-left: 0px !important;
 }
@@ -43,6 +50,7 @@
 .no-padding-right{
     padding-right: 0px !important;
 }
+
 .left{
     text-align: left;
     float: left;
