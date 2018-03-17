@@ -21,6 +21,8 @@ nav a {
     font-size: 10pt;
     text-align: right !important;
     padding-right: 0px;
+    background-color: #fff !important;
+    margin-bottom: 5px;
 }
 
 .user-menu {

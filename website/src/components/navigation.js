@@ -169,13 +169,13 @@ class Navigation extends Component {
                 }
                 else{
                     webpageAlertCards.push(
-                        <Card onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, value1, alerts.value, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)}>{alerts.station_name}'s {alerts.type} is {alerts.keyword} {value1} and {alerts.value}</Card>
+                        <Card onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, value1, alerts.value, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)}>{alerts.station_name}'s {alerts.type} is {alerts.keyword}&nbsp;{value1} and {alerts.value}</Card>
                     );
                 }
             }
             else{
                 webpageAlertCards.push(
-                        <Card onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, null, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)} className="alert-notification-card">{alerts.station_name}'s {alerts.type} is {alerts.keyword} {alerts.value}</Card>
+                        <Card onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, null, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)} className="alert-notification-card">{alerts.station_name}'s {alerts.type} is {alerts.keyword}&nbsp;{alerts.value}</Card>
                 );
             }
         })
