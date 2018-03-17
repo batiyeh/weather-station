@@ -189,7 +189,7 @@ class AlertCard extends Component {
     //Page does not update after deletion, needs to be fixed
     deleteAlert(){
         fetch('/api/alerts/' + this.props.alerts.alert_id, {method: 'delete'})
-
+        this.props.update();
         this.toggleAlert();
     }
     render(){

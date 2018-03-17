@@ -150,11 +150,11 @@ class AlertsForm extends Component {
         var alertcards = []
         for (var i = 0; i < this.state.alerts.length; i++){
             if(this.state.alerts[i+1] && (this.state.alerts[i].alert_id === this.state.alerts[i+1].alert_id)){
-                alertcards.push(<AlertCard stations={this.state.stations} alerts={this.state.alerts[i]} value2={this.state.alerts[i+1].value}/>)
+                alertcards.push(<AlertCard stations={this.state.stations} alerts={this.state.alerts[i]} value2={this.state.alerts[i+1].value} update={this.getAlerts}/>)
                 i++;
             }
             else{
-                alertcards.push(<AlertCard stations={this.state.stations} alerts={this.state.alerts[i]}/>)
+                alertcards.push(<AlertCard stations={this.state.stations} alerts={this.state.alerts[i]} update={this.getAlerts}/>)
             }
         }
         //returns array of AlertCards to render on the page
