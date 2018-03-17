@@ -105,7 +105,7 @@ router.get('/temp', async function (req, res) {
     try{
         var temp = await knex('weather').select('weather.temperature','weather.created_at', 'weather.apikey', 'stations.station_name').from('weather')
         .leftJoin('stations', 'stations.apikey', 'weather.apikey')
-        .whereBetween('weather.created_at', ["2018-03-14 00:00:00", "2018-03-14 23:59:00"]);
+        .whereBetween('weather.created_at', [dayBeginTime, dayEndTime]);
     } catch(ex){
         console.log(ex);
         return res.json({});

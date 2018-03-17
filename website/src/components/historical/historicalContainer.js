@@ -126,7 +126,7 @@ class HistoricalContainer extends Component{
                         <Button type='button' color="primary" className="btn btn-primary filter-btn" onClick={this.toggleFilter}>Filter</Button>
                     </div>
                         <TemperatureGraph className="row graph"
-                            data={this.state.data}
+                            data={this.state.stationsData}
                             height={500}
                             width={800}
                         />

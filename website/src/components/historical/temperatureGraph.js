@@ -94,6 +94,13 @@ class TemperatureGraph extends Component{
                         options={{maintainAspectRatio: false,
                             scales: {
                                 xAxes: [{
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Time',
+                                        fontFamily: 'Roboto Mono',
+                                        fontColor: '#000',
+                                        fontSize: 15
+                                    },
                                     type: 'time',
                                     gridLines: {
                                         drawBorder: true,
@@ -110,6 +117,13 @@ class TemperatureGraph extends Component{
                                     },
                                 }],
                                 yAxes: [{
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Temperature',
+                                        fontFamily: 'Roboto Mono',
+                                        fontColor: '#000',
+                                        fontSize: 15
+                                    },
                                     type: 'linear',
                                     ticks: {
                                         fontColor: '#000',
@@ -132,7 +146,11 @@ class TemperatureGraph extends Component{
         }
 
         else{
-            return null;
+            return(
+                <div>
+                    <h2>No Stored Data For Last 24 hours.</h2>
+                </div>
+            );
         }
     }
 }
