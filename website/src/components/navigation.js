@@ -151,16 +151,17 @@ class Navigation extends Component {
     renderAlerts(){
         var webpageAlertCards = [];
         var nextIndex = null;
-        var value1 = null;
+        var value2 = null;
         this.state.alerts.map((alerts, index) =>{
+            console.log(index, alerts.value, alerts);
             if(alerts.keyword === 'between'){
                 if(nextIndex !== index){
-                    value1 = alerts.value;
+                    value2 = alerts.value;
                     nextIndex = index + 1;
                 }
                 else{
-                    webpageAlertCards.push(<DropdownItem  onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, value1, alerts.value, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)}>
-                    <Card>Alert: {alerts.station_name}'s {alerts.type} is {alerts.keyword} {value1} and {alerts.value}</Card></DropdownItem>)
+                    webpageAlertCards.push(<DropdownItem  onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, value2, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)}>
+                    <Card>Alert: {alerts.station_name}'s {alerts.type} is {alerts.keyword} {alerts.value} and {value2}</Card></DropdownItem>)
                 }
             }
             else{
