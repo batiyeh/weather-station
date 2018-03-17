@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import '../../styles/historical.css';
 import { Line, Chart} from 'react-chartjs-2';
-// import moment so we can get better time labels
+var moment = require('moment');
+moment().format();
+
+var colorsGraph = ['#4bc0c0', '#c0864b', '#c04b4b','#c04b86', '#4b86c0', '#c0c04b', '#4bc086', '#327c0c'];
+var colorIndex = 0;
 
 class TemperatureGraph extends Component{
     constructor(props) {
@@ -9,112 +13,145 @@ class TemperatureGraph extends Component{
         this.state = {
             data: this.props.data,
             height: this.props.height,
-            selectX: this.props.selectX,
-            selectY: this.props.selectY,
+            from: "2018-03-15 00:00:00",
+            to: "2018-03-15 23:59:00",
             width: this.props.width,
+            datasets: {"labels": [], "datasets": []},
         }
     }
 
-    componentWillMount(){
-        var temperature = [];
-        var labels = [];
-        for (var i = 0; i < this.props.data.length; i++){
-            // Should grab a point every 2.5 minutes (50*3 / 60). We may want to
-            // Change this dynamically based on the range of times we get.
-            // IE: if our date range is over a day set to every 15 minutes etc.
-            if (i % 50 == 0){
-
-
-                // form [72.6, 71.8, 80.0] etc.
-                temperature.push(this.props.data[i].temperature);
-
-                // Create a formatted time string for each point here so it looks better
-                // Push to times array which is set in our state as labels
-                labels.push(this.props.data[i].created_at);
-            }
+    componentDidMount(){
+        var data;
+        var labels = this.generateLabels(this.state.from, this.state.to);
+        this.updateLabels(labels);
+        for (var station_name in this.state.data) {
+            data = this.state.data[station_name];
+            this.createLines(station_name, data["temp"], data["dates"]);
         }
-        this.setState({
-            selectX: temperature,
-            selectY: labels
+    }
 
+    generateLabels(from, to){
+        var labels = [];
+        from = moment(from);
+        to = moment(to);
+        for (var m = moment(from); m.isBefore(to); m.add(15, 'minutes')) {
+            labels.push(m.format('YYYY-MM-DD HH:MM:SS'));
+        }
+        
+        return labels;
+    }
+
+    updateLabels(labels){
+        var currDatasets = this.state.datasets;
+        currDatasets["labels"] = labels;
+        this.setState({
+            datasets: currDatasets
         });
     }
 
-    render(){
-        const data = {
-            labels: this.state.selectY, // Time labels
-
-            // This is an array of dataset objects. It currently only has one object hence the one line
-            // To add more lines, just add more to the list with more data from the state
-            // So you'll end up preprocessing all your data and adding a new dataset element to this array
-            // For each line you want. You'll also notice all the styles for the individual line are in here too.
-            datasets: [{
-                label: 'Temperature Data',
+    createLines(name, temp, dates) {
+        var datasets = this.state.datasets;
+        const newDataset = {
+                label: name,
                 fill: false,
                 lineTension: 0.1,
-                backgroundColor: 'rgba(75,192,192,0.4)',
-                borderColor: 'rgba(75,192,192,1)',
-                borderDash: [8,4],
+                backgroundColor: colorsGraph[colorIndex],
+                borderColor: colorsGraph[colorIndex],
+                borderDash: [8, 4],
                 borderWidth: 2,
                 borderJoinStyle: 'miter',
                 pointRadius: 4,
                 pointHitRadius: 10,
-                pointBorderColor: 'rgba(75,192,192,1)',
+                pointBorderColor: colorsGraph[colorIndex],
                 pointBackgroundColor: '#fff',
                 pointBorderWidth: 3,
                 pointHoverRadius: 5,
-                pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+                pointHoverBackgroundColor: colorsGraph[colorIndex],
                 pointHoverBorderColor: 'rgba(220,220,220,1)',
                 pointHoverBorderWidth: 2,
-                data: this.state.selectX // Array of just temp data
-            }]
-
+                data: temp,
         };
+        datasets["datasets"].push(newDataset);
+        this.setState({
+            datasets: datasets
+        });
+        if (colorIndex == 7){
+            colorIndex = 0
+        }
+        else
+            colorIndex++;
+    }
 
-        return(
-            <div className='graph'>
-                <Line
-                    data={data}
-                    width={this.state.width}
-                    height={this.state.height}
-                    options={{maintainAspectRatio: false,
-                        scales: {
-                            xAxes: [{
-                                type: 'time',
-                                gridLines: {
-                                    drawBorder: true,
-                                },
-                                ticks: {
-                                    fontColor: '#000',
-                                    fontFamily: 'Roboto Mono',
-                                    fontSize: 15
-                                },
-                                time: {
-                                    displayFormats: {
-                                        quarter: 'MMM D YYYY'    /*Displays month day year*/
+    render(){
+        if (this.state.datasets["datasets"].length > 0){
+            console.log(this.state.datasets);
+            return(
+                <div className='graph'>
+                    <Line
+                        data={this.state.datasets}
+                        width={this.state.width}
+                        height={this.state.height}
+                        options={{maintainAspectRatio: false,
+                            scales: {
+                                xAxes: [{
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Time',
+                                        fontFamily: 'Roboto Mono',
+                                        fontColor: '#000',
+                                        fontSize: 15
+                                    },
+                                    type: 'time',
+                                    gridLines: {
+                                        drawBorder: true,
+                                    },
+                                    ticks: {
+                                        fontColor: '#000',
+                                        fontFamily: 'Roboto Mono',
+                                        fontSize: 15
+                                    },
+                                    time: {
+                                        displayFormats: {
+                                            quarter: 'MMM D YYYY'    /*Displays month day year*/
+                                        }
+                                    },
+                                }],
+                                yAxes: [{
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Temperature',
+                                        fontFamily: 'Roboto Mono',
+                                        fontColor: '#000',
+                                        fontSize: 15
+                                    },
+                                    type: 'linear',
+                                    ticks: {
+                                        fontColor: '#000',
+                                        fontFamily: 'Roboto Mono',
+                                        fontSize: 15,
+                                        callback: function(value, index, values) {
+                                            return value + '°';
+                                        }
+                                    },
+                                    gridLines: {
+                                        borderDash: [2,1],
+                                        drawBorder: false
                                     }
-                                },
-                            }],
-                            yAxes: [{
-                                type: 'linear',
-                                ticks: {
-                                    fontColor: '#000',
-                                    fontFamily: 'Roboto Mono',
-                                    fontSize: 15,
-                                    callback: function(value, index, values) {
-                                        return value + '°';
-                                    }
-                                },
-                                gridLines: {
-                                    borderDash: [2,1],
-                                    drawBorder: false
-                                }
-                            }],
-                        },
-                    }}
-                />
-            </div>
-        );
+                                }],
+                            },
+                        }}
+                    />
+                </div>
+            );
+        }
+
+        else{
+            return(
+                <div>
+                    <h2>No Stored Data For Last 24 hours.</h2>
+                </div>
+            );
+        }
     }
 }
 export default TemperatureGraph;

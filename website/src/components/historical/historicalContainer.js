@@ -9,7 +9,7 @@ class HistoricalContainer extends Component{
     constructor(props){
         super(props);
         this.state = {
-            data: [],
+            stationsData: {},
             modal: false,
             loading: true,
             fromDate: '',
@@ -45,16 +45,23 @@ class HistoricalContainer extends Component{
 
     getTemp = async () => {
         var data;
+        var stationsDict = {};
         const response = await fetch('/api/weather/temp/');
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
         if (body.temp) data = body.temp;
+        for (var i = 0; i < data.length; i++) {
+            var station_name = data[i].station_name;
+            if (!stationsDict[station_name]) stationsDict[station_name] = {"temp": [], "dates": []};
+            stationsDict[station_name]["temp"].push(data[i].temperature);
+            stationsDict[station_name]["dates"].push(data[i].created_at);
+        }
         this.setState({
-            data: data,
-            loading: false});
-
-
+            stationsData: stationsDict,
+            loading: false
+        });
     };
+
 
 
     render(){
@@ -119,7 +126,7 @@ class HistoricalContainer extends Component{
                         <Button type='button' color="primary" className="btn btn-primary filter-btn" onClick={this.toggleFilter}>Filter</Button>
                     </div>
                         <TemperatureGraph className="row graph"
-                            data={this.state.data}
+                            data={this.state.stationsData}
                             height={500}
                             width={800}
                         />
