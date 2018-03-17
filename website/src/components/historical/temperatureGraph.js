@@ -4,7 +4,7 @@ import { Line, Chart} from 'react-chartjs-2';
 var moment = require('moment');
 moment().format();
 
-var colorsGraph = ['#4bc0c0', '#c0864b', '#c04b4b','#c04b86', '#4b86c0'];
+var colorsGraph = ['#4bc0c0', '#c0864b', '#c04b4b','#c04b86', '#4b86c0', '#c0c04b', '#4bc086', '#327c0c'];
 var colorIndex = 0;
 
 class TemperatureGraph extends Component{
@@ -75,7 +75,11 @@ class TemperatureGraph extends Component{
         this.setState({
             datasets: datasets
         });
-        colorIndex++;
+        if (colorIndex == 7){
+            colorIndex = 0
+        }
+        else
+            colorIndex++;
     }
 
     render(){
