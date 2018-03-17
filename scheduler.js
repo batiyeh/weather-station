@@ -1,4 +1,5 @@
 const schedule = require('node-schedule');
+const sendAlerts = require('./scripts/sendAlerts');
 const saveToWeather = require('./scripts/saveWeather');
 const checkConnected = require('./scripts/checkConnected');
 
@@ -40,6 +41,12 @@ module.exports =  {
 
         schedule.scheduleJob('45 * * * * *', function(){
             checkConnected.checkConnected();
+        })
+    },
+    //checks all user alerts every minute
+    checkAlerts(){
+        schedule.scheduleJob('0 * * * * *', function(){
+            sendAlerts.sendAlerts();
         })
     }
 }

@@ -6,7 +6,8 @@ router.use(bodyParser.json());
 const Alerts = require('../models/Alerts');
 const AlertValues = require('../models/AlertValues');
 const AlertMethods = require('../models/AlertMethods');
-const Station = require('../models/Station')
+const WebpageAlerts = require('../models/WebpageAlerts');
+const Station = require('../models/Station');
 const knex = require('knex')(require('../knexfile'));
 
 
@@ -21,6 +22,7 @@ router.post('/create', async function(req, res){
     var email = req.body.email;
     var sms = req.body.sms;
     var webpage = req.body.webpage;
+    var threshold = req.body.threshold;
 
     //prevents user from submitting blank value
     if(keyword === 'between' && !value2){
@@ -32,6 +34,7 @@ router.post('/create', async function(req, res){
             station_name: station,
             type: datatype,
             keyword: keyword,
+            threshold: threshold,
             username: req.user
         }).save();
         //assigns values to new alert via foreign key
@@ -70,14 +73,47 @@ router.post('/create', async function(req, res){
     //success
     return res.status(200).json({newAlert})
 })
+router.post('/webpage', async function(req, res){
+    //gets all webpage alerts for user and returns them to frontend
+    var alerts = await knex('webpagealerts')
+    .select('alerts.alert_id', 'alerts.type','alerts.keyword', 'alerts.station_name', 'webpagealerts.read', 'webpagealerts.temperature', 'webpagealerts.humidity', 'webpagealerts.pressure', 'webpagealerts.triggered_at', 'alertvalues.value')
+    .leftJoin('alerts', 'webpagealerts.alert_id', '=', 'alerts.alert_id')
+    .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
+    .where('alerts.username', req.user);
 
+    return res.status(200).json({alerts});
+})
+
+router.post('/read', async function(req, res){
+    //sets all alerts for req.user to read
+    var response = await knex('webpagealerts')
+    .update('webpagealerts.read', true).
+    leftJoin('alerts', 'webpagealerts.alert_id','=','alerts.alert_id')
+    .where('webpagealerts.read','=', false, 'alerts.username','=', req.user);
+
+    return res.status(200);
+})
+router.delete('/webpage', async function(req, res){
+    //get all webpage id's for that user
+    var alerts = await knex('webpagealerts')
+    .select('webpage_id')
+    .leftJoin('alerts', 'webpagealerts.alert_id','=','alerts.alert_id')
+    .where('username', req.user)
+
+    //delete all webpage alerts for user
+    alerts.map(async (alerts) => {
+        await WebpageAlerts.where({webpage_id: alerts.webpage_id}).destroy();
+    })
+
+    return res.status(200);
+})
 //post request to retrieve all alerts currently stored in the database for that user
 //this function is a post because we have to pass the user's session information
 router.post('/', async function(req, res){
 
     //selects all alerts for user, joins alerts and alertvalues based on alert_id
     var alerts = await knex('alerts')
-    .select('alerts.alert_id', 'alerts.station_name', 'alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alertvalues.value')
+    .select('alerts.alert_id', 'alerts.station_name', 'alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alerts.threshold', 'alertvalues.value')
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
     .where('alerts.username', req.user)
 
@@ -106,6 +142,7 @@ router.post('/:id', async function(req,res){
     var email = req.body.email;
     var sms = req.body.sms;
     var webpage = req.body.webpage;
+    var threshold = req.body.threshold;
 
     //prevents user from entering blank value
     if(keyword === 'between' && !value2){
@@ -117,6 +154,7 @@ router.post('/:id', async function(req,res){
         await Alerts.where({alert_id: req.params.id}).save({
             station_name: station,
             type: datatype,
+            threshold: threshold,
             keyword: keyword
         },{patch:true})
         

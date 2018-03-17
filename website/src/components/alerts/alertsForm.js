@@ -18,6 +18,7 @@ class AlertsForm extends Component {
             email: true,
             sms: false,
             webpage: false,
+            threshold: '1 hour'
         };
         this.resetValues = this.resetValues.bind(this);
         this.onEmailChange = this.onEmailChange.bind(this);
@@ -54,7 +55,8 @@ class AlertsForm extends Component {
                 value2: this.state.value2,
                 email: this.state.email,
                 sms: this.state.sms,
-                webpage: this.state.webpage
+                webpage: this.state.webpage,
+                threshold : this.state.threshold
             }),
             headers: {
                 'Accept': 'application/json, text/plain, */*',
@@ -111,6 +113,11 @@ class AlertsForm extends Component {
     onWebpageChange(){
         this.setState({
             webpage: !this.state.webpage
+        })
+    }
+    onThresholdChange(value){
+        this.setState({
+            threshold: value
         })
     }
     //displays either one input box or two to the user depending on what keyword they currently have selected
@@ -183,6 +190,7 @@ class AlertsForm extends Component {
             email: true,
             sms: false,
             webpage: false,
+            threshold: '1 hour'
         })
         this.toggleAddAlert();
     }
@@ -197,18 +205,29 @@ class AlertsForm extends Component {
                             <Label>Alert Method</Label>
                             <div className='row'>
                                 <div className='form-check form-check-inline alert-method-container'>
-                                    <Label>Email</Label>
+                                    <Label>Email
                                     <Input type='checkbox' className='form-control alert-method-box' checked={this.state.email} onChange={this.onEmailChange} id='email' name='email'/>
+                                    </Label>
                                 </div>
                                 <div className='form-check form-check-inline alert-method-container'>    
-                                    <Label>SMS</Label>
+                                    <Label>SMS
                                     <Input type='checkbox' className='form-control alert-method-box' checked={this.state.sms} onChange={this.onSMSChange} id='sms' name='sms'/>
+                                    </Label>
                                 </div>
-                                    <Label>Webpage</Label>
                                 <div className='form-check form-check-inline alert-method-container'>
+                                    <Label>Webpage
                                     <Input type='checkbox' className='form-control alert-method-box' checked={this.state.webpage} onChange={this.onWebpageChange} id='webpage' name='webpage'/>
+                                    </Label>
                                 </div>
                             </div>
+                        </div>
+                        <div className='form-group'>
+                            <Label>Alert me every...</Label>
+                            <Input type="select" name='threshold' id='threshold' onChange={e => this.onThresholdChange(e.target.value)}>
+                                <option value='1 hour'>1 Hour</option>
+                                <option value='12 hours'>12 Hours</option>
+                                <option value='24 hours'>24 Hours</option>
+                            </Input>
                         </div>
                         <div className='form-group'>
                             <Label>Station</Label>
