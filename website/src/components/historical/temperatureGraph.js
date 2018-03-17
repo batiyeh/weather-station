@@ -13,8 +13,8 @@ class TemperatureGraph extends Component{
         this.state = {
             data: this.props.data,
             height: this.props.height,
-            from: "2018-03-15 00:00:00",
-            to: "2018-03-15 23:59:00",
+            from: this.props.from,
+            to: this.props.to,
             width: this.props.width,
             datasets: {"labels": [], "datasets": []},
         }
@@ -29,13 +29,17 @@ class TemperatureGraph extends Component{
             this.createLines(station_name, data["temp"], data["dates"]);
         }
     }
+    componentWillUnmount(){
+        colorIndex =0;
+    }
+
 
     generateLabels(from, to){
         var labels = [];
         from = moment(from);
         to = moment(to);
         for (var m = moment(from); m.isBefore(to); m.add(15, 'minutes')) {
-            labels.push(m.format('YYYY-MM-DD HH:MM:SS'));
+            labels.push(m.format('YYYY-MM-DD HH:mm:ss'));
         }
         
         return labels;

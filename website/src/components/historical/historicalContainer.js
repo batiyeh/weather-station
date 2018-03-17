@@ -12,8 +12,8 @@ class HistoricalContainer extends Component{
             stationsData: {},
             modal: false,
             loading: true,
-            fromDate: '',
-            toDate: ''
+            fromDate: '2018-03-14',
+            toDate: '2018-03-14'
         }
         this.toggleFilter = this.toggleFilter.bind(this);
         this.componentWillMount = this.componentWillMount.bind(this);
@@ -46,7 +46,19 @@ class HistoricalContainer extends Component{
     getTemp = async () => {
         var data;
         var stationsDict = {};
-        const response = await fetch('/api/weather/temp/');
+        console.log(this.state.fromDate);
+        const response = await fetch('/api/weather/temp/',
+            {method: 'post',
+                body: JSON.stringify({
+                    fromDate: this.state.fromDate,
+                    toDate: this.state.toDate
+                }),
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
         if (body.temp) data = body.temp;
@@ -127,6 +139,8 @@ class HistoricalContainer extends Component{
                     </div>
                         <TemperatureGraph className="row graph"
                             data={this.state.stationsData}
+                            from={this.state.fromDate}
+                            to={this.state.toDate}
                             height={500}
                             width={800}
                         />

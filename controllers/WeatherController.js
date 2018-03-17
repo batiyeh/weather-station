@@ -98,10 +98,12 @@ router.get('/latest', async function (req, res) {
 });
 
 // Returns the temperature for the last 24 from each station from the database
-router.get('/temp', async function (req, res) {
-    var day = moment().format("YYYY-MM-DD");
-    var dayBeginTime =  day+' 00:00:00';
-    var dayEndTime =  day+' 23:59:59';
+router.post('/temp', async function (req, res) {
+    //var day = moment().format("YYYY-MM-DD");
+    var fromDate = req.body.fromDate.format("YYYY-MM-DD");
+    var toDate = req.body.toDate.format("YYYY-MM-DD");
+    var dayBeginTime =  toDate+' 00:00:00';
+    var dayEndTime =  fromDate+' 23:59:59';
     try{
         var temp = await knex('weather').select('weather.temperature','weather.created_at', 'weather.apikey', 'stations.station_name').from('weather')
         .leftJoin('stations', 'stations.apikey', 'weather.apikey')
