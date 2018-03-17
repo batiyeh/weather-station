@@ -14,6 +14,7 @@ require('dotenv').config();
 // Apply scheduled tasks
 // scheduler.saveHistoricalData();
 // scheduler.updateConnectedList();
+scheduler.checkAlerts();
 
 // Session storage options
 const options = {

@@ -18,7 +18,7 @@ class ResetPasswordConfirmForm extends Component {
                         <input id='password2' name='password2' type='password' class='form-control' placeholder='Confirm Password'/>
                     </div>
                     <div className='row'>
-                        <div className='col-6 no-padding-left'>
+                        <div className='col-6'>
                             <button type='submit' className='btn btn-default btn-block login-btn'>Reset Password</button>
                         </div>
                     </div>

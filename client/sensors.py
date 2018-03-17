@@ -81,5 +81,7 @@ class Sensors(object):
         try:
             self.latitude = self.agps_thread.data_stream.lat
             self.longitude = self.agps_thread.data_stream.lon
+            # self.latitude = "42.357134"
+            # self.longitude = "-83.070308"
         except:
             pass

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import '../../styles/alerts.css';
 
-import { Input, Button, Card, CardText, Modal, ModalHeader, ModalBody, ModalFooter, Label, Form} from 'reactstrap';
+import { Input, Button, Card, CardText, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Form} from 'reactstrap';
 
 class AlertCard extends Component {
     constructor(props){
@@ -16,8 +16,10 @@ class AlertCard extends Component {
             value2: this.props.value2,
             email: false,
             sms: false,
-            webpage: false
+            webpage: false,
+            threshold: this.props.alerts.threshold
         }
+        
         this.getAlertMethods = this.getAlertMethods.bind(this);
         this.updateAlert = this.updateAlert.bind(this);
         this.toggleAlert = this.toggleAlert.bind(this);
@@ -39,7 +41,8 @@ class AlertCard extends Component {
                 value2: this.state.value2,
                 email: this.state.email,
                 sms: this.state.sms,
-                webpage: this.state.webpage
+                webpage: this.state.webpage,
+                threshold: this.state.threshold
             }),
             headers: {
                 'Accept': 'application/json, text/plain, */*',
@@ -121,15 +124,25 @@ class AlertCard extends Component {
             webpage: !this.state.webpage
         })
     }
+    onThresholdChange(value){
+        this.setState({
+            threshold: value
+        })
+    }
     //if the user has a keyword selected the requires multiple inputs, it will display it dynamically
     renderValues(){
         if(this.state.keyword === 'between'){
             return (
-            <div className='form-group'> 
-                <Label>Values</Label>
-                <Input type='text' name='value1' id='value1' value={this.state.value1} onChange={e => this.onValue1Change(e.target.value)}/>
-                <Input type='text' name='value2' id='value2' value={this.state.value2} onChange={e => this.onValue2Change(e.target.value)}/>
-            </div>)
+                <div>
+                    <div className='form-group'> 
+                        <Label>Values</Label>
+                        <Input type='text' name='value1' id='value1' value={this.state.value1} onChange={e => this.onValue1Change(e.target.value)}/>
+                    </div>
+                    <div className='form-group'>
+                        <Input type='text' name='value2' id='value2' value={this.state.value2} onChange={e => this.onValue2Change(e.target.value)}/>
+                    </div>
+                </div>
+            );
         }
         else{
             return (
@@ -170,7 +183,8 @@ class AlertCard extends Component {
             value2: this.props.value2,
             email: false,
             sms: false,
-            webpage: false
+            webpage: false,
+            threshold: this.props.alerts.threshold
         })
         this.toggleAlert();
     }
@@ -190,20 +204,40 @@ class AlertCard extends Component {
                         <ModalBody>
                             <div className ='form-group'>
                                 <Label>Alert Method</Label>
-                                <div className='row'>
-                                    <div className='form-check form-check-inline alert-method-container'>
-                                        <Label>Email</Label>
-                                        <Input type='checkbox' className='form-control alert-method-box' checked={this.state.email} onChange={this.onEmailChange} id='email' name='email'/>
+                                <div className='col-12 row'>
+                                    <div className='alert-method-box alert-method-container'>
+                                        <FormGroup check>
+                                            <Label check>
+                                                <Input type='checkbox' className='form-control alert-method-box' checked={this.state.email} onChange={this.onEmailChange} id='email' name='email'/>
+                                                <span>Email</span>
+                                            </Label>
+                                        </FormGroup>
                                     </div>
-                                    <div className='form-check form-check-inline alert-method-container'>    
-                                        <Label>SMS</Label>
-                                        <Input type='checkbox' className='form-control alert-method-box' checked={this.state.sms} onChange={this.onSMSChange} id='sms' name='sms'/>
+                                    <div className='alert-method-box alert-method-container'> 
+                                        <FormGroup check>   
+                                            <Label check>
+                                                <Input type='checkbox' className='form-control alert-method-box' checked={this.state.sms} onChange={this.onSMSChange} id='sms' name='sms'/>
+                                                <span>SMS</span>
+                                            </Label>
+                                        </FormGroup>
                                     </div>
-                                        <Label>Webpage</Label>
-                                    <div className='form-check form-check-inline alert-method-container'>
-                                        <Input type='checkbox' className='form-control alert-method-box' checked={this.state.webpage} onChange={this.onWebpageChange} id='webpage' name='webpage'/>
+                                    <div className='alert-method-box alert-method-container'>
+                                        <FormGroup check>
+                                            <Label check>
+                                                <Input type='checkbox' className='form-control alert-method-box' checked={this.state.webpage} onChange={this.onWebpageChange} id='webpage' name='webpage'/>
+                                                <span>Webpage</span>
+                                            </Label>
+                                        </FormGroup>
                                     </div>
                                 </div>
+                            </div>
+                            <div className='form-group'>
+                                <Label>Alert me every...</Label>
+                                <Input type="select" name='threshold' id='threshold' value={this.state.threshold} onChange={e => this.onThresholdChange(e.target.value)}>
+                                    <option value='1 hour'>1 Hour</option>
+                                    <option value='12 hours'>12 Hours</option>
+                                    <option value='24 hours'>24 Hours</option>
+                                </Input>
                             </div>
                             <div className='form-group'>
                                 <Label>Station</Label>

@@ -159,18 +159,18 @@ class StationCard extends Component {
                     <div className="col-12">
                         <CardTitle>
                             <div className="row">
-                                <div className="col-8 no-padding-left">
+                                <div className="col-8">
                                     <p className="station-name">
                                         <ConnectionIndicator updated={this.props.station.created_at} connected={this.props.station.connected} apikey={this.props.station.apikey}></ConnectionIndicator>
                                         { this.renderStationName() }
                                     </p>
                                 </div>
-                                <div className="col-4 no-padding-right">
+                                <div className="col-4">
                                     <p className="station-uptime">{this.getUptime()}</p>
                                 </div>
                             </div>
                         </CardTitle>
-                        <CardText className="bottom-card">
+                        <CardText className="no-padding bottom-card">
                             <div className="row">
                                 {/* Holds station data on the left side of the card */}
                                 <div className="col-md-6 col-sm-12">
