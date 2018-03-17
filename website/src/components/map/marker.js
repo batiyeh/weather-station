@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { MARKER_SIZE, getMarkerStyle, getContainerStyle, infoStyle, FadeAndSlideUp } from './markerStyles'
+import { getMarkerStyle, getContainerStyle, FadeAndSlideUp } from './markerStyles'
 import '../../styles/map.css';
 
 class Marker extends Component {
@@ -40,7 +40,7 @@ class Marker extends Component {
                     <p className="marker-info-text">pressure: {this.props.station.pressure} hPa</p>
                     <p className="marker-info-text">humidity: {this.props.station.humidity}%</p>
                 </FadeAndSlideUp>
-                <i style={mStyle} className="fa fa-map-marker" aria-hidden="true"></i>
+                <i style={mStyle} className="fa fa-map-marker marker-icon" aria-hidden="true"></i>
             </div>
         ); 
     }

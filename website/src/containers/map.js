@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import VerifyLoggedIn from '../components/verifyLoggedIn';
 import MapContainer from '../components/map/mapContainer';
+import SidebarItem from '../components/map/sidebarItem';
 import { FormGroup, Input, Alert, Label } from 'reactstrap';
 
 class Map extends Component {
@@ -12,11 +13,13 @@ class Map extends Component {
             loading: true,
             filter: '',
         };
+        this.checkboxOnChange = this.checkboxOnChange.bind(this);
     }
 
-    componentWillMount(){
+    // Set all stations that have sent weather in our state as checked
+    componentDidMount(){
         this.getLatestWeather().then(stations => {
-            var checkedStations = this.getCheckedStations(stations);
+            var checkedStations = this.addCheckedStations(stations);
             this.setState({
                 stations: stations,
                 checkedStations: checkedStations,
@@ -25,6 +28,7 @@ class Map extends Component {
         });
     }
 
+    // Request the stations' latest we ather
     getLatestWeather = async () => {
         var stations = [];
         const response = await fetch('/api/weather/latest/');
@@ -35,7 +39,8 @@ class Map extends Component {
         return stations;
     };
 
-    getCheckedStations(stations){
+    // Push stations into our checkedStations array
+    addCheckedStations(stations){
         var checkedStations = [];
         if (stations.length !== 0){
             stations.map(station => {
@@ -55,24 +60,25 @@ class Map extends Component {
         })
     }
 
+    updateCheckedStations(stations){
+        this.setState({
+            checkedStations: stations
+        });
+    }
+
+    // Handle a checkbox click event by removing/adding it to the checkedStations
     checkboxOnChange(event, station){
         var checkedStations = this.state.checkedStations;
         if (event.target.checked === true){
             checkedStations.push(station);
-            this.setState({
-                checkedStations: checkedStations
-            });
+            this.updateCheckedStations(checkedStations);
         }
 
         else{
             var index = checkedStations.indexOf(station);
             if (checkedStations.length === 1) checkedStations.pop();
-            else checkedStations = checkedStations.splice(index, 1);
-            this.setState(prevState => {
-                return {
-                    checkedStations: checkedStations
-                }
-            });
+            else checkedStations.splice(index, 1);
+            this.updateCheckedStations(checkedStations);
         }
     }
 
@@ -84,7 +90,7 @@ class Map extends Component {
         return true;
     }
 
-    renderStationNames(){
+    renderSidebar(){
         if (this.state.stations.length === 0){
             return <Alert className="no-stations-alert" color="primary">
                         There are no stations with GPS data.
@@ -99,31 +105,9 @@ class Map extends Component {
                     .filter(this.filterStations.bind(this))
                     .map((station, index) => {
                         if (station.latitude !== "n/a" && station.longitude !== "n/a"){
-                            if (index % 2 !== 0){
-                                return (
-                                    <div key={station.apikey} className="list-item-container">
-                                        <FormGroup check>
-                                            <Label check>
-                                                <Input type="checkbox" defaultChecked={true} onChange={(event) => this.checkboxOnChange(event, station)}/>{' '}
-                                                <span className="station-name">{station.station_name}</span>
-                                            </Label>
-                                        </FormGroup>
-                                    </div>
-                                );
-                            }
-                            else{
-                                return (
-                                    <div key={station.apikey} className="list-item-container-dark">
-                                        <FormGroup check>
-                                            <Label check>
-                                                <Input type="checkbox" defaultChecked={true} onChange={(event) => this.checkboxOnChange(event, station)}/>{' '}
-                                                <span className="station-name">{station.station_name}</span>
-                                            </Label>
-                                        </FormGroup>
-                                    </div>
-                                );
-                            }
-                            
+                            return (
+                                <SidebarItem key={station.apikey} index={index} station={station} checkboxOnChange={this.checkboxOnChange}></SidebarItem>
+                            );
                         }
                     })
                 }
@@ -142,7 +126,7 @@ class Map extends Component {
                             <FormGroup className="col-12">
                                 <Input type="text" className="filterWidth" name="stationFilter" id="stationFilter" placeholder="Filter" onChange={this.filterOnChange.bind(this)} />
                             </FormGroup>
-                            { this.renderStationNames() }
+                            { this.renderSidebar() }
                         </div>
                     </div>
                     <div className="map-container" style={{position: 'absolute', right: 0, top: 0, width: '75%', height: '100%'}}>

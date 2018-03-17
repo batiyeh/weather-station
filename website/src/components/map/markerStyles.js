@@ -10,8 +10,6 @@ export function getMarkerStyle(hover, origin) {
     var size = MARKER_SIZE;
     var scale = hover ? 1.0 : .65;
     var zIndex = hover ? 999 : -1;
-    const sizeOriginX = size / 2 * origin.x;
-    const sizeOriginY = size / 2 * origin.y;
     var translateDistance = hover ? 0 : -((size * scale) - size) / 2;
   
     return {

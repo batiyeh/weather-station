@@ -90,7 +90,7 @@ class ProfileForm extends Component {
                 <div id='profile'>
                     <h2 className="page-title">User Profile</h2>
                     <form id='profileForm'>
-                        <div className='profile-info mb-3'>
+                        <div className='profile-info'>
                             {this.renderMessages()}
                             <div className='row'>
                                 <label for="username" class="col-sm-4 col-form-label">Username</label>
@@ -116,10 +116,8 @@ class ProfileForm extends Component {
                                     <Button type='button' className="btn btn-secondary btn-block profile-btn" onClick={this.toggleChangePassword}>Change</Button>
                                 </div>
                             </div>
-                        </div>
-                        <div className='row'>
-                            <div className='col-12'>
-                                <Button onClick={this.updateProfile}type='button' className='btn btn-primary btn-block profile-btn'>Save Changes</Button>
+                            <div className='row col-12'>
+                                <Button onClick={this.updateProfile} type='button' className='btn btn-primary btn-block profile-btn'>Save Changes</Button>
                             </div>
                         </div>
                     </form>

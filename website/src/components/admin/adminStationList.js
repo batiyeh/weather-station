@@ -16,6 +16,7 @@ class AdminStationList extends Component {
             name: ''
         };
         this.toggleAddStationModal = this.toggleAddStationModal.bind(this);
+        this.deleteStation = this.deleteStation.bind(this);
     }
 
     // Sets the initial state of the component to be null/0 so 
@@ -74,6 +75,19 @@ class AdminStationList extends Component {
         return body;
     }
 
+    deleteStation = async(apikey) => {
+        var response = await fetch('/api/stations/' + apikey, 
+            {method: 'delete',
+             headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+              }
+        });
+        var body = await response.json();
+        this.updateStations();
+        return body;
+    }
+
     // If there are no stations stored in the state, render
     // the no stations alert.
     renderAlert(){
@@ -106,7 +120,7 @@ class AdminStationList extends Component {
 
     render() {
         return (
-            <div className="container content">
+            <div className="container admin-content">
                 <Modal isOpen={this.state.modal} toggle={this.toggleAddStationModal}>
                     <ModalHeader toggle={this.toggleAddStationModal}>Add a Station</ModalHeader>
                         <ModalBody>
@@ -137,7 +151,7 @@ class AdminStationList extends Component {
                 { this.state.stations
                     .map(station => {
                         return (
-                            <AdminStationCard key={station.station_name} station={station}></AdminStationCard>
+                            <AdminStationCard key={station.station_name} station={station} deleteStation={this.deleteStation}></AdminStationCard>
                         );
                     }) 
                 }   

@@ -123,7 +123,7 @@ class HistoricalContainer extends Component{
                         </form>
                     </Modal>
                     <div className="filter row">
-                        <Button type='button' color="primary" className="btn btn-primary" onClick={this.toggleFilter}>Filter</Button>
+                        <Button type='button' color="primary" className="btn btn-primary filter-btn" onClick={this.toggleFilter}>Filter</Button>
                     </div>
                         <TemperatureGraph className="filter row"
                             data={this.state.stationsData}

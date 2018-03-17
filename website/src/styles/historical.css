@@ -8,8 +8,11 @@
     float: left;
 }
 
-.btn-primary{
+.filter-btn{
     margin-left: 40px;
+}
+
+.btn-primary{
     background-color: #27ACAC !important;
     border-color: #27ACAC !important;
 }
