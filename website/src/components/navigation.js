@@ -33,6 +33,7 @@ class Navigation extends Component {
         this.toggleAlertModal = this.toggleAlertModal.bind(this);
         this.renderAlerts = this.renderAlerts.bind(this);
         this.renderHeader = this.renderHeader.bind(this);
+        this.closeModal = this.closeModal.bind(this);
 
         this.state = {
             dropdownOpen: false,
@@ -102,6 +103,11 @@ class Navigation extends Component {
         this.setState({
             unread: false,
             alertDropDown: !this.state.alertDropDown
+        })
+    }
+    closeModal(){
+        this.setState({
+            modal:!this.state.modal
         })
     }
     //when user clicks on alert from dropdown, modal will toggle and values will be set for that specific alert
@@ -256,7 +262,7 @@ class Navigation extends Component {
                                         Humidity: {this.state.humidity}
                                     </ModalBody>
                                     <ModalFooter>
-                                        <Button type='button' color="secondary" onClick={this.toggleAlertModal}>Close</Button>
+                                        <Button type='button' color="secondary" onClick={this.closeModal}>Close</Button>
                                     </ModalFooter>
                                 </Form>
                             </Modal>
