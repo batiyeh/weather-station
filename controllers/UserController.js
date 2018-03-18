@@ -54,6 +54,7 @@ router.post('/create', async function(req, res){
                 username: username,
                 email: email,
                 password: hash,
+                permissions: 4,
             }).save()
         });
         res.json({errors: [], redirect: true})
