@@ -11,6 +11,7 @@ import Alerts from '../containers/alerts.js'
 import ProfileForm from '../components/registration/profileForm.js';
 import VerifyLoggedIn from '../components/verifyLoggedIn.js'
 import Admin from '../containers/admin.js'
+import Approval from '../components/registration/Approval.js';
 
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 
@@ -79,6 +80,7 @@ class App extends Component {
             <Route path="/user/login" component={Login}/>
             <Route path="/user/create" component={Create}/>  
             <Route path="/user/reset" component={ResetPassword} exact/>
+            <Route path="/user/approval" component={Approval}/>
             <Route path="/user/reset/:token" component={ResetPassword}/>
             <Route path="/profile" render={this.renderProfile}/>
             <Route path="/historical" component={Historical}/>
