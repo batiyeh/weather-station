@@ -21,10 +21,10 @@ class LoginForm extends Component {z
                         </div>
                         </div>
                         <div className='row'>
-                            <div className='col-6 no-padding-left'>
+                            <div className='col-6'>
                                 <a className='register-link' href='/user/create'><button type='button' className='btn btn-default btn-block register-btn'>Register</button></a>
                             </div>
-                            <div className='col-6 no-padding-right'>
+                            <div className='col-6'>
                                 <button type='submit' className='btn btn-default btn-block login-btn'>Login</button>
                             </div>
                         </div>

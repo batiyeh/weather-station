@@ -8,7 +8,7 @@ import Create from '../containers/create.js';
 import Historical from '../containers/historical.js';
 import ResetPassword from '../containers/resetPassword.js';
 import Alerts from '../containers/alerts.js'
-import ProfileForm from '../components/profileForm.js';
+import ProfileForm from '../components/registration/profileForm.js';
 import VerifyLoggedIn from '../components/verifyLoggedIn.js'
 import Admin from '../containers/admin.js'
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import VerifyLoggedIn from '../components/verifyLoggedIn.js'
-import AlertsForm from '../components/alerts/alertsForm.js';
+import AlertsList from '../components/alerts/alertsList.js';
 import '../styles/alerts.css';
 
 class Alerts extends Component {
@@ -8,7 +8,7 @@ class Alerts extends Component {
         return (
             <div className='AlertsPage'>
                 <VerifyLoggedIn/>
-                <AlertsForm/>
+                <AlertsList/>
             </div>
 
         );

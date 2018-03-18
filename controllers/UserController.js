@@ -151,7 +151,7 @@ router.post('/reset/', function(req,res){
                 subject: 'Weather Station Account Password Recovery',
                 text: 'You are receiving this message because you have initiated the password reset process.\n\n'+
                 'Please click the following link to complete this process:\n\n'+
-                'localhost:8000/user/reset/' + token + '\n\n' +
+                req.protocol + '://' + req.get('host') + '/user/reset/' + token + '\n\n' +
                 'If you did not request a password reset, please ignore this email.\n'
             };
             transporter.sendMail(mailOptions,function(err){

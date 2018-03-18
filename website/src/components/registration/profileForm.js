@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Alert } from 'reactstrap';
-import '../styles/profile.css';
+import '../../styles/profile.css';
 
 class ProfileForm extends Component {
     constructor(props){
@@ -88,7 +88,7 @@ class ProfileForm extends Component {
                 </form>
              </Modal>
                 <div id='profile'>
-                    <h2 className="page-title">User Profile</h2>
+                    <h2 className="profile-page-title">User Profile</h2>
                     <form id='profileForm'>
                         <div className='profile-info'>
                             {this.renderMessages()}
@@ -116,8 +116,8 @@ class ProfileForm extends Component {
                                     <Button type='button' className="btn btn-secondary btn-block profile-btn" onClick={this.toggleChangePassword}>Change</Button>
                                 </div>
                             </div>
-                            <div className='row col-12'>
-                                <Button onClick={this.updateProfile} type='button' className='btn btn-primary btn-block profile-btn'>Save Changes</Button>
+                            <div className='col-12 no-padding'>
+                                <Button onClick={this.updateProfile} type='button' className='btn btn-primary btn-block profile-save-btn'>Save Changes</Button>
                             </div>
                         </div>
                     </form>

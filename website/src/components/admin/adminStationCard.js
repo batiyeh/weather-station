@@ -74,7 +74,7 @@ class AdminStationCard extends Component {
                     <div className="col-12">
                         <CardText>
                             <div className="row">
-                                <div className="col-12 no-padding-left station-title">
+                                <div className="col-12 station-title">
                                     { this.state.name }
                                 </div>
                             </div>

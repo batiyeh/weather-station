@@ -93,9 +93,11 @@ class AdminStationList extends Component {
     renderAlert(){
         if (this.state.stations.length === 0){
             return (
-                <Alert className="no-stations-alert" color="primary">
-                    There are no stations to display.
-                </Alert>
+                <div className="col-12">
+                    <Alert className="no-stations-alert" color="primary">
+                        There are no stations to display.
+                    </Alert>
+                </div>
             );
         }
     }
@@ -144,7 +146,7 @@ class AdminStationList extends Component {
                     <div className="col-8 left">
                         <h3>Stations</h3>
                     </div>
-                    <div className="col-4 right">
+                    <div className="col-4 right no-padding-right">
                         <Button onClick={this.toggleAddStationModal} className="btn btn-primary add-btn">Add</Button>
                     </div>
                 </div>
