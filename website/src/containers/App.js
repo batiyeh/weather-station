@@ -21,7 +21,8 @@ class App extends Component {
       username: '',
       email: '',
       phone: '',
-      isAdmin: false
+      isAdmin: false,
+      permissions:''
     }
   }
   componentDidMount(){
@@ -32,10 +33,10 @@ class App extends Component {
     var response = await fetch('/api/user/getUserInfo', {method: 'post', credentials: 'include'})
     var body = await response.json();
     if(!body.phone){
-      this.setState({username: body.username, email: body.email, phone: '3135555555', isAdmin: body.isAdmin});
+      this.setState({username: body.username, email: body.email, phone: '3135555555', permissions: body.permissions});
     }
     else{
-      this.setState({username: body.username, email: body.email, phone: body.phone, isAdmin: body.isAdmin});      
+      this.setState({username: body.username, email: body.email, phone: body.phone, permissions: body.permissions});
     }
   }
 
