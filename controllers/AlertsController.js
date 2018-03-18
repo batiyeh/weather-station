@@ -81,6 +81,7 @@ router.post('/webpage', async function(req, res){
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
     .where('alerts.username', req.user)
     .orderBy('webpagealerts.webpage_id', 'asc')
+    .orderBy('alertvalues.value', 'desc')
 
     return res.status(200).json({alerts});
 })

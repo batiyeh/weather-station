@@ -159,7 +159,6 @@ class Navigation extends Component {
         var nextIndex = null;
         var value2 = null;
         this.state.alerts.map((alerts, index) =>{
-            console.log(index, alerts.value, alerts);
             if(alerts.keyword === 'between'){
                 if(nextIndex !== index){
                     value2 = alerts.value;
