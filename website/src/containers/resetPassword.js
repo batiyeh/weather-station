@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import '../styles/App.css';
-import ResetPasswordForm from '../components/registration/ResetPasswordForm.js';
-import ResetPasswordConfirmForm from '../components/registration/ResetPasswordConfirmForm.js';
+import ResetPasswordForm from '../components/registration/resetPasswordForm.js';
+import ResetPasswordConfirmForm from '../components/registration/resetPasswordConfirmForm.js';
 
 class ResetPassword extends Component {
   render() {

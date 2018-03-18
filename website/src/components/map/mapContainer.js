@@ -12,7 +12,8 @@ export class MapContainer extends Component {
             center: [42.362968, -83.072342],
             zoom: 15,
             hoverKey: null,
-            clickKey: null
+            clickKey: null,
+            showLabels: false
         };
     }
 
@@ -80,6 +81,7 @@ export class MapContainer extends Component {
                                             lng={station.longitude}
                                             station={station}
                                             hover={this.state.hoverKey === index}
+                                            label={this.state.showLabels}
                                         />
                                 );
                             })

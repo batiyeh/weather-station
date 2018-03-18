@@ -72,6 +72,7 @@ class Map extends Component {
         if (event.target.checked === true){
             checkedStations.push(station);
             this.updateCheckedStations(checkedStations);
+            console.log(checkedStations);
         }
 
         else{
@@ -79,6 +80,7 @@ class Map extends Component {
             if (checkedStations.length === 1) checkedStations.pop();
             else checkedStations.splice(index, 1);
             this.updateCheckedStations(checkedStations);
+            console.log(checkedStations);
         }
     }
 

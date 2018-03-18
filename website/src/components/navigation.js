@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import '../styles/navbar.css';
 import logo from '../images/space-satellite-dish-512x512.png';
@@ -22,8 +21,6 @@ import {
     Form,
     Button,
     Alert } from 'reactstrap';
-    
-var FontAwesome = require('react-fontawesome')
 
 class Navigation extends Component {
     constructor(props){
@@ -96,6 +93,7 @@ class Navigation extends Component {
             navShown:!this.state.navShown
         })
     }
+
     toggleAlert = async () => {
         //fetch call to set alerts to read for user
         fetch('/api/alerts/read', {method: 'post', credentials: 'include'})
@@ -103,11 +101,6 @@ class Navigation extends Component {
         this.setState({
             unread: false,
             alertDropDown: !this.state.alertDropDown
-        })
-    }
-    closeModal(){
-        this.setState({
-            modal:!this.state.modal
         })
     }
     //when user clicks on alert from dropdown, modal will toggle and values will be set for that specific alert
@@ -134,16 +127,25 @@ class Navigation extends Component {
         })
         return body;
     }
+
     //changes the bell icon depending on if there are unread alerts or not
     renderBell(){
         if(this.state.unread){
-            return(<FontAwesome className='unread-bell' size='2x' name='bell'/>
-        )
+            return(
+                <div className="bell">
+                    <span className="fa-stack">
+                        <i className="fa fa-bell fa-stack-1x" aria-hidden="true"></i>
+                        <strong class="fa-stack-1x unread-text">{this.state.alerts.length}</strong>
+                        <i class="fa fa-square fa-stack-1x unread" aria-hidden="true"></i>
+                    </span>
+                </div>
+            );
         }
         else{
-            return(<FontAwesome className='bell' size='2x' name='bell'/>)
+            return(<div className="bell"><i className="fa fa-bell" aria-hidden="true"></i></div>);
         }
     }
+
     //renders the header of the alert modal based on what alert the user is looking at
     renderHeader(){
         if(this.state.value2){
@@ -153,6 +155,7 @@ class Navigation extends Component {
             return(<ModalHeader toggle={this.toggleAlertModal}> {this.state.station_name}'s {this.state.type} is {this.state.keyword} {this.state.value1} </ModalHeader>)
         }
     }
+
     //renders the alert cards in the drop down for the user
     renderAlerts(){
         var webpageAlertCards = [];
@@ -170,26 +173,31 @@ class Navigation extends Component {
                 }
             }
             else{
-                webpageAlertCards.push(<DropdownItem onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, null, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)}>
-                <Card>Alert: {alerts.station_name}'s {alerts.type} is {alerts.keyword} {alerts.value}</Card></DropdownItem>)
+                webpageAlertCards.push(
+                        <Card onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, null, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)} className="alert-notification-card">{alerts.station_name}'s {alerts.type} is {alerts.keyword}&nbsp;{alerts.value}</Card>
+                );
             }
             return null;
         })
+
         //shows message if there are no alerts
         if(webpageAlertCards.length === 0){
-            return(<Alert>You have no alerts</Alert>)
-        }
-        else{
-            webpageAlertCards.push(<DropdownItem onClick={this.dismissAlerts}> Dismiss all alerts </DropdownItem>)
+            return(<Alert color="primary">You have no alerts</Alert>)
+        } else{
+            webpageAlertCards.unshift(
+                <button className="btn btn-sm dismiss-all" onClick={this.dismissAlerts}> Dismiss all alerts </button>
+            );
             return webpageAlertCards;
         }
     }
+
     //deletes alerts from database and update page
     dismissAlerts(){
         fetch('/api/alerts/webpage', {method: 'delete', credentials: 'include'})
 
         this.getWebpageAlerts();
     }
+
     render() {
         if(this.state.redirect) {
             return <Redirect to='/user/login'/>;
@@ -220,20 +228,20 @@ class Navigation extends Component {
                                     </NavItem>
                                 </div>
                             </Nav>
-                            <Nav className='ml-auto' navbar>
+                            <Nav className="ml-auto" navbar>
                                 <Dropdown isOpen={this.state.alertDropDown} toggle={this.toggleAlert} nav inNavbar>
-                                    <DropdownToggle nav caret>
+                                    <DropdownToggle nav>
                                         {this.renderBell()}
                                     </DropdownToggle>
-                                    <DropdownMenu className="user-menu" right>
-                                        {this.renderAlerts()}
+                                    <DropdownMenu className="alerts-menu" right>
+                                        <div className="col-12">
+                                            {this.renderAlerts()}
+                                        </div>
                                     </DropdownMenu>
                                 </Dropdown>
-                            </Nav>
-                            <Nav className="ml-auto" navbar>
-                                <Dropdown isOpen={this.state.dropdown} toggle={this.toggleDropdown} nav inNavbar>
+                                <Dropdown isOpen={this.state.dropdown} className="username-dropdown" toggle={this.toggleDropdown} nav inNavbar>
                                     <DropdownToggle nav caret>
-                                    {this.props.username}
+                                        {this.props.username}
                                     </DropdownToggle>
                                     <DropdownMenu className="user-menu" right>
                                         <DropdownItem tag='a'>

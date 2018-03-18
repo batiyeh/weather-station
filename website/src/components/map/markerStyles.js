@@ -60,6 +60,23 @@ export const infoStyle = {
     opacity: 0,
 }
 
+export const labelStyle = {
+    position: "absolute",
+    bottom: MARKER_SIZE + 2,
+    left: "-27px",
+    minWidth: "175px",
+    fontSize: "10pt",
+    padding: "10px",
+    backgroundColor: "#394c73",
+    color: "#fff",
+    boxShadow: "0px 0px 10px 0px #707070",
+    cursor: "pointer",
+    transition: `opacity ${duration}ms ease-in-out`,
+    transitionProperty: 'opacity, transform',
+    textAlign: "left",
+    opacity: 0,
+}
+
 // Transition state styling
 const infoTransitionStyles = {
     entering: { 

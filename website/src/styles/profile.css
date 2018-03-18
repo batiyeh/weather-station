@@ -1,9 +1,17 @@
-.page-title{
-    margin-bottom: 75px;
+#profile{
+    margin-top: 125px;
+}
+
+.profile-page-title{
+    margin-bottom: 50px;
 }
 
 .col-form-label{
     text-align: left !important;
+}
+
+.profile-save-btn{
+    margin: 0 auto !important;
 }
 
 .btn-primary{

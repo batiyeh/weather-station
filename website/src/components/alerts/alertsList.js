@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Alert, Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, Label, Input} from 'reactstrap';
+import { Alert, Modal, ModalHeader, ModalBody, ModalFooter, Button, FormGroup, Form, Label, Input} from 'reactstrap';
 import AlertCard from './alertCard';
 import '../../styles/alerts.css';
 
-class AlertsForm extends Component {
+class AlertsList extends Component {
     constructor(props){
         super(props);
         this.state={
@@ -124,11 +124,16 @@ class AlertsForm extends Component {
     renderValues(){
         if(this.state.keyword === 'between'){
             return (
-            <div className='form-group'> 
-                <Label>Values</Label>
-                <Input type='text' name='value1' id='value1' onChange={e => this.onValue1Change(e.target.value)}/>
-                <Input type='text' name='value2' id='value2'onChange={e => this.onValue2Change(e.target.value)}/>
-            </div>)
+                <div>
+                    <div className='form-group'> 
+                        <Label>Values</Label>
+                        <Input type='text' name='value1' id='value1' onChange={e => this.onValue1Change(e.target.value)}/>
+                    </div>
+                    <div className='form-group'>
+                        <Input type='text' name='value2' id='value2' onChange={e => this.onValue2Change(e.target.value)}/>
+                    </div>
+                </div>
+            );
         }
         else{  
             //ensures state of value2 is reset when switching between renders
@@ -173,9 +178,11 @@ class AlertsForm extends Component {
     renderEmpty(){
         if (this.state.alerts.length === 0){
             return (
-                <Alert className="no-alerts-alert" color="primary">
-                    There are no alerts to display.
-                </Alert>
+                <div class="col-12">
+                    <Alert className="no-alerts-alert" color="primary">
+                        There are no alerts to display.
+                    </Alert>
+                </div>
             );
         }
     }
@@ -204,26 +211,35 @@ class AlertsForm extends Component {
                     <ModalBody>
                         <div className ='form-group'>
                             <Label>Alert Method</Label>
-                            <div className='row'>
-                                <div className='form-check form-check-inline alert-method-container'>
-                                    <Label>Email
-                                    <Input type='checkbox' className='form-control alert-method-box' checked={this.state.email} onChange={this.onEmailChange} id='email' name='email'/>
-                                    </Label>
+                            <div className='col-12 row'>
+                                <div className='alert-method-box alert-method-container'>
+                                    <FormGroup check>
+                                        <Label check>
+                                            <Input type='checkbox' className='form-control alert-method-box' checked={this.state.email} onChange={this.onEmailChange} id='email' name='email'/>
+                                            <span>Email</span>
+                                        </Label>
+                                    </FormGroup>
                                 </div>
-                                <div className='form-check form-check-inline alert-method-container'>    
-                                    <Label>SMS
-                                    <Input type='checkbox' className='form-control alert-method-box' checked={this.state.sms} onChange={this.onSMSChange} id='sms' name='sms'/>
-                                    </Label>
+                                <div className='alert-method-box alert-method-container'> 
+                                    <FormGroup check>   
+                                        <Label check>
+                                            <Input type='checkbox' className='form-control alert-method-box' checked={this.state.sms} onChange={this.onSMSChange} id='sms' name='sms'/>
+                                            <span>SMS</span>
+                                        </Label>
+                                    </FormGroup>
                                 </div>
-                                <div className='form-check form-check-inline alert-method-container'>
-                                    <Label>Webpage
-                                    <Input type='checkbox' className='form-control alert-method-box' checked={this.state.webpage} onChange={this.onWebpageChange} id='webpage' name='webpage'/>
-                                    </Label>
+                                <div className='alert-method-box alert-method-container'>
+                                    <FormGroup check>
+                                        <Label check>
+                                            <Input type='checkbox' className='form-control alert-method-box' checked={this.state.webpage} onChange={this.onWebpageChange} id='webpage' name='webpage'/>
+                                            <span>Webpage</span>
+                                        </Label>
+                                    </FormGroup>
                                 </div>
                             </div>
                         </div>
                         <div className='form-group'>
-                            <Label>Alert me every...</Label>
+                            <Label>Alert me once every</Label>
                             <Input type="select" name='threshold' id='threshold' onChange={e => this.onThresholdChange(e.target.value)}>
                                 <option value='1 hour'>1 Hour</option>
                                 <option value='12 hours'>12 Hours</option>
@@ -262,10 +278,10 @@ class AlertsForm extends Component {
                 </Form>
             </Modal>
             <div className="row col-12 station-list-header">
-                <div className="col-8 left">
+                <div className="col-8 left alert-title">
                     <h4>Alert me when...</h4>
                 </div>
-                <div className="col-4 right">
+                <div className="col-4 right no-padding-right">
                     <Button type='button' className="btn btn-secondary add-btn" onClick={this.toggleAddAlert}>Add</Button></div>
                 </div>
                 <div className='row'> 
@@ -277,4 +293,4 @@ class AlertsForm extends Component {
     }
 }
 
-export default AlertsForm;
+export default AlertsList;

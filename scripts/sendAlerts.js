@@ -174,7 +174,6 @@ sendWebpage = async (triggered, weather) => {
         alert_id: triggered.alert_id
     }).save()
 }
-sendAlerts();
 
 module.exports =  {
     sendAlerts
