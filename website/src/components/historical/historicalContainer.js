@@ -12,8 +12,8 @@ class HistoricalContainer extends Component{
             stationsData: {},
             modal: false,
             loading: true,
-            fromDate: '2018-03-14',
-            toDate: '2018-03-14'
+            fromDate: '2018-03-14 00:00:00',
+            toDate: '2018-03-14 23:00:00'
         }
         this.toggleFilter = this.toggleFilter.bind(this);
         this.componentWillMount = this.componentWillMount.bind(this);
@@ -46,18 +46,9 @@ class HistoricalContainer extends Component{
     getTemp = async () => {
         var data;
         var stationsDict = {};
-        console.log(this.state.fromDate);
-        const response = await fetch('/api/weather/temp/',
-            {method: 'post',
-                body: JSON.stringify({
-                    fromDate: this.state.fromDate,
-                    toDate: this.state.toDate
-                }),
-                headers: {
-                    'Accept': 'application/json, text/plain, */*',
-                    'Content-Type': 'application/json'
-                }
-            }
+        var toDate = this.state.toDate;
+        var fromDate = this.state.fromDate;
+        const response = await fetch('/api/weather/temp/' + fromDate +'/' + toDate,
         );
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
