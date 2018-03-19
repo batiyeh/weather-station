@@ -78,41 +78,65 @@ router.post('/webpage', async function(req, res){
     var alerts = []
     if(req.user){    
         alerts = await knex('triggeredalerts')
-        .select('triggeredalerts.triggered_id', 'triggeredalerts.method', 'triggeredalerts.cleared', 'alertvalues.value', 'alerts.alert_id', 'alerts.type','alerts.keyword', 'alerts.station_name', 'triggeredalerts.read', 'triggeredalerts.temperature', 'triggeredalerts.humidity', 'triggeredalerts.pressure', 'triggeredalerts.triggered_at')
+        .select('triggeredalerts.triggered_id', 'alertvalues.value', 'alerts.alert_id', 'alerts.type','alerts.keyword', 'alerts.station_name', 'triggeredalerts.read', 'triggeredalerts.temperature', 'triggeredalerts.humidity', 'triggeredalerts.pressure', 'triggeredalerts.triggered_at')
         .leftJoin('alerts', 'triggeredalerts.alert_id', '=', 'alerts.alert_id')
         .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
         .where('alerts.username', '=', req.user)
         .where('triggeredalerts.method', '=', 'webpage')
         .where('triggeredalerts.cleared', '=', false)
+        // .orderBy('alertvalues.value', 'asc')
         .orderBy('triggeredalerts.triggered_id', 'asc')
-        .orderBy('alertvalues.value', 'desc')
+
+        // console.log(alerts);
+        var newAlerts = [];
+        var currentID = null;
+        var grabbedValue= null;
+        alerts.map((alerts, index) =>{
+            if(alerts.keyword === 'between'){
+                if(currentID !== alerts.triggered_id){
+                    grabbedValue = alerts.value;
+                    currentID = alerts.triggered_id;
+                }
+                else{
+                    if(grabbedValue > alerts.value){
+                        alerts.firstValue = alerts.value;
+                        alerts.secondValue = grabbedValue;
+                    }
+                    else{
+                        alerts.firstValue = grabbedValue;
+                        alerts.secondValue = alerts.value;
+                    }
+                    newAlerts.push(alerts);
+                }
+            }
+            else{
+                newAlerts.push(alerts);
+            }
+        })
+        alerts = newAlerts;
     }
-    // console.log(alerts);
     return res.status(200).json({alerts});
 })
 
 router.post('/read', async function(req, res){
     //sets all alerts for req.user to read
     var response = await knex('triggeredalerts')
-    .update('triggeredalerts.read', true).
-    leftJoin('alerts', 'triggeredalerts.alert_id','=','alerts.alert_id')
-    .where('triggeredalerts.read','=', false, 'alerts.username','=', req.user, 'triggeredalerts.method', '=', 'webpage');
+    .update('triggeredalerts.read', true)
+    .leftJoin('alerts', 'triggeredalerts.alert_id','=','alerts.alert_id')
+    .where('triggeredalerts.read','=', false)
+    .where('alerts.username','=', req.user)
+    .where('triggeredalerts.method', '=', 'webpage')
 
     return res.status(200);
 })
 router.delete('/webpage', async function(req, res){
     //get all webpage id's for that user
     var alerts = await knex('triggeredalerts')
-    .select('triggered_id')
+    .update('triggeredalerts.cleared', true)
     .leftJoin('alerts', 'triggeredalerts.alert_id','=','alerts.alert_id')
-    .where('username', '=', req.user, 'triggeredalerts.method', '=', 'webpage', 'triggeredalerts.cleared', '=', false);
-
-    //delete all webpage alerts for user
-    alerts.map(async (alerts) => {
-        await TriggeredAlerts.where({alert_id: alerts.triggered_id}).save({
-            cleared: true
-        },{patch: true});
-    })
+    .where('alerts.username', '=', req.user)
+    .where('triggeredalerts.method', '=', 'webpage')
+    .where('triggeredalerts.cleared', '=', false);
 
     return res.status(200);
 })
