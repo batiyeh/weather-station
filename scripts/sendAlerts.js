@@ -59,26 +59,26 @@ sendAlerts = async () => {
 
     //checks if any alerts in the triggered array have been triggered recently
     //if the time is greater than the threshold, they are added to array newTrig
-    var newTrig = [];
-    triggered.map(triggered =>{
-        if(triggered.threshold === '1 hour'){
-            if((1000 * 60 * 60) < (moment.utc() - triggered.last_triggered)){
-                newTrig.push(triggered);
-            }
-        }
-        else if(triggered.threshold === '12 hours'){
-            if((1000 * 60 * 60 * 12) < (moment.utc() - triggered.last_triggered)){
-                newTrig.push(triggered);
-            }
-        }
-        else if(triggered.threshold === '24 hours'){
-            if((1000 * 60 * 60 * 24) < (moment.utc() - triggered.last_triggered)){
-                newTrig.push(triggered);
-            }
-        }
-    })
-    //triggered array changed to new values
-    triggered = newTrig;
+    // var newTrig = [];
+    // triggered.map(triggered =>{
+    //     if(triggered.threshold === '1 hour'){
+    //         if((1000 * 60 * 60) < (moment.utc() - triggered.last_triggered)){
+    //             newTrig.push(triggered);
+    //         }
+    //     }
+    //     else if(triggered.threshold === '12 hours'){
+    //         if((1000 * 60 * 60 * 12) < (moment.utc() - triggered.last_triggered)){
+    //             newTrig.push(triggered);
+    //         }
+    //     }
+    //     else if(triggered.threshold === '24 hours'){
+    //         if((1000 * 60 * 60 * 24) < (moment.utc() - triggered.last_triggered)){
+    //             newTrig.push(triggered);
+    //         }
+    //     }
+    // })
+    // //triggered array changed to new values
+    // triggered = newTrig;
 
     //last_triggered value updated to current time on all triggered alerts
     triggered.map(triggered =>{
@@ -86,24 +86,28 @@ sendAlerts = async () => {
             last_triggered: knex.fn.now()
         },{patch:true})
     })
-
+    console.log('before');
     //adds alert to historic table
-    var lastID = null;
-    triggered.map(triggered=> {
-        weather.map(weather=>{
+    var lastID = 0;
+    await triggered.map((triggered) => {
+        await weather.map(async (weather) =>{
             if((weather.station_name === triggered.station_name) && (lastID !== triggered.alert_id)){
-                var newAlert = new TriggeredAlerts({
+                lastID = triggered.alert_id;
+
+                var newAlert = await new TriggeredAlerts({
                     temperature: weather.temperature,
                     pressure: weather.pressure,
                     humidity: weather.humidity,
                     alert_id: triggered.alert_id
                 }).save()
-                triggered.triggered_id = newAlert.triggered_id;
-                lastId = triggered.alert_id;
+                // console.log(newAlert.attributes);
+                console.log('in history alert'. lastID, triggered.alert_id);
+                triggered.triggered_id = newAlert.attributes.id;
+
             }
         })
     })
-
+    console.log(triggered);
     //Checks the alert method on each triggered alert and calls the corresponding function
     triggered.map(triggered =>{
         if(triggered.method === 'email'){
@@ -121,6 +125,7 @@ sendAlerts = async () => {
 //Email includes the alert that was triggered and
 //the weather data at that station when it was triggered
 sendEmail = async (triggered, weather) =>{
+    console.log('sending email');
     var triggeredStation = null;
     weather.map(weather=>{
         if(weather.station_name === triggered.station_name){
@@ -177,16 +182,16 @@ sendSMS = async (triggered, weather) => {
 }
 sendWebpage = async (triggered, weather) => {
     var triggeredStation = null;
-    weather.map(weather=>{
-        if(weather.station_name === triggered.station_name){
-            triggeredStation = weather;
-        }
-    })
-
-    TriggeredAlerts.where({triggered_id: triggered.triggered_id}).save({
-        read: false,
-        webpage: true
-    },{patch: true});
+    // weather.map(weather=>{
+    //     if(weather.station_name === triggered.station_name){
+    //         triggeredStation = weather;
+    //     }
+    // })
+    // console.log(triggered.triggered_id)
+    // TriggeredAlerts.where({triggered_id: triggered.triggered_id}).save({
+    //     read: false,
+    //     webpage: true
+    // },{patch: true});
 
 }
 
