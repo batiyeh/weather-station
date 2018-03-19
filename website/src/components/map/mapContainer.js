@@ -75,12 +75,12 @@ export class MapContainer extends Component {
                                 if (station.latitude !== "n/a" && station.longitude !== "n/a")
                                 return (
                                         <Marker
-                                            key={index}
+                                            key={station.apikey}
                                             markerId={index}
                                             lat={station.latitude}
                                             lng={station.longitude}
                                             station={station}
-                                            hover={this.state.hoverKey === index}
+                                            hover={this.state.hoverKey === station.apikey}
                                             label={this.state.showLabels}
                                         />
                                 );
