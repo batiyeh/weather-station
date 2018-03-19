@@ -13,6 +13,7 @@ getAlerts = async () =>{
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
     .leftJoin('alertmethods', 'alerts.alert_id', '=', 'alertmethods.alert_id')
     .leftJoin('users', 'alerts.username', '=', 'users.username')
+    .where('alerts.deleted', '=', false)
     return alerts;
 }
 getWeather = async () => {
@@ -37,8 +38,6 @@ createHistoricAlert = async (triggered, weather) => {
                     alert_id: triggered.alert_id,
                     method: triggered.method
                 }).save()
-                // console.log(newAlert.attributes);
-                console.log('in history alert'. lastID, triggered.alert_id);
                 triggered.triggered_id = newAlert.attributes.id;
             }
         })

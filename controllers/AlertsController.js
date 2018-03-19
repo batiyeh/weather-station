@@ -35,7 +35,8 @@ router.post('/create', async function(req, res){
             type: datatype,
             keyword: keyword,
             threshold: threshold,
-            username: req.user
+            username: req.user,
+            deleted: false
         }).save();
         //assigns values to new alert via foreign key
         await new AlertValues({
@@ -87,7 +88,6 @@ router.post('/webpage', async function(req, res){
         // .orderBy('alertvalues.value', 'asc')
         .orderBy('triggeredalerts.triggered_id', 'asc')
 
-        // console.log(alerts);
         var newAlerts = [];
         var currentID = null;
         var grabbedValue= null;
@@ -148,7 +148,8 @@ router.post('/', async function(req, res){
     var alerts = await knex('alerts')
     .select('alerts.alert_id', 'alerts.station_name', 'alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alerts.threshold', 'alertvalues.value')
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
-    .where('alerts.username', req.user)
+    .where('alerts.username', '=', req.user)
+    .where('alerts.deleted','=', false)
 
     var stations = await Station.fetchAll();
 
@@ -230,10 +231,10 @@ router.post('/:id', async function(req,res){
 })
 router.delete('/:id', async function(req, res){
     //deletes alerts with the id passed from front end
-    AlertValues.where({alert_id: req.params.id}).destroy();
-    AlertMethods.where({alert_id: req.params.id}).destroy();
-    Alerts.where({alert_id: req.params.id}).destroy();
 
+    var response = await knex('alerts')
+    .update('alerts.deleted', true)
+    .where('alerts.alert_id', '=', req.params.id)
     res.status(200);
 })
 
