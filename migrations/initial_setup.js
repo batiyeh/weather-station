@@ -62,9 +62,10 @@ exports.up = function(knex, Promise) {
             table.string('method', 16);
             table.integer('alert_id').references('alert_id').inTable('alerts').unsigned().onDelete('SET NULL').onUpdate('CASCADE');
         })
-        .createTable('webpagealerts', function(table){
-            table.increments('webpage_id').primary();
+        .createTable('triggeredalerts', function(table){
+            table.increments('triggered_id').primary();
             table.boolean('read');
+            table.boolean('webpage');
             table.float('temperature', 5, 2);
             table.float('humidity', 5, 2);
             table.float('pressure', 6, 2);
@@ -84,5 +85,5 @@ exports.down = function(knex, Promise) {
     .dropTable('stations')
     .dropTable('users')
     .dropTable('permissions')
-    .dropTable('webpagealerts')
+    .dropTable('triggeredalerts')
 };

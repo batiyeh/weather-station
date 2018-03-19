@@ -30,7 +30,6 @@ class Navigation extends Component {
         this.toggleAlertModal = this.toggleAlertModal.bind(this);
         this.renderAlerts = this.renderAlerts.bind(this);
         this.renderHeader = this.renderHeader.bind(this);
-        this.closeModal = this.closeModal.bind(this);
 
         this.state = {
             dropdownOpen: false,
@@ -55,15 +54,15 @@ class Navigation extends Component {
     }
     //fetch all alerts when navbar mounts
     componentDidMount = async () => {
-        await this.getWebpageAlerts();
-        this.interval = setInterval(this.getWebpageAlerts, 5000);
+        await this.gettriggeredalerts();
+        this.interval = setInterval(this.gettriggeredalerts, 5000);
     }
     //clear interval when navbar unmounts
     componentWillUnmount() {
         clearInterval(this.interval);
     }
 
-    getWebpageAlerts = async () => {
+    gettriggeredalerts = async () => {
         var alerts = [];
         //fetch call to gather any triggered webpage alerts for user
         var response = await fetch('/api/alerts/webpage', {method: 'post', credentials: 'include'})
@@ -195,7 +194,7 @@ class Navigation extends Component {
     dismissAlerts(){
         fetch('/api/alerts/webpage', {method: 'delete', credentials: 'include'})
 
-        this.getWebpageAlerts();
+        this.gettriggeredalerts();
     }
 
     render() {

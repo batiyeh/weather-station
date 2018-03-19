@@ -1,7 +1,7 @@
 const knex = require('knex')(require('../knexfile'))
 const nodemailer = require('nodemailer');
 const Alerts = require('../models/Alerts');
-const WebpageAlerts = require('../models/WebpageAlerts');
+const TriggeredAlerts = require('../models/TriggeredAlerts');
 const moment = require('moment');
 moment().format();
 
@@ -87,6 +87,23 @@ sendAlerts = async () => {
         },{patch:true})
     })
 
+    //adds alert to historic table
+    var lastID = null;
+    triggered.map(triggered=> {
+        weather.map(weather=>{
+            if((weather.station_name === triggered.station_name) && (lastID !== triggered.alert_id)){
+                var newAlert = new TriggeredAlerts({
+                    temperature: weather.temperature,
+                    pressure: weather.pressure,
+                    humidity: weather.humidity,
+                    alert_id: triggered.alert_id
+                }).save()
+                triggered.triggered_id = newAlert.triggered_id;
+                lastId = triggered.alert_id;
+            }
+        })
+    })
+
     //Checks the alert method on each triggered alert and calls the corresponding function
     triggered.map(triggered =>{
         if(triggered.method === 'email'){
@@ -166,13 +183,11 @@ sendWebpage = async (triggered, weather) => {
         }
     })
 
-    await new WebpageAlerts({
+    TriggeredAlerts.where({triggered_id: triggered.triggered_id}).save({
         read: false,
-        temperature: triggeredStation.temperature,
-        pressure: triggeredStation.pressure,
-        humidity: triggeredStation.humidity,
-        alert_id: triggered.alert_id
-    }).save()
+        webpage: true
+    },{patch: true});
+
 }
 
 module.exports =  {

@@ -6,7 +6,7 @@ router.use(bodyParser.json());
 const Alerts = require('../models/Alerts');
 const AlertValues = require('../models/AlertValues');
 const AlertMethods = require('../models/AlertMethods');
-const WebpageAlerts = require('../models/WebpageAlerts');
+const TriggeredAlerts = require('../models/TriggeredAlerts');
 const Station = require('../models/Station');
 const knex = require('knex')(require('../knexfile'));
 
@@ -75,36 +75,41 @@ router.post('/create', async function(req, res){
 })
 router.post('/webpage', async function(req, res){
     //gets all webpage alerts for user and returns them to frontend
-    var alerts = await knex('webpagealerts')
-    .select('webpagealerts.webpage_id', 'alertvalues.value', 'alerts.alert_id', 'alerts.type','alerts.keyword', 'alerts.station_name', 'webpagealerts.read', 'webpagealerts.temperature', 'webpagealerts.humidity', 'webpagealerts.pressure', 'webpagealerts.triggered_at')
-    .leftJoin('alerts', 'webpagealerts.alert_id', '=', 'alerts.alert_id')
-    .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
-    .where('alerts.username', req.user)
-    .orderBy('webpagealerts.webpage_id', 'asc')
-    .orderBy('alertvalues.value', 'desc')
+    var alerts = []
+    if(req.user){    
+        alerts = await knex('triggeredalerts')
+        .select('triggeredalerts.triggered_id', 'alertvalues.value', 'alerts.alert_id', 'alerts.type','alerts.keyword', 'alerts.station_name', 'triggeredalerts.read', 'triggeredalerts.temperature', 'triggeredalerts.humidity', 'triggeredalerts.pressure', 'triggeredalerts.triggered_at')
+        .leftJoin('alerts', 'triggeredalerts.alert_id', '=', 'alerts.alert_id')
+        .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
+        .where('alerts.username','=', req.user,'triggeredalerts.webpage','=', true)
+        .orderBy('triggeredalerts.triggered_id', 'asc')
+        .orderBy('alertvalues.value', 'desc')
+    }
 
     return res.status(200).json({alerts});
 })
 
 router.post('/read', async function(req, res){
     //sets all alerts for req.user to read
-    var response = await knex('webpagealerts')
-    .update('webpagealerts.read', true).
-    leftJoin('alerts', 'webpagealerts.alert_id','=','alerts.alert_id')
-    .where('webpagealerts.read','=', false, 'alerts.username','=', req.user);
+    var response = await knex('triggeredalerts')
+    .update('triggeredalerts.read', true).
+    leftJoin('alerts', 'triggeredalerts.alert_id','=','alerts.alert_id')
+    .where('triggeredalerts.read','=', false, 'alerts.username','=', req.user, 'triggeredalerts.webpage', '=', true);
 
     return res.status(200);
 })
 router.delete('/webpage', async function(req, res){
     //get all webpage id's for that user
-    var alerts = await knex('webpagealerts')
-    .select('webpage_id')
-    .leftJoin('alerts', 'webpagealerts.alert_id','=','alerts.alert_id')
-    .where('username', req.user)
+    var alerts = await knex('triggeredalerts')
+    .select('triggered_id')
+    .leftJoin('alerts', 'triggeredalerts.alert_id','=','alerts.alert_id')
+    .where('username', '=', req.user, 'triggeredalerts.webpage', '=', true)
 
     //delete all webpage alerts for user
     alerts.map(async (alerts) => {
-        await WebpageAlerts.where({webpage_id: alerts.webpage_id}).destroy();
+        await triggeredalerts.where({webpage_id: alerts.webpage_id}).save({
+            webpage: false
+        },{patch: true});
     })
 
     return res.status(200);
