@@ -65,7 +65,7 @@ exports.up = function(knex, Promise) {
         .createTable('triggeredalerts', function(table){
             table.increments('triggered_id').primary();
             table.boolean('read');
-            table.boolean('webpage');
+            table.boolean('cleared');
             table.string('method', 16);
             table.float('temperature', 5, 2);
             table.float('humidity', 5, 2);

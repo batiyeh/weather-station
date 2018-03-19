@@ -23,6 +23,28 @@ getWeather = async () => {
     .select('weather.*', 'stations.station_name', 'stations.last_connected', 'stations.connected')
     return weather;
 }
+createHistoricAlert = async (triggered, weather) => {
+    var lastID = 0;
+    await triggered.map(async (triggered) => {
+        await weather.map(async (weather) =>{
+            if((weather.station_name === triggered.station_name) && (lastID !== triggered.alert_id)){
+                lastID = triggered.alert_id;
+
+                var newAlert = await new TriggeredAlerts({
+                    temperature: weather.temperature,
+                    pressure: weather.pressure,
+                    humidity: weather.humidity,
+                    alert_id: triggered.alert_id,
+                    method: triggered.method
+                }).save()
+                // console.log(newAlert.attributes);
+                console.log('in history alert'. lastID, triggered.alert_id);
+                triggered.triggered_id = newAlert.attributes.id;
+            }
+        })
+    })
+    return triggered;
+}
 sendAlerts = async () => {
     var triggered = []
     var alerts = await getAlerts();
@@ -86,28 +108,7 @@ sendAlerts = async () => {
             last_triggered: knex.fn.now()
         },{patch:true})
     })
-    console.log('before');
-    //adds alert to historic table
-    var lastID = 0;
-    await triggered.map((triggered) => {
-        await weather.map(async (weather) =>{
-            if((weather.station_name === triggered.station_name) && (lastID !== triggered.alert_id)){
-                lastID = triggered.alert_id;
 
-                var newAlert = await new TriggeredAlerts({
-                    temperature: weather.temperature,
-                    pressure: weather.pressure,
-                    humidity: weather.humidity,
-                    alert_id: triggered.alert_id
-                }).save()
-                // console.log(newAlert.attributes);
-                console.log('in history alert'. lastID, triggered.alert_id);
-                triggered.triggered_id = newAlert.attributes.id;
-
-            }
-        })
-    })
-    console.log(triggered);
     //Checks the alert method on each triggered alert and calls the corresponding function
     triggered.map(triggered =>{
         if(triggered.method === 'email'){
@@ -125,14 +126,20 @@ sendAlerts = async () => {
 //Email includes the alert that was triggered and
 //the weather data at that station when it was triggered
 sendEmail = async (triggered, weather) =>{
-    console.log('sending email');
+
     var triggeredStation = null;
     weather.map(weather=>{
         if(weather.station_name === triggered.station_name){
             triggeredStation = weather;
         }
     })
-
+    new TriggeredAlerts({
+        method: 'email',
+        temperature: triggeredStation.temperature,
+        pressure: triggeredStation.pressure,
+        humidity: triggeredStation.humidity,
+        alert_id: triggered.alert_id
+    }).save()
     var transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
@@ -178,21 +185,36 @@ sendEmail = async (triggered, weather) =>{
     });
 }
 sendSMS = async (triggered, weather) => {
-
+    var triggeredStation = null;
+    weather.map(weather=>{
+        if(weather.station_name === triggered.station_name){
+            triggeredStation = weather;
+        }
+    })
+    new TriggeredAlerts({
+        method: 'sms',
+        temperature: triggeredStation.temperature,
+        pressure: triggeredStation.pressure,
+        humidity: triggeredStation.humidity,
+        alert_id: triggered.alert_id
+    }).save()
 }
 sendWebpage = async (triggered, weather) => {
     var triggeredStation = null;
-    // weather.map(weather=>{
-    //     if(weather.station_name === triggered.station_name){
-    //         triggeredStation = weather;
-    //     }
-    // })
-    // console.log(triggered.triggered_id)
-    // TriggeredAlerts.where({triggered_id: triggered.triggered_id}).save({
-    //     read: false,
-    //     webpage: true
-    // },{patch: true});
-
+    weather.map(weather=>{
+        if(weather.station_name === triggered.station_name){
+            triggeredStation = weather;
+        }
+    })
+    new TriggeredAlerts({
+        method: 'webpage',
+        read: false,
+        temperature: triggeredStation.temperature,
+        pressure: triggeredStation.pressure,
+        humidity: triggeredStation.humidity,
+        alert_id: triggered.alert_id,
+        cleared: false
+    }).save()
 }
 
 module.exports =  {

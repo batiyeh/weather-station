@@ -78,14 +78,16 @@ router.post('/webpage', async function(req, res){
     var alerts = []
     if(req.user){    
         alerts = await knex('triggeredalerts')
-        .select('triggeredalerts.triggered_id', 'alertvalues.value', 'alerts.alert_id', 'alerts.type','alerts.keyword', 'alerts.station_name', 'triggeredalerts.read', 'triggeredalerts.temperature', 'triggeredalerts.humidity', 'triggeredalerts.pressure', 'triggeredalerts.triggered_at')
+        .select('triggeredalerts.triggered_id', 'triggeredalerts.method', 'triggeredalerts.cleared', 'alertvalues.value', 'alerts.alert_id', 'alerts.type','alerts.keyword', 'alerts.station_name', 'triggeredalerts.read', 'triggeredalerts.temperature', 'triggeredalerts.humidity', 'triggeredalerts.pressure', 'triggeredalerts.triggered_at')
         .leftJoin('alerts', 'triggeredalerts.alert_id', '=', 'alerts.alert_id')
         .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
-        .where('alerts.username','=', req.user,'triggeredalerts.webpage','=', true)
+        .where('alerts.username', '=', req.user)
+        .where('triggeredalerts.method', '=', 'webpage')
+        .where('triggeredalerts.cleared', '=', false)
         .orderBy('triggeredalerts.triggered_id', 'asc')
         .orderBy('alertvalues.value', 'desc')
     }
-
+    // console.log(alerts);
     return res.status(200).json({alerts});
 })
 
@@ -94,7 +96,7 @@ router.post('/read', async function(req, res){
     var response = await knex('triggeredalerts')
     .update('triggeredalerts.read', true).
     leftJoin('alerts', 'triggeredalerts.alert_id','=','alerts.alert_id')
-    .where('triggeredalerts.read','=', false, 'alerts.username','=', req.user, 'triggeredalerts.webpage', '=', true);
+    .where('triggeredalerts.read','=', false, 'alerts.username','=', req.user, 'triggeredalerts.method', '=', 'webpage');
 
     return res.status(200);
 })
@@ -103,12 +105,12 @@ router.delete('/webpage', async function(req, res){
     var alerts = await knex('triggeredalerts')
     .select('triggered_id')
     .leftJoin('alerts', 'triggeredalerts.alert_id','=','alerts.alert_id')
-    .where('username', '=', req.user, 'triggeredalerts.webpage', '=', true)
+    .where('username', '=', req.user, 'triggeredalerts.method', '=', 'webpage', 'triggeredalerts.cleared', '=', false);
 
     //delete all webpage alerts for user
     alerts.map(async (alerts) => {
-        await triggeredalerts.where({webpage_id: alerts.webpage_id}).save({
-            webpage: false
+        await TriggeredAlerts.where({alert_id: alerts.triggered_id}).save({
+            cleared: true
         },{patch: true});
     })
 
