@@ -12,7 +12,6 @@ tests/coverage_html/
 tests/.coverage
 build/
 tests/report/
-*.spec
 
 # misc
 .DS_Store
