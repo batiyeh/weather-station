@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import StationCard from './stationCard';
 import { FormGroup, Input, Alert } from 'reactstrap';
+import Cookies from 'js-cookie';
+import _ from 'lodash';
 
 // Station List component is a list of each station
 // Each connected station is built out of a single Station component in a loop here
@@ -8,11 +10,14 @@ class StationList extends Component {
     // Constructor called when the component is loaded in
     constructor() {
         super();
+        var view = Cookies.get('view');
+        if (_.isUndefined(view)) view = 'list';
+
         this.state = {
             stations: [],
             secondsElapsed: 0,
             filter: '',
-            view: 'list'
+            view: view
         };
     }
 
@@ -85,6 +90,7 @@ class StationList extends Component {
             this.setState({
                 view: view
             })
+            Cookies.set('view', view);
         }
     }
 

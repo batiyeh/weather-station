@@ -44,6 +44,7 @@ class TemperatureGraph extends Component{
         from = moment(from);
         to = moment(to);
         for (var m = moment(from); m.isBefore(to); m.add(15, 'minutes')) {
+
             labels.push(m.format('YYYY-MM-DD HH:mm:ss'));
         }
         
