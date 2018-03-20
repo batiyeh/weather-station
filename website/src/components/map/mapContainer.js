@@ -16,7 +16,7 @@ export class MapContainer extends Component {
         this.state = {
             stations: this.props.checkedStations,
             center: [center.lat, center.lng],
-            zoom: zoom,
+            zoom: zoom-1,
             hoverKey: null,
             clickKey: null,
             showLabels: this.props.showLabels,
@@ -74,7 +74,7 @@ export class MapContainer extends Component {
             }
         }
         
-        const {center, zoom} = fitBounds(bounds, {height: height, width: width});
+        const {center, zoom} = fitBounds(bounds, {height: height-75, width: width});
         return {center, zoom}; 
     }
 
