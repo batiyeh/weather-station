@@ -17,15 +17,23 @@ export class MapContainer extends Component {
             zoom: zoom,
             hoverKey: null,
             clickKey: null,
-            showLabels: false,
+            showLabels: this.props.showLabels,
         };
     }
 
     // Update our list of checked stations on prop change
     componentWillReceiveProps(nextProps) {
-        this.setState({
-            stations: nextProps.checkedStations
-        });
+        if (nextProps.checkedStations !== this.state.stations){
+            this.setState({
+                stations: nextProps.checkedStations
+            });
+        }
+
+        if (nextProps.showLabels !== this.state.showLabels){
+            this.setState({
+                showLabels: nextProps.showLabels
+            });
+        }
     }
 
     // Calculate the size of the map bounds by lat/lon and 

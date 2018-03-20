@@ -11,7 +11,6 @@ class StationList extends Component {
     constructor() {
         super();
         var view = Cookies.get('view');
-        console.log(view);
         if (_.isUndefined(view)) view = 'list';
 
         this.state = {

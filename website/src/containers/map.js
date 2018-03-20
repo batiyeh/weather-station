@@ -14,8 +14,10 @@ class Map extends Component {
             mapHeight: 0,
             mapWidth: 0,
             filter: '',
+            showLabels: true
         };
         this.checkboxOnChange = this.checkboxOnChange.bind(this);
+        this.labelsOnChange = this.labelsOnChange.bind(this);
     }
 
     // Set all stations that have sent weather in our state as checked
@@ -91,6 +93,12 @@ class Map extends Component {
         }
     }
 
+    labelsOnChange(event){
+        this.setState({
+            showLabels: event.target.checked
+        });
+    }
+
     // Returns false if the filter string is not in the station's name.
     // Returns true if the filter is empty or is within the station's name.
     filterStations(station){
@@ -132,6 +140,12 @@ class Map extends Component {
                     <VerifyLoggedIn/>
                     <div className="sidebar-container" style={{position: 'absolute', left: 0, top: 0, width: '25%', height: '100%'}}>
                         <div className='sidebar'>
+                            <FormGroup check className="show-labels-container">
+                                <Label check>
+                                    <Input type="checkbox" defaultChecked={true} onChange={(event) => this.labelsOnChange(event)}/>{' '}
+                                    <span className="show-labels">Show Labels</span>
+                                </Label>
+                            </FormGroup>
                             <FormGroup className="col-12">
                                 <Input type="text" className="filterWidth" name="stationFilter" id="stationFilter" placeholder="Filter" onChange={this.filterOnChange.bind(this)} />
                             </FormGroup>
@@ -139,7 +153,7 @@ class Map extends Component {
                         </div>
                     </div>
                     <div className="map-container" ref={ (mapElement) => this.mapElement = mapElement} style={{position: 'absolute', right: 0, top: 0, width: '75%', height: '100%'}}>
-                        <MapContainer height={this.state.mapHeight} width={this.state.mapWidth} checkedStations={this.state.checkedStations}></MapContainer>
+                        <MapContainer height={this.state.mapHeight} width={this.state.mapWidth} checkedStations={this.state.checkedStations} showLabels={this.state.showLabels}></MapContainer>
                     </div>
                 </div>
             )
