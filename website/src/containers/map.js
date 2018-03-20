@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import VerifyLoggedIn from '../components/verifyLoggedIn';
 import MapContainer from '../components/map/mapContainer';
 import SidebarItem from '../components/map/sidebarItem';
-import { FormGroup, Input, Alert, Label } from 'reactstrap';
+import { FormGroup, Input, Alert, Label, Button } from 'reactstrap';
 
 class Map extends Component {
     constructor() {
@@ -14,10 +14,12 @@ class Map extends Component {
             mapHeight: 0,
             mapWidth: 0,
             filter: '',
-            showLabels: true
+            showLabels: true,
+            mapMode: "move"
         };
         this.checkboxOnChange = this.checkboxOnChange.bind(this);
         this.labelsOnChange = this.labelsOnChange.bind(this);
+        this.mapModeOnChange = this.mapModeOnChange.bind(this);
     }
 
     // Set all stations that have sent weather in our state as checked
@@ -77,6 +79,20 @@ class Map extends Component {
         });
     }
 
+    mapModeOnChange(){
+        if (this.state.mapMode === "move"){
+            this.setState({
+                mapMode: "draw"
+            });
+        }
+
+        else{
+            this.setState({
+                mapMode: "move"
+            });
+        }
+    }
+
     // Handle a checkbox click event by removing/adding it to the checkedStations
     checkboxOnChange(event, station){
         var checkedStations = this.state.checkedStations;
@@ -105,6 +121,16 @@ class Map extends Component {
         if (this.state.filter !== '')
             return station.station_name.toLowerCase().includes(this.state.filter.toLowerCase());
         return true;
+    }
+
+    renderDrawButton(){
+        if (this.state.mapMode === "move"){
+            return (<Button color="primary" className="btn btn-sm mode-btn" onClick={this.mapModeOnChange}>Average Weather</Button>);
+        }
+
+        else{
+            return (<Button color="danger" className="btn btn-sm mode-btn" onClick={this.mapModeOnChange}>Stop Drawing</Button>);
+        }
     }
 
     renderSidebar(){
@@ -145,6 +171,7 @@ class Map extends Component {
                                     <Input type="checkbox" defaultChecked={true} onChange={(event) => this.labelsOnChange(event)}/>{' '}
                                     <span className="show-labels">Show Labels</span>
                                 </Label>
+                                { this.renderDrawButton() }
                             </FormGroup>
                             <FormGroup className="col-12">
                                 <Input type="text" className="filterWidth" name="stationFilter" id="stationFilter" placeholder="Filter" onChange={this.filterOnChange.bind(this)} />
@@ -153,7 +180,7 @@ class Map extends Component {
                         </div>
                     </div>
                     <div className="map-container" ref={ (mapElement) => this.mapElement = mapElement} style={{position: 'absolute', right: 0, top: 0, width: '75%', height: '100%'}}>
-                        <MapContainer height={this.state.mapHeight} width={this.state.mapWidth} checkedStations={this.state.checkedStations} showLabels={this.state.showLabels}></MapContainer>
+                        <MapContainer height={this.state.mapHeight} width={this.state.mapWidth} checkedStations={this.state.checkedStations} showLabels={this.state.showLabels} mapMode={this.state.mapMode}></MapContainer>
                     </div>
                 </div>
             )

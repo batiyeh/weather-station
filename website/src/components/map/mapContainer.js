@@ -3,7 +3,9 @@ import GoogleMap from 'google-map-react';
 import { fitBounds } from 'google-map-react/utils';
 import geolib from 'geolib';
 import Marker from './marker';
+import AveragesMarker from './averagesMarker';
 import { MARKER_SIZE } from './markerStyles'
+import _ from 'lodash';
 import '../../styles/map.css';
 
 export class MapContainer extends Component {
@@ -18,10 +20,14 @@ export class MapContainer extends Component {
             hoverKey: null,
             clickKey: null,
             showLabels: this.props.showLabels,
+            mode: this.props.mapMode,
+            showAverages: false,
+            averagesCenter: [],
+            averages: {}
         };
     }
 
-    // Update our list of checked stations on prop change
+    // Update our values on prop change if they are different than before
     componentWillReceiveProps(nextProps) {
         if (nextProps.checkedStations !== this.state.stations){
             this.setState({
@@ -34,10 +40,13 @@ export class MapContainer extends Component {
                 showLabels: nextProps.showLabels
             });
         }
-    }
 
-    componentDidMount(){
-        // this.renderCircle();
+        if (nextProps.mapMode !== this.state.mode){
+            this.updateMapMode(nextProps.mapMode);
+            this.setState({
+                mode: nextProps.mapMode
+            })
+        }
     }
 
     // Calculate the size of the map bounds by lat/lon and 
@@ -73,7 +82,9 @@ export class MapContainer extends Component {
         this.map = google.map;
         this.maps = google.maps;
         // var center = {lat: this.state.center[0], lng: this.state.center[1]}
-
+        this.maps.Circle.prototype.contains = function(latLng) {
+            return this.getBounds().contains(latLng) && google.maps.geometry.spherical.computeDistanceBetween(this.getCenter(), latLng) <= this.getRadius();
+        }
         const drawingManager = new this.maps.drawing.DrawingManager({
             drawingControl: true,
             drawingControlOptions: {
@@ -94,14 +105,55 @@ export class MapContainer extends Component {
             }
         });
         drawingManager.setMap(this.map);
+        this.drawingManager = drawingManager;
+        this.updateMapMode(this.state.mode);
 
         this.maps.event.addListener(drawingManager, 'circlecomplete', (circle) => {
+            if (!_.isUndefined(this.averageCircle)) this.averageCircle.setMap(null);
+            this.averageCircle = circle;
             this.averageWeather(circle);
         });
     }
 
+    updateMapMode(mode){
+        if (mode === "draw"){
+            this.drawingManager.setDrawingMode(this.maps.drawing.OverlayType.CIRCLE);
+        }
+
+        else{
+            if (!_.isUndefined(this.averageCircle)){ 
+                this.setState({ showAverages: false });
+                this.averageCircle.setMap(null);
+            }
+            
+            this.drawingManager.setDrawingMode(null);
+        }
+    }
+
     averageWeather(circle){
-        console.log(circle);
+        var averages = {};
+        var values = {temperature: [], pressure: [], humidity: []};
+        for (var i = 0; i < this.state.stations.length; i++){
+            var latLng = new this.maps.LatLng(this.state.stations[i].latitude, this.state.stations[i].longitude);
+            if (circle.contains(latLng)){
+                values.temperature.push(this.state.stations[i].temperature);
+                values.pressure.push(this.state.stations[i].pressure);
+                values.humidity.push(this.state.stations[i].humidity);
+            }
+        }
+
+        averages["temperature"] = values.temperature.reduce((a,b) => a + b, 0) / values.temperature.length;
+        averages["pressure"] = values.pressure.reduce((a,b) => a + b, 0) / values.pressure.length;
+        averages["humidity"] = values.humidity.reduce((a,b) => a + b, 0) / values.humidity.length;
+        this.updateAverages(circle, averages);
+    }
+
+    updateAverages(circle, averages){
+        this.setState({ 
+            showAverages: true, 
+            averagesCenter: [circle.center.lat(), circle.center.lng()], 
+            averages: averages 
+        });
     }
 
     // Sets the center and zoom state when the user moves the Google Map around
@@ -129,6 +181,12 @@ export class MapContainer extends Component {
         this.setState({
             hoverKey: null
         });
+    }
+
+    renderAverages(){
+        if (this.state.showAverages){
+            return (<AveragesMarker lat={this.state.averagesCenter[0]} lng={this.state.averagesCenter[1]} show={this.state.showAverages} averages={this.state.averages}></AveragesMarker>);
+        }
     }
 
     render() {
@@ -167,6 +225,7 @@ export class MapContainer extends Component {
                                 );
                             })
                         }
+                        { this.renderAverages() }
                 </GoogleMap>
             </div>
         ); 

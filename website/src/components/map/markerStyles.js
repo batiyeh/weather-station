@@ -41,6 +41,20 @@ export function getContainerStyle(hover){
     }
 }
 
+export const averagesStyle = {
+    position: "absolute",
+    display: "inline-block",
+    minWidth: "200px",
+    width: "auto",
+    fontSize: "10pt",
+    padding: "8px",
+    backgroundColor: "#394c73",
+    color: "#fff",
+    boxShadow: "0px 0px 10px 0px #707070",
+    cursor: "pointer",
+    textAlign: "left",
+}
+
 // Styles for the additional station info box that appears when 
 // hovering over a marker
 export const infoStyle = {
