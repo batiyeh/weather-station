@@ -14,13 +14,15 @@ class HistoricalContainer extends Component{
             stationsData: {},
             modal: false,
             loading: true,
-            fromDate: '2018-03-14 00:00:00',
-            toDate: '2018-03-14 23:00:00'
+            sensorType: 'temperature',
+            fromDate: moment().format('YYYY-MM-DD'),
+            toDate: moment().format('YYYY-MM-DD')
         }
         this.toggleFilter = this.toggleFilter.bind(this);
         this.componentWillMount = this.componentWillMount.bind(this);
         this.handleToChange = this.handleToChange.bind(this);
         this.handleFromChange = this.handleFromChange.bind(this);
+        this.handleSenseChange = this.handleSenseChange(this);
     }
 
     toggleFilter(){
@@ -37,12 +39,19 @@ class HistoricalContainer extends Component{
         this.setState({
             toDate: date
         });
+        console.log(this.state.toDate);
     }
 
     handleFromChange(date) {
         this.setState({
             fromDate: date
         });
+    }
+    handleSenseChange(value) {
+        this.setState({
+            sensorType: value
+        });
+        console.log(this.state.sensorType);
     }
 
     getTemp = async () => {
@@ -78,13 +87,12 @@ class HistoricalContainer extends Component{
                         <form id='filterForm'>
                             <ModalBody>
                                 <div className='form-group'>
-                                    <label for="dataType" class="form-label">Type</label>
-                                    <select id='dataType' name='dataType'  className='form-control'>
-                                        <option value="Temperature">Temperature</option>
-                                        <option value="Pressure">Pressure</option>
-                                        <option value="Humidity">Humidity</option>
-                                    </select>
-
+                                    <label>Data Type</label>
+                                    <Input type="select" name='senseType' id='senseType' value={this.state.sensorType} onChange={e => this.handleSenseChange(e.target.value)}>
+                                        <option value='temperature'>Temperature</option>
+                                        <option value='humidity'>Humidity</option>
+                                        <option value='pressure'>Pressure</option>
+                                    </Input>
                                 </div>
                                 <div className='form-group'>
                                     <div className="row">
@@ -127,7 +135,7 @@ class HistoricalContainer extends Component{
                             </ModalBody>
                             <ModalFooter>
                                 <Button type='button' color="secondary" onClick={this.toggleFilter}>Cancel</Button>
-                                <Button type='button' color="primary" onClick={this.toggleFilter}>Submit</Button>
+                                <Button type='button' color="primary" onClick={this.getTemp()}>Submit</Button>
                             </ModalFooter>
                         </form>
                     </Modal>
