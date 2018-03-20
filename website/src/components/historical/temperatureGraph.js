@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Alert } from 'reactstrap';
 import '../../styles/historical.css';
 import { Line, Chart} from 'react-chartjs-2';
 var moment = require('moment');
@@ -151,8 +152,8 @@ class TemperatureGraph extends Component{
 
         else{
             return(
-                <div>
-                    <h2>No Stored Data For Last 24 hours.</h2>
+                <div className='col-12 no-data-alert'>
+                    <Alert color="primary">There is no weather data for this filter.</Alert>
                 </div>
             );
         }

@@ -3,7 +3,9 @@ import '../../styles/historical.css';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap';
 import TemperatureGraph from './temperatureGraph'
 import DatePicker  from 'react-datepicker'
-require("react-datepicker/dist/react-datepicker-cssmodules.css");
+import 'react-datepicker/dist/react-datepicker.css';
+var moment = require('moment');
+moment().format();
 
 class HistoricalContainer extends Component{
     constructor(props){
@@ -86,25 +88,29 @@ class HistoricalContainer extends Component{
                                 </div>
                                 <div className='form-group'>
                                     <div className="row">
-                                        <div className="col-6 no-padding-left">
+                                        <div className="col-6">
                                             <label for="dateBegin" class="form-label">From</label>
                                             <DatePicker
                                                 id='dateBegin' 
                                                 name='dateBegin'
-                                                dateFormat="YYYY-MM-DD"
+                                                dateFormat="YYYY-MM-DD HH:mm:ss"
                                                 className='form-control'
-                                                selected={this.state.fromDate}
-                                                onChange={this.handleFromChange} />
+                                                placeholderText="From Datetime"
+                                                selected={moment(this.state.fromDate)}
+                                                onChange={this.handleFromChange}
+                                                showTimeSelect />
                                         </div>
-                                        <div className="col-6 no-padding-right">
+                                        <div className="col-6">
                                             <label for="dateEnd" class="form-label">To</label>
                                             <DatePicker
                                                 id='dateEnd' 
                                                 name='dateEnd'
-                                                dateFormat="YYYY-MM-DD"
+                                                dateFormat="YYYY-MM-DD HH:mm:ss"
                                                 className='form-control'
-                                                selected={this.state.toDate}
-                                                onChange={this.handleToChange} />
+                                                placeholderText="To Datetime"
+                                                selected={moment(this.state.toDate)}
+                                                onChange={this.handleToChange}
+                                                showTimeSelect />
                                         </div>
                                     </div>
                                 </div>
@@ -121,7 +127,7 @@ class HistoricalContainer extends Component{
                             </ModalBody>
                             <ModalFooter>
                                 <Button type='button' color="secondary" onClick={this.toggleFilter}>Cancel</Button>
-                                <Button type='button' color="Primary" onClick={this.toggleFilter}>Submit</Button>
+                                <Button type='button' color="primary" onClick={this.toggleFilter}>Submit</Button>
                             </ModalFooter>
                         </form>
                     </Modal>
