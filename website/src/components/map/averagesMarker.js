@@ -12,7 +12,6 @@ class AveragesMarker extends Component {
         }
     }
 
-    // Update the hover status when mousing over this marker
     componentWillReceiveProps(nextProps){
         if (this.state.averages !== nextProps.averages){
             this.setState({ averages: nextProps.averages });

@@ -78,13 +78,17 @@ export class MapContainer extends Component {
         return {center, zoom}; 
     }
 
+    // Directly access the google maps api once google-maps-react library is done loading
     handleGoogleMapApi(google){
         this.map = google.map;
         this.maps = google.maps;
-        // var center = {lat: this.state.center[0], lng: this.state.center[1]}
+        
+        // Add a function to circle objects that checks if a certain lat/lon is inside it
         this.maps.Circle.prototype.contains = function(latLng) {
             return this.getBounds().contains(latLng) && google.maps.geometry.spherical.computeDistanceBetween(this.getCenter(), latLng) <= this.getRadius();
         }
+
+        // Set up the google maps api drawing manager
         const drawingManager = new this.maps.drawing.DrawingManager({
             drawingControl: true,
             drawingControlOptions: {
@@ -108,6 +112,8 @@ export class MapContainer extends Component {
         this.drawingManager = drawingManager;
         this.updateMapMode(this.state.mode);
 
+        // When a circle is done drawing, delete the existing one and 
+        // average the weather data for the new circle
         this.maps.event.addListener(drawingManager, 'circlecomplete', (circle) => {
             if (!_.isUndefined(this.averageCircle)) this.averageCircle.setMap(null);
             this.averageCircle = circle;
@@ -115,6 +121,7 @@ export class MapContainer extends Component {
         });
     }
 
+    // Switch between drawing and moving around the map modes
     updateMapMode(mode){
         if (mode === "draw"){
             this.drawingManager.setDrawingMode(this.maps.drawing.OverlayType.CIRCLE);
@@ -130,6 +137,7 @@ export class MapContainer extends Component {
         }
     }
 
+    // Average all the weather data from markers within the circle
     averageWeather(circle){
         var averages = {};
         var values = {temperature: [], pressure: [], humidity: []};
@@ -148,6 +156,7 @@ export class MapContainer extends Component {
         this.updateAverages(circle, averages);
     }
 
+    // Update our state to show averages
     updateAverages(circle, averages){
         this.setState({ 
             showAverages: true, 
@@ -182,7 +191,7 @@ export class MapContainer extends Component {
             hoverKey: null
         });
     }
-
+    
     renderAverages(){
         if (this.state.showAverages){
             return (<AveragesMarker lat={this.state.averagesCenter[0]} lng={this.state.averagesCenter[1]} show={this.state.showAverages} averages={this.state.averages}></AveragesMarker>);
