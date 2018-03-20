@@ -10,13 +10,15 @@ moment().format();
 class HistoricalContainer extends Component{
     constructor(props){
         super(props);
+        var oneday = moment().subtract(1, "days");
+        var now = moment();
         this.state = {
             stationsData: {},
             modal: false,
             loading: true,
             sensorType: 'temperature',
-            fromDate: '2018-03-18 22:35:35',
-            toDate: '2018-03-19 10:00:08'
+            fromDate: oneday.format("YYYY-MM-DD HH:mm:ss"),
+            toDate: now.format("YYYY-MM-DD HH:mm:ss")
         }
         this.toggleFilter = this.toggleFilter.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
@@ -59,6 +61,8 @@ class HistoricalContainer extends Component{
         var stationsDict = {};
         var toDate = this.state.toDate;
         var fromDate = this.state.fromDate;
+        console.log(this.state.toDate);
+        console.log(this.state.fromDate);
         const response = await fetch('/api/weather/temp/' + fromDate +'/' + toDate,
         );
         const body = await response.json();
@@ -98,6 +102,7 @@ class HistoricalContainer extends Component{
 
 
     render(){
+        console.log(this.state.loading);
         if(this.state.loading == false){
             return(
                 <div className="historical-container">
