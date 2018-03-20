@@ -22,6 +22,7 @@ class HistoricalContainer extends Component{
         this.componentDidMount = this.componentDidMount.bind(this);
         this.handleToChange = this.handleToChange.bind(this);
         this.handleFromChange = this.handleFromChange.bind(this);
+        this.updateGraph = this.updateGraph.bind(this);
 
     }
 
@@ -74,6 +75,13 @@ class HistoricalContainer extends Component{
             loading: false
         });
     };
+    updateGraph(){
+        this.setState({
+            loading: true,
+            modal: false
+        })
+        this.getTemp()
+    }
 
     renderGraph(){
         return(
@@ -146,7 +154,7 @@ class HistoricalContainer extends Component{
                             </ModalBody>
                             <ModalFooter>
                                 <Button type='button' color="secondary" onClick={this.toggleFilter}>Cancel</Button>
-                                <Button type='button' color="primary" onClick={this.toggleFilter}>Submit</Button>
+                                <Button type='button' color="primary" onClick={this.updateGraph}>Submit</Button>
                             </ModalFooter>
                         </form>
                     </Modal>
