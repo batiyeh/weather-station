@@ -63,7 +63,7 @@ router.post('/create', async function(req, res){
         });
         res.json({errors: [], redirect: true})
         if(pendingQ) {
-            function (token, user, done) {
+         //   function (token, user, done) {
                 var transporter = nodemailer.createTransport({
                     host: 'smtp.gmail.com',
                     port: 587,
@@ -88,7 +88,7 @@ router.post('/create', async function(req, res){
                 });
             }
         }
-    }
+
 });
 
 //writes username into cookie
@@ -127,10 +127,13 @@ router.post('/login', passport.authenticate('local', {failureRedirect:'/user/log
 //used to verify user is logged in on each page
 router.post('/getUserInfo', async function(req,res){
     if(req.user){
-        var user = await User.where({username: req.user}).fetch();
-
-        res.json({username: user.attributes.username, email: user.attributes.email,
-        phone: user.attributes.phone, permissions: user.attributes.permissions});
+       // var user = await User.where({username: req.user}).fetch();
+        var user = await knex('user').select('user.username, user.email, user.phone').from('user')
+            .leftJoin('permissions', 'user.name', 'permission.name')
+        console.log(user);
+       // res.json({username: user.attributes.username, email: user.attributes.email,
+       // phone: user.attributes.phone, permissions: user.attributes.permissions});
+        res.json(user);
     }
     else{
         res.json({username: undefined})
