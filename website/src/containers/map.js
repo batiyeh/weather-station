@@ -11,6 +11,8 @@ class Map extends Component {
             stations: [],
             checkedStations: [],
             loading: true,
+            mapHeight: 0,
+            mapWidth: 0,
             filter: '',
         };
         this.checkboxOnChange = this.checkboxOnChange.bind(this);
@@ -18,6 +20,13 @@ class Map extends Component {
 
     // Set all stations that have sent weather in our state as checked
     componentDidMount(){
+        const height = this.mapElement.clientHeight;
+        const width = this.mapElement.clientWidth;
+        this.setState({
+            mapHeight: height,
+            mapWidth: width
+        })
+        
         this.getLatestWeather().then(stations => {
             var checkedStations = this.addCheckedStations(stations);
             this.setState({
@@ -72,7 +81,6 @@ class Map extends Component {
         if (event.target.checked === true){
             checkedStations.push(station);
             this.updateCheckedStations(checkedStations);
-            console.log(checkedStations);
         }
 
         else{
@@ -80,7 +88,6 @@ class Map extends Component {
             if (checkedStations.length === 1) checkedStations.pop();
             else checkedStations.splice(index, 1);
             this.updateCheckedStations(checkedStations);
-            console.log(checkedStations);
         }
     }
 
@@ -131,8 +138,8 @@ class Map extends Component {
                             { this.renderSidebar() }
                         </div>
                     </div>
-                    <div className="map-container" style={{position: 'absolute', right: 0, top: 0, width: '75%', height: '100%'}}>
-                        <MapContainer checkedStations={this.state.checkedStations}></MapContainer>
+                    <div className="map-container" ref={ (mapElement) => this.mapElement = mapElement} style={{position: 'absolute', right: 0, top: 0, width: '75%', height: '100%'}}>
+                        <MapContainer height={this.state.mapHeight} width={this.state.mapWidth} checkedStations={this.state.checkedStations}></MapContainer>
                     </div>
                 </div>
             )
@@ -141,7 +148,9 @@ class Map extends Component {
         else{
             return(
                 <div className='MapPage'>
+                    <div className="map-container" ref={ (mapElement) => this.mapElement = mapElement} style={{position: 'absolute', right: 0, top: 0, width: '75%', height: '100%'}}>
 
+                    </div>
                 </div>
             );
         }

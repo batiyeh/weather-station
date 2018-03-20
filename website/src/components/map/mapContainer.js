@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import GoogleMap from 'google-map-react';
+import { fitBounds } from 'google-map-react/utils';
+import geolib from 'geolib';
 import Marker from './marker';
 import { MARKER_SIZE } from './markerStyles'
 import '../../styles/map.css';
@@ -7,13 +9,15 @@ import '../../styles/map.css';
 export class MapContainer extends Component {
     constructor(props) {
         super(props);
+        const {center, zoom} = this.calculateMapBounds(this.props.checkedStations, this.props.height, this.props.width);
+
         this.state = {
             stations: this.props.checkedStations,
-            center: [42.362968, -83.072342],
-            zoom: 15,
+            center: [center.lat, center.lng],
+            zoom: zoom,
             hoverKey: null,
             clickKey: null,
-            showLabels: false
+            showLabels: false,
         };
     }
 
@@ -22,6 +26,35 @@ export class MapContainer extends Component {
         this.setState({
             stations: nextProps.checkedStations
         });
+    }
+
+    // Calculate the size of the map bounds by lat/lon and 
+    // return the center + zoom of the bounds
+    calculateMapBounds(stations, height, width){
+        var allCoords = [];
+        var coords;
+        for (var i = 0; i < stations.length; i++){
+            coords = {
+                latitude: stations[i].latitude, 
+                longitude: stations[i].longitude
+            };
+            allCoords.push(coords);
+        }
+
+        var bounds = geolib.getBounds(allCoords);
+        bounds = {
+            nw: {
+                lat: bounds.maxLat,
+                lng: bounds.minLng
+            },
+            se: {
+                lat: bounds.minLat,
+                lng: bounds.maxLng
+            }
+        }
+        
+        const {center, zoom} = fitBounds(bounds, {height: height, width: width});
+        return {center, zoom}; 
     }
 
     // Sets the center and zoom state when the user moves the Google Map around
@@ -54,12 +87,11 @@ export class MapContainer extends Component {
     render() {
         const style = {
             width: '100%',
-            height: '100%',
-            
+            height: '100%',   
         }
 
         return (
-            <div className="map">
+            <div id="map" className="map">
                 <GoogleMap
                         bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAPS_KEY }} // set if you need stats etc ...
                         center={this.state.center}
