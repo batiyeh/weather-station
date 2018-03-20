@@ -11,7 +11,7 @@ import Alerts from '../containers/alerts.js'
 import ProfileForm from '../components/registration/profileForm.js';
 import VerifyLoggedIn from '../components/verifyLoggedIn.js'
 import Admin from '../containers/admin.js'
-import Approval from '../components/registration/Approval.js';
+import Approval from '../components/admin/Approval.js';
 
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 
