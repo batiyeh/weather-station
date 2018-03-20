@@ -10,6 +10,21 @@
     overflow-y: scroll;
 }
 
+.list-item-container{
+    text-align: left;
+    font-size: 14pt;
+    padding: 15px;
+}
+
+.station-name{
+    margin-left: 10px;
+}
+
+.sidebar-coordinates{
+    font-size: 10pt;
+    margin-left: 23pt;
+}
+
 .show-labels-container{
     text-align: right !important;
     margin-right: 15px;
@@ -82,17 +97,6 @@
 
 .marker-info-box .col-12{
     padding: 0px;
-}
-
-.list-item-container{
-    height: 75px;
-    text-align: left;
-    font-size: 14pt;
-    padding: 15px;
-}
-
-.station-name{
-    margin-left: 10px;
 }
 
 .map-container{

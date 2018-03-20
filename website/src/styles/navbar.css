@@ -32,6 +32,7 @@ nav a {
 
 .alerts-menu {
     min-width: 350px !important;
+    overflow-y: scroll;
 }
 
 .username-dropdown{

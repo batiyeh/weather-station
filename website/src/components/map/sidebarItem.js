@@ -34,6 +34,7 @@ class SidebarItem extends Component {
                         <span className="station-name">{this.state.station.station_name}</span>
                     </Label>
                 </FormGroup>
+                <span className="sidebar-coordinates">({this.state.station.latitude}, {this.state.station.longitude})</span>
             </div>
         );
     }

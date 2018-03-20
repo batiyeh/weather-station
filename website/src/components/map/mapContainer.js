@@ -36,6 +36,10 @@ export class MapContainer extends Component {
         }
     }
 
+    componentDidMount(){
+        // this.renderCircle();
+    }
+
     // Calculate the size of the map bounds by lat/lon and 
     // return the center + zoom of the bounds
     calculateMapBounds(stations, height, width){
@@ -63,6 +67,41 @@ export class MapContainer extends Component {
         
         const {center, zoom} = fitBounds(bounds, {height: height, width: width});
         return {center, zoom}; 
+    }
+
+    handleGoogleMapApi(google){
+        this.map = google.map;
+        this.maps = google.maps;
+        // var center = {lat: this.state.center[0], lng: this.state.center[1]}
+
+        const drawingManager = new this.maps.drawing.DrawingManager({
+            drawingControl: true,
+            drawingControlOptions: {
+                position: this.maps.ControlPosition.BOTTOM_CENTER,
+                drawingModes: [
+                    this.maps.drawing.OverlayType.MARKER,
+                    this.maps.drawing.OverlayType.CIRCLE
+                ]
+            },
+            markerOptions: {icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'},
+            circleOptions: {
+                fillColor: '#fff',
+                fillOpacity: 0.4,
+                strokeWeight: 3,
+                clickable: false,
+                editable: true,
+                zIndex: 1
+            }
+        });
+        drawingManager.setMap(this.map);
+
+        this.maps.event.addListener(drawingManager, 'circlecomplete', (circle) => {
+            this.averageWeather(circle);
+        });
+    }
+
+    averageWeather(circle){
+        console.log(circle);
     }
 
     // Sets the center and zoom state when the user moves the Google Map around
@@ -101,7 +140,7 @@ export class MapContainer extends Component {
         return (
             <div id="map" className="map">
                 <GoogleMap
-                        bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAPS_KEY }} // set if you need stats etc ...
+                        bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAPS_KEY, libraries: ['drawing'].join(',') }}
                         center={this.state.center}
                         zoom={this.state.zoom}
                         hoverDistance={MARKER_SIZE - 10}
@@ -109,6 +148,8 @@ export class MapContainer extends Component {
                         onChildClick={this._onChildClick}
                         onChildMouseEnter={this._onChildMouseEnter}
                         onChildMouseLeave={this._onChildMouseLeave}
+                        yesIWantToUseGoogleMapApiInternals
+                        onGoogleApiLoaded={this.handleGoogleMapApi.bind(this)}
                         style={style}>
                         {this.state.stations
                             .map((station, index) => {
