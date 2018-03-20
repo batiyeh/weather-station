@@ -61,10 +61,7 @@ class HistoricalContainer extends Component{
         var stationsDict = {};
         var toDate = this.state.toDate;
         var fromDate = this.state.fromDate;
-        console.log(this.state.toDate);
-        console.log(this.state.fromDate);
-        const response = await fetch('/api/weather/temp/' + fromDate +'/' + toDate,
-        );
+        const response = await fetch('/api/weather/temp/' + fromDate +'/' + toDate);
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
         if (body.temp) data = body.temp;
@@ -102,7 +99,6 @@ class HistoricalContainer extends Component{
 
 
     render(){
-        console.log(this.state.loading);
         if(this.state.loading == false){
             return(
                 <div className="historical-container">
