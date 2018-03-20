@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import VerifyLoggedIn from '../components/verifyLoggedIn';
 import MapContainer from '../components/map/mapContainer';
 import SidebarItem from '../components/map/sidebarItem';
-import { FormGroup, Input, Alert, Label } from 'reactstrap';
+import { FormGroup, Input, Alert, Label, Button } from 'reactstrap';
 
 class Map extends Component {
     constructor() {
@@ -11,13 +11,26 @@ class Map extends Component {
             stations: [],
             checkedStations: [],
             loading: true,
+            mapHeight: 0,
+            mapWidth: 0,
             filter: '',
+            showLabels: true,
+            mapMode: "move"
         };
         this.checkboxOnChange = this.checkboxOnChange.bind(this);
+        this.labelsOnChange = this.labelsOnChange.bind(this);
+        this.mapModeOnChange = this.mapModeOnChange.bind(this);
     }
 
     // Set all stations that have sent weather in our state as checked
     componentDidMount(){
+        const height = this.mapElement.clientHeight;
+        const width = this.mapElement.clientWidth;
+        this.setState({
+            mapHeight: height,
+            mapWidth: width
+        })
+        
         this.getLatestWeather().then(stations => {
             var checkedStations = this.addCheckedStations(stations);
             this.setState({
@@ -66,13 +79,26 @@ class Map extends Component {
         });
     }
 
+    mapModeOnChange(){
+        if (this.state.mapMode === "move"){
+            this.setState({
+                mapMode: "draw"
+            });
+        }
+
+        else{
+            this.setState({
+                mapMode: "move"
+            });
+        }
+    }
+
     // Handle a checkbox click event by removing/adding it to the checkedStations
     checkboxOnChange(event, station){
         var checkedStations = this.state.checkedStations;
         if (event.target.checked === true){
             checkedStations.push(station);
             this.updateCheckedStations(checkedStations);
-            console.log(checkedStations);
         }
 
         else{
@@ -80,8 +106,13 @@ class Map extends Component {
             if (checkedStations.length === 1) checkedStations.pop();
             else checkedStations.splice(index, 1);
             this.updateCheckedStations(checkedStations);
-            console.log(checkedStations);
         }
+    }
+
+    labelsOnChange(event){
+        this.setState({
+            showLabels: event.target.checked
+        });
     }
 
     // Returns false if the filter string is not in the station's name.
@@ -90,6 +121,16 @@ class Map extends Component {
         if (this.state.filter !== '')
             return station.station_name.toLowerCase().includes(this.state.filter.toLowerCase());
         return true;
+    }
+
+    renderDrawButton(){
+        if (this.state.mapMode === "move"){
+            return (<Button color="primary" className="btn btn-sm mode-btn" onClick={this.mapModeOnChange}>Average Weather</Button>);
+        }
+
+        else{
+            return (<Button color="danger" className="btn btn-sm mode-btn" onClick={this.mapModeOnChange}>Stop Drawing</Button>);
+        }
     }
 
     renderSidebar(){
@@ -125,14 +166,21 @@ class Map extends Component {
                     <VerifyLoggedIn/>
                     <div className="sidebar-container" style={{position: 'absolute', left: 0, top: 0, width: '25%', height: '100%'}}>
                         <div className='sidebar'>
+                            <FormGroup check className="show-labels-container">
+                                <Label check>
+                                    <Input type="checkbox" defaultChecked={true} onChange={(event) => this.labelsOnChange(event)}/>{' '}
+                                    <span className="show-labels">Show Labels</span>
+                                </Label>
+                                { this.renderDrawButton() }
+                            </FormGroup>
                             <FormGroup className="col-12">
                                 <Input type="text" className="filterWidth" name="stationFilter" id="stationFilter" placeholder="Filter" onChange={this.filterOnChange.bind(this)} />
                             </FormGroup>
                             { this.renderSidebar() }
                         </div>
                     </div>
-                    <div className="map-container" style={{position: 'absolute', right: 0, top: 0, width: '75%', height: '100%'}}>
-                        <MapContainer checkedStations={this.state.checkedStations}></MapContainer>
+                    <div className="map-container" ref={ (mapElement) => this.mapElement = mapElement} style={{position: 'absolute', right: 0, top: 0, width: '75%', height: '100%'}}>
+                        <MapContainer height={this.state.mapHeight} width={this.state.mapWidth} checkedStations={this.state.checkedStations} showLabels={this.state.showLabels} mapMode={this.state.mapMode}></MapContainer>
                     </div>
                 </div>
             )
@@ -141,7 +189,9 @@ class Map extends Component {
         else{
             return(
                 <div className='MapPage'>
+                    <div className="map-container" ref={ (mapElement) => this.mapElement = mapElement} style={{position: 'absolute', right: 0, top: 0, width: '75%', height: '100%'}}>
 
+                    </div>
                 </div>
             );
         }

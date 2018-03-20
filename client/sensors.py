@@ -72,9 +72,9 @@ class Sensors(object):
             self.pressure = self.sense.pressure
         except:
             pass
-            # self.temperature = random.uniform(68.0, 78.0)
-            # self.humidity = random.uniform(45.0, 55.0)
-            # self.pressure = random.uniform(900.0, 1075.0)
+            # self.temperature = random.uniform(70.0, 73.0)
+            # self.humidity = random.uniform(50.0, 54.0)
+            # self.pressure = random.uniform(1040.0, 1075.0)
 
     def getGpsCoords(self):
         # Try to get latitude and longitude data from our receiver

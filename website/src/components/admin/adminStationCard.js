@@ -58,7 +58,7 @@ class AdminStationCard extends Component {
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <div className="col-12 row no-padding">
+                        <div className="col-12 no-padding">
                             <div className="delete-container left">
                                 <Button color="danger" className="btn btn-warning" onClick={() => {this.props.deleteStation(this.state.apikey); this.toggleEditStation()}}>Delete</Button>
                             </div>
