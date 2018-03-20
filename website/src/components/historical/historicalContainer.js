@@ -15,23 +15,24 @@ class HistoricalContainer extends Component{
             modal: false,
             loading: true,
             sensorType: 'temperature',
-            fromDate: moment().format('YYYY-MM-DD'),
-            toDate: moment().format('YYYY-MM-DD')
+            fromDate: '2018-03-18 22:35:35',
+            toDate: '2018-03-19 10:00:08'
         }
         this.toggleFilter = this.toggleFilter.bind(this);
-        this.componentWillMount = this.componentWillMount.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
         this.handleToChange = this.handleToChange.bind(this);
         this.handleFromChange = this.handleFromChange.bind(this);
-        this.handleSenseChange = this.handleSenseChange(this);
+
     }
 
     toggleFilter(){
         this.setState({
             modal: !this.state.modal
         })
+
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.getTemp()
     }
 
@@ -39,7 +40,6 @@ class HistoricalContainer extends Component{
         this.setState({
             toDate: date
         });
-        console.log(this.state.toDate);
     }
 
     handleFromChange(date) {
@@ -47,11 +47,10 @@ class HistoricalContainer extends Component{
             fromDate: date
         });
     }
-    handleSenseChange(value) {
+    onSenseChange(value) {
         this.setState({
             sensorType: value
-        });
-        console.log(this.state.sensorType);
+        })
     }
 
     getTemp = async () => {
@@ -76,6 +75,18 @@ class HistoricalContainer extends Component{
         });
     };
 
+    renderGraph(){
+        return(
+            <TemperatureGraph className="row graph"
+                data={this.state.stationsData}
+                from={this.state.fromDate}
+                to={this.state.toDate}
+                height={500}
+                width={800}
+            />
+        )
+    }
+
 
 
     render(){
@@ -88,7 +99,7 @@ class HistoricalContainer extends Component{
                             <ModalBody>
                                 <div className='form-group'>
                                     <label>Data Type</label>
-                                    <Input type="select" name='senseType' id='senseType' value={this.state.sensorType} onChange={e => this.handleSenseChange(e.target.value)}>
+                                    <Input type="select" name='senseType' id='senseType' value={this.state.sensorType} onChange={e => this.onSenseChange(e.target.value)}>
                                         <option value='temperature'>Temperature</option>
                                         <option value='humidity'>Humidity</option>
                                         <option value='pressure'>Pressure</option>
@@ -97,7 +108,7 @@ class HistoricalContainer extends Component{
                                 <div className='form-group'>
                                     <div className="row">
                                         <div className="col-6">
-                                            <label for="dateBegin" class="form-label">From</label>
+                                            <label for="dateBegin" className="form-label">From</label>
                                             <DatePicker
                                                 id='dateBegin' 
                                                 name='dateBegin'
@@ -109,7 +120,7 @@ class HistoricalContainer extends Component{
                                                 showTimeSelect />
                                         </div>
                                         <div className="col-6">
-                                            <label for="dateEnd" class="form-label">To</label>
+                                            <label for="dateEnd" className="form-label">To</label>
                                             <DatePicker
                                                 id='dateEnd' 
                                                 name='dateEnd'
@@ -124,7 +135,7 @@ class HistoricalContainer extends Component{
                                 </div>
                                 <div className='form-group'>
                                     <FormGroup>
-                                        <label for="stations" class="form-label">Stations</label>
+                                        <label for="stations" className="form-label">Stations</label>
                                         <Input type="select" name="selectMulti" id="exampleSelectMulti" multiple>
                                             <option value="Temperature">Station1</option>
                                             <option value="Pressure">Station2</option>
@@ -135,20 +146,14 @@ class HistoricalContainer extends Component{
                             </ModalBody>
                             <ModalFooter>
                                 <Button type='button' color="secondary" onClick={this.toggleFilter}>Cancel</Button>
-                                <Button type='button' color="primary" onClick={this.getTemp()}>Submit</Button>
+                                <Button type='button' color="primary" onClick={this.toggleFilter}>Submit</Button>
                             </ModalFooter>
                         </form>
                     </Modal>
                     <div className="filter row">
                         <Button type='button' color="primary" className="btn btn-primary filter-btn" onClick={this.toggleFilter}>Filter</Button>
                     </div>
-                        <TemperatureGraph className="row graph"
-                            data={this.state.stationsData}
-                            from={this.state.fromDate}
-                            to={this.state.toDate}
-                            height={500}
-                            width={800}
-                        />
+                    {this.renderGraph() }
                 </div>
             )
         }
