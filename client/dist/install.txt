@@ -1,0 +1,3 @@
+1. Extract all contents to a folder location of your choosing
+2. Double click on the "weatherstation" file
+3. Enter in your API key
