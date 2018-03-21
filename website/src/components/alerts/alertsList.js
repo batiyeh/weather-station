@@ -49,14 +49,16 @@ class AlertsList extends Component {
     getAlerts = async () => {
         var alerts = [];
         var stations = [];
+        var station = '';
         var historicAlerts = [];
         var response = await fetch('/api/alerts/', {method: 'post', credentials:'include'});
         var body = await response.json();
         alerts = body.alerts;
         stations = body.stations;
         historicAlerts = body.historicAlerts;
+        if (stations.length > 0) station = stations[0].station_name;
         //puts alerts, historicAlerts, and stations in state. Sets station to first station in stations array
-        this.setState({alerts: alerts, stations: stations, historicAlerts: historicAlerts, station:stations[0].station_name});
+        this.setState({alerts: alerts, stations: stations, historicAlerts: historicAlerts, station:station});
     }
 
     //takes the current data in the state and sends it to the backend, the current alerts are updated and the modal is closed
@@ -338,7 +340,7 @@ class AlertsList extends Component {
                     {this.renderEmpty()}
                 </div>            
                 <div className="row col-12 -list-header">
-                    <div className='col-8 left historic-title'>
+                    <div className='left historic-title'>
                         <h4>Alert History: </h4>
                         <Label>Filter</Label>
                         <DatePicker
