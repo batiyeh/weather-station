@@ -30,6 +30,7 @@ class Navigation extends Component {
         this.toggleAlertModal = this.toggleAlertModal.bind(this);
         this.renderAlerts = this.renderAlerts.bind(this);
         this.renderHeader = this.renderHeader.bind(this);
+        this.closeModal = this.closeModal.bind(this);
 
         this.state = {
             dropdownOpen: false,
@@ -44,8 +45,8 @@ class Navigation extends Component {
             station_name: null,
             keyword: null,
             type: null,
-            value1: null,
-            value2: null,
+            value: null,
+            secondValue: null,
             unread: false,
             navShown: false,
         }
@@ -54,15 +55,15 @@ class Navigation extends Component {
     }
     //fetch all alerts when navbar mounts
     componentDidMount = async () => {
-        await this.getWebpageAlerts();
-        this.interval = setInterval(this.getWebpageAlerts, 5000);
+        await this.getTriggeredAlerts();
+        this.interval = setInterval(this.getTriggeredAlerts, 5000);
     }
     //clear interval when navbar unmounts
     componentWillUnmount() {
         clearInterval(this.interval);
     }
 
-    getWebpageAlerts = async () => {
+    getTriggeredAlerts = async () => {
         var alerts = [];
         //fetch call to gather any triggered webpage alerts for user
         var response = await fetch('/api/alerts/webpage', {method: 'post', credentials: 'include'})
@@ -75,6 +76,7 @@ class Navigation extends Component {
             if(alerts.read === 0){
                 unread = true;
             }
+            return null;
         })
 
         this.setState({alerts: alerts, unread: unread});
@@ -101,20 +103,24 @@ class Navigation extends Component {
             alertDropDown: !this.state.alertDropDown
         })
     }
-
     //when user clicks on alert from dropdown, modal will toggle and values will be set for that specific alert
-    toggleAlertModal(station_name, type, keyword, value1, value2, temperature, pressure, humidity, time){
+    toggleAlertModal(station_name, type, keyword, value, secondValue, temperature, pressure, humidity, time){
         this.setState({
             station_name: station_name,
             type : type,
             keyword: keyword,
-            value1: value1,
-            value2: value2,
+            value: value,
+            secondValue: secondValue,
             temperature: temperature,
             pressure: pressure,
             humidity: humidity,
             time: time,
             modal: !this.state.modal
+        })
+    }
+    closeModal(){
+        this.setState({
+            modal: false
         })
     }
 
@@ -147,37 +153,33 @@ class Navigation extends Component {
 
     //renders the header of the alert modal based on what alert the user is looking at
     renderHeader(){
-        if(this.state.value2){
-            return(<ModalHeader toggle={this.toggleAlertModal}> {this.state.station_name}'s {this.state.type} is {this.state.keyword} {this.state.value1} and {this.state.value2} </ModalHeader>)
+        if(this.state.secondValue){
+            return(<ModalHeader toggle={this.toggleAlertModal}> {this.state.station_name}'s {this.state.type} is {this.state.keyword} {this.state.value} and {this.state.secondValue} </ModalHeader>)
         }
         else{
-            return(<ModalHeader toggle={this.toggleAlertModal}> {this.state.station_name}'s {this.state.type} is {this.state.keyword} {this.state.value1} </ModalHeader>)
+            return(<ModalHeader toggle={this.toggleAlertModal}> {this.state.station_name}'s {this.state.type} is {this.state.keyword} {this.state.value} </ModalHeader>)
         }
     }
 
     //renders the alert cards in the drop down for the user
     renderAlerts(){
+        
         var webpageAlertCards = [];
-        var nextIndex = null;
-        var value1 = null;
-
+        // var nextIndex = null;
+        // var value2 = null;
         this.state.alerts.map((alerts, index) =>{
             if(alerts.keyword === 'between'){
-                if(nextIndex != index){
-                    value1 = alerts.value;
-                    nextIndex = index + 1;
-                }
-                else{
-                    webpageAlertCards.push(
-                        <Card onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, value1, alerts.value, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)}>{alerts.station_name}'s {alerts.type} is {alerts.keyword}&nbsp;{value1} and {alerts.value}</Card>
-                    );
-                }
+                webpageAlertCards.push(
+                    <Card onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, alerts.secondValue, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)} className='alert-notification-card'> {alerts.station_name}'s {alerts.type} is {alerts.keyword} {alerts.value} and {alerts.secondValue}</Card>
+                );
+            
             }
             else{
                 webpageAlertCards.push(
-                        <Card onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, null, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)} className="alert-notification-card">{alerts.station_name}'s {alerts.type} is {alerts.keyword}&nbsp;{alerts.value}</Card>
+                    <Card onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, null, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)} className="alert-notification-card">{alerts.station_name}'s {alerts.type} is {alerts.keyword}&nbsp;{alerts.value}</Card>
                 );
             }
+            return null;
         })
 
         //shows message if there are no alerts
@@ -185,7 +187,7 @@ class Navigation extends Component {
             return(<Alert color="primary">You have no alerts</Alert>)
         } else{
             webpageAlertCards.unshift(
-                <button className="btn btn-sm dismiss-all" onClick={this.dismissAlerts}> Dismiss all alerts </button>
+                <DropdownItem className="btn btn-sm dismiss-all" onClick={this.dismissAlerts}> Dismiss all alerts </DropdownItem>
             );
             return webpageAlertCards;
         }
@@ -195,7 +197,7 @@ class Navigation extends Component {
     dismissAlerts(){
         fetch('/api/alerts/webpage', {method: 'delete', credentials: 'include'})
 
-        this.getWebpageAlerts();
+        this.getTriggeredAlerts();
     }
 
     render() {
@@ -269,7 +271,7 @@ class Navigation extends Component {
                                         Humidity: {this.state.humidity}
                                     </ModalBody>
                                     <ModalFooter>
-                                        <Button type='button' color="secondary" onClick={this.toggleAlertModal}>Close</Button>
+                                        <Button type='button' color="secondary" onClick={this.closeModal}>Close</Button>
                                     </ModalFooter>
                                 </Form>
                             </Modal>

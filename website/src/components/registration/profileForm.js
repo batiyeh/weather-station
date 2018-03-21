@@ -57,6 +57,7 @@ class ProfileForm extends Component {
             var allMessages = [];
             this.state.messages.map(messages => {
                 allMessages.push(<Alert className='alert-danger'>{messages.msg}</Alert>)
+                return null;
             })
             return allMessages
         }
