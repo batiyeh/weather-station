@@ -12,8 +12,8 @@ class AlertsList extends Component {
             station: '',
             datatype: 'temperature',
             keyword: 'above',
-            value1: null,
-            value2: null,
+            value: null,
+            secondValue: null,
             alerts: [],
             stations: [],
             historicAlerts: [],
@@ -42,7 +42,7 @@ class AlertsList extends Component {
         var body = await response.json();
         alerts = body.alerts;
         stations = body.stations;
-        body.historicAlerts.map(a =>{
+        body.alerts.map(a =>{
             console.log(a);
         })
         //puts alerts, stations in state. Sets station to first station in stations array
@@ -57,8 +57,8 @@ class AlertsList extends Component {
                 station: this.state.station,
                 datatype: this.state.datatype,
                 keyword: this.state.keyword,
-                value1: this.state.value1,
-                value2: this.state.value2,
+                value: this.state.value,
+                secondValue: this.state.secondValue,
                 email: this.state.email,
                 sms: this.state.sms,
                 webpage: this.state.webpage,
@@ -96,14 +96,14 @@ class AlertsList extends Component {
             keyword: value
         })
     }
-    onValue1Change(value){
+    onValueChange(value){
         this.setState({
-            value1: value
+            value: value
         })
     }
-    onValue2Change(value){
+    onSecondValueChange(value){
         this.setState({
-            value2: value
+            secondValue: value
         })
     }
     onEmailChange(){
@@ -133,25 +133,25 @@ class AlertsList extends Component {
                 <div>
                     <div className='form-group'> 
                         <Label>Values</Label>
-                        <Input type='text' name='value1' id='value1' onChange={e => this.onValue1Change(e.target.value)}/>
+                        <Input type='text' name='value' id='value' onChange={e => this.onValueChange(e.target.value)}/>
                     </div>
                     <div className='form-group'>
-                        <Input type='text' name='value2' id='value2' onChange={e => this.onValue2Change(e.target.value)}/>
+                        <Input type='text' name='secondValue' id='secondValue' onChange={e => this.onSecondValueChange(e.target.value)}/>
                     </div>
                 </div>
             );
         }
         else{  
             //ensures state of value2 is reset when switching between renders
-            if(this.state.value2){
+            if(this.state.secondValue){
                 this.setState({
-                    value2: null
+                    secondValue: null
                 });
             }
             return (
             <div className='form-group'> 
                 <Label>Value</Label>
-                <Input type='text' name='value1' id='value1' onChange={e => this.onValue1Change(e.target.value)}/>
+                <Input type='text' name='value' id='value' onChange={e => this.onValueChange(e.target.value)}/>
             </div>)
         }
     }
@@ -201,8 +201,8 @@ class AlertsList extends Component {
             station: this.state.stations[0].station_name,
             datatype: 'temperature',
             keyword: 'above',
-            value1: null,
-            value2: null,
+            value: null,
+            secondValue: null,
             email: true,
             sms: false,
             webpage: false,

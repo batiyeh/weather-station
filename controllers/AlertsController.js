@@ -17,19 +17,19 @@ router.post('/create', async function(req, res){
     var station = req.body.station;
     var datatype = req.body.datatype;
     var keyword = req.body.keyword;
-    var value1 = req.body.value1;
-    var value2 = req.body.value2;
+    var value = req.body.value;
+    var secondValue = req.body.secondValue;
     var email = req.body.email;
     var sms = req.body.sms;
     var webpage = req.body.webpage;
     var threshold = req.body.threshold;
 
     //prevents user from submitting blank value
-    if(keyword === 'between' && !value2){
+    if(keyword === 'between' && !secondValue){
         return res.status(404);
     }
     //prevents user from submitting blank value or not selecting an alert method
-    if(value1 && (email || sms || webpage)){
+    if(value && (email || sms || webpage)){
         var newAlert = await new Alerts({
             station_name: station,
             type: datatype,
@@ -39,11 +39,6 @@ router.post('/create', async function(req, res){
             deleted: false
         }).save();
         //assigns values to new alert via foreign key
-        await new AlertValues({
-            value: value1,
-            alert_id: newAlert.attributes.id
-
-        }).save();
 
         if(email){
             await new AlertMethods({
@@ -63,9 +58,15 @@ router.post('/create', async function(req, res){
                 alert_id: newAlert.attributes.id
             }).save();
         }
-        if(value2){
+        if(value){
             await new AlertValues({
-                value: value2,
+                value: value,
+                alert_id: newAlert.attributes.id
+            })
+        }
+        if(secondValue){
+            await new AlertValues({
+                value: secondValue,
                 alert_id: newAlert.attributes.id
             }).save();
         }
@@ -159,20 +160,20 @@ router.post('/:id', async function(req,res){
     var station = req.body.station;
     var datatype = req.body.datatype;
     var keyword = req.body.keyword;
-    var value1 = req.body.value1;
-    var value2 = req.body.value2;
+    var value = req.body.value;
+    var secondValue = req.body.secondValue;
     var email = req.body.email;
     var sms = req.body.sms;
     var webpage = req.body.webpage;
     var threshold = req.body.threshold;
 
     //prevents user from entering blank value
-    if(keyword === 'between' && !value2){
+    if(keyword === 'between' && !secondValue){
         return res.status(404);
     }
 
     //Prevents user from submitting blank value or not selecting an alert method
-    if(value1 && (email || sms || webpage)){
+    if(value && (email || sms || webpage)){
         await Alerts.where({alert_id: req.params.id}).save({
             station_name: station,
             type: datatype,
@@ -186,7 +187,7 @@ router.post('/:id', async function(req,res){
 
         //stores new values, associates to alert by foreign key
         await new AlertValues({
-            value: value1,
+            value: value,
             alert_id: req.params.id
         }).save();
 
@@ -208,9 +209,9 @@ router.post('/:id', async function(req,res){
                 alert_id: req.params.id
             }).save();
         }
-        if(value2){
+        if(secondValue){
             await new AlertValues({
-                value: value2,
+                value: secondValue,
                 alert_id: req.params.id
             }).save();
         }
@@ -239,12 +240,11 @@ parseBetween = async(alerts) => {
             }
             else{
                 if(grabbedValue > alerts.value){
-                    alerts.firstValue = alerts.value;
                     alerts.secondValue = grabbedValue;
                 }
                 else{
-                    alerts.firstValue = grabbedValue;
                     alerts.secondValue = alerts.value;
+                    alerts.value = grabbedValue;
                 }
                 newAlerts.push(alerts);
             }
