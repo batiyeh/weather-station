@@ -45,7 +45,7 @@ class AlertsList extends Component {
         await this.getAlerts();
 
     }
-    //gets all current alerts and stations for the user and stores it in the state
+    //gets all current alerts, historic alerts, and stations for the user and stores it in the state
     getAlerts = async () => {
         var alerts = [];
         var stations = [];
@@ -55,7 +55,7 @@ class AlertsList extends Component {
         alerts = body.alerts;
         stations = body.stations;
         historicAlerts = body.historicAlerts;
-        //puts alerts, stations in state. Sets station to first station in stations array
+        //puts alerts, historicAlerts, and stations in state. Sets station to first station in stations array
         this.setState({alerts: alerts, stations: stations, historicAlerts: historicAlerts, station:stations[0].station_name});
     }
 
@@ -183,10 +183,10 @@ class AlertsList extends Component {
     renderHistoricCard(){
         var cards = []
         this.state.historicAlerts.map(alert => {
+
             var alertDate = new Date(alert.triggered_at.slice(0,10)+'T04:00:00.000Z');
-            console.log(this.state.date.getTime(), alertDate);
+            //only renders alerts for selected time by user
             if(this.state.date.getTime() === alertDate.getTime() ){
-                console.log('yes');
                 cards.push(<HistoricAlertCard alert={alert}/>)
             }
         })
