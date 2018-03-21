@@ -5,6 +5,10 @@
     max-width: 600px !important;
 }
 
+.alert-list-header{
+    margin-bottom: 10px;
+}
+
 .method-tag{
     color: #282828;
     border: 1px solid #27ACAC;

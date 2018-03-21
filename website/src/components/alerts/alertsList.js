@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { Alert, Modal, ModalHeader, ModalBody, ModalFooter, Button, FormGroup, Form, Label, Input} from 'reactstrap';
+import { Alert, Modal, ModalHeader, ModalBody, ModalFooter, Button, FormGroup, Form, Label, Input, Col} from 'reactstrap';
 import AlertCard from './alertCard';
 import HistoricAlertCard from './historicAlertCard';
 import DatePicker  from 'react-datepicker'
-
 import '../../styles/alerts.css';
 const moment = require('moment');
 moment().format();
@@ -31,7 +30,6 @@ class AlertsList extends Component {
             threshold: '1 hour',
             date: date
         };
-        console.log('now: ',now.format("YYYY-MM-DD HH:mm:ss"));
         this.filter = this.filter.bind(this);
         this.resetValues = this.resetValues.bind(this);
         this.onEmailChange = this.onEmailChange.bind(this);
@@ -218,7 +216,7 @@ class AlertsList extends Component {
     //populates the station name dropdown with all stations
     renderStations(){
         var options = []
-        this.state.stations.map(station => {
+        this.state.stations.map((station, index) => {
             options.push(<option key={"name" + index} value={station.station_name}>{station.station_name}</option>)
             return null;
         })
@@ -327,7 +325,7 @@ class AlertsList extends Component {
                     </ModalFooter>
                 </Form>
             </Modal>
-            <div className="row col-12 alert-list-header">
+            <div className="row col-12 alert-list-header no-padding">
                 <div className="col-8 left alert-title">
                     <h4>Alert me when...</h4>
                 </div>
@@ -339,22 +337,26 @@ class AlertsList extends Component {
                 {this.renderCards()}
                 {this.renderEmpty()}
             </div>            
-            <div className="row col-12 -list-header">
+            <div className="row col-12 alert-list-header">
                 <div className='left historic-title'>
-                    <h4>Alert History: </h4>
-                    <Label>Filter</Label>
-                    <DatePicker
-                        id='date' 
-                        name='date'
-                        dateFormat="YYYY-MM-DD"
-                        className='form-control'
-                        placeholderText="Date"
-                        selected={moment(this.state.date)}
-                        onChange={this.filter}/>
+                    <h4>Alert history: </h4>
+                    <FormGroup row>
+                        <Label sm={2}>Filter&nbsp;</Label>
+                        <Col sm={10}>
+                            <DatePicker
+                                id='date' 
+                                name='date'
+                                dateFormat="YYYY-MM-DD"
+                                className='form-control'
+                                placeholderText="Date"
+                                selected={moment(this.state.date)}
+                                onChange={this.filter}/>
+                        </Col>
+                    </FormGroup>
                 </div>
-                <div className='row'>
-                    {this.renderHistoricCard()}
-                </div>
+            </div>
+            <div className='row'>
+                {this.renderHistoricCard()}
             </div>
         </div>
 

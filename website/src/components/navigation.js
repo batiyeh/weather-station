@@ -304,10 +304,10 @@ class Navigation extends Component {
                                 {this.renderHeader()}
                                 <Form id='AlertForm'>
                                     <ModalBody>
-                                        <p>Weather Data for {this.state.station_name} at {this.state.time}:</p>
-                                        <p>Temperature: {this.state.temperature}</p>
-                                        <p>Pressure: {this.state.pressure}</p>
-                                        Humidity: {this.state.humidity}
+                                        <p>{this.state.station_name} at: {moment(this.state.time).format("YYYY-MM-DD HH:mm:ss")}</p>
+                                        <p>Temperature: {this.state.temperature} &deg;F</p>
+                                        <p>Pressure: {this.state.pressure} hPa</p>
+                                        Humidity: {this.state.humidity}%
                                     </ModalBody>
                                     <ModalFooter>
                                         <Button type='button' color="secondary" onClick={this.closeModal}>Close</Button>

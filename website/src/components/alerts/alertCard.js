@@ -187,19 +187,19 @@ class AlertCard extends Component {
         var methodTags = [];
         if (this.state.email === true){
             methodTags.push(
-                <span className="method-tag">email</span>
+                <span key="email-key" className="method-tag">email</span>
             );
         }
 
         if (this.state.sms === true){
             methodTags.push(
-                <span className="method-tag">sms</span>
+                <span key="sms-key" className="method-tag">sms</span>
             );
         }
 
         if (this.state.webpage === true){
             methodTags.push(
-                <span className="method-tag">webpage</span>
+                <span key="webpage-key" className="method-tag">webpage</span>
             );
         }
 

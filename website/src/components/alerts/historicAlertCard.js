@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import '../../styles/alerts.css';
 import {Button, Card, CardText, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
+const moment = require('moment');
+moment().format();
 
 class HistoricAlertCard extends Component {
     constructor(props){
@@ -43,10 +45,10 @@ class HistoricAlertCard extends Component {
                 <Modal isOpen={this.state.modal} toggle={this.toggle}>
                     <ModalHeader toggle={this.toggle}>{this.getParams()}</ModalHeader>
                     <ModalBody>
-                        <p>Weather Data for {this.state.station} at {this.state.time}:</p>
-                        <p>Temperature: {this.state.temperature}</p>
-                        <p>Pressure: {this.state.pressure}</p>
-                        Humidity: {this.state.humidity}
+                        <p>{this.state.station} at: {moment(this.state.time).format("YYYY-MM-DD HH:mm:ss")}</p>
+                        <p>Temperature: {this.state.temperature} &deg;F</p>
+                        <p>Pressure: {this.state.pressure} hPa</p>
+                        Humidity: {this.state.humidity}%
                     </ModalBody>
                     <ModalFooter>
                         <Button type='button' color='secondary' onClick={this.toggle}>Close</Button>
@@ -55,6 +57,11 @@ class HistoricAlertCard extends Component {
                 <Card onClick={this.toggle} className='alertCard'>
                     <CardText className='cardText'>
                         {this.getParams()}
+                        <div className="row">
+                            <div className="col-12">
+                                <span className="alert-triggered-at">{moment(this.state.time).format("YYYY-MM-DD HH:mm:ss")}</span>
+                            </div>
+                        </div>
                     </CardText>
                 </Card>
             </div>
