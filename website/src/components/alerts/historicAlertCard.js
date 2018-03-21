@@ -20,7 +20,6 @@ class HistoricAlertCard extends Component {
         this.toggle = this.toggle.bind(this);
     }
     toggle(){
-        console.log('asdf');
         this.setState({
             modal: !this.state.modal
         })

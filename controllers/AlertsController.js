@@ -29,6 +29,10 @@ router.post('/create', async function(req, res){
     if(keyword === 'between' && !secondValue){
         return res.status(404);
     }
+    if((secondValue) && (value > secondValue)){
+        return res.status(404);
+    }
+    
     //prevents user from submitting blank value or not selecting an alert method
     if(value && (email || sms || webpage)){
         var newAlert = await new Alerts({
@@ -134,7 +138,7 @@ router.post('/', async function(req, res){
     var stations = await Station.fetchAll();
 
     var historicAlerts = await knex('triggeredalerts')
-    .distinct('triggeredalerts.triggered_at', 'stations.station_name', 'alerts.type', 'alerts.keyword')
+    .distinct('triggeredalerts.triggered_at', 'stations.station_name', 'alerts.type', 'alerts.keyword', 'triggeredalerts.pressure', 'triggeredalerts.temperature', 'triggeredalerts.humidity')
     .select('triggeredalerts.triggered_id', 'alertvalues.value')
     .leftJoin('alerts', 'triggeredalerts.alert_id', '=', 'alerts.alert_id')
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')

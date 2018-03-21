@@ -2,11 +2,19 @@ import React, { Component } from 'react';
 import { Alert, Modal, ModalHeader, ModalBody, ModalFooter, Button, FormGroup, Form, Label, Input} from 'reactstrap';
 import AlertCard from './alertCard';
 import HistoricAlertCard from './historicAlertCard';
+import DatePicker  from 'react-datepicker'
+
 import '../../styles/alerts.css';
+const moment = require('moment');
+moment().format();
 
 class AlertsList extends Component {
     constructor(props){
         super(props);
+        var now = moment();
+        var ymd = now.format('YY-MM-DD');
+        var date = new Date('20'+ ymd + 'T04:00:00.000Z')
+
         this.state={
             modal: false,
             station: '',
@@ -20,8 +28,11 @@ class AlertsList extends Component {
             email: true,
             sms: false,
             webpage: false,
-            threshold: '1 hour'
+            threshold: '1 hour',
+            date: date
         };
+        console.log('now: ',now.format("YYYY-MM-DD HH:mm:ss"));
+        this.filter = this.filter.bind(this);
         this.resetValues = this.resetValues.bind(this);
         this.onEmailChange = this.onEmailChange.bind(this);
         this.onSMSChange = this.onSMSChange.bind(this);
@@ -125,6 +136,11 @@ class AlertsList extends Component {
             threshold: value
         })
     }
+    filter(value){
+        this.setState({
+            date: value._d
+        })
+    }
     //displays either one input box or two to the user depending on what keyword they currently have selected
     renderValues(){
         if(this.state.keyword === 'between'){
@@ -167,7 +183,12 @@ class AlertsList extends Component {
     renderHistoricCard(){
         var cards = []
         this.state.historicAlerts.map(alert => {
+            var alertDate = new Date(alert.triggered_at.slice(0,10)+'T04:00:00.000Z');
+            console.log(this.state.date.getTime(), alertDate);
+            if(this.state.date.getTime() === alertDate.getTime() ){
+                console.log('yes');
                 cards.push(<HistoricAlertCard alert={alert}/>)
+            }
         })
         
         return cards;
@@ -299,6 +320,15 @@ class AlertsList extends Component {
                 <div className="row col-12 -list-header">
                     <div className='col-8 left historic-title'>
                         <h4>Alert History: </h4>
+                        <Label>Filter</Label>
+                        <DatePicker
+                            id='date' 
+                            name='date'
+                            dateFormat="YYYY-MM-DD"
+                            className='form-control'
+                            placeholderText="Date"
+                            selected={moment(this.state.date)}
+                            onChange={this.filter}/>
                     </div>
                     <div className='row'>
                         {this.renderHistoricCard()}
