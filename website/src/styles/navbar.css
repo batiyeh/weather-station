@@ -8,6 +8,26 @@ nav a {
     color: #F3F3F3 !important;
 }
 
+.alert-triggered-at{
+    font-size: 10pt;
+    color: #727272;
+}
+
+.download-link{
+    color: #fff !important;
+    margin-right: 20px;
+    white-space: nowrap;
+}
+
+.fa-download{
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.download-text{
+    cursor: pointer;
+}
+
 .alert-notification-card{
     padding: 10px;
     background-color: #F9F9F9 !important;
@@ -37,7 +57,12 @@ nav a {
 }
 
 .username-dropdown{
-    top: 3px;
+    white-space: nowrap;
+    padding-right: 30px;
+}
+
+.alerts-dropdown{
+    white-space: nowrap;
 }
 
 .unread {
@@ -59,9 +84,13 @@ nav a {
 
 .bell{
     color: white;
-    font-size: 14pt;
-    margin-right: 15px;
+    padding-right: 20px;
     z-index: 1;
+    white-space: nowrap;
+}
+
+.nav-link{
+    color: #fff;
 }
 
 .nav-link-dark {

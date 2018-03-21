@@ -38,6 +38,10 @@
   text-align: center;
 }
 
+.btn{
+  pointer: cursor;
+}
+
 .current .container {
   width: 40%;
 }

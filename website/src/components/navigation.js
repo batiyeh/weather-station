@@ -21,6 +21,9 @@ import {
     Form,
     Button,
     Alert } from 'reactstrap';
+import download from 'downloadjs';
+var moment = require('moment');
+moment().format();
 
 class Navigation extends Component {
     constructor(props){
@@ -51,6 +54,7 @@ class Navigation extends Component {
         }
         this.toggleDropdown = this.toggleDropdown.bind(this);
         this.toggleNav = this.toggleNav.bind(this);
+        this.downloadClient = this.downloadClient.bind(this);
     }
     //fetch all alerts when navbar mounts
     componentDidMount = async () => {
@@ -127,6 +131,14 @@ class Navigation extends Component {
         return body;
     }
 
+
+    downloadClient = async() => {
+        var response = await fetch('/api/stations/download');
+        var fileBlob = await response.blob();
+        download(fileBlob, "weatherstation.zip");
+        return fileBlob;
+    }
+
     //changes the bell icon depending on if there are unread alerts or not
     renderBell(){
         if(this.state.unread){
@@ -169,13 +181,27 @@ class Navigation extends Component {
                 }
                 else{
                     webpageAlertCards.push(
-                        <Card onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, value1, alerts.value, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)}>{alerts.station_name}'s {alerts.type} is {alerts.keyword}&nbsp;{value1} and {alerts.value}</Card>
+                        <Card key={index} onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, value1, alerts.value, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)}>
+                            <div className="alert-text">
+                                {alerts.station_name}'s {alerts.type} is {alerts.keyword}&nbsp;{value1} and {alerts.value}
+                            </div>
+                            <div className="alert-triggered-at">
+                                { moment(alerts.triggered_at).format("YYYY-MM-DD HH:mm:ss") }
+                            </div>
+                        </Card>
                     );
                 }
             }
             else{
                 webpageAlertCards.push(
-                        <Card onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, null, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)} className="alert-notification-card">{alerts.station_name}'s {alerts.type} is {alerts.keyword}&nbsp;{alerts.value}</Card>
+                        <Card key={index} onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, null, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)} className="alert-notification-card">
+                            <div className="alert-text">
+                                {alerts.station_name}'s {alerts.type} is {alerts.keyword}&nbsp;{alerts.value}
+                            </div>
+                            <div className="alert-triggered-at">
+                                { moment(alerts.triggered_at).format("YYYY-MM-DD HH:mm:ss") }
+                            </div>
+                        </Card>
                 );
             }
         })
@@ -185,7 +211,7 @@ class Navigation extends Component {
             return(<Alert color="primary">You have no alerts</Alert>)
         } else{
             webpageAlertCards.unshift(
-                <button className="btn btn-sm dismiss-all" onClick={this.dismissAlerts}> Dismiss all alerts </button>
+                <button key="dismiss-key" className="btn btn-sm dismiss-all" onClick={this.dismissAlerts}> Dismiss all alerts </button>
             );
             return webpageAlertCards;
         }
@@ -212,52 +238,65 @@ class Navigation extends Component {
                         <NavbarToggler className="navbar-toggler-container ml-auto" onClick={this.toggleNav} />
                         <Collapse isOpen={this.state.navShown} navbar>
                             <Nav>
-                                <div className="col-xs-12 hidden-sm-up">
+                                <div className="col-md-3 col-xs-12 hidden-sm-up">
                                     <NavItem>
                                         <Link to={'/'} className='nav-link'>stations</Link>
                                     </NavItem>
                                 </div>
-                                <div className="col-xs-12 hidden-sm-up">
+                                <div className="col-md-3 col-xs-12 hidden-sm-up">
                                     <NavItem>
                                         <Link to={'/map'} className='nav-link'>map</Link>
                                     </NavItem>
                                 </div>
-                                <div className="col-xs-12 hidden-sm-up">
+                                <div className="col-md-3 col-xs-12 hidden-sm-up">
+                                    <NavItem tag='a'>
+                                        <Link to={'/alerts'} className='nav-link'>alerts</Link>
+                                    </NavItem>
+                                </div>
+                                <div className="col-md-3 col-xs-12 hidden-sm-up">
                                     <NavItem>
                                         <Link to={'/historical'} className='nav-link'>historical</Link>
                                     </NavItem>
                                 </div>
+                                
                             </Nav>
                             <Nav className="ml-auto" navbar>
-                                <Dropdown isOpen={this.state.alertDropDown} toggle={this.toggleAlert} nav inNavbar>
-                                    <DropdownToggle nav>
-                                        {this.renderBell()}
-                                    </DropdownToggle>
-                                    <DropdownMenu className="alerts-menu" right>
-                                        <div className="col-12">
-                                            {this.renderAlerts()}
-                                        </div>
-                                    </DropdownMenu>
-                                </Dropdown>
-                                <Dropdown isOpen={this.state.dropdown} className="username-dropdown" toggle={this.toggleDropdown} nav inNavbar>
-                                    <DropdownToggle nav caret>
-                                        {this.props.username}
-                                    </DropdownToggle>
-                                    <DropdownMenu className="user-menu" right>
-                                        <DropdownItem tag='a'>
-                                            <Link to={'/profile'} className='nav-link nav-link-dark'>profile</Link>
-                                        </DropdownItem>
-                                        <DropdownItem tag='a'>
-                                            <Link to={'/admin'} className='nav-link nav-link-dark'>admin</Link>
-                                        </DropdownItem>
-                                        <DropdownItem tag='a'>
-                                            <Link to={'/alerts'} className='nav-link nav-link-dark'>alerts</Link>
-                                        </DropdownItem>
-                                        <DropdownItem tag='a'>
-                                            <a onClick={this.logout} className='nav-link nav-link-dark'>logout</a>
-                                        </DropdownItem>
-                                    </DropdownMenu>
-                                </Dropdown>
+                                <div className="col-md-4 col-xs-12 hidden-sm-up">
+                                    <Dropdown isOpen={this.state.alertDropDown} className="alerts-dropdown" toggle={this.toggleAlert} nav inNavbar>
+                                        <DropdownToggle nav>
+                                            {this.renderBell()}
+                                        </DropdownToggle>
+                                        <DropdownMenu className="alerts-menu" right>
+                                            <div className="col-12">
+                                                {this.renderAlerts()}
+                                            </div>
+                                        </DropdownMenu>
+                                    </Dropdown>
+                                </div>
+                                <div className="col-md-4 col-xs-12 hidden-sm-up">
+                                    <NavItem onClick={this.downloadClient} className="nav-link download-link">
+                                        <span className="download-text">client</span>
+                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                    </NavItem>
+                                </div>
+                                <div className="col-md-4 col-xs-12 hidden-sm-up">
+                                    <Dropdown isOpen={this.state.dropdown} className="username-dropdown" toggle={this.toggleDropdown} nav inNavbar>
+                                        <DropdownToggle nav caret>
+                                            {this.props.username}
+                                        </DropdownToggle>
+                                        <DropdownMenu className="user-menu" right>
+                                            <DropdownItem tag='a'>
+                                                <Link to={'/profile'} className='nav-link nav-link-dark'>profile</Link>
+                                            </DropdownItem>
+                                            <DropdownItem tag='a'>
+                                                <Link to={'/admin'} className='nav-link nav-link-dark'>admin</Link>
+                                            </DropdownItem>
+                                            <DropdownItem tag='a'>
+                                                <a onClick={this.logout} className='nav-link nav-link-dark'>logout</a>
+                                            </DropdownItem>
+                                        </DropdownMenu>
+                                    </Dropdown>
+                                </div>
                             </Nav>
                             <Modal isOpen={this.state.modal} toggle={this.toggleAlertModal}>
                                 {this.renderHeader()}

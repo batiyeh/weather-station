@@ -142,11 +142,11 @@ class AdminStationList extends Component {
                             <Button color="secondary" type="button" onClick={this.toggleAddStationModal}>Cancel</Button>
                         </ModalFooter>
                 </Modal>
-                <div className="row col-12 station-list-header">
-                    <div className="col-8 left">
+                <div className="row col-12 station-list-header no-padding-right">
+                    <div className="col-4 left">
                         <h3>Stations</h3>
                     </div>
-                    <div className="col-4 right no-padding-right">
+                    <div className="col-8 right no-padding-right">
                         <Button onClick={this.toggleAddStationModal} className="btn btn-primary add-btn">Add</Button>
                     </div>
                 </div>

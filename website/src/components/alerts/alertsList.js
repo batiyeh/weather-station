@@ -168,8 +168,8 @@ class AlertsList extends Component {
     //populates the station name dropdown with all stations
     renderStations(){
         var options = []
-        this.state.stations.map(station => {
-            options.push(<option value={station.station_name}>{station.station_name}</option>)
+        this.state.stations.map((station, index) => {
+            options.push(<option key={"name" + index} value={station.station_name}>{station.station_name}</option>)
         })
         return options;
     }
@@ -276,7 +276,7 @@ class AlertsList extends Component {
                     </ModalFooter>
                 </Form>
             </Modal>
-            <div className="row col-12 station-list-header">
+            <div className="row col-12 station-list-header no-padding-right">
                 <div className="col-8 left alert-title">
                     <h4>Alert me when...</h4>
                 </div>
