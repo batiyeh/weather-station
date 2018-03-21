@@ -60,8 +60,11 @@ class Sensors(object):
     def getWeather(self):
         # Attempt to retrieve humidity + temperature
         try:
-            self.humidity, self.temperature = Adafruit_DHT.read(Adafruit_DHT.AM2302, self.pin)
-            self.temperature = (9.0/5.0) * self.temperature + 32
+            humidity, temperature = Adafruit_DHT.read(Adafruit_DHT.AM2302, self.pin)
+            if (temperature):
+                self.temperature = (9.0/5.0) * temperature + 32
+            if (humidity):
+                self.humidity = humidity
         except:
             pass
 
