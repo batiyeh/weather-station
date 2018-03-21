@@ -31,8 +31,9 @@ class TemperatureGraph extends Component{
         this.updateLabels(labels);
         for (var station_name in this.state.data) {
             data = this.state.data[station_name];
-            this.createLines(station_name, data["temp"], data["dates"]);
+            this.createLines(station_name, data["sensorData"], data["dates"]);
         }
+        console.log(data);
     }
     componentWillUnmount(){
         colorIndex =0;

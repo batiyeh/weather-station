@@ -17,8 +17,10 @@ class HistoricalContainer extends Component{
             modal: false,
             loading: true,
             sensorType: 'temperature',
-            fromDate: oneday.format("YYYY-MM-DD HH:mm:ss"),
-            toDate: now.format("YYYY-MM-DD HH:mm:ss")
+            //fromDate: oneday.format("YYYY-MM-DD HH:mm:ss"),
+            //toDate: now.format("YYYY-MM-DD HH:mm:ss")
+            fromDate: '2018-03-18 22:35:35',
+            toDate: '2018-03-19 10:00:08'
         }
         this.toggleFilter = this.toggleFilter.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
@@ -36,7 +38,7 @@ class HistoricalContainer extends Component{
     }
 
     componentDidMount() {
-        this.getTemp()
+        this.getSensorData()
     }
 
     handleToChange(date) {
@@ -56,19 +58,28 @@ class HistoricalContainer extends Component{
         })
     }
 
-    getTemp = async () => {
+    getSensorData = async () => {
         var data;
         var stationsDict = {};
         var toDate = this.state.toDate;
         var fromDate = this.state.fromDate;
-        const response = await fetch('/api/weather/temp/' + fromDate +'/' + toDate);
+        var type = this.state.sensorType;
+        const response = await fetch('/api/weather/sensorData/' + fromDate +'/' + toDate + '/'+ type);
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
         if (body.temp) data = body.temp;
         for (var i = 0; i < data.length; i++) {
             var station_name = data[i].station_name;
-            if (!stationsDict[station_name]) stationsDict[station_name] = {"temp": [], "dates": []};
-            stationsDict[station_name]["temp"].push(data[i].temperature);
+            if (!stationsDict[station_name]) stationsDict[station_name] = {"sensorData": [], "dates": []};
+            if (type == 'temperature') {
+                stationsDict[station_name]["sensorData"].push(data[i].temperature);
+            }
+            else if(type == 'pressure'){
+                stationsDict[station_name]["sensorData"].push(data[i].pressure);
+            }
+            else if(type == 'humidity'){
+                stationsDict[station_name]["sensorData"].push(data[i].humidity);
+            }
             stationsDict[station_name]["dates"].push(data[i].created_at);
         }
         this.setState({
@@ -81,25 +92,28 @@ class HistoricalContainer extends Component{
             loading: true,
             modal: false
         })
-        this.getTemp()
+        this.getSensorData()
     }
 
     renderGraph(){
-        return(
-            <TemperatureGraph className="row graph"
-                data={this.state.stationsData}
-                from={this.state.fromDate}
-                to={this.state.toDate}
-                height={500}
-                width={800}
-            />
-        )
+        if(this.state.sensorType === 'temperature') {
+            console.log(this.state.stationsData);
+            return(
+                <TemperatureGraph className="row graph"
+                    data={this.state.stationsData}
+                    from={this.state.fromDate}
+                    to={this.state.toDate}
+                    height={500}
+                    width={800}
+                />
+            )
+        }
     }
 
 
 
     render(){
-        if(this.state.loading == false){
+        if(this.state.loading === false){
             return(
                 <div className="historical-container">
                     <Modal isOpen={this.state.modal} toggle={this.toggleFilter}>
