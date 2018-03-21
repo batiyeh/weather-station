@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Alert, Modal, ModalHeader, ModalBody, ModalFooter, Button, FormGroup, Form, Label, Input} from 'reactstrap';
 import AlertCard from './alertCard';
+import HistoricAlertCard from './historicAlertCard';
 import '../../styles/alerts.css';
 
 class AlertsList extends Component {
@@ -157,18 +158,20 @@ class AlertsList extends Component {
     //parses the current cards in this.state.alerts
     //some alerts have multiple values so the id's need to be compared before they are added to the array
     renderCards(){
-        var alertcards = []
-        for (var i = 0; i < this.state.alerts.length; i++){
-            if(this.state.alerts[i+1] && (this.state.alerts[i].alert_id === this.state.alerts[i+1].alert_id)){
-                alertcards.push(<AlertCard stations={this.state.stations} alerts={this.state.alerts[i]} value2={this.state.alerts[i+1].value} update={this.getAlerts}/>)
-                i++;
+        var cards = []
+        this.state.alerts.map(alert =>{
+            cards.push(<AlertCard stations={this.state.stations} alerts={alert} update={this.getAlerts}/>)
+        })
+
+        return cards
+    }
+    renderHistoricCard(){
+        var cards = []
+        this.state.historicAlerts.map(alert => {
+            if(alert.keyword === 'between'){
+                cards.push(<HistoricAlertCard alert={alert}/>)
             }
-            else{
-                alertcards.push(<AlertCard stations={this.state.stations} alerts={this.state.alerts[i]} update={this.getAlerts}/>)
-            }
-        }
-        //returns array of AlertCards to render on the page
-        return alertcards
+        })
     }
     //populates the station name dropdown with all stations
     renderStations(){

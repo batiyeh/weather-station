@@ -137,6 +137,7 @@ router.post('/', async function(req, res){
     .where('alerts.username', '=', req.user)
     .orderBy('triggeredalerts.triggered_id')
 
+    alerts = await parseBetween(alerts);
     historicAlerts = await parseBetween(historicAlerts);
     
     return res.status(200).json({alerts, stations, historicAlerts});
