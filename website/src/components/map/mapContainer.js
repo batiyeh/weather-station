@@ -54,6 +54,8 @@ export class MapContainer extends Component {
     calculateMapBounds(stations, height, width){
         var allCoords = [];
         var coords;
+        var center = {lat: 42.357324, lng: -83.070117};
+        var zoom = 16;
         for (var i = 0; i < stations.length; i++){
             coords = {
                 latitude: stations[i].latitude, 
@@ -62,19 +64,31 @@ export class MapContainer extends Component {
             allCoords.push(coords);
         }
 
-        var bounds = geolib.getBounds(allCoords);
-        bounds = {
-            nw: {
-                lat: bounds.maxLat,
-                lng: bounds.minLng
-            },
-            se: {
-                lat: bounds.minLat,
-                lng: bounds.maxLng
+        if (allCoords.length > 1){
+            var bounds = geolib.getBounds(allCoords);
+            bounds = {
+                nw: {
+                    lat: bounds.maxLat,
+                    lng: bounds.minLng
+                },
+                se: {
+                    lat: bounds.minLat,
+                    lng: bounds.maxLng
+                }
             }
+            var bounds = fitBounds(bounds, {height: height-75, width: width});
+            center = bounds.center;
+            zoom = bounds.zoom;
+        }
+
+        else if (allCoords.length == 1){
+            center = {
+                lat: parseFloat(allCoords[0].latitude),
+                lng: parseFloat(allCoords[0].longitude)
+            }
+            zoom = 16;
         }
         
-        const {center, zoom} = fitBounds(bounds, {height: height-75, width: width});
         return {center, zoom}; 
     }
 

@@ -141,6 +141,7 @@ class Map extends Component {
         }
 
         else{
+            var displayIndex = -1;
             return (
                 <div className="name-list">
                 {
@@ -148,8 +149,9 @@ class Map extends Component {
                     .filter(this.filterStations.bind(this))
                     .map((station, index) => {
                         if (station.latitude !== "n/a" && station.longitude !== "n/a"){
+                            displayIndex += 1;
                             return (
-                                <SidebarItem key={station.apikey} index={index} station={station} checkboxOnChange={this.checkboxOnChange}></SidebarItem>
+                                <SidebarItem key={station.apikey} index={displayIndex} station={station} checkboxOnChange={this.checkboxOnChange}></SidebarItem>
                             );
                         }
                     })
