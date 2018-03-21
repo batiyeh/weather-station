@@ -30,6 +30,7 @@ class Navigation extends Component {
         this.toggleAlertModal = this.toggleAlertModal.bind(this);
         this.renderAlerts = this.renderAlerts.bind(this);
         this.renderHeader = this.renderHeader.bind(this);
+        this.closeModal = this.closeModal.bind(this);
 
         this.state = {
             dropdownOpen: false,
@@ -115,6 +116,11 @@ class Navigation extends Component {
             humidity: humidity,
             time: time,
             modal: !this.state.modal
+        })
+    }
+    closeModal(){
+        this.setState({
+            modal: false
         })
     }
 

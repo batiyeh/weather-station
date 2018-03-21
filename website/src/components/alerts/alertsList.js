@@ -170,6 +170,15 @@ class AlertsList extends Component {
             </div>)
         }
     }
+    renderCreateButton(){
+        if(this.state.stations.length === 0){
+            return <Button type='button' className="btn btn-secondary add-btn" onClick={this.toggleAddAlert} disabled>Add</Button>
+        }
+        else{
+            return <Button type='button' className="btn btn-secondary add-btn" onClick={this.toggleAddAlert}>Add</Button>
+ 
+        }
+    }
     //parses the current cards in this.state.alerts
     //some alerts have multiple values so the id's need to be compared before they are added to the array
     renderCards(){
@@ -310,7 +319,7 @@ class AlertsList extends Component {
                         <h4>Alert me when...</h4>
                     </div>
                     <div className="col-4 right no-padding-right">
-                        <Button type='button' className="btn btn-secondary add-btn" onClick={this.toggleAddAlert}>Add</Button>
+                        {this.renderCreateButton()}
                     </div>
                 </div>
                 <div className='row'> 
