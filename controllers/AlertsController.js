@@ -24,6 +24,7 @@ router.post('/create', async function(req, res){
     var webpage = req.body.webpage;
     var threshold = req.body.threshold;
 
+    var apikey = await Station.where({station_name: station}).fetch();
     //prevents user from submitting blank value
     if(keyword === 'between' && !secondValue){
         return res.status(404);
@@ -31,7 +32,7 @@ router.post('/create', async function(req, res){
     //prevents user from submitting blank value or not selecting an alert method
     if(value && (email || sms || webpage)){
         var newAlert = await new Alerts({
-            station_name: station,
+            apikey: apikey.attributes.apikey,
             type: datatype,
             keyword: keyword,
             threshold: threshold,
@@ -62,7 +63,7 @@ router.post('/create', async function(req, res){
             await new AlertValues({
                 value: value,
                 alert_id: newAlert.attributes.id
-            })
+            }).save();
         }
         if(secondValue){
             await new AlertValues({
@@ -80,9 +81,10 @@ router.post('/webpage', async function(req, res){
     var alerts = []
     if(req.user){    
         alerts = await knex('triggeredalerts')
-        .select('triggeredalerts.triggered_id', 'alertvalues.value', 'alerts.alert_id', 'alerts.type','alerts.keyword', 'alerts.station_name', 'triggeredalerts.read', 'triggeredalerts.temperature', 'triggeredalerts.humidity', 'triggeredalerts.pressure', 'triggeredalerts.triggered_at')
+        .select('triggeredalerts.triggered_id', 'alertvalues.value', 'alerts.alert_id', 'stations.station_name', 'alerts.type','alerts.keyword', 'triggeredalerts.read', 'triggeredalerts.temperature', 'triggeredalerts.humidity', 'triggeredalerts.pressure', 'triggeredalerts.triggered_at')
         .leftJoin('alerts', 'triggeredalerts.alert_id', '=', 'alerts.alert_id')
         .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
+        .leftJoin('stations', 'stations.apikey', '=','alerts.apikey')
         .where('alerts.username', '=', req.user)
         .where('triggeredalerts.method', '=', 'webpage')
         .where('triggeredalerts.cleared', '=', false)
@@ -123,7 +125,8 @@ router.post('/', async function(req, res){
 
     //selects all alerts for user, joins alerts and alertvalues based on alert_id
     var alerts = await knex('alerts')
-    .select('alerts.alert_id', 'alerts.station_name', 'alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alerts.threshold', 'alertvalues.value')
+    .select('alerts.alert_id', 'stations.station_name', 'alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alerts.threshold', 'alertvalues.value')
+    .leftJoin('stations', 'stations.apikey', '=','alerts.apikey')
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
     .where('alerts.username', '=', req.user)
     .where('alerts.deleted','=', false)
@@ -131,10 +134,11 @@ router.post('/', async function(req, res){
     var stations = await Station.fetchAll();
 
     var historicAlerts = await knex('triggeredalerts')
-    .distinct('triggeredalerts.triggered_at', 'alerts.station_name', 'alerts.type', 'alerts.keyword')
+    .distinct('triggeredalerts.triggered_at', 'stations.station_name', 'alerts.type', 'alerts.keyword')
     .select('triggeredalerts.triggered_id', 'alertvalues.value')
     .leftJoin('alerts', 'triggeredalerts.alert_id', '=', 'alerts.alert_id')
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
+    .leftJoin('stations', 'stations.apikey', '=','alerts.apikey')
     .where('alerts.username', '=', req.user)
     .orderBy('triggeredalerts.triggered_id')
 
@@ -167,6 +171,8 @@ router.post('/:id', async function(req,res){
     var webpage = req.body.webpage;
     var threshold = req.body.threshold;
 
+    var apikey = await Station.where({station_name: station}).fetch();
+
     //prevents user from entering blank value
     if(keyword === 'between' && !secondValue){
         return res.status(404);
@@ -175,7 +181,7 @@ router.post('/:id', async function(req,res){
     //Prevents user from submitting blank value or not selecting an alert method
     if(value && (email || sms || webpage)){
         await Alerts.where({alert_id: req.params.id}).save({
-            station_name: station,
+            apikey: apikey.attributes.apikey,
             type: datatype,
             threshold: threshold,
             keyword: keyword

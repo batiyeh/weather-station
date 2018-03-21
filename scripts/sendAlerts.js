@@ -2,17 +2,20 @@ const knex = require('knex')(require('../knexfile'))
 const nodemailer = require('nodemailer');
 const Alerts = require('../models/Alerts');
 const TriggeredAlerts = require('../models/TriggeredAlerts');
+
 const moment = require('moment');
 moment().format();
 
 getAlerts = async () =>{
     //Gets all alerts currently in database and the user's email address/phone
     var alerts = await knex('alerts')
-    .select('alerts.alert_id', 'alerts.station_name', 'alerts.type', 'alerts.keyword' ,'alerts.threshold' , 'alerts.last_triggered', 'alertvalues.value', 
+    .select('alerts.alert_id', 'stations.station_name', 'alerts.type', 'alerts.keyword' ,'alerts.threshold' , 'alerts.last_triggered', 'alertvalues.value', 
     'alertmethods.method', 'alerts.username', 'users.email', 'users.phone')
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
     .leftJoin('alertmethods', 'alerts.alert_id', '=', 'alertmethods.alert_id')
     .leftJoin('users', 'alerts.username', '=', 'users.username')
+    .leftJoin('stations', 'stations.apikey', '=','alerts.apikey')
+
     .where('alerts.deleted', '=', false)
     return alerts;
 }

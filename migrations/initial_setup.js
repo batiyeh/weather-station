@@ -49,7 +49,7 @@ exports.up = function(knex, Promise) {
             table.string('threshold');
             table.boolean('deleted');
             table.timestamp('last_triggered');
-            table.string('station_name', 64);
+            table.string('apikey').references('apikey').inTable('stations').onDelete('CASCADE').onUpdate('CASCADE');
             table.string('username').references('username').inTable('users').onDelete('SET NULL').onUpdate('CASCADE');
         })
         .createTable('alertvalues', function(table){
