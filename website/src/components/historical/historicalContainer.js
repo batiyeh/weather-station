@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import '../../styles/historical.css';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap';
 import TemperatureGraph from './temperatureGraph'
+import PressureGraph from './pressureGraph'
+import HumidityGraph from './humidityGraph'
 import DatePicker  from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
 var moment = require('moment');
@@ -97,9 +99,30 @@ class HistoricalContainer extends Component{
 
     renderGraph(){
         if(this.state.sensorType === 'temperature') {
-            console.log(this.state.stationsData);
             return(
                 <TemperatureGraph className="row graph"
+                    data={this.state.stationsData}
+                    from={this.state.fromDate}
+                    to={this.state.toDate}
+                    height={500}
+                    width={800}
+                />
+            )
+        }
+        else if(this.state.sensorType === 'pressure'){
+            return(
+                <PressureGraph className="row graph"
+                    data={this.state.stationsData}
+                    from={this.state.fromDate}
+                    to={this.state.toDate}
+                    height={500}
+                    width={800}
+                />
+            )
+        }
+        else if(this.state.sensorType === 'humidity'){
+            return(
+                <HumidityGraph className="row graph"
                     data={this.state.stationsData}
                     from={this.state.fromDate}
                     to={this.state.toDate}
