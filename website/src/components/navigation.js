@@ -44,8 +44,8 @@ class Navigation extends Component {
             station_name: null,
             keyword: null,
             type: null,
-            value1: null,
-            value2: null,
+            value: null,
+            secondValue: null,
             unread: false,
             navShown: false,
         }
@@ -54,15 +54,15 @@ class Navigation extends Component {
     }
     //fetch all alerts when navbar mounts
     componentDidMount = async () => {
-        await this.gettriggeredalerts();
-        this.interval = setInterval(this.gettriggeredalerts, 5000);
+        await this.getTriggeredAlerts();
+        this.interval = setInterval(this.getTriggeredAlerts, 5000);
     }
     //clear interval when navbar unmounts
     componentWillUnmount() {
         clearInterval(this.interval);
     }
 
-    gettriggeredalerts = async () => {
+    getTriggeredAlerts = async () => {
         var alerts = [];
         //fetch call to gather any triggered webpage alerts for user
         var response = await fetch('/api/alerts/webpage', {method: 'post', credentials: 'include'})
@@ -103,13 +103,13 @@ class Navigation extends Component {
         })
     }
     //when user clicks on alert from dropdown, modal will toggle and values will be set for that specific alert
-    toggleAlertModal(station_name, type, keyword, value1, value2, temperature, pressure, humidity, time){
+    toggleAlertModal(station_name, type, keyword, value, secondValue, temperature, pressure, humidity, time){
         this.setState({
             station_name: station_name,
             type : type,
             keyword: keyword,
-            value1: value1,
-            value2: value2,
+            value: value,
+            secondValue: secondValue,
             temperature: temperature,
             pressure: pressure,
             humidity: humidity,
@@ -147,11 +147,11 @@ class Navigation extends Component {
 
     //renders the header of the alert modal based on what alert the user is looking at
     renderHeader(){
-        if(this.state.value2){
-            return(<ModalHeader toggle={this.toggleAlertModal}> {this.state.station_name}'s {this.state.type} is {this.state.keyword} {this.state.value1} and {this.state.value2} </ModalHeader>)
+        if(this.state.secondValue){
+            return(<ModalHeader toggle={this.toggleAlertModal}> {this.state.station_name}'s {this.state.type} is {this.state.keyword} {this.state.value} and {this.state.secondValue} </ModalHeader>)
         }
         else{
-            return(<ModalHeader toggle={this.toggleAlertModal}> {this.state.station_name}'s {this.state.type} is {this.state.keyword} {this.state.value1} </ModalHeader>)
+            return(<ModalHeader toggle={this.toggleAlertModal}> {this.state.station_name}'s {this.state.type} is {this.state.keyword} {this.state.value} </ModalHeader>)
         }
     }
 
@@ -164,7 +164,7 @@ class Navigation extends Component {
         this.state.alerts.map((alerts, index) =>{
             if(alerts.keyword === 'between'){
                 webpageAlertCards.push(
-                    <Card onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.firstValue, alerts.secondValue, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)} className='alert-notification-card'> {alerts.station_name}'s {alerts.type} is {alerts.keyword} {alerts.firstValue} and {alerts.secondValue}</Card>
+                    <Card onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, alerts.secondValue, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)} className='alert-notification-card'> {alerts.station_name}'s {alerts.type} is {alerts.keyword} {alerts.value} and {alerts.secondValue}</Card>
                 );
             
             }
@@ -191,7 +191,7 @@ class Navigation extends Component {
     dismissAlerts(){
         fetch('/api/alerts/webpage', {method: 'delete', credentials: 'include'})
 
-        this.gettriggeredalerts();
+        this.getTriggeredAlerts();
     }
 
     render() {
