@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getMarkerStyle, getContainerStyle, FadeAndSlideUp, labelStyle } from './markerStyles'
+import { getMarkerStyle, getContainerStyle, FadeAndSlideUpInfo, FadeAndSlideUpLabel } from './markerStyles'
 import '../../styles/map.css';
 
 class Marker extends Component {
@@ -27,6 +27,7 @@ class Marker extends Component {
 
     // Updates the hover state attribute
     updateHover(hover) {
+        if (this.state.label === true) this.updateLabel(!this.state.label);
         this.setState({
             hover: hover
         })
@@ -39,17 +40,11 @@ class Marker extends Component {
     }
 
     renderLabel(label){
-        if (label){
-            return(
-                <div style={labelStyle} className="map-label">
-                    <div className="col-12 row">
-                        <p className="marker-info-title">{this.state.station.station_name}</p>
-                    </div>
-                </div>
-            );
-        }
-
-        else return null;
+        return(
+            <FadeAndSlideUpLabel in={this.state.hover} label={this.state.label}>
+                <span className="marker-label-title">{this.state.station.station_name}</span>
+            </FadeAndSlideUpLabel>
+        );
     }
 
     render() {
@@ -58,14 +53,14 @@ class Marker extends Component {
         
         return (
             <div style={cStyle} className="marker-container">
-                <FadeAndSlideUp in={this.state.hover}>
+                <FadeAndSlideUpInfo in={this.state.hover}>
                     <div className="col-12">
                         <p className="marker-info-title">{this.state.station.station_name}</p>
                     </div>
                     <p className="marker-info-text">temperature: {this.props.station.temperature} &deg;F</p>
                     <p className="marker-info-text">pressure: {this.props.station.pressure} hPa</p>
                     <p className="marker-info-text">humidity: {this.props.station.humidity}%</p>
-                </FadeAndSlideUp>
+                </FadeAndSlideUpInfo>
                 { this.renderLabel(this.state.label) }
                 <i style={mStyle} className="fa fa-map-marker marker-icon" aria-hidden="true"></i>
             </div>

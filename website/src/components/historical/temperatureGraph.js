@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Alert } from 'reactstrap';
 import '../../styles/historical.css';
 import { Line, Chart} from 'react-chartjs-2';
 var moment = require('moment');
@@ -13,11 +14,15 @@ class TemperatureGraph extends Component{
         this.state = {
             data: this.props.data,
             height: this.props.height,
-            from: "2018-03-15 00:00:00",
-            to: "2018-03-15 23:59:00",
+            from: this.props.from,
+            to: this.props.to,
             width: this.props.width,
             datasets: {"labels": [], "datasets": []},
         }
+    }
+
+    componentWillReceieveProps(nextProps){
+        console.log(nextProps);
     }
 
     componentDidMount(){
@@ -29,13 +34,18 @@ class TemperatureGraph extends Component{
             this.createLines(station_name, data["temp"], data["dates"]);
         }
     }
+    componentWillUnmount(){
+        colorIndex =0;
+    }
+
 
     generateLabels(from, to){
         var labels = [];
         from = moment(from);
         to = moment(to);
         for (var m = moment(from); m.isBefore(to); m.add(15, 'minutes')) {
-            labels.push(m.format('YYYY-MM-DD HH:MM:SS'));
+
+            labels.push(m.format('YYYY-MM-DD HH:mm:ss'));
         }
         
         return labels;
@@ -84,7 +94,7 @@ class TemperatureGraph extends Component{
 
     render(){
         if (this.state.datasets["datasets"].length > 0){
-            console.log(this.state.datasets);
+            //console.log(this.state.datasets);
             return(
                 <div className='graph'>
                     <Line
@@ -147,8 +157,8 @@ class TemperatureGraph extends Component{
 
         else{
             return(
-                <div>
-                    <h2>No Stored Data For Last 24 hours.</h2>
+                <div className='col-12 no-data-alert'>
+                    <Alert color="primary">There is no weather data for this filter.</Alert>
                 </div>
             );
         }
