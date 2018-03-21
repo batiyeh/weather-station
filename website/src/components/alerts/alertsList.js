@@ -15,6 +15,7 @@ class AlertsList extends Component {
             value2: null,
             alerts: [],
             stations: [],
+            historicAlerts: [],
             email: true,
             sms: false,
             webpage: false,
@@ -30,6 +31,7 @@ class AlertsList extends Component {
     //when component loads, will call getAlerts()
     componentDidMount = async () =>{
         await this.getAlerts();
+
     }
     //gets all current alerts and stations for the user and stores it in the state
     getAlerts = async () => {
@@ -39,10 +41,13 @@ class AlertsList extends Component {
         var body = await response.json();
         alerts = body.alerts;
         stations = body.stations;
-        
+        body.historicAlerts.map(a =>{
+            console.log(a);
+        })
         //puts alerts, stations in state. Sets station to first station in stations array
         this.setState({alerts: alerts, stations: stations, station:stations[0].station_name});
     }
+
     //takes the current data in the state and sends it to the backend, the current alerts are updated and the modal is closed
     createAlert = async () => {
         await fetch('/api/alerts/create', 

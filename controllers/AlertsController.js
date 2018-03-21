@@ -88,32 +88,8 @@ router.post('/webpage', async function(req, res){
         // .orderBy('alertvalues.value', 'asc')
         .orderBy('triggeredalerts.triggered_id', 'asc')
 
-        var newAlerts = [];
-        var currentID = null;
-        var grabbedValue= null;
-        alerts.map((alerts, index) =>{
-            if(alerts.keyword === 'between'){
-                if(currentID !== alerts.triggered_id){
-                    grabbedValue = alerts.value;
-                    currentID = alerts.triggered_id;
-                }
-                else{
-                    if(grabbedValue > alerts.value){
-                        alerts.firstValue = alerts.value;
-                        alerts.secondValue = grabbedValue;
-                    }
-                    else{
-                        alerts.firstValue = grabbedValue;
-                        alerts.secondValue = alerts.value;
-                    }
-                    newAlerts.push(alerts);
-                }
-            }
-            else{
-                newAlerts.push(alerts);
-            }
-        })
-        alerts = newAlerts;
+        alerts = await parseBetween(alerts);
+
     }
     return res.status(200).json({alerts});
 })
@@ -153,8 +129,19 @@ router.post('/', async function(req, res){
 
     var stations = await Station.fetchAll();
 
-    return res.status(200).json({alerts, stations});
+    var historicAlerts = await knex('triggeredalerts')
+    .distinct('triggeredalerts.triggered_at', 'alerts.station_name', 'alerts.type', 'alerts.keyword')
+    .select('triggeredalerts.triggered_id', 'alertvalues.value')
+    .leftJoin('alerts', 'triggeredalerts.alert_id', '=', 'alerts.alert_id')
+    .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
+    .where('alerts.username', '=', req.user)
+    .orderBy('triggeredalerts.triggered_id')
+
+    historicAlerts = await parseBetween(historicAlerts);
+    
+    return res.status(200).json({alerts, stations, historicAlerts});
 })
+
 //returns all alert methods selected for that alert
 router.get('/:id', async function(req, res){
     var methods = await knex('alertmethods')
@@ -238,4 +225,33 @@ router.delete('/:id', async function(req, res){
     res.status(200);
 })
 
+parseBetween = async(alerts) => {
+    var newAlerts = [];
+    var currentID = null;
+    var grabbedValue= null;
+
+    alerts.map(alerts =>{
+        if(alerts.keyword === 'between'){
+            if(currentID !== alerts.triggered_id){
+                grabbedValue = alerts.value;
+                currentID = alerts.triggered_id;
+            }
+            else{
+                if(grabbedValue > alerts.value){
+                    alerts.firstValue = alerts.value;
+                    alerts.secondValue = grabbedValue;
+                }
+                else{
+                    alerts.firstValue = grabbedValue;
+                    alerts.secondValue = alerts.value;
+                }
+                newAlerts.push(alerts);
+            }
+        }
+        else{
+            newAlerts.push(alerts);
+        }
+    })
+    return newAlerts;
+};
 module.exports = router;
