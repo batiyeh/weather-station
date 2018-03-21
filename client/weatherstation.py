@@ -8,7 +8,7 @@ from textstorage import TextStorage
 from sensors import Sensors
 
 class Client(object):
-    URL = "http://localhost:8000"
+    URL = "http://67.205.153.103:5000"
     WAIT_TIME = 5
 
     def main(self):
