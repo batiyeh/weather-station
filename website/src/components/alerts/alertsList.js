@@ -38,15 +38,14 @@ class AlertsList extends Component {
     getAlerts = async () => {
         var alerts = [];
         var stations = [];
+        var historicAlerts = [];
         var response = await fetch('/api/alerts/', {method: 'post', credentials:'include'});
         var body = await response.json();
         alerts = body.alerts;
         stations = body.stations;
-        body.alerts.map(a =>{
-            console.log(a);
-        })
+        historicAlerts = body.historicAlerts;
         //puts alerts, stations in state. Sets station to first station in stations array
-        this.setState({alerts: alerts, stations: stations, station:stations[0].station_name});
+        this.setState({alerts: alerts, stations: stations, historicAlerts: historicAlerts, station:stations[0].station_name});
     }
 
     //takes the current data in the state and sends it to the backend, the current alerts are updated and the modal is closed
@@ -168,10 +167,10 @@ class AlertsList extends Component {
     renderHistoricCard(){
         var cards = []
         this.state.historicAlerts.map(alert => {
-            if(alert.keyword === 'between'){
                 cards.push(<HistoricAlertCard alert={alert}/>)
-            }
         })
+        
+        return cards;
     }
     //populates the station name dropdown with all stations
     renderStations(){
@@ -285,18 +284,28 @@ class AlertsList extends Component {
                     </ModalFooter>
                 </Form>
             </Modal>
-            <div className="row col-12 station-list-header">
-                <div className="col-8 left alert-title">
-                    <h4>Alert me when...</h4>
-                </div>
-                <div className="col-4 right no-padding-right">
-                    <Button type='button' className="btn btn-secondary add-btn" onClick={this.toggleAddAlert}>Add</Button></div>
+                <div className="row col-12 alert-list-header">
+                    <div className="col-8 left alert-title">
+                        <h4>Alert me when...</h4>
+                    </div>
+                    <div className="col-4 right no-padding-right">
+                        <Button type='button' className="btn btn-secondary add-btn" onClick={this.toggleAddAlert}>Add</Button>
+                    </div>
                 </div>
                 <div className='row'> 
                     {this.renderCards()}
                     {this.renderEmpty()}
+                </div>            
+                <div className="row col-12 -list-header">
+                    <div className='col-8 left historic-title'>
+                        <h4>Alert History: </h4>
+                    </div>
+                    <div className='row'>
+                        {this.renderHistoricCard()}
+                    </div>
                 </div>
             </div>
+
         )
     }
 }
