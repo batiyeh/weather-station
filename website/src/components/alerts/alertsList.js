@@ -200,7 +200,18 @@ class AlertsList extends Component {
             }
         })
         
-        return cards;
+        if(cards.length === 0){
+            return (
+                <div class="col-12">
+                    <Alert className="no-alerts-alert" color="primary">
+                        There are no alerts for this date.
+                    </Alert>
+                </div>      
+            )
+        }
+        else{
+              return cards;
+        }
     }
     //populates the station name dropdown with all stations
     renderStations(){
