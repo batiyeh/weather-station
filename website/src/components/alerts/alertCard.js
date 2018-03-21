@@ -12,8 +12,8 @@ class AlertCard extends Component {
             station: this.props.alerts.station_name,
             keyword: this.props.alerts.keyword,
             datatype: this.props.alerts.type,
-            value1: this.props.alerts.value,
-            value2: this.props.value2,
+            value: this.props.alerts.value,
+            secondValue: this.props.alerts.secondValue,
             email: false,
             sms: false,
             webpage: false,
@@ -42,8 +42,8 @@ class AlertCard extends Component {
                 station: this.state.station,
                 datatype: this.state.datatype,
                 keyword: this.state.keyword,
-                value1: this.state.value1,
-                value2: this.state.value2,
+                value: this.state.value,
+                secondValue: this.state.secondValue,
                 email: this.state.email,
                 sms: this.state.sms,
                 webpage: this.state.webpage,
@@ -55,6 +55,7 @@ class AlertCard extends Component {
             },
             credentials:'include'
         });
+        this.props.update();
         this.toggleAlert();
 
     }
@@ -114,15 +115,15 @@ class AlertCard extends Component {
         })
     }
 
-    onValue1Change(value){
+    onValueChange(value){
         this.setState({
-            value1: value
+            value: value
         })
     }
 
-    onValue2Change(value){
+    onSecondValueChange(value){
         this.setState({
-            value2: value
+            secondValue: value
         })
     }
 
@@ -157,10 +158,10 @@ class AlertCard extends Component {
                 <div>
                     <div className='form-group'> 
                         <Label>Values</Label>
-                        <Input type='text' name='value1' id='value1' value={this.state.value1} onChange={e => this.onValue1Change(e.target.value)}/>
+                        <Input type='text' name='value' id='value' value={this.state.value} onChange={e => this.onValueChange(e.target.value)}/>
                     </div>
                     <div className='form-group'>
-                        <Input type='text' name='value2' id='value2' value={this.state.value2} onChange={e => this.onValue2Change(e.target.value)}/>
+                        <Input type='text' name='secondValue' id='secondValue' value={this.state.secondValue} onChange={e => this.onSecondValueChange(e.target.value)}/>
                     </div>
                 </div>
             );
@@ -169,7 +170,7 @@ class AlertCard extends Component {
             return (
             <div className='form-group'> 
                 <Label>Value</Label>
-                <Input type='text' name='value1' id='value1' value={this.state.value1} onChange={e => this.onValue1Change(e.target.value)}/>
+                <Input type='text' name='value1' id='value' value={this.state.value} onChange={e => this.onValueChange(e.target.value)}/>
             </div>)
         }
     }
@@ -177,6 +178,7 @@ class AlertCard extends Component {
         var options = []
         this.state.stations.map((station, index) => {
             options.push(<option key={"name" + index} value={station.station_name}>{station.station_name}</option>)
+            return null;
         })
         return options;
     }
@@ -208,12 +210,12 @@ class AlertCard extends Component {
     getParams(){
         if(this.state.keyword === 'between'){
             return(
-                <div> {this.state.station}'s {this.state.datatype} is {this.state.keyword} {this.state.value1} and {this.state.value2} </div>
+                <div> {this.state.station}'s {this.state.datatype} is {this.state.keyword} {this.state.value} and {this.state.secondValue} </div>
             )
         }
         else{
             return(
-                <div> {this.state.station}'s {this.state.datatype} is {this.state.keyword} {this.state.value1} </div>
+                <div> {this.state.station}'s {this.state.datatype} is {this.state.keyword} {this.state.value} </div>
 
             )
         }
@@ -225,8 +227,8 @@ class AlertCard extends Component {
             station: this.props.alerts.station_name,
             keyword: this.props.alerts.keyword,
             datatype: this.props.alerts.type,
-            value1: this.props.alerts.value,
-            value2: this.props.value2,
+            value: this.props.alerts.value,
+            secondValue: this.props.alerts.secondValue,
             email: this.state.origEmail,
             webpage: this.state.origWebpage,
             sms: this.state.origSms,
@@ -239,6 +241,7 @@ class AlertCard extends Component {
     //Page does not update after deletion, needs to be fixed
     deleteAlert(){
         fetch('/api/alerts/' + this.props.alerts.alert_id, {method: 'delete'})
+        this.props.update();
         this.toggleAlert();
     }
 

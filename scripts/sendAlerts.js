@@ -1,18 +1,22 @@
 const knex = require('knex')(require('../knexfile'))
 const nodemailer = require('nodemailer');
 const Alerts = require('../models/Alerts');
-const WebpageAlerts = require('../models/WebpageAlerts');
+const TriggeredAlerts = require('../models/TriggeredAlerts');
+
 const moment = require('moment');
 moment().format();
 
 getAlerts = async () =>{
     //Gets all alerts currently in database and the user's email address/phone
     var alerts = await knex('alerts')
-    .select('alerts.alert_id', 'alerts.station_name', 'alerts.type', 'alerts.keyword' ,'alerts.threshold' , 'alerts.last_triggered', 'alertvalues.value', 
+    .select('alerts.alert_id', 'stations.station_name', 'alerts.type', 'alerts.keyword' ,'alerts.threshold' , 'alerts.last_triggered', 'alertvalues.value', 
     'alertmethods.method', 'alerts.username', 'users.email', 'users.phone')
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
     .leftJoin('alertmethods', 'alerts.alert_id', '=', 'alertmethods.alert_id')
     .leftJoin('users', 'alerts.username', '=', 'users.username')
+    .leftJoin('stations', 'stations.apikey', '=','alerts.apikey')
+
+    .where('alerts.deleted', '=', false)
     return alerts;
 }
 getWeather = async () => {
@@ -23,43 +27,60 @@ getWeather = async () => {
     .select('weather.*', 'stations.station_name', 'stations.last_connected', 'stations.connected')
     return weather;
 }
+
 sendAlerts = async () => {
     var triggered = []
     var alerts = await getAlerts();
     var weather = await getWeather();
 
+    var id = null;
+    var method = null;
+
+    alerts.map(map =>{
+        if(map.keyword === 'between'){
+            id = map.alert_id;
+            method = map.method;
+            alerts.map(map2 =>{
+                if((map2.alert_id === id) && (map2.method === method) && (map2.value > map.value)){
+                    map.secondValue = map2.value;
+                    triggered.push(map);
+                }
+            })
+        }
+        else{
+            triggered.push(map)
+        }
+    })
+
     //Checks each alert to see if it has been triggered
     //Triggered alerts are added to an array
+    var newTrig = []
     var nextIndex = null;
     var value1 = null;
-    alerts.map((alerts, index) =>{
+    triggered.map((triggered, index) =>{
         weather.map(weather => {
-            if(alerts.keyword === 'above'){
-                if((weather[alerts.type] > alerts.value) && (weather.station_name === alerts.station_name)){
-                    triggered.push(alerts);
+            if(triggered.keyword === 'above'){
+                if((weather[triggered.type] > triggered.value) && (weather.station_name === triggered.station_name)){
+                    newTrig.push(triggered);
                 }
             }
-            else if((alerts.keyword === 'between') && (weather.station_name === alerts.station_name)){
-                if(nextIndex != index){
-                    value1 = alerts.value;
-                    nextIndex = index + 1;
-                }
-                else{
-                    alerts.firstValue = value1;
-                    triggered.push(alerts);
+            else if((triggered.keyword === 'between') && (weather.station_name === triggered.station_name)){
+                if((weather[triggered.type] > triggered.value) && (weather[triggered.type] < triggered.secondValue) && (weather.station_name === triggered.station_name)){
+                    newTrig.push(triggered);
                 }
             }
-            else if((alerts.keyword === 'below')  && (weather.station_name === alerts.station_name)){
-                if(weather[alerts.type] < alerts.value){
-                    triggered.push(alerts);
+            else if((triggered.keyword === 'below')  && (weather.station_name === triggered.station_name)){
+                if(weather[triggered.type] < triggered.value){
+                    newTrig.push(triggered);
                 }
             }
         })
     })
+    triggered = newTrig;
 
-    //checks if any alerts in the triggered array have been triggered recently
-    //if the time is greater than the threshold, they are added to array newTrig
-    var newTrig = [];
+    // checks if any alerts in the triggered array have been triggered recently
+    // if the time is greater than the threshold, they are added to array newTrig
+    newTrig = [];
     triggered.map(triggered =>{
         if(triggered.threshold === '1 hour'){
             if((1000 * 60 * 60) < (moment.utc() - triggered.last_triggered)){
@@ -89,27 +110,25 @@ sendAlerts = async () => {
 
     //Checks the alert method on each triggered alert and calls the corresponding function
     triggered.map(triggered =>{
-        if(triggered.method === 'email'){
-            sendEmail(triggered, weather);
-        }
-        else if(triggered.method === 'sms'){
-            sendSMS(triggered, weather);
-        }
-        else if(triggered.method === 'webpage'){
-            sendWebpage(triggered, weather);
-        }
+        weather.map(station=>{
+            if(station.station_name === triggered.station_name){
+                if(triggered.method === 'email'){
+                    sendEmail(triggered, station);
+                }
+                else if(triggered.method === 'sms'){
+                    sendSMS(triggered, station);
+                }
+                else if(triggered.method === 'webpage'){
+                    sendWebpage(triggered, station);
+                }
+            }
+        })
     })
 }
 //Sends the user an email for the triggered alert
 //Email includes the alert that was triggered and
 //the weather data at that station when it was triggered
-sendEmail = async (triggered, weather) =>{
-    var triggeredStation = null;
-    weather.map(weather=>{
-        if(weather.station_name === triggered.station_name){
-            triggeredStation = weather;
-        }
-    })
+sendEmail = async (triggered, station) =>{
 
     var transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
@@ -121,17 +140,17 @@ sendEmail = async (triggered, weather) =>{
             pass: 'wayne123'
         }
     });
-    if(triggered.firstValue){
+    if(triggered.secondValue){
         var mailOptions = {
             to: triggered.email,
             from: 'wstationtestdod@gmail.com',
             subject: 'Inclement weather alert!',
             text: 'You are receiving this message because the following alert was triggered:\n\n'+
-            'The ' + triggered.type + ' is ' + triggered.keyword + ' ' + triggered.firstValue + ' and ' + triggered.value + ' at station: ' + triggered.station_name + '\n\n'+
+            'The ' + triggered.type + ' is ' + triggered.keyword + ' ' + triggered.value + ' and ' + triggered.secondValue + ' at station: ' + triggered.station_name + '\n\n'+
             'The current weather at ' + triggered.station_name + ' is: \n\n'+
-            'Temperature: ' + triggeredStation.temperature + '\n' +
-            'Pressure: ' + triggeredStation.pressure + '\n' +
-            'Humidity: ' + triggeredStation.humidity + '\n'
+            'Temperature: ' + station.temperature + '\n' +
+            'Pressure: ' + station.pressure + '\n' +
+            'Humidity: ' + station.humidity + '\n'
             
         };
     }
@@ -143,9 +162,9 @@ sendEmail = async (triggered, weather) =>{
             text: 'You are receiving this message because the following alert was triggered:\n\n'+
             'The ' + triggered.type + ' is ' + triggered.keyword + ' ' + triggered.value + ' at station: ' + triggered.station_name + '\n\n'+
             'The current weather at ' + triggered.station_name + ' is: \n\n'+
-            'Temperature: ' + triggeredStation.temperature + '\n' +
-            'Pressure: ' + triggeredStation.pressure + '\n' +
-            'Humidity: ' + triggeredStation.humidity + '\n'
+            'Temperature: ' + station.temperature + '\n' +
+            'Pressure: ' + station.pressure + '\n' +
+            'Humidity: ' + station.humidity + '\n'
             
         };
     }
@@ -154,24 +173,37 @@ sendEmail = async (triggered, weather) =>{
         //Alert user email has been sent
         done(err, 'done');
     });
+
+    new TriggeredAlerts({
+        method: 'email',
+        temperature: station.temperature,
+        pressure: station.pressure,
+        humidity: station.humidity,
+        alert_id: triggered.alert_id,
+    }).save()
 }
-sendSMS = async (triggered, weather) => {
+sendSMS = async (triggered, station) => {
+
+    new TriggeredAlerts({
+        method: 'sms',
+        temperature: station.temperature,
+        pressure: station.pressure,
+        humidity: station.humidity,
+        alert_id: triggered.alert_id,
+    }).save()
+
 
 }
-sendWebpage = async (triggered, weather) => {
-    var triggeredStation = null;
-    weather.map(weather=>{
-        if(weather.station_name === triggered.station_name){
-            triggeredStation = weather;
-        }
-    })
+sendWebpage = async (triggered, station) => {
 
-    await new WebpageAlerts({
+    new TriggeredAlerts({
+        method: 'webpage',
         read: false,
-        temperature: triggeredStation.temperature,
-        pressure: triggeredStation.pressure,
-        humidity: triggeredStation.humidity,
-        alert_id: triggered.alert_id
+        temperature: station.temperature,
+        pressure: station.pressure,
+        humidity: station.humidity,
+        alert_id: triggered.alert_id,
+        cleared: false
     }).save()
 }
 

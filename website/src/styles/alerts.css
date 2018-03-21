@@ -38,7 +38,12 @@
     margin-bottom: 20px;
 }
 
+.historic-title{
+    margin-top: 15px;
+}
+
 .no-alerts-alert{
+    margin-top: 10px !important;
     max-width: 600px;
     width: 100%;
     margin: auto;
