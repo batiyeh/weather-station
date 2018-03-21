@@ -10,7 +10,7 @@ class VerifyLoggedIn extends Component{
         }
     }
     //when component loads, calls function verify, if false is returned, sets redirect state to true
-    componentDidMount = async () => {        
+    componentWillMount = async () => {        
         if(!await this.verify()){
             this.setState({redirect: true});
         }

@@ -12,8 +12,8 @@ class AlertCard extends Component {
             station: this.props.alerts.station_name,
             keyword: this.props.alerts.keyword,
             datatype: this.props.alerts.type,
-            value1: this.props.alerts.value,
-            value2: this.props.value2,
+            value: this.props.alerts.value,
+            secondValue: this.props.alerts.secondValue,
             email: false,
             sms: false,
             webpage: false,
@@ -29,6 +29,11 @@ class AlertCard extends Component {
         this.onWebpageChange = this.onWebpageChange.bind(this);
         this.deleteAlert = this.deleteAlert.bind(this);
     }
+
+    componentDidMount(){
+        this.setAlertMethods();
+    }
+
     //passes the new values to the backend of an alert that the user is editing
     updateAlert = async () => {
         await fetch('/api/alerts/' + this.props.alerts.alert_id, 
@@ -37,8 +42,8 @@ class AlertCard extends Component {
                 station: this.state.station,
                 datatype: this.state.datatype,
                 keyword: this.state.keyword,
-                value1: this.state.value1,
-                value2: this.state.value2,
+                value: this.state.value,
+                secondValue: this.state.secondValue,
                 email: this.state.email,
                 sms: this.state.sms,
                 webpage: this.state.webpage,
@@ -50,85 +55,102 @@ class AlertCard extends Component {
             },
             credentials:'include'
         });
+        this.props.update();
         this.toggleAlert();
 
     }
+
+    setAlertMethods = async() => {
+        var {email, webpage, sms} = await this.getAlertMethods();
+        this.setState({
+            email: email,
+            webpage: webpage,
+            sms: sms,
+            origEmail: email,
+            origWebpage: webpage,
+            origSms: sms,
+        });
+    }
+
     //when the user opens the card modal, a fetch to get the alert methods for that alert is made
     //the state is then updated with that 
     getAlertMethods = async () => {
+        var email = false;
+        var webpage = false;
+        var sms = false;
         var response = await fetch('/api/alerts/' + this.props.alerts.alert_id, {method: 'get'})
         var body = await response.json();
-        body.methods.map(methodType=> {
-            if(methodType.method === 'email'){
-                this.setState({
-                    email: true
-                })
-            }
-            else if(methodType.method === 'sms'){
-                this.setState({
-                    sms: true
-                })
-            }
-            else if(methodType.method === 'webpage'){
-                this.setState({
-                    webpage: true
-                })
-            }
-        } )
-        this.toggleAlert();
+        body.methods.map(methodType => {
+            if (methodType.method === 'email') email = true; 
+            else if (methodType.method === 'sms') sms = true;
+            else if (methodType.method === 'webpage') webpage = true;
+        });
+        
+        return {email, webpage, sms};
     }
+
     //toggles edit alert modal
     toggleAlert(){
         this.setState({
             modal: !this.state.modal
         });
     }
+
     //when the user enters a new value, the state is updated with that value
     onStationChange(value){
         this.setState({
             station: value
         })
     }
+
     onDatatypeChange(value){
         this.setState({
             datatype: value
         })
     }
+
     onKeywordChange(value){
         this.setState({
             keyword: value
         })
     }
-    onValue1Change(value){
+
+    onValueChange(value){
         this.setState({
-            value1: value
+            value: value
         })
     }
-    onValue2Change(value){
+
+    onSecondValueChange(value){
         this.setState({
-            value2: value
+            secondValue: value
         })
     }
+
     onEmailChange(){
         this.setState({
             email: !this.state.email
         })
     }
+
     onSMSChange(){
         this.setState({
             sms: !this.state.sms
         })
     }
+
     onWebpageChange(){
         this.setState({
             webpage: !this.state.webpage
         })
     }
+
     onThresholdChange(value){
         this.setState({
             threshold: value
         })
     }
+
     //if the user has a keyword selected the requires multiple inputs, it will display it dynamically
     renderValues(){
         if(this.state.keyword === 'between'){
@@ -136,10 +158,10 @@ class AlertCard extends Component {
                 <div>
                     <div className='form-group'> 
                         <Label>Values</Label>
-                        <Input type='text' name='value1' id='value1' value={this.state.value1} onChange={e => this.onValue1Change(e.target.value)}/>
+                        <Input type='text' name='value' id='value' value={this.state.value} onChange={e => this.onValueChange(e.target.value)}/>
                     </div>
                     <div className='form-group'>
-                        <Input type='text' name='value2' id='value2' value={this.state.value2} onChange={e => this.onValue2Change(e.target.value)}/>
+                        <Input type='text' name='secondValue' id='secondValue' value={this.state.secondValue} onChange={e => this.onSecondValueChange(e.target.value)}/>
                     </div>
                 </div>
             );
@@ -148,53 +170,81 @@ class AlertCard extends Component {
             return (
             <div className='form-group'> 
                 <Label>Value</Label>
-                <Input type='text' name='value1' id='value1' value={this.state.value1} onChange={e => this.onValue1Change(e.target.value)}/>
+                <Input type='text' name='value1' id='value' value={this.state.value} onChange={e => this.onValueChange(e.target.value)}/>
             </div>)
         }
     }
     renderStations(){
         var options = []
-        this.state.stations.map(station => {
-            options.push(<option value={station.station_name}>{station.station_name}</option>)
+        this.state.stations.map((station, index) => {
+            options.push(<option key={"name" + index} value={station.station_name}>{station.station_name}</option>)
+            return null;
         })
         return options;
     }
+
+    renderMethods(){
+        var methodTags = [];
+        if (this.state.email === true){
+            methodTags.push(
+                <span key="email-key" className="method-tag">email</span>
+            );
+        }
+
+        if (this.state.sms === true){
+            methodTags.push(
+                <span key="sms-key" className="method-tag">sms</span>
+            );
+        }
+
+        if (this.state.webpage === true){
+            methodTags.push(
+                <span key="webpage-key" className="method-tag">webpage</span>
+            );
+        }
+
+        return methodTags;
+    }
+
     //prints out the params currently stored in the state of the card
     getParams(){
         if(this.state.keyword === 'between'){
             return(
-                <div> {this.state.station}'s {this.state.datatype} is {this.state.keyword} {this.state.value1} and {this.state.value2} </div>
+                <div> {this.state.station}'s {this.state.datatype} is {this.state.keyword} {this.state.value} and {this.state.secondValue} </div>
             )
         }
         else{
             return(
-                <div> {this.state.station}'s {this.state.datatype} is {this.state.keyword} {this.state.value1} </div>
+                <div> {this.state.station}'s {this.state.datatype} is {this.state.keyword} {this.state.value} </div>
 
             )
         }
     }
+
     //resets state back to it's default values
     resetValues(){
         this.setState({
             station: this.props.alerts.station_name,
             keyword: this.props.alerts.keyword,
             datatype: this.props.alerts.type,
-            value1: this.props.alerts.value,
-            value2: this.props.value2,
-            email: false,
-            sms: false,
-            webpage: false,
+            value: this.props.alerts.value,
+            secondValue: this.props.alerts.secondValue,
+            email: this.state.origEmail,
+            webpage: this.state.origWebpage,
+            sms: this.state.origSms,
             threshold: this.props.alerts.threshold
         })
         this.toggleAlert();
     }
+
     //Deletes the alert with the id passed to the backend
     //Page does not update after deletion, needs to be fixed
     deleteAlert(){
         fetch('/api/alerts/' + this.props.alerts.alert_id, {method: 'delete'})
-
+        this.props.update();
         this.toggleAlert();
     }
+
     render(){
         return(
             <div className='container'>
@@ -272,9 +322,17 @@ class AlertCard extends Component {
                         </ModalFooter>
                     </Form>
                 </Modal>
-                <Card onClick={this.getAlertMethods} className='alertCard'>
+                <Card onClick={this.toggleAlert} className='alertCard'>
                     <CardText className='cardText'>
                             {this.getParams()}
+                            <div className="row">
+                                <div className="col-6 alert-method-tags">
+                                    {this.renderMethods()}
+                                </div>
+                                <div className="col-6 right">
+                                    <span className="threshold-text">every: 1 hour</span>
+                                </div>
+                            </div>
                     </CardText>
                 </Card>
                 

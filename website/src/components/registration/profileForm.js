@@ -57,6 +57,7 @@ class ProfileForm extends Component {
             var allMessages = [];
             this.state.messages.map(messages => {
                 allMessages.push(<Alert className='alert-danger'>{messages.msg}</Alert>)
+                return null;
             })
             return allMessages
         }
@@ -93,25 +94,25 @@ class ProfileForm extends Component {
                         <div className='profile-info'>
                             {this.renderMessages()}
                             <div className='row'>
-                                <label for="username" class="col-sm-4 col-form-label">Username</label>
+                                <label class="col-sm-4 col-form-label">Username</label>
                                 <div class="form-group col-sm-8">
                                     <input id='username' name='username' type='username' className='form-control' placeholder={this.props.username} disabled/>
                                 </div>
                             </div>
                             <div className='row'>
-                                <label for="email" class="col-sm-4 col-form-label">Email</label>
+                                <label class="col-sm-4 col-form-label">Email</label>
                                 <div class="form-group col-sm-8">
                                     <input id='email' name='email' type='email' className='form-control' onChange={e => this.onEmailChange(e.target.value)} placeholder={this.props.email}/>
                                 </div>
                             </div>
                             <div className='row'>
-                                <label for="phone" class="col-sm-4 col-form-label">Phone</label>
+                                <label class="col-sm-4 col-form-label">Phone</label>
                                 <div class="form-group col-sm-8">
                                     <input id='phone' name='phone' type='text' className='form-control' onChange={e => this.onPhoneChange(e.target.value)} placeholder={this.props.phone}/>
                                 </div>
                             </div>
                             <div className='row'>
-                                <label for="phone" class="col-sm-4 col-form-label">Password</label>
+                                <label class="col-sm-4 col-form-label">Password</label>
                                 <div class="form-group col-sm-8">
                                     <Button type='button' className="btn btn-secondary btn-block profile-btn" onClick={this.toggleChangePassword}>Change</Button>
                                 </div>

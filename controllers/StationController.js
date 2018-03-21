@@ -55,5 +55,10 @@ router.route('/connected/:api_key')
         return res.json({result});
     })
 
+router.get('/download', function(req, res){
+    var file = __dirname + '/download/weatherstation.zip';
+    res.download(file);
+});
+
 
 module.exports = router;
