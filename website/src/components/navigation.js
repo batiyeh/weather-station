@@ -148,11 +148,18 @@ class Navigation extends Component {
     //changes the bell icon depending on if there are unread alerts or not
     renderBell(){
         if(this.state.unread){
+            var count = 0;
+            this.state.alerts.map(alert =>{
+                if(!alert.read){
+                    count++;
+                }
+                console.log('count: ', count);
+            })
             return(
                 <div className="bell">
                     <span className="fa-stack">
                         <i className="fa fa-bell fa-stack-1x" aria-hidden="true"></i>
-                        <strong class="fa-stack-1x unread-text">{this.state.alerts.length}</strong>
+                        <strong class="fa-stack-1x unread-text">{count}</strong>
                         <i class="fa fa-square fa-stack-1x unread" aria-hidden="true"></i>
                     </span>
                 </div>
