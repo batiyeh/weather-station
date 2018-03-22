@@ -103,13 +103,17 @@ class HistoricalContainer extends Component{
     processDataPoints(){
         var data;
         var senseData;
-        var time;
+        var date;
         for (var station_name in this.state.stationsData) {
             data = this.state.stationsData[station_name];
             senseData= data["sensorData"];
-            time = data["dates"];
+            date = data["dates"];
             for(var i = 0; i < senseData.length; i++){
-                console.log(time[i]);
+                var time = date[i];
+                var min = time.slice(14,16);
+                var sec = time.slice(17,19);
+                console.log(sec);
+                i = senseData.length;
             }
         }
     }
