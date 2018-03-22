@@ -81,9 +81,13 @@ class HistoricalContainer extends Component{
         if (body.temp) data = body.temp;            //storing the response from the fetch call in to variable data
         for (var i = 0; i < data.length; i++) {     // for loop to sort through returned data
             var station_name = data[i].station_name;        //we are storing the data in a dictionary based on station name
+            var preData = [];
+            var preDates = [];
             if (!stationsDict[station_name]) stationsDict[station_name] = {"sensorData": [], "dates": []};  // if the station name is not found in the dictionary yet add it with arrays to store data and time
             if (type === 'temperature') {
-                stationsDict[station_name]["sensorData"].push(data[i].temperature);             //data is returned in JSON format so based on what sensor type is how we determine to push it into the data array
+                //data is returned in JSON format so based on what sensor type is how we determine to push it into the data array
+                //stationsDict[station_name]["sensorData"].push(data[i].temperature);
+                preData.push(data[i].temperature);
             }
             else if(type === 'pressure'){
                 stationsDict[station_name]["sensorData"].push(data[i].pressure);
@@ -91,32 +95,33 @@ class HistoricalContainer extends Component{
             else if(type === 'humidity'){
                 stationsDict[station_name]["sensorData"].push(data[i].humidity);
             }
-            stationsDict[station_name]["dates"].push(data[i].created_at);               //Time is returned as created_at so for that we push it in to the dates array of the station in the dictionary
+            //Time is returned as created_at so for that we push it in to the dates array of the station in the dictionary
+            //stationsDict[station_name]["dates"].push(data[i].created_at);
+            preDates.push(data[i].created_at)
         }
         this.setState({
             stationsData: stationsDict,     // end the async function by setting the state so that the stations dictionary is stored in stations data
             loading: false                  // set loading to false so that graph can be rendered
         });
-        this.processDataPoints();
+        this.processDataPoints(stationsDict,preData,preDates);
     };
 
-    processDataPoints(){
+    processDataPoints(stationsDict){
         var data;
         var senseData;
         var date;
-        for (var station_name in this.state.stationsData) {
-            data = this.state.stationsData[station_name];
+        for (var station_name in stationsDict) {
+            data = stationsDict[station_name];
             senseData= data["sensorData"];
             date = data["dates"];
             for(var i = 0; i < senseData.length; i++){
-                var time = date[i];
-                var min = time.slice(14,16);
-                var sec = time.slice(17,19);
-                console.log(sec);
-                i = senseData.length;
+                if ( i % 180 === 0){
+                    console.log(senseData[i]);
+                }
             }
         }
     }
+
 
     //function upon hitting submit in the modal with new data to update the graph and close the modal
     updateGraph(){
