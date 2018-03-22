@@ -48,7 +48,7 @@ exports.up = function(knex, Promise) {
             table.string('keyword');
             table.string('threshold');
             table.boolean('deleted');
-            table.timestamp('last_triggered');
+            table.timestamp('last_triggered').defaultTo(    );
             table.string('apikey').references('apikey').inTable('stations').onDelete('CASCADE').onUpdate('CASCADE');
             table.string('username').references('username').inTable('users').onDelete('SET NULL').onUpdate('CASCADE');
         })
@@ -70,7 +70,7 @@ exports.up = function(knex, Promise) {
             table.float('temperature', 5, 2);
             table.float('humidity', 5, 2);
             table.float('pressure', 6, 2);
-            table.timestamp('triggered_at');
+            table.timestamp('created_at').defaultTo(knex.fn.now()).notNullable();
             table.integer('alert_id').references('alert_id').inTable('alerts').unsigned().onDelete('SET NULL').onUpdate('CASCADE');            
         })
 };
@@ -78,9 +78,9 @@ exports.up = function(knex, Promise) {
 
 // Drop all tables in case we need to undo a migration
 exports.down = function(knex, Promise) {
-    return knex.schema.dropTable('alertvalues')
+    return knex.schema.dropTable('alerts')
     .dropTable('alertmethods')
-    .dropTable('alerts')
+    .dropTable('alertvalues')
     .dropTable('latestweather')
     .dropTable('weather')
     .dropTable('stations')

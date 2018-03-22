@@ -19,9 +19,9 @@ except:
 
 class Sensors(object):
     def __init__(self):
-        self.temperature = 0.0
-        self.pressure = 0.0
-        self.humidity = 0.0
+        self.temperature = 50.0
+        self.pressure = 50.0
+        self.humidity = 50.0
         self.latitude = "n/a"
         self.longitude = "n/a"
         self.pin = 14

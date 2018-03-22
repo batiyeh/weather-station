@@ -193,7 +193,7 @@ class AlertsList extends Component {
         var cards = []
         this.state.historicAlerts.map(alert => {
 
-            var alertDate = new Date(alert.triggered_at.slice(0,10)+'T04:00:00.000Z');
+            var alertDate = new Date(alert.created_at.slice(0,10)+'T04:00:00.000Z');
             //only renders alerts for selected time by user
             if(this.state.date.getTime() === alertDate.getTime() ){
                 cards.push(<HistoricAlertCard alert={alert}/>)

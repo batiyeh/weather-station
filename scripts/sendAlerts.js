@@ -80,26 +80,26 @@ sendAlerts = async () => {
 
     // checks if any alerts in the triggered array have been triggered recently
     // if the time is greater than the threshold, they are added to array newTrig
-    newTrig = [];
-    triggered.map(triggered =>{
-        if(triggered.threshold === '1 hour'){
-            if((1000 * 60 * 60) < (moment.utc() - triggered.last_triggered)){
-                newTrig.push(triggered);
-            }
-        }
-        else if(triggered.threshold === '12 hours'){
-            if((1000 * 60 * 60 * 12) < (moment.utc() - triggered.last_triggered)){
-                newTrig.push(triggered);
-            }
-        }
-        else if(triggered.threshold === '24 hours'){
-            if((1000 * 60 * 60 * 24) < (moment.utc() - triggered.last_triggered)){
-                newTrig.push(triggered);
-            }
-        }
-    })
-    //triggered array changed to new values
-    triggered = newTrig;
+    // newTrig = [];
+    // triggered.map(triggered =>{
+    //     if(triggered.threshold === '1 hour'){
+    //         if((1000 * 60 * 60) < (moment.utc() - triggered.last_triggered)){
+    //             newTrig.push(triggered);
+    //         }
+    //     }
+    //     else if(triggered.threshold === '12 hours'){
+    //         if((1000 * 60 * 60 * 12) < (moment.utc() - triggered.last_triggered)){
+    //             newTrig.push(triggered);
+    //         }
+    //     }
+    //     else if(triggered.threshold === '24 hours'){
+    //         if((1000 * 60 * 60 * 24) < (moment.utc() - triggered.last_triggered)){
+    //             newTrig.push(triggered);
+    //         }
+    //     }
+    // })
+    // //triggered array changed to new values
+    // triggered = newTrig;
 
     //last_triggered value updated to current time on all triggered alerts
     triggered.map(triggered =>{

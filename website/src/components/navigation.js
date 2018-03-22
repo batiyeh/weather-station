@@ -182,12 +182,12 @@ class Navigation extends Component {
         this.state.alerts.map((alerts, index) =>{
             if(alerts.keyword === 'between'){
                 webpageAlertCards.push(
-                    <Card onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, alerts.secondValue, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)} className='alert-notification-card'> 
+                    <Card onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, alerts.secondValue, alerts.temperature, alerts.pressure, alerts.humidity, alerts.created_at)} className='alert-notification-card'> 
                         <div className="alert-text">
                             {alerts.station_name}'s {alerts.type} is {alerts.keyword} {alerts.value} and {alerts.secondValue}
                         </div>
                         <div className="alert-triggered-at">
-                            { moment(alerts.triggered_at).format("YYYY-MM-DD HH:mm:ss") }
+                            { moment(alerts.created_at).format("YYYY-MM-DD HH:mm:ss") }
                         </div>
                     </Card>
                 );
@@ -195,12 +195,12 @@ class Navigation extends Component {
             }
             else{
                 webpageAlertCards.push(
-                    <Card onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, null, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)} className="alert-notification-card">
+                    <Card onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, null, alerts.temperature, alerts.pressure, alerts.humidity, alerts.created_at)} className="alert-notification-card">
                         <div className="alert-text">
                             {alerts.station_name}'s {alerts.type} is {alerts.keyword}&nbsp;{alerts.value}
                         </div>
                         <div className="alert-triggered-at">
-                            { moment(alerts.triggered_at).format("YYYY-MM-DD HH:mm:ss") }
+                            { moment(alerts.created_at).format("YYYY-MM-DD HH:mm:ss") }
                         </div>
                     </Card>
                 );

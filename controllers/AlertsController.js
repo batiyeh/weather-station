@@ -88,7 +88,7 @@ router.post('/webpage', async function(req, res){
     var alerts = []
     if(req.user){    
         alerts = await knex('triggeredalerts')
-        .select('triggeredalerts.triggered_id', 'alertvalues.value', 'alerts.alert_id', 'stations.station_name', 'alerts.type','alerts.keyword', 'triggeredalerts.read', 'triggeredalerts.temperature', 'triggeredalerts.humidity', 'triggeredalerts.pressure', 'triggeredalerts.triggered_at')
+        .select('triggeredalerts.triggered_id', 'alertvalues.value', 'alerts.alert_id', 'stations.station_name', 'alerts.type','alerts.keyword', 'triggeredalerts.read', 'triggeredalerts.temperature', 'triggeredalerts.humidity', 'triggeredalerts.pressure', 'triggeredalerts.created_at')
         .leftJoin('alerts', 'triggeredalerts.alert_id', '=', 'alerts.alert_id')
         .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
         .leftJoin('stations', 'stations.apikey', '=','alerts.apikey')
@@ -141,7 +141,7 @@ router.post('/', async function(req, res){
     var stations = await Station.fetchAll();
 
     var historicAlerts = await knex('triggeredalerts')
-    .distinct('triggeredalerts.triggered_at', 'stations.station_name', 'alerts.type', 'alerts.keyword', 'triggeredalerts.pressure', 'triggeredalerts.temperature', 'triggeredalerts.humidity')
+    .distinct('triggeredalerts.created_at', 'stations.station_name', 'alerts.type', 'alerts.keyword', 'triggeredalerts.pressure', 'triggeredalerts.temperature', 'triggeredalerts.humidity')
     .select('triggeredalerts.triggered_id', 'alertvalues.value')
     .leftJoin('alerts', 'triggeredalerts.alert_id', '=', 'alerts.alert_id')
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')

@@ -16,7 +16,7 @@ class HistoricAlertCard extends Component {
             humidity: this.props.alert.humidity,
             value: this.props.alert.value,
             secondValue: this.props.alert.secondValue,
-            time: this.props.alert.triggered_at,
+            time: this.props.alert.created_at,
             modal: false
         };
         this.toggle = this.toggle.bind(this);
