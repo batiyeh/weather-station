@@ -27,12 +27,12 @@ class TemperatureGraph extends Component{
 
     componentDidMount(){
         var data;
-        var labels = this.generateLabels(this.state.from, this.state.to);       //pass the to and from dates to generate the x axis labels of our graph
-        this.updateLabels(labels);                                              //once generated update them
         for (var station_name in this.state.data) {
             data = this.state.data[station_name];
             this.createLines(station_name, data["sensorData"], data["dates"]);  //create the lines for each station based on its data that has been passec
         }
+        var labels = this.generateLabels(this.state.from, this.state.to, data["dates"]);       //pass the to and from dates to generate the x axis labels of our graph
+        this.updateLabels(labels);      //once generated update them
         console.log(data);
     }
     componentWillUnmount(){
@@ -40,14 +40,20 @@ class TemperatureGraph extends Component{
     }
 
 
-    generateLabels(from, to){           //generating the label for the x axis based on the to and from date passed from historical container
+    generateLabels(from, to, dates){           //generating the label for the x axis based on the to and from date passed from historical container
         var labels = [];
         from = moment(from);
         to = moment(to);
-        for (var m = moment(from); m.isBefore(to); m.add(15, 'minutes')) {      //plotting points every 15 minutes will need to change
+        labels.push(to.format('YYYY-MM-DD HH:mm:ss'));
+        //for (var m = moment(from); m.isBefore(to); m.add(15, 'minutes')) {      //plotting points every 15 minutes will need to change
 
+          //  labels.push(m.format('YYYY-MM-DD HH:mm:ss'));
+        //}
+        for (var i = 0; i < dates.length; i++){
+            var m = moment(dates[i]);
             labels.push(m.format('YYYY-MM-DD HH:mm:ss'));
         }
+        labels.push(from.format('YYYY-MM-DD HH:mm:ss'));
         
         return labels;
     }
@@ -106,6 +112,7 @@ class TemperatureGraph extends Component{
                         options={{maintainAspectRatio: false,    //options setup the styling for the graph setting the x and y axis
                             scales: {
                                 xAxes: [{
+                                    stacked: true,
                                     scaleLabel: {
                                         display: true,
                                         labelString: 'Time',
@@ -121,11 +128,6 @@ class TemperatureGraph extends Component{
                                         fontColor: '#000',
                                         fontFamily: 'Roboto Mono',
                                         fontSize: 15
-                                    },
-                                    time: {
-                                        displayFormats: {
-                                            quarter: 'MMM D YYYY'    /*Displays month day year*/
-                                        }
                                     },
                                 }],
                                 yAxes: [{

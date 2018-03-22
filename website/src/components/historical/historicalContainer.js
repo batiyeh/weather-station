@@ -21,10 +21,10 @@ class HistoricalContainer extends Component{
             modal: false,
             loading: true,                      //makes the rendering wait til it is done loading all the data
             sensorType: 'temperature',          //default graph is temperature
-            //fromDate: oneday.format("YYYY-MM-DD HH:mm:ss"),   //the props that set the range for the graph
-            //toDate: now.format("YYYY-MM-DD HH:mm:ss")
-            fromDate: '2018-03-18 22:35:35',
-            toDate: '2018-03-19 10:00:08'
+            fromDate: oneday.format("YYYY-MM-DD HH:mm:ss"),   //the props that set the range for the graph
+            toDate: now.format("YYYY-MM-DD HH:mm:ss")
+            //fromDate: '2018-03-18 22:35:35',
+            //toDate: '2018-03-19 10:00:08'
         }
         this.toggleFilter = this.toggleFilter.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
@@ -82,13 +82,13 @@ class HistoricalContainer extends Component{
         for (var i = 0; i < data.length; i++) {     // for loop to sort through returned data
             var station_name = data[i].station_name;        //we are storing the data in a dictionary based on station name
             if (!stationsDict[station_name]) stationsDict[station_name] = {"sensorData": [], "dates": []};  // if the station name is not found in the dictionary yet add it with arrays to store data and time
-            if (type == 'temperature') {
+            if (type === 'temperature') {
                 stationsDict[station_name]["sensorData"].push(data[i].temperature);             //data is returned in JSON format so based on what sensor type is how we determine to push it into the data array
             }
-            else if(type == 'pressure'){
+            else if(type === 'pressure'){
                 stationsDict[station_name]["sensorData"].push(data[i].pressure);
             }
-            else if(type == 'humidity'){
+            else if(type === 'humidity'){
                 stationsDict[station_name]["sensorData"].push(data[i].humidity);
             }
             stationsDict[station_name]["dates"].push(data[i].created_at);               //Time is returned as created_at so for that we push it in to the dates array of the station in the dictionary
