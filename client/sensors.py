@@ -22,6 +22,7 @@ class Sensors(object):
         self.temperature = 0.0
         self.pressure = 0.0
         self.humidity = 0.0
+        self.dataIndex = 0
         self.latitude = "n/a"
         self.longitude = "n/a"
         self.pin = 14
@@ -54,6 +55,8 @@ class Sensors(object):
         weatherdata["pressure"] = round(self.pressure, 2),
         weatherdata["latitude"] = self.latitude,
         weatherdata["longitude"] = self.longitude
+        weatherdata["data_index"] = self.dataIndex
+        self.dataIndex += 1
 
         return weatherdata
 

@@ -8,6 +8,7 @@ const LatestWeather = require('../models/LatestWeather');
 const Station = require('../models/Station');
 const knex = require('knex')(require('../knexfile'));
 const openweather = require('../services/openWeatherMap');
+const _ = require('lodash');
 var moment = require('moment');
 moment().format();
 
@@ -17,8 +18,18 @@ moment().format();
 router.post('/', async function (req, res) {
     var station = await Station.where('apikey', req.body.apikey).fetch();
     if (station){
-        var openWeatherData = await openweather.getOpenWeatherData(req.body.latitude, req.body.longitude);
-        if (openWeatherData["visibility"] != "" || openWeatherData['wind_speed'] != "" || openWeatherData['wind_direction'] != ""){
+        var latestWeather = await openweather.getLatestOpenWeatherData(req.body.apikey);
+
+        if ((req.body.data_index % 180 == 0 || req.body.data_index == 0) ||
+        (_.isUndefined(latestWeather.visibility) || _.isUndefined(latestWeather.wind_speed) || _.isUndefined(latestWeather.wind_direction))){
+            var openWeatherData = await openweather.getOpenWeatherData(req.body.latitude, req.body.longitude);
+        } else{
+            var openWeatherData = latestWeather;
+        }
+        
+        if (openWeatherData["visibility"] != "" || 
+        openWeatherData['wind_speed'] != "" || 
+        openWeatherData['wind_direction'] != ""){
             var result = await new Weather({
                 apikey: req.body.apikey,
                 created_at: req.body.created_at,
