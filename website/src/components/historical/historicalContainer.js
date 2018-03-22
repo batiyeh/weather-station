@@ -86,8 +86,8 @@ class HistoricalContainer extends Component{
             if (!stationsDict[station_name]) stationsDict[station_name] = {"sensorData": [], "dates": []};  // if the station name is not found in the dictionary yet add it with arrays to store data and time
             if (type === 'temperature') {
                 //data is returned in JSON format so based on what sensor type is how we determine to push it into the data array
-                //stationsDict[station_name]["sensorData"].push(data[i].temperature);
-                preData.push(data[i].temperature);
+                stationsDict[station_name]["sensorData"].push(data[i].temperature);
+               // preData.push(data[i].temperature);
             }
             else if(type === 'pressure'){
                 stationsDict[station_name]["sensorData"].push(data[i].pressure);
@@ -96,27 +96,28 @@ class HistoricalContainer extends Component{
                 stationsDict[station_name]["sensorData"].push(data[i].humidity);
             }
             //Time is returned as created_at so for that we push it in to the dates array of the station in the dictionary
-            //stationsDict[station_name]["dates"].push(data[i].created_at);
-            preDates.push(data[i].created_at)
+            stationsDict[station_name]["dates"].push(data[i].created_at);
+           // preDates.push(data[i].created_at)
         }
         this.setState({
             stationsData: stationsDict,     // end the async function by setting the state so that the stations dictionary is stored in stations data
             loading: false                  // set loading to false so that graph can be rendered
         });
-        this.processDataPoints(stationsDict,preData,preDates);
+        this.processDataPoints(stationsDict);
     };
 
     processDataPoints(stationsDict){
         var data;
         var senseData;
         var date;
+        var graphDict = {};
         for (var station_name in stationsDict) {
             data = stationsDict[station_name];
             senseData= data["sensorData"];
             date = data["dates"];
             for(var i = 0; i < senseData.length; i++){
                 if ( i % 180 === 0){
-                    console.log(senseData[i]);
+
                 }
             }
         }
