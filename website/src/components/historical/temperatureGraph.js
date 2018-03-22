@@ -45,10 +45,6 @@ class TemperatureGraph extends Component{
         from = moment(from);
         to = moment(to);
         labels.push(to.format('YYYY-MM-DD HH:mm:ss'));
-        //for (var m = moment(from); m.isBefore(to); m.add(15, 'minutes')) {      //plotting points every 15 minutes will need to change
-
-          //  labels.push(m.format('YYYY-MM-DD HH:mm:ss'));
-        //}
         for (var i = 0; i < dates.length; i++){
             var m = moment(dates[i]);
             labels.push(m.format('YYYY-MM-DD HH:mm:ss'));

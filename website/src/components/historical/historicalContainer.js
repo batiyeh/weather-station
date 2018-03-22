@@ -97,7 +97,22 @@ class HistoricalContainer extends Component{
             stationsData: stationsDict,     // end the async function by setting the state so that the stations dictionary is stored in stations data
             loading: false                  // set loading to false so that graph can be rendered
         });
+        this.processDataPoints();
     };
+
+    processDataPoints(){
+        var data;
+        var senseData;
+        var time;
+        for (var station_name in this.state.stationsData) {
+            data = this.state.stationsData[station_name];
+            senseData= data["sensorData"];
+            time = data["dates"];
+            for(var i = 0; i < senseData.length; i++){
+                console.log(time[i]);
+            }
+        }
+    }
 
     //function upon hitting submit in the modal with new data to update the graph and close the modal
     updateGraph(){
