@@ -24,7 +24,7 @@ sendAlerts = async () => {
     //last_triggered value updated to current time on all triggered alerts
     triggered.map(triggered =>{
         Alerts.where({alert_id: triggered.alert_id}).save({
-            last_triggered: knex.fn.now()
+            last_triggered: moment.utc()
         },{patch:true})
     })
     

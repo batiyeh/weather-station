@@ -9,6 +9,8 @@ const AlertMethods = require('../models/AlertMethods');
 const TriggeredAlerts = require('../models/TriggeredAlerts');
 const Station = require('../models/Station');
 const knex = require('knex')(require('../knexfile'));
+const moment = require('moment');
+moment().format();
 
 
 //post request that creates a new alert for the user
@@ -44,7 +46,7 @@ router.post('/create', async function(req, res){
             keyword: keyword,
             threshold: threshold,
             username: req.user,
-            deleted: false
+            deleted: false,
         }).save();
 
         if(email){

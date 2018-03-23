@@ -48,7 +48,7 @@ exports.up = function(knex, Promise) {
             table.string('keyword');
             table.string('threshold');
             table.boolean('deleted');
-            table.timestamp('last_triggered').defaultTo(    );
+            table.timestamp('last_triggered')
             table.string('apikey').references('apikey').inTable('stations').onDelete('CASCADE').onUpdate('CASCADE');
             table.string('username').references('username').inTable('users').onDelete('SET NULL').onUpdate('CASCADE');
         })
@@ -70,7 +70,7 @@ exports.up = function(knex, Promise) {
             table.float('temperature', 5, 2);
             table.float('humidity', 5, 2);
             table.float('pressure', 6, 2);
-            table.timestamp('created_at').defaultTo(knex.fn.now()).notNullable();
+            table.timestamp('created_at');
             table.integer('alert_id').references('alert_id').inTable('alerts').unsigned().onDelete('SET NULL').onUpdate('CASCADE');            
         })
 };

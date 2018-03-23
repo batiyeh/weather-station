@@ -28,9 +28,11 @@ class AlertsList extends Component {
             sms: false,
             webpage: false,
             threshold: '1 hour',
-            date: date
+            date: date,
+            alertFilter: 'all'
         };
-        this.filter = this.filter.bind(this);
+        this.filterTime = this.filterTime.bind(this);
+        this.onAlertFilterChange = this.onAlertFilterChange.bind(this);
         this.resetValues = this.resetValues.bind(this);
         this.onEmailChange = this.onEmailChange.bind(this);
         this.onSMSChange = this.onSMSChange.bind(this);
@@ -138,7 +140,12 @@ class AlertsList extends Component {
             threshold: value
         })
     }
-    filter(value){
+    onAlertFilterChange(value){
+        this.setState({
+            alertFilter: value
+        })
+    }
+    filterTime(value){
         this.setState({
             date: value._d
         })
@@ -209,9 +216,16 @@ class AlertsList extends Component {
         this.state.historicAlerts.map(alert => {
 
             var alertDate = new Date(alert.created_at.slice(0,10)+'T04:00:00.000Z');
-            //only renders alerts for selected time by user
-            if(this.state.date.getTime() === alertDate.getTime() ){
-                cards.push(<HistoricAlertCard alert={alert}/>)
+            console.log(this.state.alertFilter, alert.alert_id);
+            if(this.state.alertFilter !== 'all'){
+                if((this.state.date.getTime() === alertDate.getTime() && (this.state.alertFilter == alert.alert_id))){
+                    cards.push(<HistoricAlertCard alert={alert}/>)
+                }
+            }
+            else{
+                if(this.state.date.getTime() === alertDate.getTime()){
+                    cards.push(<HistoricAlertCard alert={alert}/>)
+                }
             }
             return null;
         })
@@ -235,6 +249,20 @@ class AlertsList extends Component {
         this.state.stations.map((station, index) => {
             options.push(<option key={"name" + index} value={station.station_name}>{station.station_name}</option>)
             return null;
+        })
+        return options;
+    }
+    renderOptions(){
+        var options = []
+        options.push(<option value={'all'}> All alerts </option>)
+        this.state.alerts.map(alerts => {
+            if(alerts.keyword === 'between'){
+                options.push(<option value={alerts.alert_id}> {alerts.station_name}'s {alerts.datatype} is {alerts.keyword} {alerts.value} and {alerts.secondValue}</option>)
+            }
+            else{
+                options.push(<option value={alerts.alert_id}> {alerts.station_name}'s {alerts.datatype} is {alerts.keyword} {alerts.value} </option>)
+            }
+            return null
         })
         return options;
     }
@@ -366,7 +394,10 @@ class AlertsList extends Component {
                                 className='form-control'
                                 placeholderText="Date"
                                 selected={moment(this.state.date)}
-                                onChange={this.filter}/>
+                                onChange={this.filterTime}/>
+                            <Input type='select' name='alert_filter' id='alert_filter' onChange={e =>this.onAlertFilterChange(e.target.value)}>
+                                {this.renderOptions()}
+                            </Input>
                         </Col>
                     </FormGroup>
                 </div>
