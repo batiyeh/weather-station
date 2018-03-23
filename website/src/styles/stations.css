@@ -83,9 +83,10 @@
 }
 
 .station-uptime{
-    font-size: 12pt;
+    font-size: 10pt;
     float: right;
     margin-top: 3px;
+    text-align:right;
 }
 
 .station-card{
