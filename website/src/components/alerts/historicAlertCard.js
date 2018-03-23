@@ -45,7 +45,7 @@ class HistoricAlertCard extends Component {
                 <Modal isOpen={this.state.modal} toggle={this.toggle}>
                     <ModalHeader toggle={this.toggle}>{this.getParams()}</ModalHeader>
                     <ModalBody>
-                        <p>{this.state.station} at: {moment(this.state.time).format("YYYY-MM-DD HH:mm:ss")}</p>
+                        <p>{this.state.station} at: {moment(this.state.time).utc(this.state.time).local().format("YYYY-MM-DD HH:mm:ss")}</p>
                         <p>Temperature: {this.state.temperature} &deg;F</p>
                         <p>Pressure: {this.state.pressure} hPa</p>
                         Humidity: {this.state.humidity}%
@@ -59,7 +59,7 @@ class HistoricAlertCard extends Component {
                         {this.getParams()}
                         <div className="row">
                             <div className="col-12">
-                                <span className="alert-triggered-at">{moment(this.state.time).format("YYYY-MM-DD HH:mm:ss")}</span>
+                                <span className="alert-triggered-at">{moment(this.state.time).utc(this.state.time).local().format("YYYY-MM-DD HH:mm:ss")}</span>
                             </div>
                         </div>
                     </CardText>

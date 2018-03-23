@@ -195,7 +195,7 @@ class Navigation extends Component {
                             {alerts.station_name}'s {alerts.type} is {alerts.keyword} {alerts.value} and {alerts.secondValue}
                         </div>
                         <div className="alert-triggered-at">
-                            { moment(alerts.created_at).format("YYYY-MM-DD HH:mm:ss") }
+                            { moment(alerts.created_at).utc(alerts.created_at).local().format("YYYY-MM-DD HH:mm:ss") }
                         </div>
                     </Card>
                 );
@@ -208,7 +208,7 @@ class Navigation extends Component {
                             {alerts.station_name}'s {alerts.type} is {alerts.keyword}&nbsp;{alerts.value}
                         </div>
                         <div className="alert-triggered-at">
-                            { moment(alerts.created_at).format("YYYY-MM-DD HH:mm:ss") }
+                            { moment(alerts.created_at).utc(alerts.created_at).local().format("YYYY-MM-DD HH:mm:ss") }
                         </div>
                     </Card>
                 );
@@ -310,7 +310,7 @@ class Navigation extends Component {
                                 {this.renderHeader()}
                                 <Form id='AlertForm'>
                                     <ModalBody>
-                                        <p>{this.state.station_name} at: {moment(this.state.time).format("YYYY-MM-DD HH:mm:ss")}</p>
+                                        <p>{this.state.station_name} at: {moment(this.state.time).utc(this.state.time).local().format("YYYY-MM-DD HH:mm:ss")}</p>
                                         <p>Temperature: {this.state.temperature} &deg;F</p>
                                         <p>Pressure: {this.state.pressure} hPa</p>
                                         Humidity: {this.state.humidity}%
