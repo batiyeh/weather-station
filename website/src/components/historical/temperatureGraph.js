@@ -108,7 +108,7 @@ class TemperatureGraph extends Component{
                         options={{maintainAspectRatio: false,    //options setup the styling for the graph setting the x and y axis
                             scales: {
                                 xAxes: [{
-                                    stacked: true,
+                                    stacked: false,
                                     scaleLabel: {
                                         display: true,
                                         labelString: 'Time',
