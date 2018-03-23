@@ -7,7 +7,6 @@ class ConnectionIndicator extends Component {
         super(props);
         this.state = {
             color: '#e21f1f',
-            connected: this.props.connected,
             apikey: this.props.apikey
         }
     }
