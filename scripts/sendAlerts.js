@@ -55,7 +55,7 @@ sendAlerts = async () => {
     //Checks each alert to see if it has been triggered
     //Triggered alerts are added to an array
     triggered = checkAlert(triggered, weather);
-    triggered = checkTime(triggered);
+    // triggered = checkTime(triggered);
 
     //last_triggered value updated to current time on all triggered alerts
     triggered.map(triggered =>{
@@ -63,7 +63,7 @@ sendAlerts = async () => {
             last_triggered: knex.fn.now()
         },{patch:true})
     })
-
+    
     alertHistory(triggered);
 
     triggered.map(triggered =>{
@@ -118,7 +118,6 @@ sendEmail = async (triggered) =>{
             
         };
     }
-
     transporter.sendMail(mailOptions,function(err){
         //Alert user email has been sent
         done(err, 'done');
@@ -194,7 +193,6 @@ function checkAlert(triggered, weather){
             }
         })
     })
-    console.log(newTrig);
     return newTrig;
 }
 function checkTime(triggered){

@@ -36,6 +36,7 @@ class AlertsList extends Component {
         this.onSMSChange = this.onSMSChange.bind(this);
         this.onWebpageChange = this.onWebpageChange.bind(this);
         this.toggleAddAlert = this.toggleAddAlert.bind(this);
+        this.deleteAlert = this.deleteAlert.bind(this);
         
     }
     //when component loads, will call getAlerts()
@@ -56,6 +57,9 @@ class AlertsList extends Component {
         historicAlerts = body.historicAlerts;
         if (stations.length > 0) station = stations[0].station_name;
         //puts alerts, historicAlerts, and stations in state. Sets station to first station in stations array
+        console.log(alerts.map(alert => {
+            console.log(alert);
+        }))
         this.setState({alerts: alerts, stations: stations, historicAlerts: historicAlerts, station:station});
     }
 
@@ -140,6 +144,18 @@ class AlertsList extends Component {
         this.setState({
             date: value._d
         })
+        this.renderHistoricCard();
+    }
+    deleteAlert(index){
+        var newAlerts = this.state.alerts;
+        newAlerts.splice(index, 1);
+        newAlerts.map(alerts => {
+            console.log(alerts);
+        })
+        this.setState({
+            alerts: newAlerts
+        })
+        
     }
     //displays either one input box or two to the user depending on what keyword they currently have selected
     renderValues(){
@@ -183,8 +199,8 @@ class AlertsList extends Component {
     //some alerts have multiple values so the id's need to be compared before they are added to the array
     renderCards(){
         var cards = []
-        this.state.alerts.map(alert =>{
-            cards.push(<AlertCard stations={this.state.stations} alerts={alert} update={this.getAlerts}/>)
+        this.state.alerts.map((alert, index) =>{
+            cards.push(<AlertCard stations={this.state.stations} alerts={alert} deleteAlert={this.deleteAlert} index={index}/>)
         })
 
         return cards
@@ -194,6 +210,7 @@ class AlertsList extends Component {
         this.state.historicAlerts.map(alert => {
 
             var alertDate = new Date(alert.created_at.slice(0,10)+'T04:00:00.000Z');
+            // console.log(this.state.date, alertDate);
             //only renders alerts for selected time by user
             if(this.state.date.getTime() === alertDate.getTime() ){
                 cards.push(<HistoricAlertCard alert={alert}/>)

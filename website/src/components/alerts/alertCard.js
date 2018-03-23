@@ -91,6 +91,8 @@ class AlertCard extends Component {
 
     //toggles edit alert modal
     toggleAlert(){
+        console.log(this.props.alerts.alert_id, this.state.value);
+
         this.setState({
             modal: !this.state.modal
         });
@@ -239,10 +241,13 @@ class AlertCard extends Component {
 
     //Deletes the alert with the id passed to the backend
     //Page does not update after deletion, needs to be fixed
-    deleteAlert(){
-        fetch('/api/alerts/' + this.props.alerts.alert_id, {method: 'delete'})
-        this.props.update();
+    deleteAlert = async () => {
+        // console.log(this.props.alerts.alert_id, this.state.value);
+        
+        await fetch('/api/alerts/' + this.props.alerts.alert_id, {method: 'delete'})
         this.toggleAlert();
+        console.log(this.props.index);
+        this.props.deleteAlert(this.props.index);
     }
 
     render(){
