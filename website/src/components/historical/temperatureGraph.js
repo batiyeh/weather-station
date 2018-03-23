@@ -12,7 +12,9 @@ class TemperatureGraph extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            data: this.props.data,          // set the state to be the props that were passed to it by historical container
+            // set the state to be the props that were passed to it by historical container
+            data: this.props.data,
+            stations: this.props.stations,
             height: this.props.height,
             from: this.props.from,
             to: this.props.to,
@@ -29,7 +31,11 @@ class TemperatureGraph extends Component{
         var data;
         for (var station_name in this.state.data) {
             data = this.state.data[station_name];
-            this.createLines(station_name, data["sensorData"], data["dates"]);  //create the lines for each station based on its data that has been passec
+            console.log(this.state.stations);
+            if(this.state.stations.contains(toString(station_name))){
+                //create the lines for each station based on its data that has been passec
+                this.createLines(station_name, data["sensorData"], data["dates"]);
+            }
         }
         var labels = this.generateLabels(this.state.from, this.state.to, data["dates"]);       //pass the to and from dates to generate the x axis labels of our graph
         this.updateLabels(labels);      //once generated update them

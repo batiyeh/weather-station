@@ -23,14 +23,14 @@ class HistoricalContainer extends Component{
             loading: true,                      //makes the rendering wait til it is done loading all the data
             sensorType: 'temperature',          //default graph is temperature
             fromDate: oneday.format("YYYY-MM-DD HH:mm:ss"),   //the props that set the range for the graph
-            toDate: now.format("YYYY-MM-DD HH:mm:ss")
-            //fromDate: '2018-03-18 22:35:35',
-            //toDate: '2018-03-19 10:00:08'
+            toDate: now.format("YYYY-MM-DD HH:mm:ss"),
+            toBeDrawn: [],
         }
         this.toggleFilter = this.toggleFilter.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
         this.handleToChange = this.handleToChange.bind(this);
         this.handleFromChange = this.handleFromChange.bind(this);
+        this.onStationChange = this.onStationChange.bind(this);
         this.updateGraph = this.updateGraph.bind(this);
 
     }
@@ -64,7 +64,6 @@ class HistoricalContainer extends Component{
 
     //When the sensor type is changed in the modal it is handled here
     onSenseChange(value) {
-        console.log("hello");
         this.setState({
             sensorType: value
         })
@@ -72,14 +71,16 @@ class HistoricalContainer extends Component{
 
     onStationChange(e){
         var options = e.target.options;
-        var value = [];
+        var selected = [];
         for (var i = 0; i < options.length; i++) {
             if (options[i].selected) {
-                value.push(options[i].value);
+                selected.push(options[i].value);
             }
         }
-        console.log("hello");
-        console.log(value);
+        selected.push("Trevor RPI");
+        this.setState({
+            toBeDrawn: selected
+        });
     }
 
     getStations = async () =>{
@@ -190,6 +191,7 @@ class HistoricalContainer extends Component{
             return(
                 <PressureGraph className="row graph"
                     data={this.state.stationsData}
+                    stations={this.state.toBeDrawn}
                     from={this.state.fromDate}
                     to={this.state.toDate}
                     height={500}
@@ -259,7 +261,7 @@ class HistoricalContainer extends Component{
                                 <div className='form-group'>
                                     <FormGroup>
                                         <label for="stations" className="form-label">Stations</label>
-                                        <Input type="select" name="selectMulti" id="SelectMulti" onChange={e => this.onStationChange(e.target.value)} multiple>
+                                        <Input type="select" name="selectMulti" id="SelectMulti" onChange={this.onStationChange} multiple>
                                             {this.renderStations()}
                                         </Input>
                                     </FormGroup>
