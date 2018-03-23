@@ -1,12 +1,10 @@
 const fetch = require("node-fetch");
 const knex = require('knex')(require('../knexfile'));
+const _ = require('lodash');
 
 // Retrieves open weather map data before storing
 async function getOpenWeatherData(latitude, longitude){
     var openWeatherData = {};
-    openWeatherData["visibility"] = "";
-    openWeatherData['wind_speed'] = "";
-    openWeatherData['wind_direction'] = "";
     if (latitude !== "n/a" && longitude !== "n/a"){
         var url = "http://api.openweathermap.org/data/2.5/weather?appid=" + process.env.OPEN_WEATHER_KEY + "&lat=" + latitude + "&lon=" + longitude + "&units=imperial";
         const response = await fetch(url);
@@ -23,9 +21,6 @@ async function getOpenWeatherData(latitude, longitude){
 
 async function getLatestOpenWeatherData(apikey){
     var latestWeatherData = {};
-    latestWeatherData["visibility"] = "";
-    latestWeatherData['wind_speed'] = "";
-    latestWeatherData['wind_direction'] = "";
     try{
         var weather = await knex('latestweather')
             .join('weather', 'latestweather.weather_id', 'weather.weather_id')
@@ -35,9 +30,13 @@ async function getLatestOpenWeatherData(apikey){
     } catch(ex){
         return latestWeatherData;
     }
-    latestWeatherData["visibility"] = weather[0]['visibility'];
-    latestWeatherData['wind_speed'] = weather[0]['wind_speed'];
-    latestWeatherData['wind_direction'] = weather[0]['wind_direction']; 
+    
+    if (weather.length > 0){
+        latestWeatherData["visibility"] = weather[0]['visibility'];
+        latestWeatherData['wind_speed'] = weather[0]['wind_speed'];
+        latestWeatherData['wind_direction'] = weather[0]['wind_direction']; 
+    } 
+
     return latestWeatherData
 }
 
