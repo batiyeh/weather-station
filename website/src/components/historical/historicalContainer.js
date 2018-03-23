@@ -18,6 +18,7 @@ class HistoricalContainer extends Component{
         var now = moment();
         this.state = {
             stationsData: {},
+            stations: [],
             modal: false,
             loading: true,                      //makes the rendering wait til it is done loading all the data
             sensorType: 'temperature',          //default graph is temperature
@@ -80,7 +81,8 @@ class HistoricalContainer extends Component{
         if (response.status !== 200) throw Error(body.message);
         if (body.temp) data = body.temp;            //storing the response from the fetch call in to variable data
         for (var i = 0; i < data.length; i++) {     // for loop to sort through returned data
-            var station_name = data[i].station_name;        //we are storing the data in a dictionary based on station name
+            //we are storing the data in a dictionary based on station name
+            var station_name = data[i].station_name;
             if (!stationsDict[station_name]) stationsDict[station_name] = {"sensorData": [], "dates": []};  // if the station name is not found in the dictionary yet add it with arrays to store data and time
             if (type === 'temperature') {
                 //data is returned in JSON format so based on what sensor type is how we determine to push it into the data array
@@ -99,7 +101,8 @@ class HistoricalContainer extends Component{
         }
         var newStationsDict = this.processDataPoints(stationsDict)
         this.setState({
-            stationsData: newStationsDict,     // end the async function by setting the state so that the stations dictionary is stored in stations data
+            // end the async function by setting the state so that the stations dictionary is stored in stations data
+            stationsData: newStationsDict,
             loading: false                  // set loading to false so that graph can be rendered
         });
 
@@ -112,9 +115,11 @@ class HistoricalContainer extends Component{
         var newStationsDict = {};
         for (var station_name in stationsDict) {
             data = stationsDict[station_name];
+            this.state.stations.push(station_name);
+            console.log(this.state.stations);
             newStationsDict[station_name] = {};
             for(var i = 0; i < data["sensorData"].length; i++){
-                if ( i % 180 === 0){
+                if ( i % 30 === 0){
                     console.log(data["dates"][i]);
                     sensorData.unshift(data["sensorData"][i]);
                     dateData.unshift(data["dates"][i]);
@@ -222,10 +227,10 @@ class HistoricalContainer extends Component{
                                 <div className='form-group'>
                                     <FormGroup>
                                         <label for="stations" className="form-label">Stations</label>
-                                        <Input type="select" name="selectMulti" id="exampleSelectMulti" multiple>
+                                        <Input type="select" name="selectMulti" id="SelectMulti" multiple>
+                                            {stations.forEach(function(this.state.stations, index))}
                                             <option value="Temperature">Station1</option>
-                                            <option value="Pressure">Station2</option>
-                                            <option value="Humidity">Station3</option>
+
                                         </Input>
                                     </FormGroup>
                                 </div>
