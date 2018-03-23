@@ -64,9 +64,22 @@ class HistoricalContainer extends Component{
 
     //When the sensor type is changed in the modal it is handled here
     onSenseChange(value) {
+        console.log("hello");
         this.setState({
             sensorType: value
         })
+    }
+
+    onStationChange(e){
+        var options = e.target.options;
+        var value = [];
+        for (var i = 0; i < options.length; i++) {
+            if (options[i].selected) {
+                value.push(options[i].value);
+            }
+        }
+        console.log("hello");
+        console.log(value);
     }
 
     getStations = async () =>{
@@ -246,7 +259,7 @@ class HistoricalContainer extends Component{
                                 <div className='form-group'>
                                     <FormGroup>
                                         <label for="stations" className="form-label">Stations</label>
-                                        <Input type="select" name="selectMulti" id="SelectMulti" multiple>
+                                        <Input type="select" name="selectMulti" id="SelectMulti" onChange={e => this.onStationChange(e.target.value)} multiple>
                                             {this.renderStations()}
                                         </Input>
                                     </FormGroup>
