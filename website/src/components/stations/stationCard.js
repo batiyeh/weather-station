@@ -132,6 +132,10 @@ class StationCard extends Component {
                         { this.renderNameInput() }
                         <div className="station-detail-container">
                             <div className="station-detail-row">
+                                <span className="left">Uptime</span>
+                                <span className="right">{this.getUptime()}</span>
+                            </div><br/>
+                            <div className="station-detail-row">
                                 <span className="left">Temperature</span>
                                 <span className="right">{this.props.station.temperature} &deg;F</span>
                             </div><br/>
@@ -166,7 +170,7 @@ class StationCard extends Component {
                                     </p>
                                 </div>
                                 <div className="col-4">
-                                    <p className="station-uptime">{this.getUptime()}</p>
+                                    <p className="station-uptime">{moment(this.props.station.created_at).format("YYYY-MM-DD HH:mm:ss")}</p>
                                 </div>
                             </div>
                         </CardTitle>

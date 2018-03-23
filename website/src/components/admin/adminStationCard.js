@@ -54,7 +54,7 @@ class AdminStationCard extends Component {
                         </div>
                         <div className='form-group'>
                             <label>API Key:</label>
-                            <input id='api_key' name='api_key' type='text' className='form-control' placeholder='' value={this.state.apikey} disabled/>
+                            <input id='api_key' name='api_key' type='text' className='form-control' placeholder='' value={this.state.apikey} readonly="readonly"/>
                         </div>
                     </ModalBody>
                     <ModalFooter>
