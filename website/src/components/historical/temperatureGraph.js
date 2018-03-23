@@ -49,7 +49,7 @@ class TemperatureGraph extends Component{
             var m = moment(dates[i]);
             labels.push(m.format('YYYY-MM-DD HH:mm:ss'));
         }
-        labels.push(from.format('YYYY-MM-DD HH:mm:ss'));
+        //labels.push(from.format('YYYY-MM-DD HH:mm:ss'));
         
         return labels;
     }

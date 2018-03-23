@@ -99,28 +99,32 @@ class HistoricalContainer extends Component{
             stationsDict[station_name]["dates"].push(data[i].created_at);
            // preDates.push(data[i].created_at)
         }
+        var newStationsDict = this.processDataPoints(stationsDict)
         this.setState({
-            stationsData: stationsDict,     // end the async function by setting the state so that the stations dictionary is stored in stations data
+            stationsData: newStationsDict,     // end the async function by setting the state so that the stations dictionary is stored in stations data
             loading: false                  // set loading to false so that graph can be rendered
         });
-        this.processDataPoints(stationsDict);
+
     };
 
     processDataPoints(stationsDict){
         var data;
-        var senseData;
-        var date;
-        var graphDict = {};
+        var sensorData = [];
+        var dateData = [];
+        var newStationsDict = {};
         for (var station_name in stationsDict) {
             data = stationsDict[station_name];
-            senseData= data["sensorData"];
-            date = data["dates"];
-            for(var i = 0; i < senseData.length; i++){
+            newStationsDict[station_name] = {};
+            for(var i = 0; i < data["sensorData"].length; i++){
                 if ( i % 180 === 0){
-
+                    sensorData.push(data["sensorData"][i]);
+                    dateData.push(data["dates"][i]);
                 }
             }
+            newStationsDict[station_name]["sensorData"]= sensorData;
+            newStationsDict[station_name]["dates"]= dateData;
         }
+        return newStationsDict;
     }
 
 
