@@ -75,8 +75,9 @@ export const infoStyle = {
 }
 
 export function getLabelStyle(label){
-    if (label) var opacity = "0.7";
-    else var opacity = "0";
+    var opacity;
+    if (label) opacity = "0.7";
+    else opacity = "0";
 
     const labelStyle = {
         position: "absolute",
@@ -157,7 +158,7 @@ export const FadeAndSlideUpInfo = ({ children, in: inProp  }) => (
 );
 
 // Fade and slide up animation to render the label
-export const FadeAndSlideUpLabel = ({ children, in: inProp, label: label  }) => {
+export const FadeAndSlideUpLabel = ({ children, in: inProp, label  }) => {
     var labelStyle = getLabelStyle(label);
     var labelTransitionStyles = getLabelTransitionStyles(label);
 

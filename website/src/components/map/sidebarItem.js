@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormGroup, Input, Alert, Label } from 'reactstrap';
+import { FormGroup, Input, Label } from 'reactstrap';
 import '../../styles/map.css';
 
 class SidebarItem extends Component {
@@ -24,7 +24,7 @@ class SidebarItem extends Component {
 
     render() {
         var backgroundColor = "#ffffff";
-        if (this.state.index % 2 == 0) backgroundColor = "#f4f4f4";
+        if (this.state.index % 2 === 0) backgroundColor = "#f4f4f4";
         
         return (
             <div key={this.state.station.apikey} style={{backgroundColor: backgroundColor}} className="list-item-container">
