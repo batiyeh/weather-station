@@ -147,9 +147,7 @@ class AlertsList extends Component {
     deleteAlert(index){
         var newAlerts = this.state.alerts;
         newAlerts.splice(index, 1);
-        newAlerts.map(alerts => {
-            console.log(alerts);
-        })
+
         this.setState({
             alerts: newAlerts
         })
@@ -184,6 +182,7 @@ class AlertsList extends Component {
             </div>)
         }
     }
+    //disables create button if no stations in database
     renderCreateButton(){
         if(this.state.stations.length === 0){
             return <Button type='button' className="btn btn-secondary add-btn" onClick={this.toggleAddAlert} disabled>Add</Button>
@@ -199,20 +198,22 @@ class AlertsList extends Component {
         var cards = []
         this.state.alerts.map((alert, index) =>{
             cards.push(<AlertCard stations={this.state.stations} alerts={alert} deleteAlert={this.deleteAlert} index={index}/>)
+            return null;
         })
 
         return cards
     }
+    //renders cards for time specified by user
     renderHistoricCard(){
         var cards = []
         this.state.historicAlerts.map(alert => {
 
             var alertDate = new Date(alert.created_at.slice(0,10)+'T04:00:00.000Z');
-            // console.log(this.state.date, alertDate);
             //only renders alerts for selected time by user
             if(this.state.date.getTime() === alertDate.getTime() ){
                 cards.push(<HistoricAlertCard alert={alert}/>)
             }
+            return null;
         })
         
         if(cards.length === 0){

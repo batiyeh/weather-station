@@ -189,6 +189,7 @@ class AlertCard extends Component {
             </div>)
         }
     }
+    //Renders option select for all stations in the database
     renderStations(){
         var options = []
         this.state.stations.map((station, index) => {
@@ -197,7 +198,7 @@ class AlertCard extends Component {
         })
         return options;
     }
-
+    //Renders icons for the selected methods of the alert
     renderMethods(){
         var methodTags = [];
         if (this.state.email === true){
@@ -253,13 +254,10 @@ class AlertCard extends Component {
     }
 
     //Deletes the alert with the id passed to the backend
-    //Page does not update after deletion, needs to be fixed
     deleteAlert = async () => {
-        // console.log(this.props.alerts.alert_id, this.state.value);
-        
+
         await fetch('/api/alerts/' + this.props.alerts.alert_id, {method: 'delete'})
         this.toggleAlert();
-        console.log(this.props.index);
         this.props.deleteAlert(this.props.index);
     }
 

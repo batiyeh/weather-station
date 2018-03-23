@@ -154,7 +154,7 @@ class Navigation extends Component {
                 if(!alert.read){
                     count++;
                 }
-                // console.log('count: ', count);
+                return null;
             })
             return(
                 <div className="bell">

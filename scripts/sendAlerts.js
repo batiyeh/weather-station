@@ -6,56 +6,20 @@ const TriggeredAlerts = require('../models/TriggeredAlerts');
 const moment = require('moment');
 moment().format();
 
-getAlerts = async () =>{
-    //Gets all alerts currently in database and the user's email address/phone
-    var alerts = await knex('alerts')
-    .select('alerts.alert_id', 'stations.station_name', 'alerts.type', 'alerts.keyword' ,'alerts.threshold' , 'alerts.last_triggered', 'alertvalues.value', 
-    'alertmethods.method', 'alerts.username', 'users.email', 'users.phone')
-    .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
-    .leftJoin('alertmethods', 'alerts.alert_id', '=', 'alertmethods.alert_id')
-    .leftJoin('users', 'alerts.username', '=', 'users.username')
-    .leftJoin('stations', 'stations.apikey', '=','alerts.apikey')
-
-    .where('alerts.deleted', '=', false)
-    return alerts;
-}
-getWeather = async () => {
-    //gets the most recent weather data from each station
-    var weather = await knex('latestweather')
-    .join('weather', 'latestweather.weather_id', 'weather.weather_id')
-    .join('stations', 'latestweather.apikey', 'stations.apikey')
-    .select('weather.*', 'stations.station_name', 'stations.last_connected', 'stations.connected')
-    return weather;
-}
-
 sendAlerts = async () => {
     var triggered = []
     var alerts = await getAlerts();
     var weather = await getWeather();
 
-    var id = null;
-    var method = null;
 
-    alerts.map(map =>{
-        if(map.keyword === 'between'){
-            id = map.alert_id;
-            method = map.method;
-            alerts.map(map2 =>{
-                if((map2.alert_id === id) && (map2.method === method) && (map2.value > map.value)){
-                    map.secondValue = map2.value;
-                    triggered.push(map);
-                }
-            })
-        }
-        else{
-            triggered.push(map)
-        }
-    })
+    //removes extra rows added by 'between' keyword
+    triggered = await handleBetween(alerts);
 
-    //Checks each alert to see if it has been triggered
-    //Triggered alerts are added to an array
+    //checks the weather data against the alert and returns an array of triggered alerts
     triggered = checkAlert(triggered, weather);
-    // triggered = checkTime(triggered);
+    
+    //checks if the alert has been triggered within the threshold set by the user
+    triggered = checkTime(triggered);
 
     //last_triggered value updated to current time on all triggered alerts
     triggered.map(triggered =>{
@@ -64,11 +28,13 @@ sendAlerts = async () => {
         },{patch:true})
     })
     
+    //inserts triggered alerts into the triggeredalerts table
     alertHistory(triggered);
 
+    //sends either email or sms alerts depending on alert method
     triggered.map(triggered =>{
         if(triggered.method === 'email'){
-            // sendEmail(triggered)
+            sendEmail(triggered)
         }
         else if(triggered.method === 'sms'){
             sendSMS(triggered)
@@ -127,6 +93,8 @@ sendSMS = async (triggered) => {
     //code goes here
 }
 
+//Sets historic data for triggered alerts
+//If the alert is a webpage alert then the read flag is set to false, otherwise it is null
 alertHistory = async (triggered) => {
     var ids = [];
     var newTrig = [];
@@ -163,6 +131,8 @@ alertHistory = async (triggered) => {
         }
     })
 }
+//Checks alert to see if it has been triggered
+//Weather data for the alert is then stored in the dictionary
 function checkAlert(triggered, weather){
     var newTrig = []
     triggered.map((triggered, index) =>{
@@ -195,6 +165,7 @@ function checkAlert(triggered, weather){
     })
     return newTrig;
 }
+//checks threshold value set by user and if that threshold has not been exceeded then the alert is not sent
 function checkTime(triggered){
     newTrig = [];
     triggered.map(triggered =>{
@@ -217,6 +188,53 @@ function checkTime(triggered){
 
     return newTrig;
 }
+
+//extra row is removed from between alerts and the greater value is added to the first row as 'secondValue'
+function handleBetween(alerts){
+    var triggered = []
+    var id = null;
+    var method = null;
+
+    alerts.map(map =>{
+        if(map.keyword === 'between'){
+            id = map.alert_id;
+            method = map.method;
+            alerts.map(map2 =>{
+                if((map2.alert_id === id) && (map2.method === method) && (map2.value > map.value)){
+                    map.secondValue = map2.value;
+                    triggered.push(map);
+                }
+            })
+        }
+        else{
+            triggered.push(map)
+        }
+    })
+    return triggered;
+}
+//gets all alerts from the database
+getAlerts = async () =>{
+    //Gets all alerts currently in database and the user's email address/phone
+    var alerts = await knex('alerts')
+    .select('alerts.alert_id', 'stations.station_name', 'alerts.type', 'alerts.keyword' ,'alerts.threshold' , 'alerts.last_triggered', 'alertvalues.value', 
+    'alertmethods.method', 'alerts.username', 'users.email', 'users.phone')
+    .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
+    .leftJoin('alertmethods', 'alerts.alert_id', '=', 'alertmethods.alert_id')
+    .leftJoin('users', 'alerts.username', '=', 'users.username')
+    .leftJoin('stations', 'stations.apikey', '=','alerts.apikey')
+
+    .where('alerts.deleted', '=', false)
+    return alerts;
+}
+getWeather = async () => {
+    //gets the most recent weather data from each station
+    var weather = await knex('latestweather')
+    .join('weather', 'latestweather.weather_id', 'weather.weather_id')
+    .join('stations', 'latestweather.apikey', 'stations.apikey')
+    .select('weather.*', 'stations.station_name', 'stations.last_connected', 'stations.connected')
+    return weather;
+}
+
 module.exports =  {
     sendAlerts
 }
