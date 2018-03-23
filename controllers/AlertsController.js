@@ -40,6 +40,7 @@ router.post('/create', async function(req, res){
 
     //prevents user from submitting blank value or not selecting an alert method
     if(value && (email || sms || webpage)){
+        var duration = moment.duration({'days' : 1});
         var newAlert = await new Alerts({
             apikey: apikey.attributes.apikey,
             type: datatype,
@@ -47,6 +48,7 @@ router.post('/create', async function(req, res){
             threshold: threshold,
             username: req.user,
             deleted: false,
+            last_triggered: moment.utc().subtract(duration).format("YYYY-MM-DD HH:mm:ss")
         }).save();
 
         if(email){

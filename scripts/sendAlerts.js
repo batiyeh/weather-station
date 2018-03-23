@@ -24,7 +24,7 @@ sendAlerts = async () => {
     //last_triggered value updated to current time on all triggered alerts
     triggered.map(triggered =>{
         Alerts.where({alert_id: triggered.alert_id}).save({
-            last_triggered: moment.utc()
+            last_triggered: moment.utc().format("YYYY-MM-DD HH:mm:ss")
         },{patch:true})
     })
     
@@ -109,7 +109,8 @@ alertHistory = async (triggered) => {
                 pressure: alert.pressure,
                 humidity: alert.humidity,
                 alert_id: alert.alert_id,
-                cleared: false
+                cleared: false,
+                created_at: moment.utc().format("YYYY-MM-DD HH:mm:ss")
             }).save()
         }
         else{
@@ -126,7 +127,7 @@ alertHistory = async (triggered) => {
                 pressure: alert.pressure,
                 humidity: alert.humidity,
                 alert_id: alert.alert_id,
-                cleared: false
+                created_at: moment.utc().format("YYYY-MM-DD HH:mm:ss")
             }).save()
         }
     })

@@ -24,6 +24,7 @@ class Sensors(object):
         self.temperature = 50.0
         self.pressure = 50.0
         self.humidity = 50.0
+        self.dataIndex = 0
         self.latitude = "n/a"
         self.longitude = "n/a"
         self.pin = 14
