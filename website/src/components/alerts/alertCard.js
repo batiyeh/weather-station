@@ -20,7 +20,6 @@ class AlertCard extends Component {
             threshold: this.props.alerts.threshold
         }
         
-        this.getAlertMethods = this.getAlertMethods.bind(this);
         this.updateAlert = this.updateAlert.bind(this);
         this.toggleAlert = this.toggleAlert.bind(this);
         this.resetValues = this.resetValues.bind(this);
@@ -30,9 +29,6 @@ class AlertCard extends Component {
         this.deleteAlert = this.deleteAlert.bind(this);
     }
 
-    // componentDidMount(){
-    //     this.setAlertMethods();
-    // }
     componentWillReceiveProps(nextProps) {
         if(nextProps.alerts.station_name !== this.state.station_name){
             this.setState({
@@ -104,35 +100,6 @@ class AlertCard extends Component {
         
         this.toggleAlert();
 
-    }
-
-    // setAlertMethods = async() => {
-    //     var {email, webpage, sms} = await this.getAlertMethods();
-    //     this.setState({
-    //         email: email,
-    //         webpage: webpage,
-    //         sms: sms,
-    //         origEmail: email,
-    //         origWebpage: webpage,
-    //         origSms: sms,
-    //     });
-    // }
-
-    //when the user opens the card modal, a fetch to get the alert methods for that alert is made
-    //the state is then updated with that 
-    getAlertMethods = async () => {
-        var email = false;
-        var webpage = false;
-        var sms = false;
-        var response = await fetch('/api/alerts/' + this.props.alerts.alert_id, {method: 'get'})
-        var body = await response.json();
-        body.methods.map(methodType => {
-            if (methodType.method === 'email') email = true; 
-            else if (methodType.method === 'sms') sms = true;
-            else if (methodType.method === 'webpage') webpage = true;
-        });
-        
-        return {email, webpage, sms};
     }
 
     //toggles edit alert modal

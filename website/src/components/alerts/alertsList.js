@@ -44,13 +44,14 @@ class AlertsList extends Component {
         await this.getAlerts();
 
     }
+
     //gets all current alerts, historic alerts, and stations for the user and stores it in the state
     getAlerts = async () => {
         var alerts = [];
         var stations = [];
         var station = '';
         var historicAlerts = [];
-        var response = await fetch('/api/alerts/', {method: 'post', credentials:'include'});
+        var response = await fetch('/api/alerts/' , {method: 'post', credentials: 'include'});
         var body = await response.json();
         alerts = body.alerts;
         stations = body.stations;

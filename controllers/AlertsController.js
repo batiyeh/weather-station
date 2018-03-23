@@ -23,7 +23,6 @@ router.post('/create', async function(req, res){
     var sms = req.body.sms;
     var webpage = req.body.webpage;
     var threshold = req.body.threshold;
-    console.log(email, sms, webpage);
 
     //gets apikey of station selected by user
     var apikey = await Station.where({station_name: station}).fetch();
@@ -85,8 +84,9 @@ router.post('/create', async function(req, res){
 })
 
 //Gets any webpage alerts for user that hasnt been dismissed
-router.post('/webpage', async function(req, res){
+router.post('/webpage/', async function(req, res){
     var alerts = []
+
     if(req.user){    
         alerts = await knex('triggeredalerts')
         .select('triggeredalerts.triggered_id', 'alertvalues.value', 'alerts.alert_id', 'stations.station_name', 'alerts.type','alerts.keyword', 'triggeredalerts.read', 'triggeredalerts.temperature', 'triggeredalerts.humidity', 'triggeredalerts.pressure', 'triggeredalerts.created_at')
@@ -104,7 +104,7 @@ router.post('/webpage', async function(req, res){
 })
 
 //Sets all webpage alerts to read for the user
-router.post('/read', async function(req, res){
+router.put('/read/', async function(req, res){
     var response = await knex('triggeredalerts')
     .update('triggeredalerts.read', true)
     .leftJoin('alerts', 'triggeredalerts.alert_id','=','alerts.alert_id')
@@ -112,23 +112,22 @@ router.post('/read', async function(req, res){
     .where('alerts.username','=', req.user)
     .where('triggeredalerts.cleared', '=', false)
 
-    return res.status(200);
+    return res.status(200).json({succcess: 'success'});
 })
 
 //Sets webpage alerts to cleared when user dismisses alerts
-router.delete('/webpage', async function(req, res){
+router.put('/webpage/', async function(req, res){
     var alerts = await knex('triggeredalerts')
     .update('triggeredalerts.cleared', true)
     .leftJoin('alerts', 'triggeredalerts.alert_id','=','alerts.alert_id')
     .where('alerts.username', '=', req.user)
     .where('triggeredalerts.cleared', '=', false);
 
-    return res.status(200);
+    return res.status(200).json({success: 'success'});
 })
 
 //Gets all alerts for user, all stations in database, and the entire alert history for the user
 router.post('/', async function(req, res){
-
     //selects all alerts for user, joins alerts and alertvalues based on alert_id
     var alerts = await knex('alerts')
     .select('alerts.alert_id', 'stations.station_name', 'alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alerts.threshold', 'alertvalues.value')
@@ -159,14 +158,6 @@ router.post('/', async function(req, res){
     return res.status(200).json({alerts, stations, historicAlerts});
 })
 
-//returns all alert methods selected for that alert
-router.get('/:id', async function(req, res){
-    var methods = await knex('alertmethods')
-    .select('alertmethods.method')
-    .where('alertmethods.alert_id','=', req.params.id);
-
-    return res.status(200).json({methods})
-})
 
 //post used to update an alert based on the :id passed by the frontend
 router.post('/:id', async function(req,res){
@@ -240,7 +231,7 @@ router.post('/:id', async function(req,res){
     return res.status(200).json({success: 'success'})
 })
 //soft deletes an alert once the user has deleted
-router.delete('/:id', async function(req, res){
+router.put('/:id', async function(req, res){
 
     var response = await knex('alerts')
     .update('alerts.deleted', true)

@@ -70,7 +70,8 @@ class Navigation extends Component {
     getTriggeredAlerts = async () => {
         var alerts = [];
         //fetch call to gather any triggered webpage alerts for user
-        var response = await fetch('/api/alerts/webpage', {method: 'post', credentials: 'include'})
+        
+        var response = await fetch('/api/alerts/webpage/' ,{method: 'post', credentials: 'include'})
         var body = await response.json();
         alerts = body.alerts;
 
@@ -100,7 +101,7 @@ class Navigation extends Component {
 
     toggleAlert = async () => {
         //fetch call to set alerts to read for user
-        fetch('/api/alerts/read', {method: 'post', credentials: 'include'})
+        fetch('/api/alerts/read', {method: 'put', credentials: 'include'})
 
         this.setState({
             unread: false,
@@ -129,7 +130,7 @@ class Navigation extends Component {
     }
 
     logout = async() => {
-        var response = await fetch('/api/user/logout', {method: 'post', credentials: 'include'})
+        var response = await fetch('/api/user/logout', {method: 'put', credentials: 'include'})
         var body = await response.json();
         this.setState({
             redirect: true
