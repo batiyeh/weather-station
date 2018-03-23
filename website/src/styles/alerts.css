@@ -5,6 +5,12 @@
     max-width: 600px !important;
 }
 
+.historic-alerts-list{
+    max-height: 700px;
+    overflow-y: scroll;
+    margin-bottom: 50px;
+}
+
 .alert-list-header{
     margin-bottom: 10px;
 }

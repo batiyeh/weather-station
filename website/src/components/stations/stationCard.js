@@ -170,7 +170,7 @@ class StationCard extends Component {
                                     </p>
                                 </div>
                                 <div className="col-4">
-                                    <p className="station-uptime">{moment(this.props.station.created_at).format("YYYY-MM-DD HH:mm:ss")}</p>
+                                    <p className="station-uptime">{moment(this.props.station.created_at).format("MM/DD/YY HH:mm:ss")}</p>
                                 </div>
                             </div>
                         </CardTitle>

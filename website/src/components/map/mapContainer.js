@@ -76,12 +76,12 @@ export class MapContainer extends Component {
                     lng: bounds.maxLng
                 }
             }
-            var bounds = fitBounds(bounds, {height: height-75, width: width});
+            bounds = fitBounds(bounds, {height: height-75, width: width});
             center = bounds.center;
             zoom = bounds.zoom;
         }
 
-        else if (allCoords.length == 1){
+        else if (allCoords.length === 1){
             center = {
                 lat: parseFloat(allCoords[0].latitude),
                 lng: parseFloat(allCoords[0].longitude)
@@ -234,18 +234,23 @@ export class MapContainer extends Component {
                         style={style}>
                         {this.state.stations
                             .map((station, index) => {
-                                if (station.latitude !== "n/a" && station.longitude !== "n/a")
-                                return (
-                                        <Marker
-                                            key={station.apikey}
-                                            markerId={index}
-                                            lat={station.latitude}
-                                            lng={station.longitude}
-                                            station={station}
-                                            hover={this.state.hoverKey === station.apikey}
-                                            label={this.state.showLabels}
-                                        />
-                                );
+                                if (station.latitude !== "n/a" && station.longitude !== "n/a"){
+                                    return (
+                                            <Marker
+                                                key={station.apikey}
+                                                markerId={index}
+                                                lat={station.latitude}
+                                                lng={station.longitude}
+                                                station={station}
+                                                hover={this.state.hoverKey === station.apikey}
+                                                label={this.state.showLabels}
+                                            />
+                                    );
+                                }
+
+                                else{
+                                    return null;
+                                }
                             })
                         }
                         { this.renderAverages() }
