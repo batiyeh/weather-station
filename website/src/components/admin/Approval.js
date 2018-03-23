@@ -8,6 +8,7 @@ class Approval extends Component {
       super();
       this.state = {
           pending: [],
+          users: [],
           modal: false,
       }
     };
@@ -16,6 +17,16 @@ class Approval extends Component {
         return {
             pending: []
         }
+    };
+
+    getuser = async () => {
+        var users = [];
+        const response = await fetch('/api/allUsers');
+        const body = await response.json();
+        if (response.status !== 200) throw Error(body.message);
+        if (body.users) users = body.users;
+
+        return users;
     };
 
     approveUser = async () => {

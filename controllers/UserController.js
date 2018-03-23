@@ -140,11 +140,21 @@ router.post('/getUserInfo', async function(req,res){
     }
 })
 
+router.get('/allUsers', async function (req,res) {
+    try{
+        var users = await knex('users').select().orderBy('username', 'ascend')
+    } catch(ex){
+        return res.json({});
+    }
+    return res.json({ users });
+})
+
 router.post('/logout', function(req,res){
     req.session.destroy(response => {
         res.json({response: response})
     });
 })
+
 
 router.post('/reset/', function(req,res){
     var email = req.body.email;
