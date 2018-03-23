@@ -23,6 +23,7 @@ router.post('/create', async function(req, res){
     var sms = req.body.sms;
     var webpage = req.body.webpage;
     var threshold = req.body.threshold;
+    console.log(email, sms, webpage);
 
     //gets apikey of station selected by user
     var apikey = await Station.where({station_name: station}).fetch();
@@ -136,7 +137,11 @@ router.post('/', async function(req, res){
     .where('alerts.username', '=', req.user)
     .where('alerts.deleted','=', false)
 
-    var stations = await Station.fetchAll();
+    var methods = await knex('alertmethods')
+    .select('method', 'alert_id')
+
+    var stations = await knex('stations')
+    .select('station_name')
 
     var historicAlerts = await knex('triggeredalerts')
     .distinct('triggeredalerts.created_at', 'stations.station_name', 'alerts.type', 'alerts.keyword', 'triggeredalerts.pressure', 'triggeredalerts.temperature', 'triggeredalerts.humidity')
@@ -148,6 +153,7 @@ router.post('/', async function(req, res){
     .orderBy('triggeredalerts.triggered_id')
 
     alerts = await parseBetween(alerts);
+    alerts = await parseMethods(alerts, methods);
     historicAlerts = await parseBetween(historicAlerts);
     
     return res.status(200).json({alerts, stations, historicAlerts});
@@ -271,5 +277,24 @@ parseBetween = async(alerts) => {
     })
     return newAlerts;
 };
+parseMethods = async(alerts, methods) => {
+    var newAlerts = [];
+    
+    alerts.map(alerts => {
+        methods.map(methods =>{
+            if((methods.method === 'email') && (methods.alert_id === alerts.alert_id) ){
+                alerts.email = true;
+            }
+            else if((methods.method === 'sms') && (methods.alert_id === alerts.alert_id)){
+                alerts.sms = true;
+            }
+            else if((methods.method === 'webpage') && (methods.alert_id === alerts.alert_id)){
+                alerts.webpage = true;
+            }
+        })
+        newAlerts.push(alerts);
+    })
 
+    return newAlerts;
+}
 module.exports = router;

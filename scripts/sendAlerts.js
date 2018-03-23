@@ -68,7 +68,7 @@ sendAlerts = async () => {
 
     triggered.map(triggered =>{
         if(triggered.method === 'email'){
-            sendEmail(triggered)
+            // sendEmail(triggered)
         }
         else if(triggered.method === 'sms'){
             sendSMS(triggered)

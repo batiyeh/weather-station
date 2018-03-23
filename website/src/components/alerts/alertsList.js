@@ -57,9 +57,6 @@ class AlertsList extends Component {
         historicAlerts = body.historicAlerts;
         if (stations.length > 0) station = stations[0].station_name;
         //puts alerts, historicAlerts, and stations in state. Sets station to first station in stations array
-        console.log(alerts.map(alert => {
-            console.log(alert);
-        }))
         this.setState({alerts: alerts, stations: stations, historicAlerts: historicAlerts, station:station});
     }
 
