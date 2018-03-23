@@ -283,12 +283,6 @@ class Navigation extends Component {
                                     </Dropdown>
                                 </div>
                                 <div className="col-md-4 col-xs-12 hidden-sm-up">
-                                    <NavItem onClick={this.downloadClient} className="nav-link download-link">
-                                        <span className="download-text">client</span>
-                                        <i class="fa fa-download" aria-hidden="true"></i>
-                                    </NavItem>
-                                </div>
-                                <div className="col-md-4 col-xs-12 hidden-sm-up">
                                     <Dropdown isOpen={this.state.dropdown} className="username-dropdown" toggle={this.toggleDropdown} nav inNavbar>
                                         <DropdownToggle nav caret>
                                             {this.props.username}
@@ -296,6 +290,10 @@ class Navigation extends Component {
                                         <DropdownMenu className="user-menu" right>
                                             <DropdownItem tag='a'>
                                                 <Link to={'/profile'} className='nav-link nav-link-dark'>profile</Link>
+                                            </DropdownItem>
+                                            <DropdownItem onClick={this.downloadClient} className="nav-link nav-link-dark download-link">
+                                                <span className="download-text">client</span>
+                                                {/* <i class="fa fa-download" aria-hidden="true"></i> */}
                                             </DropdownItem>
                                             <DropdownItem tag='a'>
                                                 <Link to={'/admin'} className='nav-link nav-link-dark'>admin</Link>

@@ -178,6 +178,9 @@ class Map extends Component {
                             <FormGroup className="col-12">
                                 <Input type="text" className="filterWidth" name="stationFilter" id="stationFilter" placeholder="Filter" onChange={this.filterOnChange.bind(this)} />
                             </FormGroup>
+                            <div className="col-12">
+                                <h4 className="map-title">Last Known Locations</h4>
+                            </div>
                             { this.renderSidebar() }
                         </div>
                     </div>

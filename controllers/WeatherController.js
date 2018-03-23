@@ -8,6 +8,7 @@ const LatestWeather = require('../models/LatestWeather');
 const Station = require('../models/Station');
 const knex = require('knex')(require('../knexfile'));
 const openweather = require('../services/openWeatherMap');
+const _ = require('lodash');
 var moment = require('moment');
 moment().format();
 
@@ -17,33 +18,28 @@ moment().format();
 router.post('/', async function (req, res) {
     var station = await Station.where('apikey', req.body.apikey).fetch();
     if (station){
-        var openWeatherData = await openweather.getOpenWeatherData(req.body.latitude, req.body.longitude);
-        if (openWeatherData["visibility"] != "" || openWeatherData['wind_speed'] != "" || openWeatherData['wind_direction'] != ""){
-            var result = await new Weather({
-                apikey: req.body.apikey,
-                created_at: req.body.created_at,
-                temperature: req.body.temperature,
-                humidity: req.body.humidity,
-                pressure: req.body.pressure,
-                latitude: req.body.latitude,
-                longitude: req.body.longitude,
-                visibility: openWeatherData["visibility"],
-                wind_speed: openWeatherData['wind_speed'],
-                wind_direction: openWeatherData['wind_direction']
-            }).save()
+        var latestWeather = await openweather.getLatestOpenWeatherData(req.body.apikey);
+
+        // Get Open Weather Maps data every minute or if the latest weather does not have any owm data
+        if ((req.body.data_index % 12 == 0 || req.body.data_index == 0) ||
+        (_.isUndefined(latestWeather.visibility) || _.isNull(latestWeather.visibility))){
+            var openWeatherData = await openweather.getOpenWeatherData(req.body.latitude, req.body.longitude);
+        } else{
+            var openWeatherData = latestWeather;
         }
 
-        else{
-            var result = await new Weather({
-                apikey: req.body.apikey,
-                created_at: req.body.created_at,
-                temperature: req.body.temperature,
-                humidity: req.body.humidity,
-                pressure: req.body.pressure,
-                latitude: req.body.latitude,
-                longitude: req.body.longitude,
-            }).save()
-        }
+        var result = await new Weather({
+            apikey: req.body.apikey,
+            created_at: req.body.created_at,
+            temperature: req.body.temperature,
+            humidity: req.body.humidity,
+            pressure: req.body.pressure,
+            latitude: req.body.latitude,
+            longitude: req.body.longitude,
+            visibility: openWeatherData["visibility"],
+            wind_speed: openWeatherData['wind_speed'],
+            wind_direction: openWeatherData['wind_direction']
+        }).save()
 
         // Store our resulting row in latest weather so we can quickly get the latest weather
         // for our main page
