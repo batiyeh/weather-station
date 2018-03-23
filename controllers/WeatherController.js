@@ -113,7 +113,6 @@ router.get('/stations_name', async function (req, res) {
         console.log(ex);
         return res.json({});
     }
-    console.log(names);
     return res.json({ names });
 });
 

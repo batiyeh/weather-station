@@ -70,15 +70,11 @@ class HistoricalContainer extends Component{
     }
 
     getStations = async () =>{
-        var data;
         var names = [];
         const response = await fetch('/api/weather/stations_name/');
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
-        if (body.names) data = body.names;
-        for(var i = 0; i < data.length; i++){
-            names.push(data[i].station_name);
-        }
+        names = body.names;
         this.setState({
             stations: names
         });
@@ -103,7 +99,6 @@ class HistoricalContainer extends Component{
             if (type === 'temperature') {
                 //data is returned in JSON format so based on what sensor type is how we determine to push it into the data array
                 stationsDict[station_name]["sensorData"].push(data[i].temperature);
-
             }
             else if(type === 'pressure'){
                 stationsDict[station_name]["sensorData"].push(data[i].pressure);
@@ -154,6 +149,15 @@ class HistoricalContainer extends Component{
             modal: false
         })
         this.getSensorData()        //call the async function to get the data based on the new parameters set by the filter
+    }
+
+    renderStations(){
+        var options = [];
+        this.state.stations.map((station, index) => {
+            options.push(<option key={"name" + index} value={station.station_name}>{station.station_name}</option>);
+            return null;
+        });
+        return options;
     }
 
     //function that handles the rendering of the graph it is done by sensor type
@@ -243,8 +247,7 @@ class HistoricalContainer extends Component{
                                     <FormGroup>
                                         <label for="stations" className="form-label">Stations</label>
                                         <Input type="select" name="selectMulti" id="SelectMulti" multiple>
-                                            <option value="Temperature">Station1</option>
-
+                                            {this.renderStations()}
                                         </Input>
                                     </FormGroup>
                                 </div>
