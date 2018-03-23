@@ -69,6 +69,22 @@ class HistoricalContainer extends Component{
         })
     }
 
+    getStations = async () =>{
+        var data;
+        var names = [];
+        const response = await fetch('/api/weather/stations_name/');
+        const body = await response.json();
+        if (response.status !== 200) throw Error(body.message);
+        if (body.names) data = body.names;
+        for(var i = 0; i < data.length; i++){
+            names.push(data[i].station_name);
+        }
+        this.setState({
+            stations: names
+        });
+    };
+
+
     //async call that is grabbing the sensor data based on current state of the props
     getSensorData = async () => {
         var data;
@@ -99,7 +115,8 @@ class HistoricalContainer extends Component{
             stationsDict[station_name]["dates"].push(data[i].created_at);
 
         }
-        var newStationsDict = this.processDataPoints(stationsDict)
+        var newStationsDict = this.processDataPoints(stationsDict);
+        this.getStations();
         this.setState({
             // end the async function by setting the state so that the stations dictionary is stored in stations data
             stationsData: newStationsDict,
@@ -115,8 +132,6 @@ class HistoricalContainer extends Component{
         var newStationsDict = {};
         for (var station_name in stationsDict) {
             data = stationsDict[station_name];
-            this.state.stations.push(station_name);
-            console.log(this.state.stations);
             newStationsDict[station_name] = {};
             for(var i = 0; i < data["sensorData"].length; i++){
                 if ( i % 30 === 0){
@@ -228,7 +243,6 @@ class HistoricalContainer extends Component{
                                     <FormGroup>
                                         <label for="stations" className="form-label">Stations</label>
                                         <Input type="select" name="selectMulti" id="SelectMulti" multiple>
-                                            {stations.forEach(function(this.state.stations, index))}
                                             <option value="Temperature">Station1</option>
 
                                         </Input>

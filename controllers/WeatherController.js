@@ -106,6 +106,17 @@ router.get('/sensorData/:from/:to/:type', async function (req, res) {
     return res.json({ temp });
 });
 
+router.get('/stations_name', async function (req, res) {
+    try{
+        var names = await knex('stations').select('stations.station_name')
+    } catch(ex){
+        console.log(ex);
+        return res.json({});
+    }
+    console.log(names);
+    return res.json({ names });
+});
+
 // Returns the latest weather data for each station from the database
 router.post('/verifyKey', async function (req, res) {
     var station = await Station.where('apikey', req.body.apikey).fetch();
