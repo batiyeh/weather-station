@@ -17,10 +17,11 @@ class TextStorage(object):
         index = 0
         data = ""
         for val in weatherdata:
-            if (index == 0):
-                data = data + str(weatherdata[val]).replace('(', '').replace(')', '')
-            else:
-                data = data + ", " + str(weatherdata[val]).replace('(', '').replace(')', '').replace(',', '').replace('\'', '')
+            if (val != "data_index"):
+                if (index == 0):
+                    data = data + str(weatherdata[val]).replace('(', '').replace(')', '')
+                else:
+                    data = data + ", " + str(weatherdata[val]).replace('(', '').replace(')', '').replace(',', '').replace('\'', '')
             index += 1
         data = data + "\n"
         return data
