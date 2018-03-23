@@ -50,7 +50,7 @@ class Sensors(object):
         self.getWeather()
         self.getGpsCoords()
 
-        weatherdata["created_at"] = str(datetime.datetime.now())
+        weatherdata["created_at"] = str(datetime.datetime.utcnow())
         weatherdata["apikey"] = apikey
         weatherdata["temperature"] = round(self.temperature, 2)
         weatherdata["humidity"] = round(self.humidity, 2)

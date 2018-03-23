@@ -79,8 +79,6 @@ class Client(object):
 
 if __name__ == '__main__':
     try:
-        os.environ['TZ'] = 'America/Detroit'
-        time.tzset()
         Client().main()
 
     except(KeyboardInterrupt, SystemExit):
