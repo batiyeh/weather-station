@@ -214,16 +214,20 @@ class AlertsList extends Component {
     renderHistoricCard(){
         var cards = []
         this.state.historicAlerts.map(alert => {
-            console.log(alert);
             var alertDate = new Date(alert.created_at.slice(0,10)+'T04:00:00.000Z');
-            console.log(this.state.alertFilter, alert.alert_id);
+            var filter = moment(this.state.date).format('YYYY-MM-DD');
+            var alertTime = moment(alert.created_at).utc(alert.created_at).local().format('YYYY-MM-DD'); 
+            console.log("Filter: ", moment(this.state.date).format('YYYY-MM-DD'));
+            // console.log(moment(this.state.date).utc(this.state.date).local().format("YYYY-MM-DD"));
+            console.log("Alert: ", moment(alert.created_at).utc(alert.created_at).local().format("YYYY-MM-DD"))
+
             if(this.state.alertFilter !== 'all'){
-                if((this.state.date.getTime() === alertDate.getTime() && (this.state.alertFilter == alert.alert_id))){
+                if((filter === alertTime) && (this.state.alertFilter == alert.alert_id)){
                     cards.push(<HistoricAlertCard alert={alert}/>)
                 }
             }
             else{
-                if(this.state.date.getTime() === alertDate.getTime()){
+                if(filter === alertTime){
                     cards.push(<HistoricAlertCard alert={alert}/>)
                 }
             }
@@ -393,12 +397,14 @@ class AlertsList extends Component {
                                 dateFormat="YYYY-MM-DD"
                                 className='form-control'
                                 placeholderText="Date"
-                                selected={moment(this.state.date)}
+                                selected={moment(this.state.date).utc(this.state.date)}
                                 onChange={this.filterTime}/>
-                            <Input type='select' name='alert_filter' id='alert_filter' onChange={e =>this.onAlertFilterChange(e.target.value)}>
-                                {this.renderOptions()}
-                            </Input>
                         </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                        <Input type='select' name='alert_filter' id='alert_filter' onChange={e =>this.onAlertFilterChange(e.target.value)}>
+                                {this.renderOptions()}
+                        </Input>
                     </FormGroup>
                 </div>
             </div>
