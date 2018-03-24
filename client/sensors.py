@@ -1,6 +1,7 @@
 import random
 import datetime
 import os
+import subprocess
 from collections import OrderedDict
 from pathlib import Path
 try:
@@ -50,7 +51,7 @@ class Sensors(object):
         self.getWeather()
         self.getGpsCoords()
 
-        weatherdata["created_at"] = str(datetime.datetime.now())
+        weatherdata["created_at"] = str(datetime.datetime.utcnow())
         weatherdata["apikey"] = apikey
         weatherdata["temperature"] = round(self.temperature, 2)
         weatherdata["humidity"] = round(self.humidity, 2)
@@ -78,6 +79,15 @@ class Sensors(object):
             self.humidity = self.sense.humidity
             self.temperature = (9.0/5.0) * self.sense.temperature + 32
             self.pressure = self.sense.pressure
+
+            # Calibrate the temperature to account for CPU temp with the sense hat
+            cpu_temp = subprocess.check_output("vcgencmd measure_temp", shell=True)
+            array = cpu_temp.split("=")
+            array2 = array[1].split("'")
+
+            cpu_tempf = float(array2[0]) * 9.0 / 5.0 + 32.0
+            cpu_tempf = float("{0:.2f}".format(cpu_tempf))
+            self.temperature = self.temperature - ((cpu_tempf - self.temperature) / 5.466)
         except:
             pass
             # self.temperature = random.uniform(70.0, 73.0)

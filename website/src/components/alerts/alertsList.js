@@ -355,7 +355,7 @@ class AlertsList extends Component {
                     </FormGroup>
                 </div>
             </div>
-            <div className='row'>
+            <div className='row historic-alerts-list'>
                 {this.renderHistoricCard()}
             </div>
         </div>

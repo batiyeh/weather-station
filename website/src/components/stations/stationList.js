@@ -52,7 +52,7 @@ class StationList extends Component {
         this.getLatestWeather().then(stations => {
             this.setState({ 
                 stations: stations, 
-                secondsElapsed: this.state.secondsElapsed + 3
+                secondsElapsed: this.state.secondsElapsed + 5
             });
         });
     }

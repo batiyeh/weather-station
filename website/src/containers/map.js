@@ -60,6 +60,7 @@ class Map extends Component {
                 if (station.latitude !== "n/a" && station.longitude !== "n/a"){
                     checkedStations.push(station);
                 }
+                return null;
             })
         }
 
@@ -154,6 +155,7 @@ class Map extends Component {
                                 <SidebarItem key={station.apikey} index={displayIndex} station={station} checkboxOnChange={this.checkboxOnChange}></SidebarItem>
                             );
                         }
+                        return null;
                     })
                 }
                 </div>

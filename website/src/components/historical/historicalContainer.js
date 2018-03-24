@@ -7,7 +7,6 @@ import HumidityGraph from './humidityGraph'
 import DatePicker  from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
 var moment = require('moment');
-moment().format();
 
 class HistoricalContainer extends Component{
     //set the props for the container
