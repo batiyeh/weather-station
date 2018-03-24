@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Alert, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { ButtonDropdown,DropdownMenu, DropdownItem, DropdownToggle } from 'reactstrap';
 
 
 class Approval extends Component {
@@ -11,7 +11,17 @@ class Approval extends Component {
           users: [],
           modal: false,
       }
+      this.toggle = this.toggle.bind(this);
+      this.state = {
+          dropdownOpen: false
+      };
     };
+
+    toggle(){
+        this.setState({
+            dropdownOpen: !this.state.dropdownOpen
+        });
+    }
 
     getInitialState(){
         return {
@@ -25,19 +35,12 @@ class Approval extends Component {
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
         if (body.users) users = body.users;
-
+        this.setState({ users: usersarray })
         return users;
     };
 
-    approveUser = async () => {
-
-    };
-
-    denyUser = async () => {
-
-    };
-
     updateTable = async() => {
+
 
     };
 
@@ -46,7 +49,35 @@ class Approval extends Component {
     };
 
     render (){
-
+        <Table hover>
+            <thead>
+            <tr>
+                <th>#</th>                                  //this is the top of the table headers
+                <th>Username</th>
+                <th>Permission</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>                                            //This should be printing from the database
+                <th scope="Column">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td>@fat</td>
+            </tr>
+            <tr>
+                <th scope="row">3</th>
+                <td>Larry</td>
+                <td>the Bird</td>
+                <td>@twitter</td>
+            </tr>
+            </tbody>
+        </Table>
     };
 };
 
