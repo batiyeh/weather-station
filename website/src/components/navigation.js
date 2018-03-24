@@ -152,8 +152,8 @@ class Navigation extends Component {
                 <div className="bell">
                     <span className="fa-stack">
                         <i className="fa fa-bell fa-stack-1x" aria-hidden="true"></i>
-                        <strong class="fa-stack-1x unread-text">{this.state.alerts.length}</strong>
-                        <i class="fa fa-square fa-stack-1x unread" aria-hidden="true"></i>
+                        <strong className="fa-stack-1x unread-text">{this.state.alerts.length}</strong>
+                        <i className="fa fa-square fa-stack-1x unread" aria-hidden="true"></i>
                     </span>
                 </div>
             );
@@ -182,7 +182,7 @@ class Navigation extends Component {
         this.state.alerts.map((alerts, index) =>{
             if(alerts.keyword === 'between'){
                 webpageAlertCards.push(
-                    <Card onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, alerts.secondValue, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)} className='alert-notification-card'> 
+                    <Card key={index} onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, alerts.secondValue, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)} className='alert-notification-card'> 
                         <div className="alert-text">
                             {alerts.station_name}'s {alerts.type} is {alerts.keyword} {alerts.value} and {alerts.secondValue}
                         </div>
@@ -195,7 +195,7 @@ class Navigation extends Component {
             }
             else{
                 webpageAlertCards.push(
-                    <Card onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, null, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)} className="alert-notification-card">
+                    <Card key={index} onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, null, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)} className="alert-notification-card">
                         <div className="alert-text">
                             {alerts.station_name}'s {alerts.type} is {alerts.keyword}&nbsp;{alerts.value}
                         </div>

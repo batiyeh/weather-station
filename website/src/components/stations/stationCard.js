@@ -131,10 +131,10 @@ class StationCard extends Component {
                     <ModalBody>
                         { this.renderNameInput() }
                         <div className="station-detail-container">
-                            <div className="station-detail-row">
+                            {/* <div className="station-detail-row">
                                 <span className="left">Uptime</span>
                                 <span className="right">{this.getUptime()}</span>
-                            </div><br/>
+                            </div><br/> */}
                             <div className="station-detail-row">
                                 <span className="left">Temperature</span>
                                 <span className="right">{this.props.station.temperature} &deg;F</span>

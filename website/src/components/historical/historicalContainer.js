@@ -5,7 +5,6 @@ import TemperatureGraph from './temperatureGraph'
 import DatePicker  from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
 var moment = require('moment');
-moment().format();
 
 class HistoricalContainer extends Component{
     constructor(props){
