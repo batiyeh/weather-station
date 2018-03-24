@@ -3,6 +3,7 @@ import time
 import json
 import sys
 import requests
+import datetime
 from pathlib import Path
 from textstorage import TextStorage
 from sensors import Sensors
@@ -60,7 +61,7 @@ class Client(object):
                 key = "".join(key.split())
                 try:
                     print("Verifying key...")
-                    r = requests.post(self.URL + '/api/weather/verifyKey', data = {"apikey": key})
+                    r = requests.post(self.URL + '/api/weather/verifyKey', data = {"apikey": key, "time": datetime.datetime.utcnow()})
                     if (r.status_code == 200):
                         print("Key Verified.")
                         f = open(str(os.path.dirname(os.path.abspath(__file__))) + "/.api-key.txt", 'w')

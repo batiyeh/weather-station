@@ -104,8 +104,6 @@ class AlertCard extends Component {
 
     //toggles edit alert modal
     toggleAlert(){
-        console.log(this.props.alerts.alert_id, this.state.value);
-
         this.setState({
             modal: !this.state.modal
         });

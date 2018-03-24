@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { Button, Alert, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import AdminStationCard from './adminStationCard'
+import moment from 'moment';
+import DatePicker  from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css';
 const crypto = require('crypto');
 
 // Station List component is a list of each station
@@ -13,10 +16,12 @@ class AdminStationList extends Component {
             stations: [],
             modal: false,
             apikey: '',
-            name: ''
+            name: '',
+            expiration: ''
         };
         this.toggleAddStationModal = this.toggleAddStationModal.bind(this);
         this.deleteStation = this.deleteStation.bind(this);
+        this.onExpirationChange = this.onExpirationChange.bind(this);
     }
 
     // Sets the initial state of the component to be null/0 so 
@@ -62,7 +67,7 @@ class AdminStationList extends Component {
     addStation = async() => {
         var response = await fetch('/api/stations/', 
             {method: 'post', 
-             body: JSON.stringify({station_name: this.state.name, api_key: this.state.apikey}),
+             body: JSON.stringify({station_name: this.state.name, api_key: this.state.apikey, expiration: moment.utc(this.state.expiration).format('YYYY-MM-DD HH:mm:ss')}),
              headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json'
@@ -109,6 +114,12 @@ class AdminStationList extends Component {
         });
     }
 
+    onExpirationChange(value){
+        this.setState({
+            expiration: value
+        });
+    }
+
     // Create a random API key of length 10 and open the modal
     toggleAddStationModal(){
         crypto.randomBytes(10, function(err, buf){
@@ -132,8 +143,19 @@ class AdminStationList extends Component {
                                     <input id='station_name' name='station_name' type='text' className='form-control' placeholder='Name' onChange={e => this.onNameChange(e.target.value)} value={this.state.name}/>
                                 </div>
                                 <div className='form-group'>
+                                    <label className="form-label">Expiration:</label>
+                                    <DatePicker
+                                        id='expiration' 
+                                        name='expiration'
+                                        dateFormat="YYYY-MM-DD HH:mm:ss"
+                                        className='form-control'
+                                        placeholderText="Expiration"
+                                        selected={this.state.expiration !== '' ? moment(this.state.expiration) : null}
+                                        onChange={this.onExpirationChange}/>
+                                </div>
+                                <div className='form-group'>
                                     <label>API Key:</label>
-                                    <input id='api_key' name='api_key' type='text' className='form-control' placeholder='' value={this.state.apikey} readonly="readonly"/>
+                                    <input id='api_key' name='api_key' type='text' className='form-control' placeholder='' value={this.state.apikey} readOnly="readonly"/>
                                 </div>
                             </form>
                         </ModalBody>
