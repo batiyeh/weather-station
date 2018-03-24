@@ -179,7 +179,9 @@ class HistoricalContainer extends Component{
         if(this.state.sensorType === 'temperature') {       // checks which sensor type is currently selected and renders the corresponding component based on that
             return(
                 <TemperatureGraph className="row graph"
-                    data={this.state.stationsData}          //passes the stations data to the graph component
+                    //passes the stations data to the graph component
+                    data={this.state.stationsData}
+                    stations={this.state.toBeDrawn}
                     from={this.state.fromDate}              // passes the to and from dates to the graph component
                     to={this.state.toDate}
                     height={500}                            //The height and width of the graph is passed to the graph component

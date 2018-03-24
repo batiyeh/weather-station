@@ -37,16 +37,20 @@ class TemperatureGraph extends Component{
                 this.createLines(station_name, data["sensorData"], data["dates"]);
             }
         }
-        var labels = this.generateLabels(this.state.from, this.state.to, data["dates"]);       //pass the to and from dates to generate the x axis labels of our graph
-        this.updateLabels(labels);      //once generated update them
+        //pass the to and from dates to generate the x axis labels of our graph
+        //var labels = this.generateLabels(this.state.from, this.state.to, data["dates"]);
+        //once generated update them
+        //this.updateLabels(labels);
         console.log(data);
     }
     componentWillUnmount(){
-        colorIndex =0;  // reset the color index upon the page being unloaded
+        // reset the color index upon the page being unloaded
+        colorIndex =0;
     }
 
 
-    generateLabels(from, to, dates){           //generating the label for the x axis based on the to and from date passed from historical container
+    //generating the label for the x axis based on the to and from date passed from historical container
+    generateLabels(from, to, dates){
         var labels = [];
         from = moment(from);
         to = moment(to);
