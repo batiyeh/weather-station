@@ -52,7 +52,7 @@ class Sensors(object):
             pass
 
         try:
-            self.sensor = BMP280.280()
+            self.sensor = BMP280.BMP280()
         except:
             print("Failed initializing Pressure Sensor")
             pass
@@ -78,11 +78,17 @@ class Sensors(object):
         # Attempt to retrieve humidity + temperature
         try:
             humidity, temperature = Adafruit_DHT.read(Adafruit_DHT.AM2302, self.pin)
-            pressure = sensor.read_pressure() / 100
+            
             if (temperature):
                 self.temperature = (9.0/5.0) * temperature + 32
             if (humidity):
                 self.humidity = humidity
+        except:
+            pass
+        
+        try:
+            pressure = self.sensor.read_pressure() / 100
+            print(pressure)
             if(pressure):
                 self.pressure = pressure
         except:
