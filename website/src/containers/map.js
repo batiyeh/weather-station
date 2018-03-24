@@ -60,6 +60,7 @@ class Map extends Component {
                 if (station.latitude !== "n/a" && station.longitude !== "n/a"){
                     checkedStations.push(station);
                 }
+                return null;
             })
         }
 
@@ -141,6 +142,7 @@ class Map extends Component {
         }
 
         else{
+            var displayIndex = -1;
             return (
                 <div className="name-list">
                 {
@@ -148,10 +150,12 @@ class Map extends Component {
                     .filter(this.filterStations.bind(this))
                     .map((station, index) => {
                         if (station.latitude !== "n/a" && station.longitude !== "n/a"){
+                            displayIndex += 1;
                             return (
-                                <SidebarItem key={station.apikey} index={index} station={station} checkboxOnChange={this.checkboxOnChange}></SidebarItem>
+                                <SidebarItem key={station.apikey} index={displayIndex} station={station} checkboxOnChange={this.checkboxOnChange}></SidebarItem>
                             );
                         }
+                        return null;
                     })
                 }
                 </div>
@@ -176,6 +180,9 @@ class Map extends Component {
                             <FormGroup className="col-12">
                                 <Input type="text" className="filterWidth" name="stationFilter" id="stationFilter" placeholder="Filter" onChange={this.filterOnChange.bind(this)} />
                             </FormGroup>
+                            <div className="col-12">
+                                <h4 className="map-title">Last Known Locations</h4>
+                            </div>
                             { this.renderSidebar() }
                         </div>
                     </div>

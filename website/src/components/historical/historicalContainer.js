@@ -3,31 +3,38 @@ import '../../styles/historical.css';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap';
 import TemperatureGraph from './temperatureGraph'
 import DatePicker  from 'react-datepicker'
-require("react-datepicker/dist/react-datepicker-cssmodules.css");
+import 'react-datepicker/dist/react-datepicker.css';
+var moment = require('moment');
 
 class HistoricalContainer extends Component{
     constructor(props){
         super(props);
+        var oneday = moment().subtract(1, "days");
+        var now = moment();
         this.state = {
             stationsData: {},
             modal: false,
             loading: true,
-            fromDate: '',
-            toDate: ''
+            sensorType: 'temperature',
+            fromDate: oneday.format("YYYY-MM-DD HH:mm:ss"),
+            toDate: now.format("YYYY-MM-DD HH:mm:ss")
         }
         this.toggleFilter = this.toggleFilter.bind(this);
-        this.componentWillMount = this.componentWillMount.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
         this.handleToChange = this.handleToChange.bind(this);
         this.handleFromChange = this.handleFromChange.bind(this);
+        this.updateGraph = this.updateGraph.bind(this);
+
     }
 
     toggleFilter(){
         this.setState({
             modal: !this.state.modal
         })
+
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.getTemp()
     }
 
@@ -42,11 +49,18 @@ class HistoricalContainer extends Component{
             fromDate: date
         });
     }
+    onSenseChange(value) {
+        this.setState({
+            sensorType: value
+        })
+    }
 
     getTemp = async () => {
         var data;
         var stationsDict = {};
-        const response = await fetch('/api/weather/temp/');
+        var toDate = this.state.toDate;
+        var fromDate = this.state.fromDate;
+        const response = await fetch('/api/weather/temp/' + fromDate +'/' + toDate);
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
         if (body.temp) data = body.temp;
@@ -61,6 +75,25 @@ class HistoricalContainer extends Component{
             loading: false
         });
     };
+    updateGraph(){
+        this.setState({
+            loading: true,
+            modal: false
+        })
+        this.getTemp()
+    }
+
+    renderGraph(){
+        return(
+            <TemperatureGraph className="row graph"
+                data={this.state.stationsData}
+                from={this.state.fromDate}
+                to={this.state.toDate}
+                height={500}
+                width={800}
+            />
+        )
+    }
 
 
 
@@ -73,41 +106,44 @@ class HistoricalContainer extends Component{
                         <form id='filterForm'>
                             <ModalBody>
                                 <div className='form-group'>
-                                    <label for="dataType" class="form-label">Type</label>
-                                    <select id='dataType' name='dataType'  className='form-control'>
-                                        <option value="Temperature">Temperature</option>
-                                        <option value="Pressure">Pressure</option>
-                                        <option value="Humidity">Humidity</option>
-                                    </select>
-
+                                    <label>Data Type</label>
+                                    <Input type="select" name='senseType' id='senseType' value={this.state.sensorType} onChange={e => this.onSenseChange(e.target.value)}>
+                                        <option value='temperature'>Temperature</option>
+                                        <option value='humidity'>Humidity</option>
+                                        <option value='pressure'>Pressure</option>
+                                    </Input>
                                 </div>
                                 <div className='form-group'>
                                     <div className="row">
-                                        <div className="col-6 no-padding-left">
-                                            <label for="dateBegin" class="form-label">From</label>
+                                        <div className="col-6">
+                                            <label for="dateBegin" className="form-label">From</label>
                                             <DatePicker
                                                 id='dateBegin' 
                                                 name='dateBegin'
-                                                dateFormat="YYYY-MM-DD"
+                                                dateFormat="YYYY-MM-DD HH:mm:ss"
                                                 className='form-control'
-                                                selected={this.state.fromDate}
-                                                onChange={this.handleFromChange} />
+                                                placeholderText="From Datetime"
+                                                selected={moment(this.state.fromDate)}
+                                                onChange={this.handleFromChange}
+                                                showTimeSelect />
                                         </div>
-                                        <div className="col-6 no-padding-right">
-                                            <label for="dateEnd" class="form-label">To</label>
+                                        <div className="col-6">
+                                            <label for="dateEnd" className="form-label">To</label>
                                             <DatePicker
                                                 id='dateEnd' 
                                                 name='dateEnd'
-                                                dateFormat="YYYY-MM-DD"
+                                                dateFormat="YYYY-MM-DD HH:mm:ss"
                                                 className='form-control'
-                                                selected={this.state.toDate}
-                                                onChange={this.handleToChange} />
+                                                placeholderText="To Datetime"
+                                                selected={moment(this.state.toDate)}
+                                                onChange={this.handleToChange}
+                                                showTimeSelect />
                                         </div>
                                     </div>
                                 </div>
                                 <div className='form-group'>
                                     <FormGroup>
-                                        <label for="stations" class="form-label">Stations</label>
+                                        <label for="stations" className="form-label">Stations</label>
                                         <Input type="select" name="selectMulti" id="exampleSelectMulti" multiple>
                                             <option value="Temperature">Station1</option>
                                             <option value="Pressure">Station2</option>
@@ -118,18 +154,14 @@ class HistoricalContainer extends Component{
                             </ModalBody>
                             <ModalFooter>
                                 <Button type='button' color="secondary" onClick={this.toggleFilter}>Cancel</Button>
-                                <Button type='button' color="Primary" onClick={this.toggleFilter}>Submit</Button>
+                                <Button type='button' color="primary" onClick={this.updateGraph}>Submit</Button>
                             </ModalFooter>
                         </form>
                     </Modal>
                     <div className="filter row">
                         <Button type='button' color="primary" className="btn btn-primary filter-btn" onClick={this.toggleFilter}>Filter</Button>
                     </div>
-                        <TemperatureGraph className="row graph"
-                            data={this.state.stationsData}
-                            height={500}
-                            width={800}
-                        />
+                    {this.renderGraph() }
                 </div>
             )
         }

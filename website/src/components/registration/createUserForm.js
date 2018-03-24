@@ -63,8 +63,9 @@ class CreateUserForm extends Component {
         if(this.state.errors.length > 0){
             var allErrors = []
             this.state.errors.map(errors =>{
-              allErrors.push(<Alert className='alert-danger error-alert'>{errors.msg}</Alert>)
-          })
+                allErrors.push(<Alert className='alert-danger error-alert'>{errors.msg}</Alert>)
+                return null;
+            })
           return allErrors;
         }
     }

@@ -8,6 +8,7 @@ const LatestWeather = require('../models/LatestWeather');
 const Station = require('../models/Station');
 const knex = require('knex')(require('../knexfile'));
 const openweather = require('../services/openWeatherMap');
+const _ = require('lodash');
 var moment = require('moment');
 moment().format();
 
@@ -15,35 +16,30 @@ moment().format();
 // This is probably super slow but it makes it more efficient for the user on the stations page for now
 // TODO: Think of a more efficient way to structure our db
 router.post('/', async function (req, res) {
-    var station = await Station.where('apikey', req.body.apikey).fetch();
-    if (station){
-        var openWeatherData = await openweather.getOpenWeatherData(req.body.latitude, req.body.longitude);
-        if (openWeatherData["visibility"] != "" || openWeatherData['wind_speed'] != "" || openWeatherData['wind_direction'] != ""){
-            var result = await new Weather({
-                apikey: req.body.apikey,
-                created_at: req.body.created_at,
-                temperature: req.body.temperature,
-                humidity: req.body.humidity,
-                pressure: req.body.pressure,
-                latitude: req.body.latitude,
-                longitude: req.body.longitude,
-                visibility: openWeatherData["visibility"],
-                wind_speed: openWeatherData['wind_speed'],
-                wind_direction: openWeatherData['wind_direction']
-            }).save()
+    var station = await knex('stations').select().where('apikey', req.body.apikey);
+    if (_.isNull(station[0].expiration) ||  moment(station[0].expiration).utc(station[0].expiration).isAfter(req.body.created_at)){
+        var latestWeather = await openweather.getLatestOpenWeatherData(req.body.apikey);
+
+        // Get Open Weather Maps data every minute or if the latest weather does not have any owm data
+        if ((req.body.data_index % 12 == 0 || req.body.data_index == 0) ||
+        (_.isUndefined(latestWeather.visibility) || _.isNull(latestWeather.visibility))){
+            var openWeatherData = await openweather.getOpenWeatherData(req.body.latitude, req.body.longitude);
+        } else{
+            var openWeatherData = latestWeather;
         }
 
-        else{
-            var result = await new Weather({
-                apikey: req.body.apikey,
-                created_at: req.body.created_at,
-                temperature: req.body.temperature,
-                humidity: req.body.humidity,
-                pressure: req.body.pressure,
-                latitude: req.body.latitude,
-                longitude: req.body.longitude,
-            }).save()
-        }
+        var result = await new Weather({
+            apikey: req.body.apikey,
+            created_at: req.body.created_at,
+            temperature: req.body.temperature,
+            humidity: req.body.humidity,
+            pressure: req.body.pressure,
+            latitude: req.body.latitude,
+            longitude: req.body.longitude,
+            visibility: openWeatherData["visibility"],
+            wind_speed: openWeatherData['wind_speed'],
+            wind_direction: openWeatherData['wind_direction']
+        }).save()
 
         // Store our resulting row in latest weather so we can quickly get the latest weather
         // for our main page
@@ -98,14 +94,11 @@ router.get('/latest', async function (req, res) {
 });
 
 // Returns the temperature for the last 24 from each station from the database
-router.get('/temp', async function (req, res) {
-    var day = moment().format("YYYY-MM-DD");
-    var dayBeginTime =  day+' 00:00:00';
-    var dayEndTime =  day+' 23:59:59';
+router.get('/temp/:from/:to', async function (req, res) {
     try{
         var temp = await knex('weather').select('weather.temperature','weather.created_at', 'weather.apikey', 'stations.station_name').from('weather')
         .leftJoin('stations', 'stations.apikey', 'weather.apikey')
-        .whereBetween('weather.created_at', [dayBeginTime, dayEndTime]);
+        .whereBetween('weather.created_at', [req.params.from, req.params.to]);
     } catch(ex){
         console.log(ex);
         return res.json({});
@@ -115,8 +108,8 @@ router.get('/temp', async function (req, res) {
 
 // Returns the latest weather data for each station from the database
 router.post('/verifyKey', async function (req, res) {
-    var station = await Station.where('apikey', req.body.apikey).fetch();
-    if (station) res.status(200).send("Verified API Key.")
+    var station = await knex('stations').select().where('apikey', req.body.apikey).andWhere('expiration', '>', req.body.created_at);
+    if (station.length > 0) res.status(200).send("Verified API Key.")
     else res.status(400).send('Invalid API Key.')
 });
 

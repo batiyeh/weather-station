@@ -1,25 +1,36 @@
 import React, { Component } from 'react';
-import { Alert, Modal, ModalHeader, ModalBody, ModalFooter, Button, FormGroup, Form, Label, Input} from 'reactstrap';
+import { Alert, Modal, ModalHeader, ModalBody, ModalFooter, Button, FormGroup, Form, Label, Input, Col} from 'reactstrap';
 import AlertCard from './alertCard';
+import HistoricAlertCard from './historicAlertCard';
+import DatePicker  from 'react-datepicker'
 import '../../styles/alerts.css';
+const moment = require('moment');
+moment().format();
 
 class AlertsList extends Component {
     constructor(props){
         super(props);
+        var now = moment();
+        var ymd = now.format('YY-MM-DD');
+        var date = new Date('20'+ ymd + 'T04:00:00.000Z')
+
         this.state={
             modal: false,
             station: '',
             datatype: 'temperature',
             keyword: 'above',
-            value1: null,
-            value2: null,
+            value: null,
+            secondValue: null,
             alerts: [],
             stations: [],
+            historicAlerts: [],
             email: true,
             sms: false,
             webpage: false,
-            threshold: '1 hour'
+            threshold: '1 hour',
+            date: date
         };
+        this.filter = this.filter.bind(this);
         this.resetValues = this.resetValues.bind(this);
         this.onEmailChange = this.onEmailChange.bind(this);
         this.onSMSChange = this.onSMSChange.bind(this);
@@ -30,19 +41,24 @@ class AlertsList extends Component {
     //when component loads, will call getAlerts()
     componentDidMount = async () =>{
         await this.getAlerts();
+
     }
-    //gets all current alerts and stations for the user and stores it in the state
+    //gets all current alerts, historic alerts, and stations for the user and stores it in the state
     getAlerts = async () => {
         var alerts = [];
         var stations = [];
+        var station = '';
+        var historicAlerts = [];
         var response = await fetch('/api/alerts/', {method: 'post', credentials:'include'});
         var body = await response.json();
         alerts = body.alerts;
         stations = body.stations;
-        
-        //puts alerts, stations in state. Sets station to first station in stations array
-        this.setState({alerts: alerts, stations: stations, station:stations[0].station_name});
+        historicAlerts = body.historicAlerts;
+        if (stations.length > 0) station = stations[0].station_name;
+        //puts alerts, historicAlerts, and stations in state. Sets station to first station in stations array
+        this.setState({alerts: alerts, stations: stations, historicAlerts: historicAlerts, station:station});
     }
+
     //takes the current data in the state and sends it to the backend, the current alerts are updated and the modal is closed
     createAlert = async () => {
         await fetch('/api/alerts/create', 
@@ -51,8 +67,8 @@ class AlertsList extends Component {
                 station: this.state.station,
                 datatype: this.state.datatype,
                 keyword: this.state.keyword,
-                value1: this.state.value1,
-                value2: this.state.value2,
+                value: this.state.value,
+                secondValue: this.state.secondValue,
                 email: this.state.email,
                 sms: this.state.sms,
                 webpage: this.state.webpage,
@@ -90,14 +106,14 @@ class AlertsList extends Component {
             keyword: value
         })
     }
-    onValue1Change(value){
+    onValueChange(value){
         this.setState({
-            value1: value
+            value: value
         })
     }
-    onValue2Change(value){
+    onSecondValueChange(value){
         this.setState({
-            value2: value
+            secondValue: value
         })
     }
     onEmailChange(){
@@ -120,6 +136,11 @@ class AlertsList extends Component {
             threshold: value
         })
     }
+    filter(value){
+        this.setState({
+            date: value._d
+        })
+    }
     //displays either one input box or two to the user depending on what keyword they currently have selected
     renderValues(){
         if(this.state.keyword === 'between'){
@@ -127,49 +148,77 @@ class AlertsList extends Component {
                 <div>
                     <div className='form-group'> 
                         <Label>Values</Label>
-                        <Input type='text' name='value1' id='value1' onChange={e => this.onValue1Change(e.target.value)}/>
+                        <Input type='text' name='value' id='value' onChange={e => this.onValueChange(e.target.value)}/>
                     </div>
                     <div className='form-group'>
-                        <Input type='text' name='value2' id='value2' onChange={e => this.onValue2Change(e.target.value)}/>
+                        <Input type='text' name='secondValue' id='secondValue' onChange={e => this.onSecondValueChange(e.target.value)}/>
                     </div>
                 </div>
             );
         }
         else{  
             //ensures state of value2 is reset when switching between renders
-            if(this.state.value2){
+            if(this.state.secondValue){
                 this.setState({
-                    value2: null
+                    secondValue: null
                 });
             }
             return (
             <div className='form-group'> 
                 <Label>Value</Label>
-                <Input type='text' name='value1' id='value1' onChange={e => this.onValue1Change(e.target.value)}/>
+                <Input type='text' name='value' id='value' onChange={e => this.onValueChange(e.target.value)}/>
             </div>)
+        }
+    }
+    renderCreateButton(){
+        if(this.state.stations.length === 0){
+            return <Button type='button' className="btn btn-secondary add-btn" onClick={this.toggleAddAlert} disabled>Add</Button>
+        }
+        else{
+            return <Button type='button' className="btn btn-secondary add-btn" onClick={this.toggleAddAlert}>Add</Button>
+ 
         }
     }
     //parses the current cards in this.state.alerts
     //some alerts have multiple values so the id's need to be compared before they are added to the array
     renderCards(){
-        var alertcards = []
-        for (var i = 0; i < this.state.alerts.length; i++){
-            if(this.state.alerts[i+1] && (this.state.alerts[i].alert_id === this.state.alerts[i+1].alert_id)){
-                alertcards.push(<AlertCard stations={this.state.stations} alerts={this.state.alerts[i]} value2={this.state.alerts[i+1].value}/>)
-                i++;
+        var cards = []
+        this.state.alerts.map(alert =>{
+            cards.push(<AlertCard stations={this.state.stations} alerts={alert} update={this.getAlerts}/>)
+        })
+
+        return cards
+    }
+    renderHistoricCard(){
+        var cards = []
+        this.state.historicAlerts.map(alert => {
+
+            var alertDate = new Date(alert.triggered_at.slice(0,10)+'T04:00:00.000Z');
+            //only renders alerts for selected time by user
+            if(this.state.date.getTime() === alertDate.getTime() ){
+                cards.push(<HistoricAlertCard alert={alert}/>)
             }
-            else{
-                alertcards.push(<AlertCard stations={this.state.stations} alerts={this.state.alerts[i]}/>)
-            }
+        })
+        
+        if(cards.length === 0){
+            return (
+                <div class="col-12">
+                    <Alert className="no-alerts-alert" color="primary">
+                        There are no alerts for this date.
+                    </Alert>
+                </div>      
+            )
         }
-        //returns array of AlertCards to render on the page
-        return alertcards
+        else{
+              return cards;
+        }
     }
     //populates the station name dropdown with all stations
     renderStations(){
         var options = []
-        this.state.stations.map(station => {
-            options.push(<option value={station.station_name}>{station.station_name}</option>)
+        this.state.stations.map((station, index) => {
+            options.push(<option key={"name" + index} value={station.station_name}>{station.station_name}</option>)
+            return null;
         })
         return options;
     }
@@ -192,8 +241,8 @@ class AlertsList extends Component {
             station: this.state.stations[0].station_name,
             datatype: 'temperature',
             keyword: 'above',
-            value1: null,
-            value2: null,
+            value: null,
+            secondValue: null,
             email: true,
             sms: false,
             webpage: false,
@@ -276,18 +325,41 @@ class AlertsList extends Component {
                     </ModalFooter>
                 </Form>
             </Modal>
-            <div className="row col-12 station-list-header">
+            <div className="row col-12 alert-list-header no-padding">
                 <div className="col-8 left alert-title">
                     <h4>Alert me when...</h4>
                 </div>
                 <div className="col-4 right no-padding-right">
-                    <Button type='button' className="btn btn-secondary add-btn" onClick={this.toggleAddAlert}>Add</Button></div>
-                </div>
-                <div className='row'> 
-                    {this.renderCards()}
-                    {this.renderEmpty()}
+                    {this.renderCreateButton()}
                 </div>
             </div>
+            <div className='row'> 
+                {this.renderCards()}
+                {this.renderEmpty()}
+            </div>            
+            <div className="row col-12 alert-list-header">
+                <div className='left historic-title'>
+                    <h4>Alert history: </h4>
+                    <FormGroup row>
+                        <Label sm={2}>Filter&nbsp;</Label>
+                        <Col sm={10}>
+                            <DatePicker
+                                id='date' 
+                                name='date'
+                                dateFormat="YYYY-MM-DD"
+                                className='form-control'
+                                placeholderText="Date"
+                                selected={moment(this.state.date)}
+                                onChange={this.filter}/>
+                        </Col>
+                    </FormGroup>
+                </div>
+            </div>
+            <div className='row historic-alerts-list'>
+                {this.renderHistoricCard()}
+            </div>
+        </div>
+
         )
     }
 }

@@ -131,6 +131,10 @@ class StationCard extends Component {
                     <ModalBody>
                         { this.renderNameInput() }
                         <div className="station-detail-container">
+                            {/* <div className="station-detail-row">
+                                <span className="left">Uptime</span>
+                                <span className="right">{this.getUptime()}</span>
+                            </div><br/> */}
                             <div className="station-detail-row">
                                 <span className="left">Temperature</span>
                                 <span className="right">{this.props.station.temperature} &deg;F</span>
@@ -166,7 +170,7 @@ class StationCard extends Component {
                                     </p>
                                 </div>
                                 <div className="col-4">
-                                    <p className="station-uptime">{this.getUptime()}</p>
+                                    <p className="station-uptime">{moment(this.props.station.created_at).utc(this.props.station.created_at).local().format("MM/DD/YY HH:mm:ss")}</p>
                                 </div>
                             </div>
                         </CardTitle>

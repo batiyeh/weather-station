@@ -1,3 +1,12 @@
+.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.react-datepicker {
+    display: flex  !important;
+}
+
 .historical-page-title{
     margin-top: 100px;
     margin-bottom: 50px;
@@ -33,6 +42,11 @@
 
 .graph{
     margin-top:40px;
+    width: 100%;
+}
+
+.no-data-alert{
+    margin-top: 60px;
     width: 100%;
 }
 

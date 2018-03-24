@@ -6,42 +6,45 @@ router.use(bodyParser.json());
 const Alerts = require('../models/Alerts');
 const AlertValues = require('../models/AlertValues');
 const AlertMethods = require('../models/AlertMethods');
-const WebpageAlerts = require('../models/WebpageAlerts');
+const TriggeredAlerts = require('../models/TriggeredAlerts');
 const Station = require('../models/Station');
 const knex = require('knex')(require('../knexfile'));
 
 
 //post request that creates a new alert for the user
 router.post('/create', async function(req, res){
-    //values passed by frontend
+
     var station = req.body.station;
     var datatype = req.body.datatype;
     var keyword = req.body.keyword;
-    var value1 = req.body.value1;
-    var value2 = req.body.value2;
+    var value = req.body.value;
+    var secondValue = req.body.secondValue;
     var email = req.body.email;
     var sms = req.body.sms;
     var webpage = req.body.webpage;
     var threshold = req.body.threshold;
 
+    //gets apikey of station selected by user
+    var apikey = await Station.where({station_name: station}).fetch();
+
     //prevents user from submitting blank value
-    if(keyword === 'between' && !value2){
+    if(keyword === 'between' && !secondValue){
         return res.status(404);
     }
+    //prevents second value from being greater than first value
+    if((secondValue) && (value > secondValue)){
+        return res.status(404);
+    }
+
     //prevents user from submitting blank value or not selecting an alert method
-    if(value1 && (email || sms || webpage)){
+    if(value && (email || sms || webpage)){
         var newAlert = await new Alerts({
-            station_name: station,
+            apikey: apikey.attributes.apikey,
             type: datatype,
             keyword: keyword,
             threshold: threshold,
-            username: req.user
-        }).save();
-        //assigns values to new alert via foreign key
-        await new AlertValues({
-            value: value1,
-            alert_id: newAlert.attributes.id
-
+            username: req.user,
+            deleted: false
         }).save();
 
         if(email){
@@ -62,9 +65,15 @@ router.post('/create', async function(req, res){
                 alert_id: newAlert.attributes.id
             }).save();
         }
-        if(value2){
+        if(value){
             await new AlertValues({
-                value: value2,
+                value: value,
+                alert_id: newAlert.attributes.id
+            }).save();
+        }
+        if(secondValue){
+            await new AlertValues({
+                value: secondValue,
                 alert_id: newAlert.attributes.id
             }).save();
         }
@@ -73,54 +82,79 @@ router.post('/create', async function(req, res){
     //success
     return res.status(200).json({newAlert})
 })
-router.post('/webpage', async function(req, res){
-    //gets all webpage alerts for user and returns them to frontend
-    var alerts = await knex('webpagealerts')
-    .select('alerts.alert_id', 'alerts.type','alerts.keyword', 'alerts.station_name', 'webpagealerts.read', 'webpagealerts.temperature', 'webpagealerts.humidity', 'webpagealerts.pressure', 'webpagealerts.triggered_at', 'alertvalues.value')
-    .leftJoin('alerts', 'webpagealerts.alert_id', '=', 'alerts.alert_id')
-    .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
-    .where('alerts.username', req.user);
 
+//Gets any webpage alerts for user that hasnt been dismissed
+router.post('/webpage', async function(req, res){
+    var alerts = []
+    if(req.user){    
+        alerts = await knex('triggeredalerts')
+        .select('triggeredalerts.triggered_id', 'alertvalues.value', 'alerts.alert_id', 'stations.station_name', 'alerts.type','alerts.keyword', 'triggeredalerts.read', 'triggeredalerts.temperature', 'triggeredalerts.humidity', 'triggeredalerts.pressure', 'triggeredalerts.triggered_at')
+        .leftJoin('alerts', 'triggeredalerts.alert_id', '=', 'alerts.alert_id')
+        .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
+        .leftJoin('stations', 'stations.apikey', '=','alerts.apikey')
+        .where('alerts.username', '=', req.user)
+        .where('triggeredalerts.method', '=', 'webpage')
+        .where('triggeredalerts.cleared', '=', false)
+        .orderBy('triggeredalerts.triggered_id', 'asc')
+
+        alerts = await parseBetween(alerts);
+
+    }
     return res.status(200).json({alerts});
 })
 
+//Sets all webpage alerts to read for the user
 router.post('/read', async function(req, res){
-    //sets all alerts for req.user to read
-    var response = await knex('webpagealerts')
-    .update('webpagealerts.read', true).
-    leftJoin('alerts', 'webpagealerts.alert_id','=','alerts.alert_id')
-    .where('webpagealerts.read','=', false, 'alerts.username','=', req.user);
+    var response = await knex('triggeredalerts')
+    .update('triggeredalerts.read', true)
+    .leftJoin('alerts', 'triggeredalerts.alert_id','=','alerts.alert_id')
+    .where('triggeredalerts.read','=', false)
+    .where('alerts.username','=', req.user)
+    .where('triggeredalerts.method', '=', 'webpage')
 
     return res.status(200);
 })
+
+//Sets webpage alerts to cleared when user dismisses alerts
 router.delete('/webpage', async function(req, res){
-    //get all webpage id's for that user
-    var alerts = await knex('webpagealerts')
-    .select('webpage_id')
-    .leftJoin('alerts', 'webpagealerts.alert_id','=','alerts.alert_id')
-    .where('username', req.user)
-
-    //delete all webpage alerts for user
-    alerts.map(async (alerts) => {
-        await WebpageAlerts.where({webpage_id: alerts.webpage_id}).destroy();
-    })
+    var alerts = await knex('triggeredalerts')
+    .update('triggeredalerts.cleared', true)
+    .leftJoin('alerts', 'triggeredalerts.alert_id','=','alerts.alert_id')
+    .where('alerts.username', '=', req.user)
+    .where('triggeredalerts.method', '=', 'webpage')
+    .where('triggeredalerts.cleared', '=', false);
 
     return res.status(200);
 })
-//post request to retrieve all alerts currently stored in the database for that user
-//this function is a post because we have to pass the user's session information
+
+//Gets all alerts for user, all stations in database, and the entire alert history for the user
 router.post('/', async function(req, res){
 
     //selects all alerts for user, joins alerts and alertvalues based on alert_id
     var alerts = await knex('alerts')
-    .select('alerts.alert_id', 'alerts.station_name', 'alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alerts.threshold', 'alertvalues.value')
+    .select('alerts.alert_id', 'stations.station_name', 'alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alerts.threshold', 'alertvalues.value')
+    .leftJoin('stations', 'stations.apikey', '=','alerts.apikey')
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
-    .where('alerts.username', req.user)
+    .where('alerts.username', '=', req.user)
+    .where('alerts.deleted','=', false)
 
     var stations = await Station.fetchAll();
 
-    return res.status(200).json({alerts, stations});
+    var historicAlerts = await knex('triggeredalerts')
+    .distinct('triggeredalerts.triggered_at', 'stations.station_name', 'alerts.type', 'alerts.keyword', 'triggeredalerts.pressure', 'triggeredalerts.temperature', 'triggeredalerts.humidity')
+    .select('triggeredalerts.triggered_id', 'alertvalues.value')
+    .leftJoin('alerts', 'triggeredalerts.alert_id', '=', 'alerts.alert_id')
+    .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
+    .leftJoin('stations', 'stations.apikey', '=','alerts.apikey')
+    .where('alerts.username', '=', req.user)
+    .orderBy('triggeredalerts.triggered_id')
+
+    alerts = await parseBetween(alerts);
+    historicAlerts = await parseBetween(historicAlerts);
+    
+    return res.status(200).json({alerts, stations, historicAlerts});
 })
+
 //returns all alert methods selected for that alert
 router.get('/:id', async function(req, res){
     var methods = await knex('alertmethods')
@@ -137,22 +171,28 @@ router.post('/:id', async function(req,res){
     var station = req.body.station;
     var datatype = req.body.datatype;
     var keyword = req.body.keyword;
-    var value1 = req.body.value1;
-    var value2 = req.body.value2;
+    var value = req.body.value;
+    var secondValue = req.body.secondValue;
     var email = req.body.email;
     var sms = req.body.sms;
     var webpage = req.body.webpage;
     var threshold = req.body.threshold;
 
+    var apikey = await Station.where({station_name: station}).fetch();
+
     //prevents user from entering blank value
-    if(keyword === 'between' && !value2){
+    if(keyword === 'between' && !secondValue){
+        return res.status(404);
+    }
+    //prevents second value from being greater than first value
+    if((secondValue) && (value > secondValue)){
         return res.status(404);
     }
 
     //Prevents user from submitting blank value or not selecting an alert method
-    if(value1 && (email || sms || webpage)){
+    if(value && (email || sms || webpage)){
         await Alerts.where({alert_id: req.params.id}).save({
-            station_name: station,
+            apikey: apikey.attributes.apikey,
             type: datatype,
             threshold: threshold,
             keyword: keyword
@@ -164,7 +204,7 @@ router.post('/:id', async function(req,res){
 
         //stores new values, associates to alert by foreign key
         await new AlertValues({
-            value: value1,
+            value: value,
             alert_id: req.params.id
         }).save();
 
@@ -186,22 +226,52 @@ router.post('/:id', async function(req,res){
                 alert_id: req.params.id
             }).save();
         }
-        if(value2){
+        if(secondValue){
             await new AlertValues({
-                value: value2,
+                value: secondValue,
                 alert_id: req.params.id
             }).save();
         }
     }
     return res.status(200).json({success: 'success'})
 })
+//soft deletes an alert once the user has deleted
 router.delete('/:id', async function(req, res){
-    //deletes alerts with the id passed from front end
-    AlertValues.where({alert_id: req.params.id}).destroy();
-    AlertMethods.where({alert_id: req.params.id}).destroy();
-    Alerts.where({alert_id: req.params.id}).destroy();
 
+    var response = await knex('alerts')
+    .update('alerts.deleted', true)
+    .where('alerts.alert_id', '=', req.params.id)
     res.status(200);
 })
+
+//Removes extra row generated by 'between' alerts and stores second value into dictionary under 'secondValue'
+parseBetween = async(alerts) => {
+    var newAlerts = [];
+    var currentID = null;
+    var grabbedValue= null;
+
+    alerts.map(alerts =>{
+        if(alerts.keyword === 'between'){
+            if(currentID !== alerts.triggered_id){
+                grabbedValue = alerts.value;
+                currentID = alerts.triggered_id;
+            }
+            else{
+                if(grabbedValue > alerts.value){
+                    alerts.secondValue = grabbedValue;
+                }
+                else{
+                    alerts.secondValue = alerts.value;
+                    alerts.value = grabbedValue;
+                }
+                newAlerts.push(alerts);
+            }
+        }
+        else{
+            newAlerts.push(alerts);
+        }
+    })
+    return newAlerts;
+};
 
 module.exports = router;

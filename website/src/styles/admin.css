@@ -7,6 +7,14 @@
     margin: auto;
 }
 
+.react-datepicker-wrapper{
+    width: 100% !important;
+}
+
+.react-datepicker__input-container{
+    width: 100% !important;
+}
+
 .delete-btn{
     background-color: none !important;
     cursor: pointer;
@@ -44,7 +52,7 @@
     background-color: #F9F9F9 !important;
     max-width: 600px;
     padding: 10px;
-    box-shadow: 0px 0px 10px 0px #e8e8e8;
+    box-shadow: 0px 0px 15px 0px #e8e8e8;
     border: none !important;
     border-radius: 10px !important;
 }

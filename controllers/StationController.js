@@ -34,8 +34,12 @@ router.get('/', async function (req, res) {
 router.route('/:api_key')
     // Update existing station 
     .put(async function(req, res){
+        var expiration = req.body.expiration;
+        if (expiration === 'Invalid date') expiration = null;
+
         var result = await Station.where('apikey', req.params.api_key).save({
-            station_name: req.body.station_name
+            station_name: req.body.station_name,
+            expiration: expiration
         }, {patch:true});
         return res.json({result});
     })
@@ -54,6 +58,11 @@ router.route('/connected/:api_key')
         }, {patch:true});
         return res.json({result});
     })
+
+router.get('/download', function(req, res){
+    var file = __dirname + '/download/weatherstation.zip';
+    res.download(file);
+});
 
 
 module.exports = router;
