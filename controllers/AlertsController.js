@@ -147,7 +147,7 @@ router.post('/', async function(req, res){
     .select('station_name')
 
     var historicAlerts = await knex('triggeredalerts')
-    .distinct('triggeredalerts.created_at', 'stations.station_name', 'alerts.type', 'alerts.keyword', 'triggeredalerts.pressure', 'triggeredalerts.temperature', 'triggeredalerts.humidity')
+    .distinct('triggeredalerts.created_at', 'stations.station_name', 'alerts.alert_id', 'alerts.type', 'alerts.keyword', 'triggeredalerts.pressure', 'triggeredalerts.temperature', 'triggeredalerts.humidity')
     .select('triggeredalerts.triggered_id', 'alertvalues.value')
     .leftJoin('alerts', 'triggeredalerts.alert_id', '=', 'alerts.alert_id')
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')

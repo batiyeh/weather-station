@@ -214,7 +214,7 @@ class AlertsList extends Component {
     renderHistoricCard(){
         var cards = []
         this.state.historicAlerts.map(alert => {
-
+            console.log(alert);
             var alertDate = new Date(alert.created_at.slice(0,10)+'T04:00:00.000Z');
             console.log(this.state.alertFilter, alert.alert_id);
             if(this.state.alertFilter !== 'all'){
