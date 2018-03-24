@@ -143,7 +143,6 @@ class HistoricalContainer extends Component{
             newStationsDict[station_name] = {};
             for(var i = 0; i < data["sensorData"].length; i++){
                 if ( i % 30 === 0){
-                    console.log(data["dates"][i]);
                     sensorData.unshift(data["sensorData"][i]);
                     dateData.unshift(data["dates"][i]);
                 }
