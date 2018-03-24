@@ -189,7 +189,7 @@ class Navigation extends Component {
         // var value2 = null;
         this.state.alerts.map((alerts, index) =>{
             if(alerts.keyword === 'between'){
-                webpageAlertCards.push(
+                webpageAlertCards.unshift(
                     <Card key={index} onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, alerts.secondValue, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)} className='alert-notification-card'> 
                         <div className="alert-text">
                             {alerts.station_name}'s {alerts.type} is {alerts.keyword} {alerts.value} and {alerts.secondValue}
@@ -202,7 +202,7 @@ class Navigation extends Component {
             
             }
             else{
-                webpageAlertCards.push(
+                webpageAlertCards.unshift(
                     <Card key={index} onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, null, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)} className="alert-notification-card">
                         <div className="alert-text">
                             {alerts.station_name}'s {alerts.type} is {alerts.keyword}&nbsp;{alerts.value}

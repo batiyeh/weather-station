@@ -219,12 +219,12 @@ class AlertsList extends Component {
 
             if(this.state.alertFilter !== 'all'){
                 if((filter === alertTime) && (this.state.alertFilter === alert.alert_id)){
-                    cards.push(<HistoricAlertCard alert={alert}/>)
+                    cards.unshift(<HistoricAlertCard alert={alert}/>)
                 }
             }
             else{
                 if(filter === alertTime){
-                    cards.push(<HistoricAlertCard alert={alert}/>)
+                    cards.unshift(<HistoricAlertCard alert={alert}/>)
                 }
             }
             return null;
