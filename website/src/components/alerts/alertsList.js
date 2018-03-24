@@ -210,16 +210,13 @@ class AlertsList extends Component {
 
         return cards
     }
-    //renders cards for time specified by user
+    //renders cards for time specified by user or for alert specified by user
     renderHistoricCard(){
         var cards = []
         this.state.historicAlerts.map(alert => {
             var alertDate = new Date(alert.created_at.slice(0,10)+'T04:00:00.000Z');
             var filter = moment(this.state.date).format('YYYY-MM-DD');
-            var alertTime = moment(alert.created_at).utc(alert.created_at).local().format('YYYY-MM-DD'); 
-            console.log("Filter: ", moment(this.state.date).format('YYYY-MM-DD'));
-            // console.log(moment(this.state.date).utc(this.state.date).local().format("YYYY-MM-DD"));
-            console.log("Alert: ", moment(alert.created_at).utc(alert.created_at).local().format("YYYY-MM-DD"))
+            var alertTime = moment(alert.created_at).utc(alert.created_at).local().format('YYYY-MM-DD');
 
             if(this.state.alertFilter !== 'all'){
                 if((filter === alertTime) && (this.state.alertFilter == alert.alert_id)){
@@ -256,6 +253,7 @@ class AlertsList extends Component {
         })
         return options;
     }
+    //Renders filter options for user based on currently created alerts
     renderOptions(){
         var options = []
         options.push(<option value={'all'}> All alerts </option>)
