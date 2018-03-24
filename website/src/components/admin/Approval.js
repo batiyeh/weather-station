@@ -40,8 +40,11 @@ class Approval extends Component {
     };
 
     updateTable = async () => {
-    when ()
-
+        this.getuser().then(users => {
+            this.setState({
+                users: users
+            });
+        });
     };
 
     renderAlert() {
@@ -66,6 +69,11 @@ class Approval extends Component {
             <tbody>
             <tr>
                 <td> body.users.['Username']</td>
+                { this.state.users
+                    .map(getuser => {
+                        return (
+                                this.setstate
+                        );
                 <buttonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
                     <dropdownToggle caret>
                         body.permission.['Permission']  //shows what permission they have right now
