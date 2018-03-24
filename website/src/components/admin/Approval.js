@@ -4,26 +4,26 @@ import { ButtonDropdown,DropdownMenu, DropdownItem, DropdownToggle } from 'react
 
 class Approval extends Component {
 
-    constructor(){
-      super();
-      this.state = {
-          pending: [],
-          users: [],
-          modal: false,
-      }
-      this.toggle = this.toggle.bind(this);
-      this.state = {
-          dropdownOpen: false
-      };
+    constructor() {
+        super();
+        this.state = {
+            pending: [],
+            users: [],
+            modal: false,
+        }
+        this.toggle = this.toggle.bind(this);
+        this.state = {
+            dropdownOpen: false
+        };
     };
 
-    toggle(){
+    toggle() {
         this.setState({
             dropdownOpen: !this.state.dropdownOpen
         });
     }
 
-    getInitialState(){
+    getInitialState() {
         return {
             pending: []
         }
@@ -35,50 +35,53 @@ class Approval extends Component {
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
         if (body.users) users = body.users;
-        this.setState({ users: usersarray })
+        this.setState({users: usersarray})
         return users;
     };
 
-    updateTable = async() => {
-
-
-    };
-
-    renderAlert(){
+    updateTable = async () => {
+    when ()
 
     };
 
-    render (){
+    renderAlert() {
+
+    };
+
+    render() {
+        <html>
+        <title>
+            <head> Users</head>
+        </title>
+        <body>
         <Table hover>
             <thead>
             <tr>
-                <th>#</th>                                  //this is the top of the table headers
+                <th>#</th>
+                //this is the top of the table headers
                 <th>Username</th>
                 <th>Permission</th>
             </tr>
             </thead>
             <tbody>
-            <tr>                                            //This should be printing from the database
-                <th scope="Column">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-            </tr>
             <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td>Larry</td>
-                <td>the Bird</td>
-                <td>@twitter</td>
+                <td> body.users.['Username']</td>
+                <buttonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
+                    <dropdownToggle caret>
+                        body.permission.['Permission']  //shows what permission they have right now
+                    </dropdownToggle>
+                    <dropdownMenu>
+                        <dropdownItem header> Admin </dropdownItem>
+                        <dropdownItem header> User </dropdownItem>
+                    </dropdownMenu>
+                </buttonDropdown>
             </tr>
             </tbody>
         </Table>
+        };
+        </body>
+        </html>
     };
-};
+}
 
 export default Approval;
