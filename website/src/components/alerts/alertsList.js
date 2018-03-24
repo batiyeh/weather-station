@@ -214,12 +214,11 @@ class AlertsList extends Component {
     renderHistoricCard(){
         var cards = []
         this.state.historicAlerts.map(alert => {
-            var alertDate = new Date(alert.created_at.slice(0,10)+'T04:00:00.000Z');
             var filter = moment(this.state.date).format('YYYY-MM-DD');
             var alertTime = moment(alert.created_at).utc(alert.created_at).local().format('YYYY-MM-DD');
 
             if(this.state.alertFilter !== 'all'){
-                if((filter === alertTime) && (this.state.alertFilter == alert.alert_id)){
+                if((filter === alertTime) && (this.state.alertFilter === alert.alert_id)){
                     cards.push(<HistoricAlertCard alert={alert}/>)
                 }
             }
