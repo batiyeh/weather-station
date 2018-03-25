@@ -108,14 +108,14 @@ class Sensors(object):
                 array = cpu_temp.split("=")
                 array2 = array[1].split("'")
 
-                cpu_tempf = float(array2[0]) * 9.0 / 5.0 + 32.0
-                cpu_tempf = float("{0:.2f}".format(cpu_tempf))
-                self.temperature = self.temperature - ((cpu_tempf - self.temperature) / 5.466)
-            except:
-                pass
-                # self.temperature = random.uniform(70.0, 73.0)
-                # self.humidity = random.uniform(50.0, 54.0)
-                # self.pressure = random.uniform(1040.0, 1075.0)
+            cpu_tempf = float(array2[0]) * 9.0 / 5.0 + 32.0
+            cpu_tempf = float("{0:.2f}".format(cpu_tempf))
+            self.temperature = self.temperature - ((cpu_tempf - self.temperature) / 5.466)
+        except:
+            pass
+            # self.temperature = random.uniform(70.0, 73.0)
+            # self.humidity = random.uniform(50.0, 54.0)
+            # self.pressure = random.uniform(1040.0, 1075.0)
 
     def getGpsCoords(self):
         # Try to get latitude and longitude data from our receiver
@@ -134,8 +134,7 @@ class Sensors(object):
                             data = data.rstrip('\n')
                             data = [col.strip() for col in data.split(',')]
                             self.latitude = data[0]
-                            self.longitude = data[1]
-                    
+                            self.longitude = data[1]         
             # self.latitude = "42.357134"
             # self.longitude = "-83.070308"
         except:
