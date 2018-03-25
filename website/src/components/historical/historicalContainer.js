@@ -2,31 +2,39 @@ import React, { Component } from 'react';
 import '../../styles/historical.css';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap';
 import TemperatureGraph from './temperatureGraph'
+import PressureGraph from './pressureGraph'
+import HumidityGraph from './humidityGraph'
 import DatePicker  from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
 var moment = require('moment');
 
 class HistoricalContainer extends Component{
+    //set the props for the container
     constructor(props){
         super(props);
+        //set the default range of the graph to be the last 24 hours from whatever time it is.
         var oneday = moment().subtract(1, "days");
         var now = moment();
         this.state = {
             stationsData: {},
+            stations: [],
             modal: false,
-            loading: true,
-            sensorType: 'temperature',
-            fromDate: oneday.format("YYYY-MM-DD HH:mm:ss"),
-            toDate: now.format("YYYY-MM-DD HH:mm:ss")
+            loading: true,                      //makes the rendering wait til it is done loading all the data
+            sensorType: 'temperature',          //default graph is temperature
+            fromDate: oneday.format("YYYY-MM-DD HH:mm:ss"),   //the props that set the range for the graph
+            toDate: now.format("YYYY-MM-DD HH:mm:ss"),
+            toBeDrawn: [],
         }
         this.toggleFilter = this.toggleFilter.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
         this.handleToChange = this.handleToChange.bind(this);
         this.handleFromChange = this.handleFromChange.bind(this);
+        this.onStationChange = this.onStationChange.bind(this);
         this.updateGraph = this.updateGraph.bind(this);
 
     }
 
+    //Function that toggles the filter modal on or off based on its current state
     toggleFilter(){
         this.setState({
             modal: !this.state.modal
@@ -34,71 +42,187 @@ class HistoricalContainer extends Component{
 
     }
 
+    //once the component mounts it grabs the sensor data for the graph
     componentDidMount() {
-        this.getTemp()
+        this.getSensorData()
     }
 
+    //When the to date value is changed in the modal it is handled here
     handleToChange(date) {
         this.setState({
             toDate: date
         });
     }
 
+    //When the from date value is changed in the modal it is handled here
     handleFromChange(date) {
         this.setState({
             fromDate: date
         });
     }
+
+    //When the sensor type is changed in the modal it is handled here
     onSenseChange(value) {
         this.setState({
             sensorType: value
         })
     }
 
-    getTemp = async () => {
+    onStationChange(e){
+        var options = e.target.options;
+        var selected = [];
+        console.log(this.state.toBeDrawn);
+        for (var i = 0; i < options.length; i++) {
+            if (options[i].selected) {
+                selected.push(options[i].value);
+            }
+        }
+        this.setState({
+            toBeDrawn: selected
+        });
+    }
+
+    getStations = async () =>{
+        var names = [];
+        const response = await fetch('/api/weather/stations_name/');
+        const body = await response.json();
+        if (response.status !== 200) throw Error(body.message);
+        names = body.names;
+        for (var i = 0; i < names.length; i++){
+            this.state.toBeDrawn.push(names[i].station_name)
+        }
+        this.setState({
+            stations: names
+        });
+    };
+
+
+    //async call that is grabbing the sensor data based on current state of the props
+    getSensorData = async () => {
         var data;
         var stationsDict = {};
         var toDate = this.state.toDate;
         var fromDate = this.state.fromDate;
-        const response = await fetch('/api/weather/temp/' + fromDate +'/' + toDate);
+        var type = this.state.sensorType;
+        const response = await fetch('/api/weather/sensorData/' + fromDate +'/' + toDate + '/'+ type);  //API fetch call to get data based on time and sensor type
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
-        if (body.temp) data = body.temp;
-        for (var i = 0; i < data.length; i++) {
+        if (body.temp) data = body.temp;            //storing the response from the fetch call in to variable data
+        for (var i = 0; i < data.length; i++) {     // for loop to sort through returned data
+            //we are storing the data in a dictionary based on station name
             var station_name = data[i].station_name;
-            if (!stationsDict[station_name]) stationsDict[station_name] = {"temp": [], "dates": []};
-            stationsDict[station_name]["temp"].push(data[i].temperature);
+            if (!stationsDict[station_name]) stationsDict[station_name] = {"sensorData": [], "dates": []};  // if the station name is not found in the dictionary yet add it with arrays to store data and time
+            if (type === 'temperature') {
+                //data is returned in JSON format so based on what sensor type is how we determine to push it into the data array
+                stationsDict[station_name]["sensorData"].push(data[i].temperature);
+            }
+            else if(type === 'pressure'){
+                stationsDict[station_name]["sensorData"].push(data[i].pressure);
+            }
+            else if(type === 'humidity'){
+                stationsDict[station_name]["sensorData"].push(data[i].humidity);
+            }
+            //Time is returned as created_at so for that we push it in to the dates array of the station in the dictionary
             stationsDict[station_name]["dates"].push(data[i].created_at);
+
         }
+        var newStationsDict = this.processDataPoints(stationsDict);
+        await this.getStations();
         this.setState({
-            stationsData: stationsDict,
-            loading: false
+            // end the async function by setting the state so that the stations dictionary is stored in stations data
+            stationsData: newStationsDict,
+            loading: false                  // set loading to false so that graph can be rendered
         });
+
     };
+
+    processDataPoints(stationsDict){
+        var data;
+        var sensorData = [];
+        var dateData = [];
+        var newStationsDict = {};
+        for (var station_name in stationsDict) {
+            data = stationsDict[station_name];
+            newStationsDict[station_name] = {};
+            for(var i = 0; i < data["sensorData"].length; i++){
+                if ( i % 30 === 0){
+                    sensorData.unshift(data["sensorData"][i]);
+                    dateData.unshift(data["dates"][i]);
+                }
+            }
+            newStationsDict[station_name]["sensorData"]= sensorData;
+            newStationsDict[station_name]["dates"]= dateData;
+            //clear the arrays after storing the data
+            sensorData = [];
+            dateData = [];
+        }
+        return newStationsDict;
+    }
+
+
+    //function upon hitting submit in the modal with new data to update the graph and close the modal
     updateGraph(){
         this.setState({
             loading: true,
             modal: false
         })
-        this.getTemp()
+        this.getSensorData()        //call the async function to get the data based on the new parameters set by the filter
     }
 
+    renderStations(){
+        var options = [];
+        this.state.stations.map((station, index) => {
+            options.push(<option key={"name" + index} value={station.station_name}>{station.station_name}</option>);
+            return null;
+        });
+        return options;
+    }
+
+    //function that handles the rendering of the graph it is done by sensor type
     renderGraph(){
-        return(
-            <TemperatureGraph className="row graph"
-                data={this.state.stationsData}
-                from={this.state.fromDate}
-                to={this.state.toDate}
-                height={500}
-                width={800}
-            />
-        )
+        console.log(this.state.toBeDrawn);
+        if(this.state.sensorType === 'temperature') {       // checks which sensor type is currently selected and renders the corresponding component based on that
+            return(
+                <TemperatureGraph className="row graph"
+                    //passes the stations data to the graph component
+                    data={this.state.stationsData}
+                    stations={this.state.toBeDrawn}
+                    from={this.state.fromDate}              // passes the to and from dates to the graph component
+                    to={this.state.toDate}
+                    height={500}                            //The height and width of the graph is passed to the graph component
+                    width={800}
+                />
+            )
+        }
+        else if(this.state.sensorType === 'pressure'){
+            return(
+                <PressureGraph className="row graph"
+                    data={this.state.stationsData}
+                    stations={this.state.toBeDrawn}
+                    from={this.state.fromDate}
+                    to={this.state.toDate}
+                    height={500}
+                    width={800}
+                />
+            )
+        }
+        else if(this.state.sensorType === 'humidity'){
+            return(
+                <HumidityGraph className="row graph"
+                    data={this.state.stationsData}
+                    from={this.state.fromDate}
+                    to={this.state.toDate}
+                    height={500}
+                    width={800}
+                />
+            )
+        }
     }
 
 
 
     render(){
-        if(this.state.loading === false){
+        if(this.state.loading === false){   // if the state is no longer loading then it will render the page
             return(
                 <div className="historical-container">
                     <Modal isOpen={this.state.modal} toggle={this.toggleFilter}>
@@ -144,10 +268,8 @@ class HistoricalContainer extends Component{
                                 <div className='form-group'>
                                     <FormGroup>
                                         <label for="stations" className="form-label">Stations</label>
-                                        <Input type="select" name="selectMulti" id="exampleSelectMulti" multiple>
-                                            <option value="Temperature">Station1</option>
-                                            <option value="Pressure">Station2</option>
-                                            <option value="Humidity">Station3</option>
+                                        <Input type="select" name="selectMulti" id="SelectMulti" onChange={this.onStationChange} multiple>
+                                            {this.renderStations()}
                                         </Input>
                                     </FormGroup>
                                 </div>

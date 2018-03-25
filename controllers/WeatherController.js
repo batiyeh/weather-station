@@ -94,9 +94,9 @@ router.get('/latest', async function (req, res) {
 });
 
 // Returns the temperature for the last 24 from each station from the database
-router.get('/temp/:from/:to', async function (req, res) {
+router.get('/sensorData/:from/:to/:type', async function (req, res) {
     try{
-        var temp = await knex('weather').select('weather.temperature','weather.created_at', 'weather.apikey', 'stations.station_name').from('weather')
+        var temp = await knex('weather').select('weather.'+req.params.type,'weather.created_at', 'weather.apikey', 'stations.station_name').from('weather')
         .leftJoin('stations', 'stations.apikey', 'weather.apikey')
         .whereBetween('weather.created_at', [req.params.from, req.params.to]);
     } catch(ex){
@@ -104,6 +104,16 @@ router.get('/temp/:from/:to', async function (req, res) {
         return res.json({});
     }
     return res.json({ temp });
+});
+
+router.get('/stations_name', async function (req, res) {
+    try{
+        var names = await knex('stations').select('stations.station_name')
+    } catch(ex){
+        console.log(ex);
+        return res.json({});
+    }
+    return res.json({ names });
 });
 
 // Returns the latest weather data for each station from the database

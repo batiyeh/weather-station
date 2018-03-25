@@ -10,6 +10,11 @@ except:
     print("Adafruit DHT library not installed.")
     pass
 try:
+    import Adafruit_BMP.BMP280 as BMP280
+except:
+    print("Adafruit BMP library not installed.")
+    pass
+try:
     from sense_hat import SenseHat
 except:
     print("Sense Hat library not installed.")
@@ -45,6 +50,12 @@ class Sensors(object):
         except:
             print("Failed initializing Sense Hat")
             pass
+
+        try:
+            self.sensor = BMP280.BMP280()
+        except:
+            print("Failed initializing Pressure Sensor")
+            pass
     
     def getSensorData(self, apikey):
         weatherdata = OrderedDict()
@@ -67,10 +78,19 @@ class Sensors(object):
         # Attempt to retrieve humidity + temperature
         try:
             humidity, temperature = Adafruit_DHT.read(Adafruit_DHT.AM2302, self.pin)
+            
             if (temperature):
                 self.temperature = (9.0/5.0) * temperature + 32
             if (humidity):
                 self.humidity = humidity
+        except:
+            pass
+        
+        try:
+            pressure = self.sensor.read_pressure() / 100
+            print(pressure)
+            if(pressure):
+                self.pressure = pressure
         except:
             pass
 
