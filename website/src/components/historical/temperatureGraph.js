@@ -4,7 +4,7 @@ import '../../styles/historical.css';
 import { Line } from 'react-chartjs-2';
 import _ from 'lodash';
 var moment = require('moment');
-moment().format();
+
 
 var colorsGraph = ['#4bc0c0', '#c0864b', '#c04b4b','#c04b86', '#4b86c0', '#c0c04b', '#4bc086', '#327c0c'];  // Array of colors to be choosen when drawing multiple lines on the graph
 var colorIndex = 0;   //variable to keep track of what index is currently selected in the graph
@@ -40,16 +40,13 @@ class TemperatureGraph extends Component{
             }
         }
         // pass the to and from dates to generate the x axis labels of our graph
-        // console.log(data["dates"]);
         if (!_.isUndefined(data)) var labels = this.generateLabels(this.state.from, this.state.to, data["dates"]);
         //once generated update them
         this.updateLabels(labels);
     }
     componentWillUnmount() {
         // reset the color index upon the page being unloaded
-        var empty = [];
         colorIndex = 0;
-        this.state.stations = empty;
     }
 
     //generating the label for the x axis based on the to and from date passed from historical container

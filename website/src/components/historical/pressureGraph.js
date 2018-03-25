@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { Alert } from 'reactstrap';
 import '../../styles/historical.css';
 import { Line, Chart} from 'react-chartjs-2';
+import _ from 'lodash';
 var moment = require('moment');
-moment().format();
+
 
 var colorsGraph = ['#4bc0c0', '#c0864b', '#c04b4b','#c04b86', '#4b86c0', '#c0c04b', '#4bc086', '#327c0c'];
 var colorIndex = 0;
@@ -39,7 +40,7 @@ class PressureGraph extends Component{
             }
         }
         //pass the to and from dates to generate the x axis labels of our graph
-        var labels = this.generateLabels(this.state.from, this.state.to, data["dates"]);
+        if (!_.isUndefined(data)) var labels = this.generateLabels(this.state.from, this.state.to, data["dates"]);
         //once generated update them
         this.updateLabels(labels);
     }

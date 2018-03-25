@@ -71,7 +71,6 @@ class HistoricalContainer extends Component{
     onStationChange(e){
         var options = e.target.options;
         var selected = [];
-        console.log(this.state.toBeDrawn);
         for (var i = 0; i < options.length; i++) {
             if (options[i].selected) {
                 selected.push(options[i].value);
@@ -80,6 +79,7 @@ class HistoricalContainer extends Component{
         this.setState({
             toBeDrawn: selected
         });
+
     }
 
     getStations = async () =>{
@@ -88,8 +88,10 @@ class HistoricalContainer extends Component{
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
         names = body.names;
-        for (var i = 0; i < names.length; i++){
-            this.state.toBeDrawn.push(names[i].station_name)
+        if(this.state.toBeDrawn.length === 0){
+            for (var i = 0; i < names.length; i++){
+                this.state.toBeDrawn.push(names[i].station_name)
+            }
         }
         this.setState({
             stations: names
@@ -181,7 +183,6 @@ class HistoricalContainer extends Component{
 
     //function that handles the rendering of the graph it is done by sensor type
     renderGraph(){
-        // console.log(this.state.toBeDrawn);
         if(this.state.sensorType === 'temperature') {       // checks which sensor type is currently selected and renders the corresponding component based on that
             return(
                 <TemperatureGraph className="row graph"
