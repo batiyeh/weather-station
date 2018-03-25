@@ -134,7 +134,7 @@ class Navigation extends Component {
     }
 
     logout = async() => {
-        var response = await fetch('/api/user/logout', {method: 'put', credentials: 'include'})
+        var response = await fetch('/api/user/logout', {method: 'post', credentials: 'include'})
         var body = await response.json();
         this.setState({
             redirect: true
