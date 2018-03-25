@@ -149,6 +149,9 @@ class HistoricalContainer extends Component{
             }
             newStationsDict[station_name]["sensorData"]= sensorData;
             newStationsDict[station_name]["dates"]= dateData;
+            //clear the arrays after storing the data
+            sensorData = [];
+            dateData = [];
         }
         return newStationsDict;
     }
@@ -174,12 +177,13 @@ class HistoricalContainer extends Component{
 
     //function that handles the rendering of the graph it is done by sensor type
     renderGraph(){
+        console.log(this.state.stationsData);
         if(this.state.sensorType === 'temperature') {       // checks which sensor type is currently selected and renders the corresponding component based on that
             return(
                 <TemperatureGraph className="row graph"
                     //passes the stations data to the graph component
                     data={this.state.stationsData}
-                    stations={this.state.toBeDrawn}
+                    //stations={this.state.toBeDrawn}
                     from={this.state.fromDate}              // passes the to and from dates to the graph component
                     to={this.state.toDate}
                     height={500}                            //The height and width of the graph is passed to the graph component
