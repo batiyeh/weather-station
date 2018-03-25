@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import '../../styles/alerts.css';
 import {Button, Card, CardText, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
 const moment = require('moment');
-moment().format();
 
 class HistoricAlertCard extends Component {
     constructor(props){

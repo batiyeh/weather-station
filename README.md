@@ -1,13 +1,22 @@
 # Weather Station
-Website to display the weather station data
-
-## Endpoints
-1. "" - Displays basic text index page
+Raspberry Pi Weather Station with Node/React webserver to display data
 
 ## How to Start the Development Server
 1. Navigate into the root of the project directory with your terminal and run:
 ```sh
 npm run dev
+```
+
+## How to Start the Production Server
+1. Generate a build of the React frontend
+```sh
+cd website/
+npm run build
+cd ../
+```
+2. Run the production server
+```sh
+npm run prod
 ```
 
 ## File Structure
@@ -16,7 +25,8 @@ npm run dev
   * models/: Contains all bookshelf (our ORM) models for the database. Import these when accessing data.
   * migrations/: Contains all knex database migrations as well as our initial db setup file.
   * bookshelf.js & knex.js: Database configuration files
-  * server.js: Starts our express server and maps controllers to urls
+  * server.js: Starts the express server.
+  * app.js: Maps controllers to urls on the server.
 2. client/
   * client.py: Runs the client code meant to go on the Raspberry Pi
 3. website/
@@ -134,6 +144,19 @@ sudo python3 client.py
 ```sh
 /usr/bin/python3 /home/pi/dev/weather-station-site/client/client.py > /dev/null 2> /dev/null &
 ```
+
+#### Build Client Binary 
+1. Open up terminal and navigate to where you have stored this project
+2. Navigate into the client folder
+```sh
+cd client/
+```
+3. Run Pyinstaller to generate a binary build from our config file
+```sh
+pyinstaller weatherstation.spec -F
+```
+4. The new client build should be in the dist/ directory in the client folder.
+
 
 ### Sensors
 #### GPS

@@ -192,12 +192,10 @@ class Navigation extends Component {
     //renders the alert cards in the drop down for the user
     renderAlerts(){
         var webpageAlertCards = [];
-        // var nextIndex = null;
-        // var value2 = null;
         this.state.alerts.map((alerts, index) =>{
             if(alerts.keyword === 'between'){
                 webpageAlertCards.unshift(
-                    <Card key={index} onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, alerts.secondValue, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)} className='alert-notification-card'> 
+                    <Card key={index} onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, alerts.secondValue, alerts.temperature, alerts.pressure, alerts.humidity, alerts.created_at)} className='alert-notification-card'> 
                         <div className="alert-text">
                             {alerts.station_name}'s {alerts.type} is {alerts.keyword} {alerts.value} and {alerts.secondValue}
                         </div>
@@ -210,7 +208,7 @@ class Navigation extends Component {
             }
             else{
                 webpageAlertCards.unshift(
-                    <Card key={index} onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, null, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)} className="alert-notification-card">
+                    <Card key={index} onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, null, alerts.temperature, alerts.pressure, alerts.humidity, alerts.created_at)} className="alert-notification-card">
                         <div className="alert-text">
                             {alerts.station_name}'s {alerts.type} is {alerts.keyword}&nbsp;{alerts.value}
                         </div>
@@ -236,7 +234,7 @@ class Navigation extends Component {
 
     //deletes alerts from database and update page
     dismissAlerts(){
-        fetch('/api/alerts/webpage', {method: 'delete', credentials: 'include'})
+        fetch('/api/alerts/webpage', {method: 'put', credentials: 'include'})
 
         this.getTriggeredAlerts();
     }
