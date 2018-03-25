@@ -29,26 +29,27 @@ class TemperatureGraph extends Component{
 
     componentDidMount(){
         var data;
-        var stations = this.state.stations;
+        var stuff = this.state.stations;
         for (var station_name in this.state.data) {
             data = this.state.data[station_name];
-            console.log(this.state.data);
-            this.createLines(station_name, data["sensorData"], data["dates"]);
-            //if(stations.contains(toString(station_name))){
+            //this.createLines(station_name, data["sensorData"], data["dates"]);
+            if(stuff.includes(station_name)){
                 //create the lines for each station based on its data that has been passec
-                //this.createLines(station_name, data["sensorData"], data["dates"]);
-            //}
+                this.createLines(station_name, data["sensorData"], data["dates"])
+            }
         }
         //pass the to and from dates to generate the x axis labels of our graph
         var labels = this.generateLabels(this.state.from, this.state.to, data["dates"]);
         //once generated update them
         this.updateLabels(labels);
-        console.log(data);
     }
-    componentWillUnmount(){
+    componentWillUnmount() {
         // reset the color index upon the page being unloaded
-        colorIndex =0;
+        var empty = [];
+        colorIndex = 0;
+        this.state.stations = empty;
     }
+
 
 
     //generating the label for the x axis based on the to and from date passed from historical container
