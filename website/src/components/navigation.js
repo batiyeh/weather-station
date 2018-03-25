@@ -185,8 +185,6 @@ class Navigation extends Component {
     renderAlerts(){
         
         var webpageAlertCards = [];
-        // var nextIndex = null;
-        // var value2 = null;
         this.state.alerts.map((alerts, index) =>{
             if(alerts.keyword === 'between'){
                 webpageAlertCards.unshift(
