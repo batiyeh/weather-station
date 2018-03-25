@@ -56,7 +56,6 @@ class Approval extends Component {
             <thead>
             <tr>
                 <th>#</th>
-                //this is the top of the table headers
                 <th>Username</th>
                 <th>Permission</th>
             </tr>
