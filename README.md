@@ -140,10 +140,6 @@ sudo pip3 install -r pi-requirements.txt
 ```sh
 sudo python3 client.py
 ```
-5. Add the following line to the bottom of your .bashrc file in your home directory on the Raspberry Pi
-```sh
-/usr/bin/python3 /home/pi/dev/weather-station-site/client/client.py > /dev/null 2> /dev/null &
-```
 
 #### Build Client Binary 
 1. Open up terminal and navigate to where you have stored this project
@@ -156,6 +152,12 @@ cd client/
 pyinstaller weatherstation.spec -F
 ```
 4. The new client build should be in the dist/ directory in the client folder.
+
+#### Set Binary to Start on Reboot
+1. Add the following line to the bottom of your .bashrc file in your home directory on the Raspberry Pi
+```sh
+cd path/to/weatherstation/binary; ./weatherstation > /dev/null 2> /dev/null &
+```
 
 
 ### Sensors
