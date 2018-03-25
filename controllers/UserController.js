@@ -43,15 +43,15 @@ router.post('/create', async function(req, res){
     req.checkBody('password', 'Passwords do not match').equals(confirmPass);
 
     //If one of the user inputs fails to meet the requirements it gets saved in errors
-    var errors = req.validationErrors();
+   /* var errors = req.validationErrors();
     if(errors){
         res.json({errors: errors, redirect: false});
     }
     else{
-        pendingQ = knex('permissions').where({
+        var pendingQ = knex('permissions').where({
             type: 'Admin',
             type:  'Superuser'
-        })
+        }) */
         //hashes the password using bcrypt, then creates user and stores in database
         await bcrypt.hash(password, 10, function(err, hash) {
             new User({
@@ -87,7 +87,7 @@ router.post('/create', async function(req, res){
                     done(err, 'done');
                 });
             }
-        }
+        
 
 });
 
