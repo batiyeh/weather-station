@@ -6,6 +6,7 @@ router.use(bodyParser.json());
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const knex = require('knex')(require('../knexfile'));
 const async = require('async');
 const passport = require('passport');
 const nodemailer = require('nodemailer');
@@ -43,51 +44,53 @@ router.post('/create', async function(req, res){
     req.checkBody('password', 'Passwords do not match').equals(confirmPass);
 
     //If one of the user inputs fails to meet the requirements it gets saved in errors
-   /* var errors = req.validationErrors();
+    var errors = req.validationErrors();
     if(errors){
         res.json({errors: errors, redirect: false});
     }
-    else{
-        var pendingQ = knex('permissions').where({
-            type: 'Admin',
-            type:  'Superuser'
-        }) */
+    else {
+        /*  var pendingQ = knex('permissions').where({
+              type: 'Admin',
+              type: 'Superuser' */
+
         //hashes the password using bcrypt, then creates user and stores in database
-        await bcrypt.hash(password, 10, function(err, hash) {
+        await bcrypt.hash(password, 10, function (err, hash) {
             new User({
                 username: username,
                 email: email,
                 password: hash,
-                permissions: 4,
+                permission_id: 4,
             }).save()
         });
         res.json({errors: [], redirect: true})
-        if(pendingQ) {
-         //   function (token, user, done) {
-                var transporter = nodemailer.createTransport({
-                    host: 'smtp.gmail.com',
-                    port: 587,
-                    secure: false,
-                    auth: {
-                        //Find better way to store user and pass for whole system.
-                        user: 'WStationTestdod@gmail.com',
-                        pass: 'wayne123'
-                    }
-                });
-                var mailOptions = {
-                    to: email,
-                    from: 'wstationtestdod@gmail.com',
-                    subject: 'Weather Station Account Request',
-                    text: 'You are receiving this message because you are able to accept or deny the approval of this account request.\n\n' +
-                    'Please click the following link to complete this process:\n\n' +
-                    req.protocol + '://' + req.get('host') + '/user/Approval/' + token + '\n\n'
-                };
-                transporter.sendMail(mailOptions, function (err) {
-                    //Alert user email has been sent
-                    done(err, 'done');
-                });
-            }
+    }
 
+        // if(pendingQ) {
+        //  //   function (token, user, done) {
+        //         var transporter = nodemailer.createTransport({
+        //             host: 'smtp.gmail.com',
+        //             port: 587,
+        //             secure: false,
+        //             auth: {
+        //                 //Find better way to store user and pass for whole system.
+        //                 user: 'WStationTestdod@gmail.com',
+        //                 pass: 'wayne123'
+        //             }
+        //         });
+        //         var mailOptions = {
+        //             to: email,
+        //             from: 'wstationtestdod@gmail.com',
+        //             subject: 'Weather Station Account Request',
+        //             text: 'You are receiving this message because you are able to accept or deny the approval of this account request.\n\n' +
+        //             'Please click the following link to complete this process:\n\n' +
+        //             req.protocol + '://' + req.get('host') + '/user/Approval/' + token + '\n\n'
+        //         };
+        //         transporter.sendMail(mailOptions, function (err) {
+        //             //Alert user email has been sent
+        //             done(err, 'done');
+        //         });
+        //     }
+        //
 
 });
 
@@ -138,8 +141,15 @@ router.post('/getUserInfo', async function(req,res){
     else{
         res.json({username: undefined})
     }
-})
+});
 
+router.get('/pendingUser',async function (req,res) {
+    var pendingU = await knex('users')
+        .select('username')
+        .where('permission_id', '=', '4')
+    console.log(pendingU);
+    res.json({pendingU});
+})
 router.get('/allUsers', async function (req,res) {
     try{
         var users = await knex('users').select().orderBy('username', 'ascend')
@@ -147,13 +157,13 @@ router.get('/allUsers', async function (req,res) {
         return res.json({});
     }
     return res.json({ users });
-})
+});
 
 router.post('/logout', function(req,res){
     req.session.destroy(response => {
         res.json({response: response})
     });
-})
+});
 
 
 router.post('/reset/', function(req,res){
@@ -206,9 +216,9 @@ router.post('/reset/', function(req,res){
     ],function(err){
         if(err)
             console.log('Error:', err);
-    })
+    });
     res.redirect('/user/login');
-})
+});
 
 router.post('/reset/:token', function(req, res){
     async.waterfall([ 
@@ -230,7 +240,7 @@ router.post('/reset/:token', function(req, res){
                     },{patch:true})
                     if(!user)
                         console.log("Error no user with that token");//redirect after
-                })
+                });
                 console.log("Your password has been reset!");
                 res.redirect('/user/login');
             }

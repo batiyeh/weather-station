@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, ButtonDropdown,DropdownMenu, DropdownItem, DropdownToggle } from 'reactstrap';
+import { Table, Input, ButtonDropdown,DropdownMenu, DropdownItem, DropdownToggle } from 'reactstrap';
 
 
 class Approval extends Component {
@@ -10,11 +10,14 @@ class Approval extends Component {
             pending: [],
             users: [],
             modal: false,
-            dropdownOpen: false
+            dropdownOpen: false,
+            selectedUser: null,
         }
 
     };
-
+    componentWillMount(){
+        this.getuser();
+    }
     toggle() {
         this.setState({
             dropdownOpen: !this.state.dropdownOpen
@@ -29,13 +32,12 @@ class Approval extends Component {
 
     getuser = async () => {
         var users = [];
-        const response = await fetch('/api/allUsers');
+        const response = await fetch('api/user/pendingUser', {method: 'get'});
         const body = await response.json();
+        var pendingUsers = body.pendingU
+        console.log(pendingUsers);
         if (response.status !== 200) throw Error(body.message);
-        if (body.users) users = body.users;
-        // this.setState({users: usersarray})
-        console.log(users)
-        return users;
+        this.setState({pending:pendingUsers})
     };
 
     updateTable = async () => {
@@ -46,9 +48,24 @@ class Approval extends Component {
         });
     };
 
-    renderAlert() {
+    renderpendingUsers() {
+        var pusers = []
+        this.state.pending.map((pendingUsers => {
+            pusers.push(<option key={"name" + pendingUsers} value={pendingUsers.username}>{pendingUsers.username}</option>)
+            //console.log(pendingUsers.username)
+            return null;
+        }))
+        //console.log(pusers)
+        return pusers;
 
     };
+
+    onpendingChange(value){
+        this.setState({
+            selectedUser: value
+        })
+        console.log(this.state.selectedUser)
+    }
 
     render() {
         return(
@@ -63,14 +80,12 @@ class Approval extends Component {
             <tbody>
             <tr>
                 <td> body.users.['Username']</td>
-                { this.state.users
-                    .map(user => {
-                        {user}
-                    })
-                }
+                <Input type="select" name='pending' id='station' value={this.state.pending} onChange={e => this.onpendingChange(e.target.value)}>
+                    {this.renderpendingUsers()}
+                </Input>
                 <buttonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
                     <dropdownToggle caret>
-                        body.permission.['Permission']  //shows what permission they have right now
+                        body.permission.['Permission']
                     </dropdownToggle>
                     <dropdownMenu>
                         <dropdownItem header> Admin </dropdownItem>

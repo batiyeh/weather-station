@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import VerifyLoggedIn from '../components/verifyLoggedIn.js';
 import AdminStationList from '../components/admin/adminStationList.js';
 import '../styles/admin.css';
+import Approval from "../components/admin/Approval";
 
 class Alerts extends Component {
     render() {
@@ -9,6 +10,7 @@ class Alerts extends Component {
             <div className='adminPage'>
                 <VerifyLoggedIn/>
                 <AdminStationList></AdminStationList>
+
             </div>
         );
     }
