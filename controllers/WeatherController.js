@@ -17,7 +17,9 @@ moment().format();
 // TODO: Think of a more efficient way to structure our db
 router.post('/', async function (req, res) {
     var station = await knex('stations').select().where('apikey', req.body.apikey);
-    if (_.isNull(station[0].expiration) ||  moment(station[0].expiration).utc(station[0].expiration).isAfter(req.body.created_at)){
+    
+    if (station.length > 0){
+    // if (_.isNull(station[0].expiration) ||  moment(station[0].expiration).utc(station[0].expiration).isAfter(req.body.created_at)){
         var latestWeather = await openweather.getLatestOpenWeatherData(req.body.apikey);
 
         // Get Open Weather Maps data every minute or if the latest weather does not have any owm data
