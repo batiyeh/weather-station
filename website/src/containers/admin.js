@@ -8,7 +8,7 @@ class Alerts extends Component {
     render() {
         return (
             <div className='adminPage'>
-                <VerifyLoggedIn/>
+
                 <AdminStationList></AdminStationList>
 
             </div>

@@ -159,6 +159,13 @@ router.get('/allUsers', async function (req,res) {
     return res.json({ users });
 });
 
+router.post('/approveUser', async function (req, res) {
+    var statusPe = req.body.statusP;
+    var username = req.body.selectedUser;
+
+    console.log(req.body)
+})
+
 router.post('/logout', function(req,res){
     req.session.destroy(response => {
         res.json({response: response})
