@@ -200,7 +200,7 @@ class HistoricalContainer extends Component{
                     from={this.state.fromDate}
                     to={this.state.toDate}
                     height={500}
-                    width={800}
+                    width={"100%"}
                 />
             )
         }
@@ -212,7 +212,7 @@ class HistoricalContainer extends Component{
                     from={this.state.fromDate}
                     to={this.state.toDate}
                     height={500}
-                    width={800}
+                    width={"100%"}
                 />
             )
         }

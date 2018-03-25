@@ -20,12 +20,12 @@ class PressureGraph extends Component{
             from: this.props.from,
             to: this.props.to,
             width: this.props.width,
-            datasets: {"labels": [], "datasets": []},     // a dictionary of datasets to be drawn on the graph
+            datasets: {"datasets": []}, // a dictionary of datasets to be drawn on the graph
         }
     }
 
     componentWillReceieveProps(nextProps){
-        console.log(nextProps);
+        // console.log(nextProps);
     }
 
     componentDidMount(){
@@ -36,49 +36,23 @@ class PressureGraph extends Component{
             //this.createLines(station_name, data["sensorData"], data["dates"]);
             if(stations.includes(station_name)){
                 //create the lines for each station based on its data that has been passec
-                this.createLines(station_name, data["sensorData"], data["dates"])
+                this.createLine(station_name, data["points"])
             }
         }
-        //pass the to and from dates to generate the x axis labels of our graph
-        if (!_.isUndefined(data)) var labels = this.generateLabels(this.state.from, this.state.to, data["dates"]);
-        //once generated update them
-        this.updateLabels(labels);
     }
-    componentWillUnmount(){
-        colorIndex =0;
+    componentWillUnmount() {
+        // reset the color index upon the page being unloaded
+        colorIndex = 0;
+        this.state.stations = [];
     }
 
-
-    //generating the label for the x axis based on the to and from date passed from historical container
-    generateLabels(from, to, dates){
-        var labels = [];
-        from = moment(from);
-        to = moment(to);
-        // labels.push(from.format('YYYY-MM-DD HH:mm:ss'));
-        for (var i = 0; i < dates.length; i++){
-            var m = moment(dates[i]);
-            labels.push(m.format('YYYY-MM-DD HH:mm:ss'));
-        }
-        // labels.push(to.format('YYYY-MM-DD HH:mm:ss'));
-
-        return labels;
-    }
-
-    updateLabels(labels){
-        var currDatasets = this.state.datasets;
-        currDatasets["labels"] = labels;
-        this.setState({
-            datasets: currDatasets
-        });
-    }
-
-    createLines(name, press, dates) {
-        var datasets = this.state.datasets;
-        const newDataset = {
+    createLine(name, data) {
+        var datasets = this.state.datasets;     //creating a variable of datasets based on what it currently is because it will be added on too
+        const newDataset = {            //creating the new dataset for the line and setting the styling
             label: name,
             fill: false,
             lineTension: 0.1,
-            backgroundColor: colorsGraph[colorIndex],
+            backgroundColor: colorsGraph[colorIndex],       //creating the color of the line based on the current position of the color array
             borderColor: colorsGraph[colorIndex],
             borderDash: [8, 4],
             borderWidth: 2,
@@ -92,17 +66,14 @@ class PressureGraph extends Component{
             pointHoverBackgroundColor: colorsGraph[colorIndex],
             pointHoverBorderColor: 'rgba(220,220,220,1)',
             pointHoverBorderWidth: 2,
-            data: press,
+            data: data,                                 //storing the actual data to be plotted for the line
         };
-        datasets["datasets"].push(newDataset);
+        datasets["datasets"].push(newDataset);      // push the new dataset in to the array of datasets to be drawn
         this.setState({
-            datasets: datasets
+            datasets: datasets                      // set the state with the new dataset that has been added to it
         });
-        if (colorIndex == 7){
-            colorIndex = 0
-        }
-        else
-            colorIndex++;
+        if (colorIndex === colorsGraph.length - 1) colorIndex = 0
+        else colorIndex++;  //other wise move the index to the next position
     }
 
     render(){
@@ -114,7 +85,9 @@ class PressureGraph extends Component{
                         data={this.state.datasets}
                         width={this.state.width}
                         height={this.state.height}
-                        options={{maintainAspectRatio: false,
+                        options={{
+                            maintainAspectRatio: false,
+                            showLines: true,
                             scales: {
                                 xAxes: [{
                                     scaleLabel: {
