@@ -17,7 +17,7 @@ sendAlerts = async () => {
     triggered = checkAlert(triggered, weather);
     
     //checks if the alert has been triggered within the threshold set by the user
-    triggered = checkTime(triggered);
+    // triggered = checkTime(triggered);
 
     //last_triggered value updated to current time on all triggered alerts
     triggered.map(triggered =>{
