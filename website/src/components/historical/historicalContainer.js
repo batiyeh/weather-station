@@ -98,7 +98,7 @@ class HistoricalContainer extends Component{
 
 
     render(){
-        if(this.state.loading == false){
+        if(this.state.loading === false){
             return(
                 <div className="historical-container">
                     <Modal isOpen={this.state.modal} toggle={this.toggleFilter}>

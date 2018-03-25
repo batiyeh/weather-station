@@ -14,13 +14,12 @@ class AlertCard extends Component {
             datatype: this.props.alerts.type,
             value: this.props.alerts.value,
             secondValue: this.props.alerts.secondValue,
-            email: false,
-            sms: false,
-            webpage: false,
+            email: this.props.alerts.email,
+            sms: this.props.alerts.sms,
+            webpage: this.props.alerts.webpage,
             threshold: this.props.alerts.threshold
         }
         
-        this.getAlertMethods = this.getAlertMethods.bind(this);
         this.updateAlert = this.updateAlert.bind(this);
         this.toggleAlert = this.toggleAlert.bind(this);
         this.resetValues = this.resetValues.bind(this);
@@ -30,10 +29,53 @@ class AlertCard extends Component {
         this.deleteAlert = this.deleteAlert.bind(this);
     }
 
-    componentDidMount(){
-        this.setAlertMethods();
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.alerts.station_name !== this.state.station_name){
+            this.setState({
+                station: nextProps.alerts.station_name
+            })
+        }
+        if(nextProps.alerts.keyword !== this.state.keyword){
+            this.setState({
+                keyword: nextProps.alerts.keyword
+            })
+        }
+        if(nextProps.alerts.type !== this.state.datatype){
+            this.setState({
+                datatype: nextProps.alerts.type
+            })
+        }
+        if(nextProps.alerts.value !== this.state.value){
+            this.setState({
+                value: nextProps.alerts.value
+            })
+        }
+        if(nextProps.alerts.secondValue !== this.state.secondValue){
+            this.setState({
+                secondValue: nextProps.alerts.secondValue
+            })
+        }
+        if(nextProps.alerts.threshold !== this.state.threshold){
+            this.setState({
+                threshold: nextProps.alerts.threshold
+            })
+        }
+        if(nextProps.alerts.sms !== this.state.sms){
+            this.setState({
+                sms: nextProps.alerts.sms
+            })
+        }
+        if(nextProps.alerts.email !== this.state.email){
+            this.setState({
+                email: nextProps.alerts.email
+            })
+        }
+        if(nextProps.alerts.webpage !== this.state.webpage){
+            this.setState({
+                webpage: nextProps.alerts.webpage
+            })
+        }
     }
-
     //passes the new values to the backend of an alert that the user is editing
     updateAlert = async () => {
         await fetch('/api/alerts/' + this.props.alerts.alert_id, 
@@ -55,38 +97,9 @@ class AlertCard extends Component {
             },
             credentials:'include'
         });
-        this.props.update();
+        
         this.toggleAlert();
 
-    }
-
-    setAlertMethods = async() => {
-        var {email, webpage, sms} = await this.getAlertMethods();
-        this.setState({
-            email: email,
-            webpage: webpage,
-            sms: sms,
-            origEmail: email,
-            origWebpage: webpage,
-            origSms: sms,
-        });
-    }
-
-    //when the user opens the card modal, a fetch to get the alert methods for that alert is made
-    //the state is then updated with that 
-    getAlertMethods = async () => {
-        var email = false;
-        var webpage = false;
-        var sms = false;
-        var response = await fetch('/api/alerts/' + this.props.alerts.alert_id, {method: 'get'})
-        var body = await response.json();
-        body.methods.map(methodType => {
-            if (methodType.method === 'email') email = true; 
-            else if (methodType.method === 'sms') sms = true;
-            else if (methodType.method === 'webpage') webpage = true;
-        });
-        
-        return {email, webpage, sms};
     }
 
     //toggles edit alert modal
@@ -174,6 +187,7 @@ class AlertCard extends Component {
             </div>)
         }
     }
+    //Renders option select for all stations in the database
     renderStations(){
         var options = []
         this.state.stations.map((station, index) => {
@@ -182,7 +196,7 @@ class AlertCard extends Component {
         })
         return options;
     }
-
+    //Renders icons for the selected methods of the alert
     renderMethods(){
         var methodTags = [];
         if (this.state.email === true){
@@ -238,11 +252,11 @@ class AlertCard extends Component {
     }
 
     //Deletes the alert with the id passed to the backend
-    //Page does not update after deletion, needs to be fixed
-    deleteAlert(){
-        fetch('/api/alerts/' + this.props.alerts.alert_id, {method: 'delete'})
-        this.props.update();
+    deleteAlert = async () => {
+
+        await fetch('/api/alerts/' + this.props.alerts.alert_id, {method: 'delete'})
         this.toggleAlert();
+        this.props.deleteAlert(this.props.index);
     }
 
     render(){
