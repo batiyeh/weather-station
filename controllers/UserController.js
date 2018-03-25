@@ -237,7 +237,7 @@ router.post('/reset/:token', function(req, res){
         }
     ])
 })
-
+//updates user profile (email/phone) when user submits form on profile page
 router.post('/editProfile', async function(req, res){
     var email = req.body.email;
     var phone = req.body.phone;
@@ -289,6 +289,7 @@ router.post('/editProfile', async function(req, res){
 
     res.json({messages: [{msg: 'Profile updated successfully!'}]});
 })
+//updates user password in the database when they edit it from the user profile page
 router.post('/editPassword', async function(req, res){
     var currPass = req.body.currPass;
     var newPass = req.body.newPass;

@@ -32,6 +32,7 @@ class ProfileForm extends Component {
             phone: value
         })
     }
+    //Sends data entered by user to the backend to update their email or phone numbrer
     updateProfile = async () =>{
         var response = await fetch('/api/user/editProfile/', 
             {method: 'post', 
@@ -52,6 +53,7 @@ class ProfileForm extends Component {
             messages: body.messages
         })
     }
+    //renders error messages or success messages if any are returned from backend
     renderMessages(){
         if(this.state.messages.length > 0){
             var allMessages = [];
@@ -67,6 +69,7 @@ class ProfileForm extends Component {
             <div className='profile-container'>
              <Modal isOpen={this.state.modal} toggle={this.toggleChangePassword}>
                 <ModalHeader toggle={this.toggleChangePassword}>Change Password</ModalHeader>
+                {/* Form that will make a call to the api to change the users password when submitted */}
                 <form id='passwordForm' action='/api/user/editPassword' method='post'>
                     <ModalBody>
                         <div className='form-group'>

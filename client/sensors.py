@@ -10,6 +10,11 @@ except:
     print("Adafruit DHT library not installed.")
     pass
 try:
+    import Adafruit_BMP.BMP280 as BMP280
+except:
+    print("Adafruit BMP library not installed.")
+    pass
+try:
     from sense_hat import SenseHat
 except:
     print("Sense Hat library not installed.")
@@ -40,10 +45,18 @@ class Sensors(object):
             print("Failed initializing GPS")
             pass
         
+        self.sense = None
+        self.pressureSensor = None
         try:
             self.sense = SenseHat()
         except:
             print("Failed initializing Sense Hat")
+            pass
+
+        try:
+            self.pressureSensor = BMP280.BMP280()
+        except:
+            print("Failed initializing Pressure Sensor")
             pass
     
     def getSensorData(self, apikey):
@@ -67,32 +80,42 @@ class Sensors(object):
         # Attempt to retrieve humidity + temperature
         try:
             humidity, temperature = Adafruit_DHT.read(Adafruit_DHT.AM2302, self.pin)
+            
             if (temperature):
                 self.temperature = (9.0/5.0) * temperature + 32
             if (humidity):
                 self.humidity = humidity
         except:
             pass
+        
+        if (self.pressureSensor):
+            try:
+                pressure = self.pressureSensor.read_pressure() / 100
+                if(pressure):
+                    self.pressure = pressure
+            except:
+                pass
 
         # Attempt to retrieve from sense hat
-        try:
-            self.humidity = self.sense.humidity
-            self.temperature = (9.0/5.0) * self.sense.temperature + 32
-            self.pressure = self.sense.pressure
+        if (self.sense):
+            try:
+                self.humidity = self.sense.humidity
+                self.temperature = (9.0/5.0) * self.sense.temperature + 32
+                self.pressure = self.sense.pressure
 
-            # Calibrate the temperature to account for CPU temp with the sense hat
-            cpu_temp = subprocess.check_output("vcgencmd measure_temp", shell=True)
-            array = cpu_temp.split("=")
-            array2 = array[1].split("'")
+                # Calibrate the temperature to account for CPU temp with the sense hat
+                cpu_temp = subprocess.check_output("vcgencmd measure_temp", shell=True)
+                array = cpu_temp.split("=")
+                array2 = array[1].split("'")
 
-            cpu_tempf = float(array2[0]) * 9.0 / 5.0 + 32.0
-            cpu_tempf = float("{0:.2f}".format(cpu_tempf))
-            self.temperature = self.temperature - ((cpu_tempf - self.temperature) / 5.466)
-        except:
-            pass
-            # self.temperature = random.uniform(70.0, 73.0)
-            # self.humidity = random.uniform(50.0, 54.0)
-            # self.pressure = random.uniform(1040.0, 1075.0)
+                cpu_tempf = float(array2[0]) * 9.0 / 5.0 + 32.0
+                cpu_tempf = float("{0:.2f}".format(cpu_tempf))
+                self.temperature = self.temperature - ((cpu_tempf - self.temperature) / 5.466)
+            except:
+                pass
+                # self.temperature = random.uniform(70.0, 73.0)
+                # self.humidity = random.uniform(50.0, 54.0)
+                # self.pressure = random.uniform(1040.0, 1075.0)
 
     def getGpsCoords(self):
         # Try to get latitude and longitude data from our receiver

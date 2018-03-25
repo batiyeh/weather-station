@@ -17,6 +17,7 @@ class CreateUserForm extends Component {
         this.submitForm = this.submitForm.bind(this);
         this.renderErrors = this.renderErrors.bind(this);
     }
+    //sets state based on value entered by user in the fields
     onUsernameChange(value){
         this.setState({
           username: value
@@ -37,6 +38,8 @@ class CreateUserForm extends Component {
             confirmPass: value
         })
     }
+    //sents data for user account to back end
+    //errors are returned (if they exist) and the redirect flag is set (true if user's account was created successfully)
     submitForm = async () => {
         var response = await fetch('/api/user/create/', 
             {method: 'post', 
@@ -59,6 +62,7 @@ class CreateUserForm extends Component {
         })
 
     }
+    //displays any errors on the page if they were returned from the backend
     renderErrors(){
         if(this.state.errors.length > 0){
             var allErrors = []
@@ -70,6 +74,7 @@ class CreateUserForm extends Component {
         }
     }
     render(){
+        //redirects user if the flag was set
         if(this.state.redirect){
         return ( <Redirect to='/user/login'/>)
         }
