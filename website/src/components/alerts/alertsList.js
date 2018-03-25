@@ -216,7 +216,8 @@ class AlertsList extends Component {
         this.state.historicAlerts.map(alert => {
             var filter = moment(this.state.date).format('YYYY-MM-DD');
             var alertTime = moment(alert.created_at).utc(alert.created_at).local().format('YYYY-MM-DD');
-            var filterInt = parseInt(this.state.alertFilter);
+            var filterInt = parseInt(this.state.alertFilter, 10);
+            
             if(this.state.alertFilter !== 'all'){
                 if((filter === alertTime) && (filterInt === alert.alert_id)){
                     cards.unshift(<HistoricAlertCard alert={alert}/>)
