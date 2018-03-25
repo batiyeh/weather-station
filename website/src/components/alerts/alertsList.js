@@ -216,9 +216,9 @@ class AlertsList extends Component {
         this.state.historicAlerts.map(alert => {
             var filter = moment(this.state.date).format('YYYY-MM-DD');
             var alertTime = moment(alert.created_at).utc(alert.created_at).local().format('YYYY-MM-DD');
-
+            var filterInt = parseInt(this.state.alertFilter);
             if(this.state.alertFilter !== 'all'){
-                if((filter === alertTime) && (this.state.alertFilter === alert.alert_id)){
+                if((filter === alertTime) && (filterInt === alert.alert_id)){
                     cards.unshift(<HistoricAlertCard alert={alert}/>)
                 }
             }
@@ -258,10 +258,10 @@ class AlertsList extends Component {
         options.push(<option value={'all'}> All alerts </option>)
         this.state.alerts.map(alerts => {
             if(alerts.keyword === 'between'){
-                options.push(<option value={alerts.alert_id}> {alerts.station_name}'s {alerts.datatype} is {alerts.keyword} {alerts.value} and {alerts.secondValue}</option>)
+                options.push(<option value={alerts.alert_id}> {alerts.station_name}'s {alerts.type} is {alerts.keyword} {alerts.value} and {alerts.secondValue}</option>)
             }
             else{
-                options.push(<option value={alerts.alert_id}> {alerts.station_name}'s {alerts.datatype} is {alerts.keyword} {alerts.value} </option>)
+                options.push(<option value={alerts.alert_id}> {alerts.station_name}'s {alerts.type} is {alerts.keyword} {alerts.value} </option>)
             }
             return null
         })
