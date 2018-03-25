@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Alert } from 'reactstrap';
 import '../../styles/historical.css';
 import { Line } from 'react-chartjs-2';
+import _ from 'lodash';
 var moment = require('moment');
 moment().format();
 
@@ -24,7 +25,7 @@ class TemperatureGraph extends Component{
     }
 
     componentWillReceieveProps(nextProps){
-        console.log(nextProps);
+        // console.log(nextProps);
     }
 
     componentDidMount(){
@@ -38,9 +39,9 @@ class TemperatureGraph extends Component{
                 this.createLines(station_name, data["sensorData"], data["dates"])
             }
         }
-        //pass the to and from dates to generate the x axis labels of our graph
-        console.log(data["dates"]);
-        var labels = this.generateLabels(this.state.from, this.state.to, data["dates"]);
+        // pass the to and from dates to generate the x axis labels of our graph
+        // console.log(data["dates"]);
+        if (!_.isUndefined(data)) var labels = this.generateLabels(this.state.from, this.state.to, data["dates"]);
         //once generated update them
         this.updateLabels(labels);
     }
