@@ -111,19 +111,20 @@ class HistoricalContainer extends Component{
         for (var i = 0; i < data.length; i++) {     // for loop to sort through returned data
             //we are storing the data in a dictionary based on station name
             var station_name = data[i].station_name;
-            if (!stationsDict[station_name]) stationsDict[station_name] = {"sensorData": [], "dates": []};  // if the station name is not found in the dictionary yet add it with arrays to store data and time
+            var sensorData = "";
+            if (!stationsDict[station_name]) stationsDict[station_name] = {"points": []};  // if the station name is not found in the dictionary yet add it with arrays to store data and time
             if (type === 'temperature') {
                 //data is returned in JSON format so based on what sensor type is how we determine to push it into the data array
-                stationsDict[station_name]["sensorData"].push(data[i].temperature);
+                sensorData = data[i].temperature;
             }
             else if(type === 'pressure'){
-                stationsDict[station_name]["sensorData"].push(data[i].pressure);
+                sensorData = data[i].pressure;
             }
             else if(type === 'humidity'){
-                stationsDict[station_name]["sensorData"].push(data[i].humidity);
+                sensorData = data[i].humidity;
             }
             //Time is returned as created_at so for that we push it in to the dates array of the station in the dictionary
-            stationsDict[station_name]["dates"].push(data[i].created_at);
+            stationsDict[station_name]["points"].push({x: data[i].created_at, y: sensorData});
 
         }
         var newStationsDict = this.processDataPoints(stationsDict);
@@ -138,24 +139,20 @@ class HistoricalContainer extends Component{
 
     processDataPoints(stationsDict){
         var data;
-        var sensorData = [];
-        var dateData = [];
+        var points = [];
         var newStationsDict = {};
         for (var station_name in stationsDict) {
             data = stationsDict[station_name];
             newStationsDict[station_name] = {};
-            for(var i = 0; i < data["sensorData"].length; i++){
+            for(var i = 0; i < data["points"].length; i++){
                 if ( i % 180 === 0){
-                    var date = moment(data["dates"][i]).utc(data["dates"][i]).local().format("MM/DD/YY HH:mm:ss")
-                    sensorData.unshift(data["sensorData"][i]);
-                    dateData.unshift(date);
+                    var date = moment(data["points"][i]["x"]).utc(data["points"][i]["x"]).local().format("MM/DD/YY HH:mm:ss")
+                    points.unshift({x: date, y: data["points"][i]["y"]});
                 }
             }
-            newStationsDict[station_name]["sensorData"]= sensorData;
-            newStationsDict[station_name]["dates"]= dateData;
+            newStationsDict[station_name]["points"]= points;
             //clear the arrays after storing the data
-            sensorData = [];
-            dateData = [];
+            points = [];
         }
         return newStationsDict;
     }
@@ -220,9 +217,7 @@ class HistoricalContainer extends Component{
             )
         }
     }
-
-
-
+    
     render(){
         if(this.state.loading === false){   // if the state is no longer loading then it will render the page
             return(
