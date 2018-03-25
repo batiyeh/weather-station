@@ -8,11 +8,13 @@ const knex = require('knex')(require('../knexfile'));
 
 // Creates a new station via post request
 router.post('/', async function (req, res) {
+    var expiration = req.body.expiration;
+    if (expiration === 'Invalid date') expiration = null;
     // If the station doesn't exist, create a new one and insert it.
     var result = await new Station({
         station_name: req.body.station_name,
         apikey: req.body.api_key,
-        expiration: req.body.expiration,
+        expiration: expiration,
         connected: false,
         username: req.body.username
     }).save()

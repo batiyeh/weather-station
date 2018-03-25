@@ -118,9 +118,12 @@ router.get('/stations_name', async function (req, res) {
 
 // Returns the latest weather data for each station from the database
 router.post('/verifyKey', async function (req, res) {
-    var station = await knex('stations').select().where('apikey', req.body.apikey).andWhere('expiration', '>', req.body.created_at);
-    if (station.length > 0) res.status(200).send("Verified API Key.")
-    else res.status(400).send('Invalid API Key.')
+    var station = await knex('stations').select().where('apikey', req.body.apikey);
+    console.log(station);
+    if (_.isNull(station[0].expiration) ||  moment(station[0].expiration).utc(station[0].expiration).isAfter(req.body.time)){
+        res.status(200).send("Verified API Key.");
+    }
+    else res.status(400).send('Invalid API Key.');
 });
 
 // Returns the latest weather data for each station from the database

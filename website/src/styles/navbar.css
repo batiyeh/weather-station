@@ -57,6 +57,7 @@ nav a {
 }
 
 .username-dropdown{
+    top: 3px;
     white-space: nowrap;
 }
 
@@ -79,6 +80,10 @@ nav a {
     font-size: 7pt;
     z-index: 999;
     text-shadow: 0px 0px 1px rgba(0,0,0,0.4);;
+}
+
+.hidden{
+    opacity: 0;
 }
 
 .bell{

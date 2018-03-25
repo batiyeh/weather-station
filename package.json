@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "scripts": {
     "client": "cd website && npm run start",
+    "prod-client": "cd website && npm run start-prod",
     "server": "nodemon server.js",
+    "prod-server": "NODE_ENV=production node server.js",
     "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
+    "prod": "npm run prod-server",
     "migrate": "knex migrate:latest",
     "rollback": "knex migrate:rollback",
     "test": "jest"
