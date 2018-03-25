@@ -173,6 +173,18 @@ class Navigation extends Component {
         }
     }
 
+    renderAdmin()
+    {
+        if (this.state.permissions === "admin", "superuser"){
+            return <DropdownItem tag='a'>
+                <Link to={'/admin'} className='nav-link nav-link-dark'>admin</Link>
+            </DropdownItem>
+        }
+        else(
+        return NULL;
+    )
+    }
+
     //renders the alert cards in the drop down for the user
     renderAlerts(){
         
@@ -207,7 +219,6 @@ class Navigation extends Component {
             }
             return null;
         })
-
         //shows message if there are no alerts
         if(webpageAlertCards.length === 0){
             return(<Alert color="primary">You have no alerts</Alert>)
@@ -288,9 +299,7 @@ class Navigation extends Component {
                                                 <span className="download-text">client</span>
                                                 {/* <i class="fa fa-download" aria-hidden="true"></i> */}
                                             </DropdownItem>
-                                            <DropdownItem tag='a'>
-                                                <Link to={'/admin'} className='nav-link nav-link-dark'>admin</Link>
-                                            </DropdownItem>
+                                            {this.renderAdmin()}
                                             <DropdownItem tag='a'>
                                                 <a onClick={this.logout} className='nav-link nav-link-dark'>logout</a>
                                             </DropdownItem>

@@ -34,11 +34,8 @@ class App extends Component {
     var response = await fetch('/api/user/getUserInfo', {method: 'post', credentials: 'include'})
     var body = await response.json();
     if(!body.phone){
-<<<<<<< HEAD
       this.setState({username: body.username, email: body.email, phone: '3135555555', permissions: body.permissions});
-=======
-      this.setState({username: body.username, email: body.email, phone: 'Phone Number', isAdmin: body.isAdmin});
->>>>>>> 0765620906749424ff4da126180f79b4b59bd492
+      this.setState({username: body.username, email: body.email, phone: 'Phone Number', permissions: body.permissions});
     }
     else{
       this.setState({username: body.username, email: body.email, phone: body.phone, permissions: body.permissions});
@@ -50,6 +47,7 @@ class App extends Component {
       return (
         <Navigation 
           username={this.state.username}
+          permissions={this.state.permissions}
           {...props}
         />
       );
@@ -66,7 +64,7 @@ class App extends Component {
       username={this.state.username} 
       email={this.state.email} 
       phone={this.state.phone} 
-      isAdmin={this.state.isAdmin}
+      permissions={this.state.permissions}
       {...props}
       />
     </div>
