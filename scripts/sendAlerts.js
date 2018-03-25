@@ -6,6 +6,7 @@ const moment = require('moment');
 
 sendAlerts = async () => {
     var triggered = []
+    //gets all alerts and gets all weather data
     var alerts = await getAlerts();
     var weather = await getWeather();
 
