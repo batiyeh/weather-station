@@ -133,13 +133,8 @@ class Navigation extends Component {
         })
     }
 
-
-    logout = async () => {
-        var response = await fetch('/api/user/logout', {method: 'post', credentials: 'include'})
-
     logout = async() => {
         var response = await fetch('/api/user/logout', {method: 'put', credentials: 'include'})
-
         var body = await response.json();
         this.setState({
             redirect: true
@@ -156,9 +151,6 @@ class Navigation extends Component {
     }
 
     //changes the bell icon depending on if there are unread alerts or not
-    renderBell() {
-        if (this.state.unread) {
-            return (
     renderBell(){
         if(this.state.unread){
             var count = 0;
@@ -178,8 +170,6 @@ class Navigation extends Component {
                 </div>
             );
         }
-        else {
-            return (<div className="bell"><i className="fa fa-bell" aria-hidden="true"></i></div>);
         else{
             return(
                 <div className="bell">
