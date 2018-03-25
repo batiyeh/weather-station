@@ -17,7 +17,9 @@ moment().format();
 // TODO: Think of a more efficient way to structure our db
 router.post('/', async function (req, res) {
     var station = await knex('stations').select().where('apikey', req.body.apikey);
-    if (_.isNull(station[0].expiration) ||  moment(station[0].expiration).utc(station[0].expiration).isAfter(req.body.created_at)){
+    
+    if (station.length > 0){
+    // if (_.isNull(station[0].expiration) ||  moment(station[0].expiration).utc(station[0].expiration).isAfter(req.body.created_at)){
         var latestWeather = await openweather.getLatestOpenWeatherData(req.body.apikey);
 
         // Get Open Weather Maps data every minute or if the latest weather does not have any owm data
@@ -94,9 +96,9 @@ router.get('/latest', async function (req, res) {
 });
 
 // Returns the temperature for the last 24 from each station from the database
-router.get('/temp/:from/:to', async function (req, res) {
+router.get('/sensorData/:from/:to/:type', async function (req, res) {
     try{
-        var temp = await knex('weather').select('weather.temperature','weather.created_at', 'weather.apikey', 'stations.station_name').from('weather')
+        var temp = await knex('weather').select('weather.'+req.params.type,'weather.created_at', 'weather.apikey', 'stations.station_name').from('weather')
         .leftJoin('stations', 'stations.apikey', 'weather.apikey')
         .whereBetween('weather.created_at', [req.params.from, req.params.to]);
     } catch(ex){
@@ -106,12 +108,24 @@ router.get('/temp/:from/:to', async function (req, res) {
     return res.json({ temp });
 });
 
+router.get('/stations_name', async function (req, res) {
+    try{
+        var names = await knex('stations').select('stations.station_name')
+    } catch(ex){
+        console.log(ex);
+        return res.json({});
+    }
+    return res.json({ names });
+});
+
 // Returns the latest weather data for each station from the database
 router.post('/verifyKey', async function (req, res) {
     var station = await knex('stations').select().where('apikey', req.body.apikey);
-    console.log(station);
-    if (_.isNull(station[0].expiration) ||  moment(station[0].expiration).utc(station[0].expiration).isAfter(req.body.time)){
-        res.status(200).send("Verified API Key.");
+    if (station.length > 0){
+        if (_.isNull(station[0].expiration) ||  moment(station[0].expiration).utc(station[0].expiration).isAfter(req.body.time)){
+            res.status(200).send("Verified API Key.");
+        }
+        else res.status(400).send('Invalid API Key.');
     }
     else res.status(400).send('Invalid API Key.');
 });
