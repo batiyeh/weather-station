@@ -146,8 +146,9 @@ class HistoricalContainer extends Component{
             newStationsDict[station_name] = {};
             for(var i = 0; i < data["sensorData"].length; i++){
                 if ( i % 180 === 0){
+                    var date = moment(data["dates"][i]).utc(data["dates"][i]).local().format("MM/DD/YY HH:mm:ss")
                     sensorData.unshift(data["sensorData"][i]);
-                    dateData.unshift(data["dates"][i]);
+                    dateData.unshift(date);
                 }
             }
             newStationsDict[station_name]["sensorData"]= sensorData;
@@ -180,7 +181,7 @@ class HistoricalContainer extends Component{
 
     //function that handles the rendering of the graph it is done by sensor type
     renderGraph(){
-        console.log(this.state.toBeDrawn);
+        // console.log(this.state.toBeDrawn);
         if(this.state.sensorType === 'temperature') {       // checks which sensor type is currently selected and renders the corresponding component based on that
             return(
                 <TemperatureGraph className="row graph"

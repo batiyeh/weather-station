@@ -10,7 +10,6 @@ const knex = require('knex')(require('../knexfile'));
 const openweather = require('../services/openWeatherMap');
 const _ = require('lodash');
 var moment = require('moment');
-moment().format();
 
 // Adds weather data to the db via post request
 // This is probably super slow but it makes it more efficient for the user on the stations page for now
@@ -97,14 +96,17 @@ router.get('/latest', async function (req, res) {
 
 // Returns the temperature for the last 24 from each station from the database
 router.get('/sensorData/:from/:to/:type', async function (req, res) {
+    from = moment(req.params.from).utc().format("YYYY-MM-DD HH:mm:ss");
+    to = moment(req.params.to).utc().format("YYYY-MM-DD HH:mm:ss");
     try{
-        var temp = await knex('weather').select('weather.'+req.params.type,'weather.created_at', 'weather.apikey', 'stations.station_name').from('weather')
+        var temp = await knex('weather').select('weather.temperature', 'weather.pressure', 'weather.humidity', 'weather.created_at', 'weather.apikey', 'stations.station_name').from('weather')
         .leftJoin('stations', 'stations.apikey', 'weather.apikey')
-        .whereBetween('weather.created_at', [req.params.from, req.params.to]);
+        .whereBetween('weather.created_at', [from, to]);
     } catch(ex){
         console.log(ex);
         return res.json({});
     }
+
     return res.json({ temp });
 });
 

@@ -57,12 +57,12 @@ class TemperatureGraph extends Component{
         var labels = [];
         from = moment(from);
         to = moment(to);
-        labels.push(to.format('YYYY-MM-DD HH:mm:ss'));
+        // labels.push(from.format('YYYY-MM-DD HH:mm:ss'));
         for (var i = 0; i < dates.length; i++){
             var m = moment(dates[i]);
             labels.push(m.format('YYYY-MM-DD HH:mm:ss'));
         }
-        //labels.push(from.format('YYYY-MM-DD HH:mm:ss'));
+        // labels.push(to.format('YYYY-MM-DD HH:mm:ss'));
         
         return labels;
     }
