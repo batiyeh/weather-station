@@ -4,7 +4,7 @@ import '../../styles/historical.css';
 import { Line, Scatter } from 'react-chartjs-2';
 import _ from 'lodash';
 var moment = require('moment');
-moment().format();
+
 
 var colorsGraph = ['#4bc0c0', '#c0864b', '#4b86c0', '#c04b4b', '#c0c04b', '#4bc086', '#c04b86', '#327c0c'];  // Array of colors to be choosen when drawing multiple lines on the graph
 var colorIndex = 0;   //variable to keep track of what index is currently selected in the graph
@@ -48,7 +48,6 @@ class TemperatureGraph extends Component{
 
     //function for creating the line on the graph based on station data
     createLine(name, data) {
-        console.log(data);
         var datasets = this.state.datasets;     //creating a variable of datasets based on what it currently is because it will be added on too
         const newDataset = {            //creating the new dataset for the line and setting the styling
                 label: name,
@@ -140,7 +139,7 @@ class TemperatureGraph extends Component{
             );
         }
 
-        else{                     //if there is nothing loaded in to data sets thats because no data was returned so no weather data
+        else{ //if there is nothing loaded in to data sets thats because no data was returned so no weather data
             return(
                 <div className='col-12 no-data-alert'>
                     <Alert color="primary">There is no weather data for this filter.</Alert>

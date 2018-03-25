@@ -19,9 +19,9 @@ class HistoricalContainer extends Component{
             stationsData: {},
             stations: [],
             modal: false,
-            loading: true,                      //makes the rendering wait til it is done loading all the data
-            sensorType: 'temperature',          //default graph is temperature
-            fromDate: oneday.format("YYYY-MM-DD HH:mm:ss"),   //the props that set the range for the graph
+            loading: true, //makes the rendering wait til it is done loading all the data
+            sensorType: 'temperature', //default graph is temperature
+            fromDate: oneday.format("YYYY-MM-DD HH:mm:ss"), //the props that set the range for the graph
             toDate: now.format("YYYY-MM-DD HH:mm:ss"),
             toBeDrawn: [],
         }
@@ -71,7 +71,6 @@ class HistoricalContainer extends Component{
     onStationChange(e){
         var options = e.target.options;
         var selected = [];
-        console.log(this.state.toBeDrawn);
         for (var i = 0; i < options.length; i++) {
             if (options[i].selected) {
                 selected.push(options[i].value);
@@ -80,6 +79,7 @@ class HistoricalContainer extends Component{
         this.setState({
             toBeDrawn: selected
         });
+
     }
 
     getStations = async () =>{
@@ -88,12 +88,12 @@ class HistoricalContainer extends Component{
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
         names = body.names;
-        for (var i = 0; i < names.length; i++){
-            this.state.toBeDrawn.push(names[i].station_name)
+        if(this.state.toBeDrawn.length === 0){
+            for (var i = 0; i < names.length; i++){
+                this.state.toBeDrawn.push(names[i].station_name)
+            }
         }
-        this.setState({
-            stations: names
-        });
+        this.setState({ stations: names });
     };
 
 
@@ -132,7 +132,7 @@ class HistoricalContainer extends Component{
         this.setState({
             // end the async function by setting the state so that the stations dictionary is stored in stations data
             stationsData: newStationsDict,
-            loading: false                  // set loading to false so that graph can be rendered
+            loading: false // set loading to false so that graph can be rendered
         });
 
     };
@@ -164,7 +164,7 @@ class HistoricalContainer extends Component{
             loading: true,
             modal: false
         })
-        this.getSensorData()        //call the async function to get the data based on the new parameters set by the filter
+        this.getSensorData() //call the async function to get the data based on the new parameters set by the filter
     }
 
     renderStations(){
@@ -178,17 +178,17 @@ class HistoricalContainer extends Component{
 
     //function that handles the rendering of the graph it is done by sensor type
     renderGraph(){
-        // console.log(this.state.toBeDrawn);
-        if(this.state.sensorType === 'temperature') {       // checks which sensor type is currently selected and renders the corresponding component based on that
+        // checks which sensor type is currently selected and renders the corresponding component based on that
+        if(this.state.sensorType === 'temperature') { 
             return(
                 <TemperatureGraph className="row graph"
                     //passes the stations data to the graph component
                     data={this.state.stationsData}
                     stations={this.state.toBeDrawn}
-                    from={this.state.fromDate}              // passes the to and from dates to the graph component
+                    from={this.state.fromDate} // passes the to and from dates to the graph component
                     to={this.state.toDate}
-                    height={500}                            //The height and width of the graph is passed to the graph component
-                    width={800}
+                    height={500} //The height and width of the graph is passed to the graph component
+                    width={"100%"}
                 />
             )
         }
