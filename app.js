@@ -54,9 +54,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// if (process.env.NODE_ENV === 'production') {
-//     app.use('/', express.static(`${__dirname}/website/build`));
-// }
+app.use(express.static('website/public')) 
 
 // Import all of our controllers
 var StationController = require('./controllers/StationController');
@@ -70,9 +68,11 @@ app.use('/api/weather', WeatherController);
 app.use('/api/user', UserController);
 app.use('/api/alerts', AlertsController);
 
-app.get('*', (req, res) => {
-    app.use(express.static(__dirname+'/website/build/app.bundle.js'));
-});
+if (process.env.NODE_ENV === 'production') {
+    app.get('*', (req, res) => {
+        app.use('/', express.static(`${__dirname}/public/index.html`));
+    });
+}
 
 module.exports = app
 
