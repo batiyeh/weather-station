@@ -145,7 +145,7 @@ class HistoricalContainer extends Component{
             data = stationsDict[station_name];
             newStationsDict[station_name] = {};
             for(var i = 0; i < data["sensorData"].length; i++){
-                if ( i % 30 === 0){
+                if ( i % 180 === 0){
                     sensorData.unshift(data["sensorData"][i]);
                     dateData.unshift(data["dates"][i]);
                 }
@@ -210,6 +210,7 @@ class HistoricalContainer extends Component{
             return(
                 <HumidityGraph className="row graph"
                     data={this.state.stationsData}
+                    stations={this.state.toBeDrawn}
                     from={this.state.fromDate}
                     to={this.state.toDate}
                     height={500}

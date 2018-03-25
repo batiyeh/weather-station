@@ -39,6 +39,7 @@ class TemperatureGraph extends Component{
             }
         }
         //pass the to and from dates to generate the x axis labels of our graph
+        console.log(data["dates"]);
         var labels = this.generateLabels(this.state.from, this.state.to, data["dates"]);
         //once generated update them
         this.updateLabels(labels);
@@ -49,8 +50,6 @@ class TemperatureGraph extends Component{
         colorIndex = 0;
         this.state.stations = empty;
     }
-
-
 
     //generating the label for the x axis based on the to and from date passed from historical container
     generateLabels(from, to, dates){
@@ -110,8 +109,8 @@ class TemperatureGraph extends Component{
     }
 
     render(){
-        if (this.state.datasets["datasets"].length > 0){    //render each dataset that has been made below sets the styling of the overall graph and chart not the lines
-            //console.log(this.state.datasets);
+        //render each dataset that has been made below sets the styling of the overall graph and chart not the lines
+        if (this.state.datasets["datasets"].length > 0){
             return(
                 <div className='graph'>
                     <Line

@@ -12,12 +12,14 @@ class PressureGraph extends Component{
     constructor(props) {
         super(props);
         this.state = {
+            // set the state to be the props that were passed to it by historical container
             data: this.props.data,
+            stations: this.props.stations,
             height: this.props.height,
             from: this.props.from,
             to: this.props.to,
             width: this.props.width,
-            datasets: {"labels": [], "datasets": []},
+            datasets: {"labels": [], "datasets": []},     // a dictionary of datasets to be drawn on the graph
         }
     }
 
@@ -27,27 +29,36 @@ class PressureGraph extends Component{
 
     componentDidMount(){
         var data;
-        var labels = this.generateLabels(this.state.from, this.state.to);
-        this.updateLabels(labels);
+        var stations = this.state.stations;
         for (var station_name in this.state.data) {
             data = this.state.data[station_name];
-            this.createLines(station_name, data["sensorData"], data["dates"]);
+            //this.createLines(station_name, data["sensorData"], data["dates"]);
+            if(stations.includes(station_name)){
+                //create the lines for each station based on its data that has been passec
+                this.createLines(station_name, data["sensorData"], data["dates"])
+            }
         }
-        console.log(data);
+        //pass the to and from dates to generate the x axis labels of our graph
+        var labels = this.generateLabels(this.state.from, this.state.to, data["dates"]);
+        //once generated update them
+        this.updateLabels(labels);
     }
     componentWillUnmount(){
         colorIndex =0;
     }
 
 
-    generateLabels(from, to){
+    //generating the label for the x axis based on the to and from date passed from historical container
+    generateLabels(from, to, dates){
         var labels = [];
         from = moment(from);
         to = moment(to);
-        for (var m = moment(from); m.isBefore(to); m.add(15, 'minutes')) {
-
+        labels.push(to.format('YYYY-MM-DD HH:mm:ss'));
+        for (var i = 0; i < dates.length; i++){
+            var m = moment(dates[i]);
             labels.push(m.format('YYYY-MM-DD HH:mm:ss'));
         }
+        //labels.push(from.format('YYYY-MM-DD HH:mm:ss'));
 
         return labels;
     }
