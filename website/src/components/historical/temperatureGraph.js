@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Alert } from 'reactstrap';
 import '../../styles/historical.css';
-import { Line, Chart} from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 var moment = require('moment');
 moment().format();
 
@@ -85,7 +85,7 @@ class TemperatureGraph extends Component{
         this.setState({
             datasets: datasets
         });
-        if (colorIndex == 7){
+        if (colorIndex === 7){
             colorIndex = 0
         }
         else

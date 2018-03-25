@@ -70,7 +70,8 @@ class Navigation extends Component {
     getTriggeredAlerts = async () => {
         var alerts = [];
         //fetch call to gather any triggered webpage alerts for user
-        var response = await fetch('/api/alerts/webpage', {method: 'post', credentials: 'include'})
+        
+        var response = await fetch('/api/alerts/webpage/' ,{method: 'post', credentials: 'include'})
         var body = await response.json();
         alerts = body.alerts;
 
@@ -100,7 +101,7 @@ class Navigation extends Component {
 
     toggleAlert = async () => {
         //fetch call to set alerts to read for user
-        fetch('/api/alerts/read', {method: 'post', credentials: 'include'})
+        fetch('/api/alerts/read', {method: 'put', credentials: 'include'})
 
         this.setState({
             unread: false,
@@ -129,7 +130,7 @@ class Navigation extends Component {
     }
 
     logout = async() => {
-        var response = await fetch('/api/user/logout', {method: 'post', credentials: 'include'})
+        var response = await fetch('/api/user/logout', {method: 'put', credentials: 'include'})
         var body = await response.json();
         this.setState({
             redirect: true
@@ -148,12 +149,19 @@ class Navigation extends Component {
     //changes the bell icon depending on if there are unread alerts or not
     renderBell(){
         if(this.state.unread){
+            var count = 0;
+            this.state.alerts.map(alert =>{
+                if(!alert.read){
+                    count++;
+                }
+                return null;
+            })
             return(
                 <div className="bell">
                     <span className="fa-stack">
                         <i className="fa fa-bell fa-stack-1x" aria-hidden="true"></i>
-                        <strong className="fa-stack-1x unread-text">{this.state.alerts.length}</strong>
-                        <i className="fa fa-square fa-stack-1x unread" aria-hidden="true"></i>
+                        <strong class="fa-stack-1x unread-text">{count}</strong>
+                        <i class="fa fa-square fa-stack-1x unread" aria-hidden="true"></i>
                     </span>
                 </div>
             );
@@ -181,26 +189,26 @@ class Navigation extends Component {
         // var value2 = null;
         this.state.alerts.map((alerts, index) =>{
             if(alerts.keyword === 'between'){
-                webpageAlertCards.push(
+                webpageAlertCards.unshift(
                     <Card key={index} onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, alerts.secondValue, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)} className='alert-notification-card'> 
                         <div className="alert-text">
                             {alerts.station_name}'s {alerts.type} is {alerts.keyword} {alerts.value} and {alerts.secondValue}
                         </div>
                         <div className="alert-triggered-at">
-                            { moment(alerts.triggered_at).format("YYYY-MM-DD HH:mm:ss") }
+                            { moment(alerts.created_at).utc(alerts.created_at).local().format("YYYY-MM-DD HH:mm:ss") }
                         </div>
                     </Card>
                 );
             
             }
             else{
-                webpageAlertCards.push(
+                webpageAlertCards.unshift(
                     <Card key={index} onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, null, alerts.temperature, alerts.pressure, alerts.humidity, alerts.triggered_at)} className="alert-notification-card">
                         <div className="alert-text">
                             {alerts.station_name}'s {alerts.type} is {alerts.keyword}&nbsp;{alerts.value}
                         </div>
                         <div className="alert-triggered-at">
-                            { moment(alerts.triggered_at).format("YYYY-MM-DD HH:mm:ss") }
+                            { moment(alerts.created_at).utc(alerts.created_at).local().format("YYYY-MM-DD HH:mm:ss") }
                         </div>
                     </Card>
                 );
@@ -302,7 +310,7 @@ class Navigation extends Component {
                                 {this.renderHeader()}
                                 <Form id='AlertForm'>
                                     <ModalBody>
-                                        <p>{this.state.station_name} at: {moment(this.state.time).format("YYYY-MM-DD HH:mm:ss")}</p>
+                                        <p>{this.state.station_name} at: {moment(this.state.time).utc(this.state.time).local().format("YYYY-MM-DD HH:mm:ss")}</p>
                                         <p>Temperature: {this.state.temperature} &deg;F</p>
                                         <p>Pressure: {this.state.pressure} hPa</p>
                                         Humidity: {this.state.humidity}%

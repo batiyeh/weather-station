@@ -28,14 +28,17 @@ class AlertsList extends Component {
             sms: false,
             webpage: false,
             threshold: '1 hour',
-            date: date
+            date: date,
+            alertFilter: 'all'
         };
-        this.filter = this.filter.bind(this);
+        this.filterTime = this.filterTime.bind(this);
+        this.onAlertFilterChange = this.onAlertFilterChange.bind(this);
         this.resetValues = this.resetValues.bind(this);
         this.onEmailChange = this.onEmailChange.bind(this);
         this.onSMSChange = this.onSMSChange.bind(this);
         this.onWebpageChange = this.onWebpageChange.bind(this);
         this.toggleAddAlert = this.toggleAddAlert.bind(this);
+        this.deleteAlert = this.deleteAlert.bind(this);
         
     }
     //when component loads, will call getAlerts()
@@ -43,13 +46,14 @@ class AlertsList extends Component {
         await this.getAlerts();
 
     }
+
     //gets all current alerts, historic alerts, and stations for the user and stores it in the state
     getAlerts = async () => {
         var alerts = [];
         var stations = [];
         var station = '';
         var historicAlerts = [];
-        var response = await fetch('/api/alerts/', {method: 'post', credentials:'include'});
+        var response = await fetch('/api/alerts/' , {method: 'post', credentials: 'include'});
         var body = await response.json();
         alerts = body.alerts;
         stations = body.stations;
@@ -136,10 +140,25 @@ class AlertsList extends Component {
             threshold: value
         })
     }
-    filter(value){
+    onAlertFilterChange(value){
+        this.setState({
+            alertFilter: value
+        })
+    }
+    filterTime(value){
         this.setState({
             date: value._d
         })
+        this.renderHistoricCard();
+    }
+    deleteAlert(index){
+        var newAlerts = this.state.alerts;
+        newAlerts.splice(index, 1);
+
+        this.setState({
+            alerts: newAlerts
+        })
+        
     }
     //displays either one input box or two to the user depending on what keyword they currently have selected
     renderValues(){
@@ -170,6 +189,7 @@ class AlertsList extends Component {
             </div>)
         }
     }
+    //disables create button if no stations in database
     renderCreateButton(){
         if(this.state.stations.length === 0){
             return <Button type='button' className="btn btn-secondary add-btn" onClick={this.toggleAddAlert} disabled>Add</Button>
@@ -183,21 +203,31 @@ class AlertsList extends Component {
     //some alerts have multiple values so the id's need to be compared before they are added to the array
     renderCards(){
         var cards = []
-        this.state.alerts.map(alert =>{
-            cards.push(<AlertCard stations={this.state.stations} alerts={alert} update={this.getAlerts}/>)
+        this.state.alerts.map((alert, index) =>{
+            cards.push(<AlertCard stations={this.state.stations} alerts={alert} deleteAlert={this.deleteAlert} index={index}/>)
+            return null;
         })
 
         return cards
     }
+    //renders cards for time specified by user or for alert specified by user
     renderHistoricCard(){
         var cards = []
         this.state.historicAlerts.map(alert => {
+            var filter = moment(this.state.date).format('YYYY-MM-DD');
+            var alertTime = moment(alert.created_at).utc(alert.created_at).local().format('YYYY-MM-DD');
 
-            var alertDate = new Date(alert.triggered_at.slice(0,10)+'T04:00:00.000Z');
-            //only renders alerts for selected time by user
-            if(this.state.date.getTime() === alertDate.getTime() ){
-                cards.push(<HistoricAlertCard alert={alert}/>)
+            if(this.state.alertFilter !== 'all'){
+                if((filter === alertTime) && (this.state.alertFilter === alert.alert_id)){
+                    cards.unshift(<HistoricAlertCard alert={alert}/>)
+                }
             }
+            else{
+                if(filter === alertTime){
+                    cards.unshift(<HistoricAlertCard alert={alert}/>)
+                }
+            }
+            return null;
         })
         
         if(cards.length === 0){
@@ -219,6 +249,21 @@ class AlertsList extends Component {
         this.state.stations.map((station, index) => {
             options.push(<option key={"name" + index} value={station.station_name}>{station.station_name}</option>)
             return null;
+        })
+        return options;
+    }
+    //Renders filter options for user based on currently created alerts
+    renderOptions(){
+        var options = []
+        options.push(<option value={'all'}> All alerts </option>)
+        this.state.alerts.map(alerts => {
+            if(alerts.keyword === 'between'){
+                options.push(<option value={alerts.alert_id}> {alerts.station_name}'s {alerts.datatype} is {alerts.keyword} {alerts.value} and {alerts.secondValue}</option>)
+            }
+            else{
+                options.push(<option value={alerts.alert_id}> {alerts.station_name}'s {alerts.datatype} is {alerts.keyword} {alerts.value} </option>)
+            }
+            return null
         })
         return options;
     }
@@ -349,9 +394,14 @@ class AlertsList extends Component {
                                 dateFormat="YYYY-MM-DD"
                                 className='form-control'
                                 placeholderText="Date"
-                                selected={moment(this.state.date)}
-                                onChange={this.filter}/>
+                                selected={moment(this.state.date).utc(this.state.date)}
+                                onChange={this.filterTime}/>
                         </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                        <Input type='select' name='alert_filter' id='alert_filter' onChange={e =>this.onAlertFilterChange(e.target.value)}>
+                                {this.renderOptions()}
+                        </Input>
                     </FormGroup>
                 </div>
             </div>
