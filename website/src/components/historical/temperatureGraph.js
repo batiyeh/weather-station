@@ -29,11 +29,11 @@ class TemperatureGraph extends Component{
 
     componentDidMount(){
         var data;
-        var stuff = this.state.stations;
+        var stations = this.state.stations;
         for (var station_name in this.state.data) {
             data = this.state.data[station_name];
             //this.createLines(station_name, data["sensorData"], data["dates"]);
-            if(stuff.includes(station_name)){
+            if(stations.includes(station_name)){
                 //create the lines for each station based on its data that has been passec
                 this.createLines(station_name, data["sensorData"], data["dates"])
             }
