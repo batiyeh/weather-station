@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 5000;
+var path = require('path');
 const session = require('express-session');
 const knex = require('./knexfile');
 const cookieParser = require('cookie-parser');
@@ -53,9 +54,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-if (process.env.NODE_ENV === 'production') {
-    app.use('/', express.static(`${__dirname}/website/build`));
-}
+app.use(express.static('website/public')) 
 
 // Import all of our controllers
 var StationController = require('./controllers/StationController');
@@ -68,6 +67,12 @@ app.use('/api/stations', StationController);
 app.use('/api/weather', WeatherController);
 app.use('/api/user', UserController);
 app.use('/api/alerts', AlertsController);
+
+if (process.env.NODE_ENV === 'production') {
+    app.get('*', (req, res) => {
+        app.use('/', express.static(`${__dirname}/public/index.html`));
+    });
+}
 
 module.exports = app
 

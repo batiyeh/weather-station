@@ -2,9 +2,7 @@ const knex = require('knex')(require('../knexfile'))
 const nodemailer = require('nodemailer');
 const Alerts = require('../models/Alerts');
 const TriggeredAlerts = require('../models/TriggeredAlerts');
-
 const moment = require('moment');
-moment().format();
 
 sendAlerts = async () => {
     var triggered = []

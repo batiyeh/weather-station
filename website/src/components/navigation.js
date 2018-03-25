@@ -167,7 +167,15 @@ class Navigation extends Component {
             );
         }
         else{
-            return(<div className="bell"><i className="fa fa-bell" aria-hidden="true"></i></div>);
+            return(
+                <div className="bell">
+                    <span className="fa-stack">
+                        <i className="fa fa-bell fa-stack-1x" aria-hidden="true"></i>
+                        <strong class="fa-stack-1x unread-text hidden">{count}</strong>
+                        <i class="fa fa-square fa-stack-1x unread hidden" aria-hidden="true"></i>
+                    </span>
+                </div>
+            );
         }
     }
 
@@ -183,7 +191,6 @@ class Navigation extends Component {
 
     //renders the alert cards in the drop down for the user
     renderAlerts(){
-        
         var webpageAlertCards = [];
         this.state.alerts.map((alerts, index) =>{
             if(alerts.keyword === 'between'){
@@ -268,7 +275,7 @@ class Navigation extends Component {
                                 </div>
                                 
                             </Nav>
-                            <Nav className="ml-auto" navbar>
+                            <Nav className="ml-auto right-side-nav" navbar>
                                 <div className="col-md-4 col-xs-12 hidden-sm-up">
                                     <Dropdown isOpen={this.state.alertDropDown} className="alerts-dropdown" toggle={this.toggleAlert} nav inNavbar>
                                         <DropdownToggle nav>

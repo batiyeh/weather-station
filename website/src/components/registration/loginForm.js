@@ -10,7 +10,7 @@ class LoginForm extends Component {z
                     <img src={logo} className="login-logo" width="200" height="200" alt=""></img>
                     <form id='loginForm' action='/api/user/login/'method='post'>
                         <div className='login-info mb-3'>
-                        <div className='col-12 row no-padding-left'>
+                        <div className='col-12 row'>
                             <a className="forgot-link" id="forgot" href="/user/reset">Forgot password?</a> 
                         </div>
                         <div className='form-group'>

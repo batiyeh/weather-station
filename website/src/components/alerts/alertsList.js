@@ -192,7 +192,7 @@ class AlertsList extends Component {
     //disables create button if no stations in database
     renderCreateButton(){
         if(this.state.stations.length === 0){
-            return <Button type='button' className="btn btn-secondary add-btn" onClick={this.toggleAddAlert} disabled>Add</Button>
+            return <Button type='button' className="btn btn-secondary add-btn add-btn-disabled" onClick={this.toggleAddAlert} disabled>Add</Button>
         }
         else{
             return <Button type='button' className="btn btn-secondary add-btn" onClick={this.toggleAddAlert}>Add</Button>
@@ -398,7 +398,7 @@ class AlertsList extends Component {
                                 onChange={this.filterTime}/>
                         </Col>
                     </FormGroup>
-                    <FormGroup row>
+                    <FormGroup>
                         <Input type='select' name='alert_filter' id='alert_filter' onChange={e =>this.onAlertFilterChange(e.target.value)}>
                                 {this.renderOptions()}
                         </Input>
