@@ -26,7 +26,7 @@ var moment = require('moment');
 moment().format();
 
 class Navigation extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.toggleAlert = this.toggleAlert.bind(this);
         this.dismissAlerts = this.dismissAlerts.bind(this);
@@ -57,11 +57,13 @@ class Navigation extends Component {
         this.toggleNav = this.toggleNav.bind(this);
         this.downloadClient = this.downloadClient.bind(this);
     }
+
     //fetch all alerts when navbar mounts
     componentDidMount = async () => {
         await this.getTriggeredAlerts();
         this.interval = setInterval(this.getTriggeredAlerts, 5000);
     }
+
     //clear interval when navbar unmounts
     componentWillUnmount() {
         clearInterval(this.interval);
@@ -76,8 +78,8 @@ class Navigation extends Component {
 
         //check for unread alerts here
         var unread = false;
-        await alerts.map(alerts=>{
-            if(alerts.read === 0){
+        await alerts.map(alerts => {
+            if (alerts.read === 0) {
                 unread = true;
             }
             return null;
@@ -86,15 +88,15 @@ class Navigation extends Component {
         this.setState({alerts: alerts, unread: unread});
     }
 
-    toggleDropdown(){
+    toggleDropdown() {
         this.setState({
-            dropdown:!this.state.dropdown
+            dropdown: !this.state.dropdown
         })
     }
 
-    toggleNav(){
+    toggleNav() {
         this.setState({
-            navShown:!this.state.navShown
+            navShown: !this.state.navShown
         })
     }
 
@@ -107,11 +109,12 @@ class Navigation extends Component {
             alertDropDown: !this.state.alertDropDown
         })
     }
+
     //when user clicks on alert from dropdown, modal will toggle and values will be set for that specific alert
-    toggleAlertModal(station_name, type, keyword, value, secondValue, temperature, pressure, humidity, time){
+    toggleAlertModal(station_name, type, keyword, value, secondValue, temperature, pressure, humidity, time) {
         this.setState({
             station_name: station_name,
-            type : type,
+            type: type,
             keyword: keyword,
             value: value,
             secondValue: secondValue,
@@ -122,13 +125,14 @@ class Navigation extends Component {
             modal: !this.state.modal
         })
     }
-    closeModal(){
+
+    closeModal() {
         this.setState({
             modal: false
         })
     }
 
-    logout = async() => {
+    logout = async () => {
         var response = await fetch('/api/user/logout', {method: 'post', credentials: 'include'})
         var body = await response.json();
         this.setState({
@@ -138,7 +142,7 @@ class Navigation extends Component {
     }
 
 
-    downloadClient = async() => {
+    downloadClient = async () => {
         var response = await fetch('/api/stations/download');
         var fileBlob = await response.blob();
         download(fileBlob, "weatherstation.zip");
@@ -146,9 +150,9 @@ class Navigation extends Component {
     }
 
     //changes the bell icon depending on if there are unread alerts or not
-    renderBell(){
-        if(this.state.unread){
-            return(
+    renderBell() {
+        if (this.state.unread) {
+            return (
                 <div className="bell">
                     <span className="fa-stack">
                         <i className="fa fa-bell fa-stack-1x" aria-hidden="true"></i>
@@ -158,31 +162,33 @@ class Navigation extends Component {
                 </div>
             );
         }
-        else{
-            return(<div className="bell"><i className="fa fa-bell" aria-hidden="true"></i></div>);
+        else {
+            return (<div className="bell"><i className="fa fa-bell" aria-hidden="true"></i></div>);
         }
     }
 
     //renders the header of the alert modal based on what alert the user is looking at
-    renderHeader(){
-        if(this.state.secondValue){
-            return(<ModalHeader toggle={this.toggleAlertModal}> {this.state.station_name}'s {this.state.type} is {this.state.keyword} {this.state.value} and {this.state.secondValue} </ModalHeader>)
+    renderHeader() {
+        if (this.state.secondValue) {
+            return (<ModalHeader
+                toggle={this.toggleAlertModal}> {this.state.station_name}'s {this.state.type} is {this.state.keyword} {this.state.value} and {this.state.secondValue} </ModalHeader>)
         }
-        else{
-            return(<ModalHeader toggle={this.toggleAlertModal}> {this.state.station_name}'s {this.state.type} is {this.state.keyword} {this.state.value} </ModalHeader>)
+        else {
+            return (<ModalHeader
+                toggle={this.toggleAlertModal}> {this.state.station_name}'s {this.state.type} is {this.state.keyword} {this.state.value} </ModalHeader>)
         }
     }
 
-    renderAdmin()
-    {
-        if (this.state.permissions === "admin", "superuser"){
+    renderAdmin() {
+        if (this.state.permissions === "admin", "superuser") {
             return <DropdownItem tag='a'>
                 <Link to={'/admin'} className='nav-link nav-link-dark'>admin</Link>
             </DropdownItem>
         }
-        else(
-        return NULL;
-    )
+        else {
+            return null;
+        }
+
     }
 
     //renders the alert cards in the drop down for the user

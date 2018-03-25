@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ButtonDropdown,DropdownMenu, DropdownItem, DropdownToggle } from 'reactstrap';
+import { Table, ButtonDropdown,DropdownMenu, DropdownItem, DropdownToggle } from 'reactstrap';
 
 
 class Approval extends Component {
@@ -10,11 +10,9 @@ class Approval extends Component {
             pending: [],
             users: [],
             modal: false,
-        }
-        this.toggle = this.toggle.bind(this);
-        this.state = {
             dropdownOpen: false
-        };
+        }
+
     };
 
     toggle() {
@@ -35,7 +33,8 @@ class Approval extends Component {
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
         if (body.users) users = body.users;
-        this.setState({users: usersarray})
+        // this.setState({users: usersarray})
+        console.log(users)
         return users;
     };
 
@@ -52,12 +51,8 @@ class Approval extends Component {
     };
 
     render() {
-        <html>
-        <title>
-            <head> Users</head>
-        </title>
-        <body>
-        <Table hover>
+        return(
+            <Table hover>
             <thead>
             <tr>
                 <th>#</th>
@@ -70,10 +65,10 @@ class Approval extends Component {
             <tr>
                 <td> body.users.['Username']</td>
                 { this.state.users
-                    .map(getuser => {
-                        return (
-                                this.setstate
-                        );
+                    .map(user => {
+                        {user}
+                    })
+                }
                 <buttonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
                     <dropdownToggle caret>
                         body.permission.['Permission']  //shows what permission they have right now
@@ -86,10 +81,8 @@ class Approval extends Component {
             </tr>
             </tbody>
         </Table>
-        };
-        </body>
-        </html>
-    };
+        );
+    }
 }
 
 export default Approval;
