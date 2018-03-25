@@ -70,7 +70,7 @@ exports.up = function(knex, Promise) {
             table.float('temperature', 5, 2);
             table.float('humidity', 5, 2);
             table.float('pressure', 6, 2);
-            table.timestamp('created_at');
+            table.timestamps(true, true);
             table.integer('alert_id').references('alert_id').inTable('alerts').unsigned().onDelete('SET NULL').onUpdate('CASCADE');            
         })
 };
