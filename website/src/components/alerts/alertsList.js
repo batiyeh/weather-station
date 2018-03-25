@@ -5,7 +5,6 @@ import HistoricAlertCard from './historicAlertCard';
 import DatePicker  from 'react-datepicker'
 import '../../styles/alerts.css';
 const moment = require('moment');
-moment().format();
 
 class AlertsList extends Component {
     constructor(props){
