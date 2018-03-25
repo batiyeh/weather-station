@@ -5,6 +5,10 @@
     max-width: 600px !important;
 }
 
+.add-btn-disabled{
+    cursor: not-allowed;
+}
+
 .alert-list-header{
     margin-bottom: 10px;
 }

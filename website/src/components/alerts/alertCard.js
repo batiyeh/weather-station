@@ -319,7 +319,7 @@ class AlertCard extends Component {
                             </div>
                             <div className='form-group'>
                                 <Label>Keyword</Label>
-                                <Input type='select' onChange={this.toggleValues} name='keyword' id='keyword' value={this.state.keyword} onChange={e => this.onKeywordChange(e.target.value)}>
+                                <Input type='select' name='keyword' id='keyword' value={this.state.keyword} onChange={e => this.onKeywordChange(e.target.value)}>
                                     <option value='above'>Above</option>
                                     <option value='below'>Below</option>
                                     <option value='between'>Between</option>
