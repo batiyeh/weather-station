@@ -19,9 +19,9 @@ class HistoricalContainer extends Component{
             stationsData: {},
             stations: [],
             modal: false,
-            loading: true,                      //makes the rendering wait til it is done loading all the data
-            sensorType: 'temperature',          //default graph is temperature
-            fromDate: oneday.format("YYYY-MM-DD HH:mm:ss"),   //the props that set the range for the graph
+            loading: true, //makes the rendering wait til it is done loading all the data
+            sensorType: 'temperature', //default graph is temperature
+            fromDate: oneday.format("YYYY-MM-DD HH:mm:ss"), //the props that set the range for the graph
             toDate: now.format("YYYY-MM-DD HH:mm:ss"),
             toBeDrawn: [],
         }
@@ -71,7 +71,6 @@ class HistoricalContainer extends Component{
     onStationChange(e){
         var options = e.target.options;
         var selected = [];
-        console.log(this.state.toBeDrawn);
         for (var i = 0; i < options.length; i++) {
             if (options[i].selected) {
                 selected.push(options[i].value);
@@ -80,6 +79,7 @@ class HistoricalContainer extends Component{
         this.setState({
             toBeDrawn: selected
         });
+
     }
 
     getStations = async () =>{
@@ -88,12 +88,12 @@ class HistoricalContainer extends Component{
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
         names = body.names;
-        for (var i = 0; i < names.length; i++){
-            this.state.toBeDrawn.push(names[i].station_name)
+        if(this.state.toBeDrawn.length === 0){
+            for (var i = 0; i < names.length; i++){
+                this.state.toBeDrawn.push(names[i].station_name)
+            }
         }
-        this.setState({
-            stations: names
-        });
+        this.setState({ stations: names });
     };
 
 
@@ -111,19 +111,20 @@ class HistoricalContainer extends Component{
         for (var i = 0; i < data.length; i++) {     // for loop to sort through returned data
             //we are storing the data in a dictionary based on station name
             var station_name = data[i].station_name;
-            if (!stationsDict[station_name]) stationsDict[station_name] = {"sensorData": [], "dates": []};  // if the station name is not found in the dictionary yet add it with arrays to store data and time
+            var sensorData = "";
+            if (!stationsDict[station_name]) stationsDict[station_name] = {"points": []};  // if the station name is not found in the dictionary yet add it with arrays to store data and time
             if (type === 'temperature') {
                 //data is returned in JSON format so based on what sensor type is how we determine to push it into the data array
-                stationsDict[station_name]["sensorData"].push(data[i].temperature);
+                sensorData = data[i].temperature;
             }
             else if(type === 'pressure'){
-                stationsDict[station_name]["sensorData"].push(data[i].pressure);
+                sensorData = data[i].pressure;
             }
             else if(type === 'humidity'){
-                stationsDict[station_name]["sensorData"].push(data[i].humidity);
+                sensorData = data[i].humidity;
             }
             //Time is returned as created_at so for that we push it in to the dates array of the station in the dictionary
-            stationsDict[station_name]["dates"].push(data[i].created_at);
+            stationsDict[station_name]["points"].push({x: data[i].created_at, y: sensorData});
 
         }
         var newStationsDict = this.processDataPoints(stationsDict);
@@ -131,30 +132,27 @@ class HistoricalContainer extends Component{
         this.setState({
             // end the async function by setting the state so that the stations dictionary is stored in stations data
             stationsData: newStationsDict,
-            loading: false                  // set loading to false so that graph can be rendered
+            loading: false // set loading to false so that graph can be rendered
         });
 
     };
 
     processDataPoints(stationsDict){
         var data;
-        var sensorData = [];
-        var dateData = [];
+        var points = [];
         var newStationsDict = {};
         for (var station_name in stationsDict) {
             data = stationsDict[station_name];
             newStationsDict[station_name] = {};
-            for(var i = 0; i < data["sensorData"].length; i++){
-                if ( i % 30 === 0){
-                    sensorData.unshift(data["sensorData"][i]);
-                    dateData.unshift(data["dates"][i]);
+            for(var i = 0; i < data["points"].length; i++){
+                if ( i % 180 === 0){
+                    var date = moment(data["points"][i]["x"]).utc(data["points"][i]["x"]).local().format("MM/DD/YY HH:mm:ss")
+                    points.unshift({x: date, y: data["points"][i]["y"]});
                 }
             }
-            newStationsDict[station_name]["sensorData"]= sensorData;
-            newStationsDict[station_name]["dates"]= dateData;
+            newStationsDict[station_name]["points"]= points;
             //clear the arrays after storing the data
-            sensorData = [];
-            dateData = [];
+            points = [];
         }
         return newStationsDict;
     }
@@ -166,7 +164,7 @@ class HistoricalContainer extends Component{
             loading: true,
             modal: false
         })
-        this.getSensorData()        //call the async function to get the data based on the new parameters set by the filter
+        this.getSensorData() //call the async function to get the data based on the new parameters set by the filter
     }
 
     renderStations(){
@@ -180,17 +178,17 @@ class HistoricalContainer extends Component{
 
     //function that handles the rendering of the graph it is done by sensor type
     renderGraph(){
-        console.log(this.state.toBeDrawn);
-        if(this.state.sensorType === 'temperature') {       // checks which sensor type is currently selected and renders the corresponding component based on that
+        // checks which sensor type is currently selected and renders the corresponding component based on that
+        if(this.state.sensorType === 'temperature') { 
             return(
                 <TemperatureGraph className="row graph"
                     //passes the stations data to the graph component
                     data={this.state.stationsData}
                     stations={this.state.toBeDrawn}
-                    from={this.state.fromDate}              // passes the to and from dates to the graph component
+                    from={this.state.fromDate} // passes the to and from dates to the graph component
                     to={this.state.toDate}
-                    height={500}                            //The height and width of the graph is passed to the graph component
-                    width={800}
+                    height={500} //The height and width of the graph is passed to the graph component
+                    width={"100%"}
                 />
             )
         }
@@ -202,7 +200,7 @@ class HistoricalContainer extends Component{
                     from={this.state.fromDate}
                     to={this.state.toDate}
                     height={500}
-                    width={800}
+                    width={"100%"}
                 />
             )
         }
@@ -210,17 +208,16 @@ class HistoricalContainer extends Component{
             return(
                 <HumidityGraph className="row graph"
                     data={this.state.stationsData}
+                    stations={this.state.toBeDrawn}
                     from={this.state.fromDate}
                     to={this.state.toDate}
                     height={500}
-                    width={800}
+                    width={"100%"}
                 />
             )
         }
     }
-
-
-
+    
     render(){
         if(this.state.loading === false){   // if the state is no longer loading then it will render the page
             return(

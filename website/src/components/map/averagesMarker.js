@@ -12,6 +12,8 @@ class AveragesMarker extends Component {
         }
     }
 
+    // When receiving new props, check if the averages or show state has changed
+    // If either has changed, update it
     componentWillReceiveProps(nextProps){
         if (this.state.averages !== nextProps.averages){
             this.setState({ averages: nextProps.averages });
@@ -22,6 +24,7 @@ class AveragesMarker extends Component {
         }
     }
 
+    // Render a div with the 3 averages fixed to 2 decimal points
     renderAverages(){
         var temperature = this.state.averages.temperature.toFixed(2);
         var pressure = this.state.averages.pressure.toFixed(2);
@@ -41,6 +44,7 @@ class AveragesMarker extends Component {
     }
 
     render() {
+        // Only show if the prop passed down to it is true
         if (this.state.show){
             return (
                 <div style={averagesStyle} className="averages-container">

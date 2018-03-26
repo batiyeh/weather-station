@@ -13,6 +13,7 @@ class SidebarItem extends Component {
         }
     }
 
+    // When receiving new props, check if the checked status changed and set if it did
     componentWillReceiveProps(nextProps){
         if (nextProps.checked !== this.state.checked){
             var checked = this.state.checked;
@@ -23,6 +24,7 @@ class SidebarItem extends Component {
     }
 
     render() {
+        // Colors to render a striped background in the sidebar
         var backgroundColor = "#ffffff";
         if (this.state.index % 2 === 0) backgroundColor = "#f4f4f4";
         

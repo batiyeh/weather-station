@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Alert } from 'reactstrap';
 import '../../styles/historical.css';
-import { Line, Chart} from 'react-chartjs-2';
+import { Scatter, Chart} from 'react-chartjs-2';
+import _ from 'lodash';
 var moment = require('moment');
-moment().format();
+
 
 var colorsGraph = ['#4bc0c0', '#c0864b', '#c04b4b','#c04b86', '#4b86c0', '#c0c04b', '#4bc086', '#327c0c'];
 var colorIndex = 0;
@@ -12,61 +13,49 @@ class HumidityGraph extends Component{
     constructor(props) {
         super(props);
         this.state = {
+            // set the state to be the props that were passed to it by historical container
             data: this.props.data,
+            stations: this.props.stations,
             height: this.props.height,
             from: this.props.from,
             to: this.props.to,
             width: this.props.width,
-            datasets: {"labels": [], "datasets": []},
+            datasets: {"datasets": []}, // a dictionary of datasets to be drawn on the graph
         }
     }
 
     componentWillReceieveProps(nextProps){
-        console.log(nextProps);
+        // console.log(nextProps);
     }
 
     componentDidMount(){
         var data;
-        var labels = this.generateLabels(this.state.from, this.state.to);
-        this.updateLabels(labels);
+        var stations = this.state.stations;
         for (var station_name in this.state.data) {
             data = this.state.data[station_name];
-            this.createLines(station_name, data["sensorData"], data["dates"]);
+            //this.createLines(station_name, data["sensorData"], data["dates"]);
+            if(stations.includes(station_name)){
+                //create the lines for each station based on its data that has been passec
+                this.createLine(station_name, data["points"])
+            }
         }
-        console.log(data);
     }
-    componentWillUnmount(){
-        colorIndex =0;
-    }
-
-
-    generateLabels(from, to){
-        var labels = [];
-        from = moment(from);
-        to = moment(to);
-        for (var m = moment(from); m.isBefore(to); m.add(15, 'minutes')) {
-
-            labels.push(m.format('YYYY-MM-DD HH:mm:ss'));
-        }
-
-        return labels;
+    componentWillUnmount() {
+        // reset the color index upon the page being unloaded
+        colorIndex = 0;
+        this.state.stations = [];
     }
 
-    updateLabels(labels){
-        var currDatasets = this.state.datasets;
-        currDatasets["labels"] = labels;
-        this.setState({
-            datasets: currDatasets
-        });
-    }
 
-    createLines(name, temp, dates) {
-        var datasets = this.state.datasets;
-        const newDataset = {
+
+
+    createLine(name, data) {
+        var datasets = this.state.datasets;     //creating a variable of datasets based on what it currently is because it will be added on too
+        const newDataset = {            //creating the new dataset for the line and setting the styling
             label: name,
             fill: false,
             lineTension: 0.1,
-            backgroundColor: colorsGraph[colorIndex],
+            backgroundColor: colorsGraph[colorIndex],       //creating the color of the line based on the current position of the color array
             borderColor: colorsGraph[colorIndex],
             borderDash: [8, 4],
             borderWidth: 2,
@@ -80,17 +69,14 @@ class HumidityGraph extends Component{
             pointHoverBackgroundColor: colorsGraph[colorIndex],
             pointHoverBorderColor: 'rgba(220,220,220,1)',
             pointHoverBorderWidth: 2,
-            data: temp,
+            data: data,                                 //storing the actual data to be plotted for the line
         };
-        datasets["datasets"].push(newDataset);
+        datasets["datasets"].push(newDataset);      // push the new dataset in to the array of datasets to be drawn
         this.setState({
-            datasets: datasets
+            datasets: datasets                      // set the state with the new dataset that has been added to it
         });
-        if (colorIndex == 7){
-            colorIndex = 0
-        }
-        else
-            colorIndex++;
+        if (colorIndex === colorsGraph.length - 1) colorIndex = 0
+        else colorIndex++;  //other wise move the index to the next position
     }
 
     render(){
@@ -98,11 +84,13 @@ class HumidityGraph extends Component{
             //console.log(this.state.datasets);
             return(
                 <div className='graph'>
-                    <Line
+                    <Scatter
                         data={this.state.datasets}
                         width={this.state.width}
                         height={this.state.height}
-                        options={{maintainAspectRatio: false,
+                        options={{
+                            maintainAspectRatio: false,
+                            showLines: true,
                             scales: {
                                 xAxes: [{
                                     scaleLabel: {
