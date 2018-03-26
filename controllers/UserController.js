@@ -131,9 +131,9 @@ router.post('/login', passport.authenticate('local', {failureRedirect:'/user/log
 router.post('/getUserInfo', async function(req,res){
     if(req.user){
        // var user = await User.where({username: req.user}).fetch();
-        var user = await knex('user').select('user.username, user.email, user.phone').from('user')
-            .leftJoin('permissions', 'user.name', 'permission.name')
-        console.log(user);
+        var user = await knex('users').select('*')
+        .leftJoin('permissions', 'users.permission_id', 'permissions.permission_id')
+        .where('users.username', req.user)
        // res.json({username: user.attributes.username, email: user.attributes.email,
        // phone: user.attributes.phone, permissions: user.attributes.permissions});
         res.json(user);

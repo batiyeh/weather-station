@@ -23,7 +23,6 @@ import {
     Alert } from 'reactstrap';
 import download from 'downloadjs';
 var moment = require('moment');
-moment().format();
 
 class Navigation extends Component {
     constructor(props) {
@@ -52,6 +51,7 @@ class Navigation extends Component {
             secondValue: null,
             unread: false,
             navShown: false,
+            permissions: props.permissions
         }
         this.toggleDropdown = this.toggleDropdown.bind(this);
         this.toggleNav = this.toggleNav.bind(this);
@@ -196,7 +196,8 @@ class Navigation extends Component {
     }
 
     renderAdmin() {
-        if (this.state.permissions === "admin" || this.state.permissions === "superuser") {
+        console.log(this.state.permissions);
+        if (this.state.permissions === "Admin" || this.state.permissions === "Superuser") {
             return <DropdownItem tag='a'>
                 <Link to={'/admin'} className='nav-link nav-link-dark'>admin</Link>
             </DropdownItem>
