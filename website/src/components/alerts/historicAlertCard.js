@@ -20,6 +20,38 @@ class HistoricAlertCard extends Component {
         };
         this.toggle = this.toggle.bind(this);
     }
+    componentWillReceiveProps(nextProps){
+        if(nextProps.alert.station_name !== this.state.station_name){
+            this.setState({
+                station: nextProps.alert.station_name
+            })
+        }
+        if(nextProps.alert.keyword !== this.state.keyword){
+            this.setState({
+                keyword: nextProps.alert.keyword
+            })
+        }
+        if(nextProps.alert.type !== this.state.datatype){
+            this.setState({
+                type: nextProps.alert.type
+            })
+        }
+        if(nextProps.alert.value !== this.state.value){
+            this.setState({
+                value: nextProps.alert.value
+            })
+        }
+        if(nextProps.alert.secondValue !== this.state.secondValue){
+            this.setState({
+                secondValue: nextProps.alert.secondValue
+            })
+        }
+        if(nextProps.alert.time !== this.state.time){
+            this.setState({
+                time: nextProps.alert.time
+            })
+        }
+    }
     toggle(){
         this.setState({
             modal: !this.state.modal
