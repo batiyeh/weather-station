@@ -254,7 +254,7 @@ class AlertCard extends Component {
     //Deletes the alert with the id passed to the backend
     deleteAlert = async () => {
 
-        await fetch('/api/alerts/' + this.props.alerts.alert_id, {method: 'delete'})
+        await fetch('/api/alerts/' + this.props.alerts.alert_id, {method: 'put'})
         this.toggleAlert();
         this.props.deleteAlert(this.props.index);
     }
