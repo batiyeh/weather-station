@@ -8,9 +8,7 @@ class Alerts extends Component {
     render() {
         return (
             <div className='adminPage'>
-
                 <AdminStationList></AdminStationList>
-
             </div>
         );
     }

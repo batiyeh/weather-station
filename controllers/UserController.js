@@ -147,7 +147,7 @@ router.get('/pendingUser',async function (req,res) {
     var pendingU = await knex('users')
         .select('username')
         .where('permission_id', '=', '4')
-    console.log(pendingU);
+    // console.log(pendingU);
     res.json({pendingU});
 })
 router.get('/allUsers', async function (req,res) {
@@ -161,11 +161,7 @@ router.get('/allUsers', async function (req,res) {
 
 router.post('/approveUser', async function (req, res) {
     var statusPe = req.body.statusP;
-    var username = req.body.selectedUser;
-
-    await User.where({username:username}).save({
-        permission:permission
-    },{patch:true});
+    var username = req.body.selectedUser.username;
 
     if(statusPe === true){
         await User.where({username:username}).save({permission_id: 2}

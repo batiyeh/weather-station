@@ -54,16 +54,14 @@ class Approval extends Component {
     };
 
     approveUser = async ()=> {
-        await
-        this.setState({
+        await this.setState({
             statusP: true
         })
         this.updateUser()
     }
 
     denyUser = async ()=> {
-        await
-        this.setState({
+        await this.setState({
             statusP: false
         })
         this.updateUser()
