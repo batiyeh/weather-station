@@ -43,7 +43,7 @@ class AlertsList extends Component {
     //when component loads, will call getAlerts()
     componentDidMount = async () =>{
         await this.getAlerts();
-
+        
     }
 
     //gets all current alerts, historic alerts, and stations for the user and stores it in the state
@@ -75,8 +75,7 @@ class AlertsList extends Component {
                 email: this.state.email,
                 sms: this.state.sms,
                 webpage: this.state.webpage,
-                threshold : this.state.threshold
-            }),
+                threshold : this.state.threshold}),
             headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json'
@@ -240,7 +239,7 @@ class AlertsList extends Component {
             )
         }
         else{
-              return cards;
+            return cards;
         }
     }
     //populates the station name dropdown with all stations

@@ -249,9 +249,10 @@ parseBetween = async(alerts) => {
 
     alerts.map(alerts =>{
         if(alerts.keyword === 'between'){
-            if(currentID !== alerts.triggered_id){
+            var id = getID(alerts)
+            if(currentID !== id){
                 grabbedValue = alerts.value;
-                currentID = alerts.triggered_id;
+                currentID = id;
             }
             else{
                 if(grabbedValue > alerts.value){
@@ -270,6 +271,14 @@ parseBetween = async(alerts) => {
     })
     return newAlerts;
 };
+function getID(alert){
+    if(alert.triggered_id){
+        return alert.triggered_id
+    }
+    else{
+        return alert.alert_id
+    }
+}
 parseMethods = async(alerts, methods) => {
     var newAlerts = [];
     
