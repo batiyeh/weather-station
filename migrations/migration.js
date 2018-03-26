@@ -9,7 +9,8 @@ exports.up = function(knex, Promise) {
                     {type: "Superuser"},
                     {type: "User"},
                     {type: "Admin"},
-                    {type: "Pending"}
+                    {type: "Pending"},
+                    {type: "Denied"}
                 ]);
             }
         ),

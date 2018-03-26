@@ -163,7 +163,18 @@ router.post('/approveUser', async function (req, res) {
     var statusPe = req.body.statusP;
     var username = req.body.selectedUser;
 
+    await User.where({username:username}).save({
+        permission:permission
+    },{patch:true});
 
+    if(statusPe === true){
+        await User.where({username:username}).save({permission_id: 2}
+            ,{patch: true})
+    }
+    else if (statusPe === false){
+        await User.where({username:username}).save({permission_id: 5}
+        ,{patch:true})
+    }
 
 })
 
