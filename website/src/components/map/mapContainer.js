@@ -158,9 +158,9 @@ export class MapContainer extends Component {
         for (var i = 0; i < this.state.stations.length; i++){
             var latLng = new this.maps.LatLng(this.state.stations[i].latitude, this.state.stations[i].longitude);
             if (circle.contains(latLng)){
-                values.temperature.push(this.state.stations[i].temperature);
-                values.pressure.push(this.state.stations[i].pressure);
-                values.humidity.push(this.state.stations[i].humidity);
+                if (this.state.stations[i].temperature !== 0.0) values.temperature.push(this.state.stations[i].temperature);
+                if (this.state.stations[i].pressure !== 0.0) values.pressure.push(this.state.stations[i].pressure);
+                if (this.state.stations[i].humidity !== 0.0) values.humidity.push(this.state.stations[i].humidity);
             }
         }
 
