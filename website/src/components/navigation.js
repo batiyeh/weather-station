@@ -71,7 +71,15 @@ class Navigation extends Component {
         var alerts = [];
         //fetch call to gather any triggered webpage alerts for user
         
-        var response = await fetch('/api/alerts/webpage/' ,{method: 'post', credentials: 'include'})
+        var response = await fetch('/api/alerts/webpage/' ,
+            {   method: 'post', 
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
         var body = await response.json();
         alerts = body.alerts;
 

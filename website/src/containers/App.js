@@ -29,7 +29,14 @@ class App extends Component {
   }
 
   getUser = async() => {
-    var response = await fetch('/api/user/getUserInfo', {method: 'post', credentials: 'include'})
+    var response = await fetch('/api/user/getUserInfo', 
+      { method: 'post', 
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+    })
     var body = await response.json();
     if(!body.phone){
       this.setState({username: body.username, email: body.email, phone: 'Phone Number', isAdmin: body.isAdmin});
