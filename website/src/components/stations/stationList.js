@@ -85,6 +85,7 @@ class StationList extends Component {
         return true;
     }
 
+    // When changing the view between list/grid update the cookie and state
     handleViewChange(view){
         if (view !== this.state.view){
             this.setState({
@@ -94,6 +95,7 @@ class StationList extends Component {
         }
     }
 
+    // Render the filter input and buttons for choosing list/grid view
     renderFilters(){
         return (
             <div>
@@ -110,6 +112,8 @@ class StationList extends Component {
         );
     }
 
+    // Render the station in either a grid or list format depending on the buttons
+    // above the filter input
     renderStations(){
         if (this.state.view === "list"){
             return (this.state.stations
