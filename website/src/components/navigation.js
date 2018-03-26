@@ -196,7 +196,7 @@ class Navigation extends Component {
     }
 
     renderAdmin() {
-        if (this.state.permissions === "admin", "superuser") {
+        if (this.state.permissions === "admin" || this.state.permissions === "superuser") {
             return <DropdownItem tag='a'>
                 <Link to={'/admin'} className='nav-link nav-link-dark'>admin</Link>
             </DropdownItem>
