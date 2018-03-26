@@ -163,7 +163,8 @@ router.post('/approveUser', async function (req, res) {
     var statusPe = req.body.statusP;
     var username = req.body.selectedUser;
 
-    console.log(req.body)
+
+
 })
 
 router.post('/logout', function(req,res){
