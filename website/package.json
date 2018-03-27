@@ -57,5 +57,8 @@
     "test": "jest",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://localhost:5000/"
+  "proxy": {
+    "target": "http://localhost:5000/",
+    "secure": false
+  }
 }
