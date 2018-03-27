@@ -58,7 +58,6 @@
     "eject": "react-scripts eject"
   },
   "proxy": {
-    "target": "http://localhost:5000/",
-    "secure": false
+    "/api": {"target": "http://localhost:5000/", "secure": false}
   }
 }
