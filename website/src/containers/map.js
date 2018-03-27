@@ -44,7 +44,12 @@ class Map extends Component {
     // Request the stations' latest we ather
     getLatestWeather = async () => {
         var stations = [];
-        const response = await fetch('/api/weather/latest/');
+        const response = await fetch('/api/weather/latest/', {
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+        });
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message); 
         if (body.weather) stations = body.weather;

@@ -84,7 +84,12 @@ class HistoricalContainer extends Component{
 
     getStations = async () =>{
         var names = [];
-        const response = await fetch('/api/weather/stations_name/');
+        const response = await fetch('/api/weather/stations_name/', {
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+        });
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
         names = body.names;
@@ -104,7 +109,12 @@ class HistoricalContainer extends Component{
         var toDate = this.state.toDate;
         var fromDate = this.state.fromDate;
         var type = this.state.sensorType;
-        const response = await fetch('/api/weather/sensorData/' + fromDate +'/' + toDate + '/'+ type);  //API fetch call to get data based on time and sensor type
+        const response = await fetch('/api/weather/sensorData/' + fromDate +'/' + toDate + '/'+ type, {
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+        });  //API fetch call to get data based on time and sensor type
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
         if (body.temp) data = body.temp;            //storing the response from the fetch call in to variable data

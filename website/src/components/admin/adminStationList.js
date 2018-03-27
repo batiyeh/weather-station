@@ -55,7 +55,12 @@ class AdminStationList extends Component {
     // Returns an array of stations
     getStations = async () => {
         var stations = [];
-        const response = await fetch('/api/stations');
+        const response = await fetch('/api/stations', {
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+        });
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message); 
         if (body.stations) stations = body.stations;
