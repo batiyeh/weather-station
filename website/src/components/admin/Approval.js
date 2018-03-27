@@ -58,6 +58,7 @@ class Approval extends Component {
             statusP: true
         })
         this.updateUser()
+        this.getuser()
     }
 
     denyUser = async ()=> {
@@ -65,6 +66,7 @@ class Approval extends Component {
             statusP: false
         })
         this.updateUser()
+        this.getuser()
     }
 
     updateUser = async ()=> {
@@ -104,7 +106,7 @@ class Approval extends Component {
             <thead>
             <tr>
                 <th>Username</th>
-                <th>Permission</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>

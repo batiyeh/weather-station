@@ -57,7 +57,13 @@ class Navigation extends Component {
         this.toggleNav = this.toggleNav.bind(this);
         this.downloadClient = this.downloadClient.bind(this);
     }
-
+    componentWillReceiveProps(nextProps){
+        if(nextProps.permissions !== this.state.permissions){
+            this.setState({
+                permissions: nextProps.permissions
+            })
+        }
+    }
     //fetch all alerts when navbar mounts
     componentDidMount = async () => {
         await this.getTriggeredAlerts();
