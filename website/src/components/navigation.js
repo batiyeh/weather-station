@@ -51,7 +51,7 @@ class Navigation extends Component {
             secondValue: null,
             unread: false,
             navShown: false,
-            permissions: props.permissions
+            permissions: this.props.permissions
         }
         this.toggleDropdown = this.toggleDropdown.bind(this);
         this.toggleNav = this.toggleNav.bind(this);
@@ -196,11 +196,11 @@ class Navigation extends Component {
     }
 
     renderAdmin() {
-        console.log(this.state.permissions);
+        console.log("asjldfsdf" , this.state.permissions);
         if (this.state.permissions === "Admin" || this.state.permissions === "Superuser") {
-            return <DropdownItem tag='a'>
+            return( <DropdownItem tag='a'>
                 <Link to={'/admin'} className='nav-link nav-link-dark'>admin</Link>
-            </DropdownItem>
+            </DropdownItem>)
         }
         else {
             return null;
