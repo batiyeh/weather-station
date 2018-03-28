@@ -96,11 +96,6 @@ export class MapContainer extends Component {
     handleGoogleMapApi(google){
         this.map = google.map;
         this.maps = google.maps;
-        
-        // Add a function to circle objects that checks if a certain lat/lon is inside it
-        this.maps.Circle.prototype.contains = function(latLng) {
-            return this.getBounds().contains(latLng) && google.maps.geometry.spherical.computeDistanceBetween(this.getCenter(), latLng) <= this.getRadius();
-        }
 
         // Set up the google maps api drawing manager
         const drawingManager = new this.maps.drawing.DrawingManager({
@@ -157,7 +152,9 @@ export class MapContainer extends Component {
         var values = {temperature: [], pressure: [], humidity: []};
         for (var i = 0; i < this.state.stations.length; i++){
             var latLng = new this.maps.LatLng(this.state.stations[i].latitude, this.state.stations[i].longitude);
-            if (circle.contains(latLng)){
+            
+            var circleBounds = circle.getBounds(); 
+            if (circleBounds.contains(latLng)){
                 if (this.state.stations[i].temperature !== 0.0) values.temperature.push(this.state.stations[i].temperature);
                 if (this.state.stations[i].pressure !== 0.0) values.pressure.push(this.state.stations[i].pressure);
                 if (this.state.stations[i].humidity !== 0.0) values.humidity.push(this.state.stations[i].humidity);
