@@ -106,8 +106,8 @@ class StationList extends Component {
             <div>
                 <div className="row options-row">
                     <div className="view-options col-12 right">
-                        <button className="btn btn-secondary btn-sm view-icon" onClick={() => {this.handleViewChange('list')}}><i class="fa fa-th-list" aria-hidden="true"></i></button>
-                        <button className="btn btn-secondary btn-sm view-icon" onClick={() => {this.handleViewChange('grid')}}><i class="fa fa-th fa-fw " aria-hidden="true"></i></button>
+                        <button className="btn btn-secondary btn-sm view-icon" id="list-view-btn" onClick={() => {this.handleViewChange('list')}}><i class="fa fa-th-list" aria-hidden="true"></i></button>
+                        <button className="btn btn-secondary btn-sm view-icon" id="grid-view-btn" onClick={() => {this.handleViewChange('grid')}}><i class="fa fa-th fa-fw " aria-hidden="true"></i></button>
                     </div>
                 </div>
                 <FormGroup className="col-12">
@@ -165,7 +165,7 @@ class StationList extends Component {
     render() {
         if (this.state.view === "list"){
             return (
-                <div className="stations-container list-content">
+                <div id="list-content-id" className="stations-container list-content">
                     { this.renderFilters() }
                     { this.renderStations() }
                     { this.renderAlert() }
@@ -175,7 +175,7 @@ class StationList extends Component {
 
         else{
             return (
-                <div className="stations-container grid-content">
+                <div id="grid-content-id" className="stations-container grid-content">
                     { this.renderFilters() }
                     { this.renderStations() }
                     { this.renderAlert() }

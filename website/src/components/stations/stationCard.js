@@ -144,7 +144,7 @@ class StationCard extends Component {
     render() {
         return (
             <div className="col-12 station-container">
-                <Modal isOpen={this.state.modal} toggle={this.toggleStationDetail}>
+                <Modal isOpen={this.state.modal} className="station-detail-modal" toggle={this.toggleStationDetail}>
                     <ModalHeader toggle={this.toggleStationDetail}>Station Detail View</ModalHeader>
                     <ModalBody>
                         { this.renderNameInput() }
