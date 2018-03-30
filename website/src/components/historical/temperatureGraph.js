@@ -20,6 +20,7 @@ class TemperatureGraph extends Component{
             from: this.props.from,
             to: this.props.to,
             width: this.props.width,
+            sensorType: this.props.sensorType,
             datasets: {"datasets": []}, // a dictionary of datasets to be drawn on the graph
         }
     }
@@ -79,72 +80,148 @@ class TemperatureGraph extends Component{
 
     render(){
         //render each dataset that has been made below sets the styling of the overall graph and chart not the lines
-        if (this.state.datasets["datasets"].length > 0){
-            return(
-                <div className='graph'>
-                    <Scatter
-                        data={this.state.datasets}      //load in the datasets aka lines to be drawn
-                        width={this.state.width}        // set the width and the height
-                        height={this.state.height}
-                        // spanGaps={{}}
-                        options={{
-                            maintainAspectRatio: false,    //options setup the styling for the graph setting the x and y axis
-                            showLines: true,
-                            scales: {
-                                xAxes: [{
-                                    stacked: false,
-                                    scaleLabel: {
-                                        display: true,
-                                        labelString: 'Time',
-                                        fontFamily: 'Roboto Mono',
-                                        fontColor: '#000',
-                                        fontSize: 15
-                                    },
-                                    type: 'time',
-                                    gridLines: {
-                                        drawBorder: true,
-                                    },
-                                    ticks: {
-                                        fontColor: '#000',
-                                        fontFamily: 'Roboto Mono',
-                                        fontSize: 15
-                                    },
-                                }],
-                                yAxes: [{
-                                    scaleLabel: {
-                                        display: true,
-                                        labelString: 'Temperature',
-                                        fontFamily: 'Roboto Mono',
-                                        fontColor: '#000',
-                                        fontSize: 15
-                                    },
-                                    type: 'linear',
-                                    ticks: {
-                                        fontColor: '#000',
-                                        fontFamily: 'Roboto Mono',
-                                        fontSize: 15,
-                                        callback: function(value, index, values) {
-                                            return value + '°';     // add the degree symbol to the points on the y axis
+        if (this.state.sensorType === 'temperature'){
+            if (this.state.datasets["datasets"].length > 0){
+                return(
+                    <div className='graph'>
+                        <Scatter
+                            data={this.state.datasets}      //load in the datasets aka lines to be drawn
+                            width={this.state.width}        // set the width and the height
+                            height={this.state.height}
+                            // spanGaps={{}}
+                            options={{
+                                maintainAspectRatio: false,    //options setup the styling for the graph setting the x and y axis
+                                showLines: true,
+                                scales: {
+                                    xAxes: [{
+                                        stacked: false,
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: 'Time',
+                                            fontFamily: 'Roboto Mono',
+                                            fontColor: '#000',
+                                            fontSize: 15
+                                        },
+                                        type: 'time',
+                                        gridLines: {
+                                            drawBorder: true,
+                                        },
+                                        ticks: {
+                                            fontColor: '#000',
+                                            fontFamily: 'Roboto Mono',
+                                            fontSize: 15
+                                        },
+                                    }],
+                                    yAxes: [{
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: 'Temperature',
+                                            fontFamily: 'Roboto Mono',
+                                            fontColor: '#000',
+                                            fontSize: 15
+                                        },
+                                        type: 'linear',
+                                        ticks: {
+                                            fontColor: '#000',
+                                            fontFamily: 'Roboto Mono',
+                                            fontSize: 15,
+                                            callback: function(value, index, values) {
+                                                return value + '°';     // add the degree symbol to the points on the y axis
+                                            }
+                                        },
+                                        gridLines: {
+                                            borderDash: [2,1],
+                                            drawBorder: false
                                         }
-                                    },
-                                    gridLines: {
-                                        borderDash: [2,1],
-                                        drawBorder: false
-                                    }
-                                }],
-                            },
-                        }}
-                    />
-                </div>
-            );
-        }
+                                    }],
+                                },
+                            }}
+                        />
+                    </div>
+                );
 
-        else{ //if there is nothing loaded in to data sets thats because no data was returned so no weather data
-            return(
-                <div className='col-12 no-data-alert'>
-                    <Alert color="primary">There is no weather data for this filter.</Alert>
-                </div>
-            );
+            }
+            else{ //if there is nothing loaded in to data sets thats because no data was returned so no weather data
+                return(
+                    <div className='col-12 no-data-alert'>
+                        <Alert color="primary">There is no weather data for this filter.</Alert>
+                    </div>
+                );
+            }
+
+        }
+        else if(this.state.sensorType === 'pressure'){
+            if (this.state.datasets["datasets"].length > 0){
+                //console.log(this.state.datasets);
+                return(
+                    <div className='graph'>
+                        <Line
+                            data={this.state.datasets}
+                            width={this.state.width}
+                            height={this.state.height}
+                            options={{
+                                maintainAspectRatio: false,
+                                showLines: true,
+                                scales: {
+                                    xAxes: [{
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: 'Time',
+                                            fontFamily: 'Roboto Mono',
+                                            fontColor: '#000',
+                                            fontSize: 15
+                                        },
+                                        type: 'time',
+                                        gridLines: {
+                                            drawBorder: true,
+                                        },
+                                        ticks: {
+                                            fontColor: '#000',
+                                            fontFamily: 'Roboto Mono',
+                                            fontSize: 15
+                                        },
+                                        time: {
+                                            displayFormats: {
+                                                quarter: 'MM D YYYY'    /*Displays month day year*/
+                                            }
+                                        },
+                                    }],
+                                    yAxes: [{
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: 'Pressure',
+                                            fontFamily: 'Roboto Mono',
+                                            fontColor: '#000',
+                                            fontSize: 15
+                                        },
+                                        type: 'linear',
+                                        ticks: {
+                                            fontColor: '#000',
+                                            fontFamily: 'Roboto Mono',
+                                            fontSize: 15,
+                                            callback: function(value, index, values) {
+                                                return value + 'hPa';
+                                            }
+                                        },
+                                        gridLines: {
+                                            borderDash: [2,1],
+                                            drawBorder: false
+                                        }
+                                    }],
+                                },
+                            }}
+                        />
+                    </div>
+                );
+            }
+
+            else{
+                return(
+                    <div className='col-12 no-data-alert'>
+                        <Alert color="primary">There is no weather data for this filter.</Alert>
+                    </div>
+                );
+            }
         }
     }
 }

@@ -199,6 +199,7 @@ class HistoricalContainer extends Component{
                     to={this.state.toDate}
                     height={500} //The height and width of the graph is passed to the graph component
                     width={"100%"}
+                    sensorType={this.state.sensorType}
                 />
             )
         }

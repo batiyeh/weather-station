@@ -81,7 +81,6 @@ class HumidityGraph extends Component{
 
     render(){
         if (this.state.datasets["datasets"].length > 0){
-            //console.log(this.state.datasets);
             return(
                 <div className='graph'>
                     <Scatter
