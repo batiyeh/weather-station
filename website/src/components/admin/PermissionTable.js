@@ -13,6 +13,7 @@ class PermissionTable extends Component{
         }
         this.demoteUser = this.demoteUser.bind(this);
         this.promoteUser = this.promoteUser.bind(this);
+        this.renderAllUsers = this.renderAllUsers.bind(this);
 
     }
     componentWillMount(){
@@ -39,6 +40,23 @@ class PermissionTable extends Component{
 
     }
 
+    renderAllUsers(){
+        var pusers = [];
+        this.state.permissions.map(users => {
+            pusers.push(<option value={users.username}>{users.username}</option>)
+            //console.log(pendingUsers.username)
+            return null;
+        })
+        console.log(pusers)
+        return pusers;
+    }
+
+    onpendingChange(value){
+        this.setState({
+            selectedUser: value
+        })
+    }
+
     render(){
         return(
             <Table hover>
@@ -50,7 +68,9 @@ class PermissionTable extends Component{
                 </thead>
                 <tbody>
                 <tr>
-
+                    <Input type="select" name='Username' id='user' onChange={e => this.onpendingChange(e.target.value)}>
+                        {this.renderAllUsers()}
+                    </Input>
 
                     <button type='button' color="primary" onClick={this.approveUser}>Promote </button>
                     <button type='button' color="secondary" onClick={this.denyUser}>Demote</button>
