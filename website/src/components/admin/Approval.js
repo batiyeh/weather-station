@@ -114,6 +114,7 @@ class Approval extends Component {
                 <Input type="select" name='pending' id='pending' onChange={e => this.onpendingChange(e.target.value)}>
                     {this.renderpendingUsers()}
                 </Input>
+
                 <button type='button' color="primary" onClick={this.approveUser}>Approve </button>
                 <button type='button' color="secondary" onClick={this.denyUser}>Deny</button>
             </tr>
