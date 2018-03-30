@@ -225,7 +225,7 @@ https://www.jameco.com/Jameco/workshop/circuitnotes/raspberry-pi-circuit-note.ht
 
 5. Connect the Sck wire to the 5 pin on the Pi which is for the I2C clock.
 
-6. Connect the Sdi wire to the 4 pin on the Pi which is for the I2c data.
+6. Connect the Sdi wire to the 3 pin on the Pi which is for the I2c data.
 
 7. Once all wires have been connected go to the Raspberry Pi configuration and enable I2c.
 
