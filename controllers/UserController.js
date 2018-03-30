@@ -144,14 +144,9 @@ router.post('/getUserInfo', async function(req,res){
 });
 
 router.get('/getUser', async function(req,res){
-        if(req.user){
             var user = await knex('users').select('*')
                 .leftJoin('permissions', 'users.permission_id', 'permissions.permission_id')
-            res.json(user);
-        }
-        else{
-            res.json({username: undefined})
-        }
+            res.json({user});
 });
 
 router.get('/pendingUser',async function (req,res) {
