@@ -158,6 +158,10 @@ pyinstaller weatherstation.spec -F
 ```sh
 cd path/to/weatherstation/binary; ./weatherstation > /dev/null 2> /dev/null &
 ```
+2. Same thing with just the code itself (optional for test purposes)
+```sh
+/usr/bin/python /home/pi/dev/weather-station-site/client/weatherstation.py > /dev/null 2> /dev/null &
+```
 
 
 ### Sensors

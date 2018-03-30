@@ -79,6 +79,24 @@ class StationCard extends Component {
         return body;
     }
 
+    renderWeatherData(){
+        var temperature = this.props.station.temperature;
+        var pressure = this.props.station.pressure;
+        var humidity = this.props.station.humidity;
+
+        if (temperature <= 0.0) temperature = "n/a";
+        if (pressure <= 0.0) pressure = "n/a";
+        if (humidity <= 0.0) humidity = "n/a";
+        
+        return (
+            <div className="col-md-6 col-sm-12">
+                <p className="station-info">temperature: {temperature} &deg;F</p>
+                <p className="station-info">pressure: {pressure} hPa</p>
+                <p className="station-info">humidity: {humidity}%</p>
+            </div>
+        );
+    }
+
     // If the latitude and longitude are valid, we will render 
     // the additional Open Weather Map data on the right side of the card.
     renderAdditionalData(){
@@ -177,11 +195,7 @@ class StationCard extends Component {
                         <CardText className="no-padding bottom-card">
                             <div className="row">
                                 {/* Holds station data on the left side of the card */}
-                                <div className="col-md-6 col-sm-12">
-                                    <p className="station-info">temperature: {this.props.station.temperature} &deg;F</p>
-                                    <p className="station-info">pressure: {this.props.station.pressure} hPa</p>
-                                    <p className="station-info">humidity: {this.props.station.humidity}%</p>
-                                </div>
+                                { this.renderWeatherData() }
                                 {/* Holds API data on the right side of the card */}
                                 { this.renderAdditionalData() }
                             </div>
