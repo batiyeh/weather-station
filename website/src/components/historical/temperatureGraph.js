@@ -223,6 +223,78 @@ class TemperatureGraph extends Component{
                 );
             }
         }
+        else if(this.state.sensorType === 'humidity'){
+            if (this.state.datasets["datasets"].length > 0){
+                return(
+                    <div className='graph'>
+                        <Scatter
+                            data={this.state.datasets}
+                            width={this.state.width}
+                            height={this.state.height}
+                            options={{
+                                maintainAspectRatio: false,
+                                showLines: true,
+                                scales: {
+                                    xAxes: [{
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: 'Time',
+                                            fontFamily: 'Roboto Mono',
+                                            fontColor: '#000',
+                                            fontSize: 15
+                                        },
+                                        type: 'time',
+                                        gridLines: {
+                                            drawBorder: true,
+                                        },
+                                        ticks: {
+                                            fontColor: '#000',
+                                            fontFamily: 'Roboto Mono',
+                                            fontSize: 15
+                                        },
+                                        time: {
+                                            displayFormats: {
+                                                quarter: 'MMM D YYYY'    /*Displays month day year*/
+                                            }
+                                        },
+                                    }],
+                                    yAxes: [{
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: 'Humidity',
+                                            fontFamily: 'Roboto Mono',
+                                            fontColor: '#000',
+                                            fontSize: 15
+                                        },
+                                        type: 'linear',
+                                        ticks: {
+                                            fontColor: '#000',
+                                            fontFamily: 'Roboto Mono',
+                                            fontSize: 15,
+                                            callback: function(value, index, values) {
+                                                return value + '%';
+                                            }
+                                        },
+                                        gridLines: {
+                                            borderDash: [2,1],
+                                            drawBorder: false
+                                        }
+                                    }],
+                                },
+                            }}
+                        />
+                    </div>
+                );
+            }
+
+            else{
+                return(
+                    <div className='col-12 no-data-alert'>
+                        <Alert color="primary">There is no weather data for this filter.</Alert>
+                    </div>
+                );
+            }
+        }
     }
 }
 export default TemperatureGraph;
