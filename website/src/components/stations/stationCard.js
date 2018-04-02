@@ -172,7 +172,7 @@ class StationCard extends Component {
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" className="primary-themed-btn" onClick={this.saveStationName}>Save Changes</Button>{' '}
+                        <Button color="primary" id="save-station-changes-btn" className="primary-themed-btn" onClick={this.saveStationName}>Save Changes</Button>{' '}
                         <Button color="secondary" onClick={this.toggleStationDetail}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
@@ -184,7 +184,7 @@ class StationCard extends Component {
                                 <div className="col-8">
                                     <p className="station-name">
                                         <ConnectionIndicator updated={this.props.station.created_at} connected={this.props.station.connected} apikey={this.props.station.apikey}></ConnectionIndicator>
-                                        { this.renderStationName() }
+                                        <span className="station-name-inner">{ this.renderStationName() }</span>
                                     </p>
                                 </div>
                                 <div className="col-4">
