@@ -14,6 +14,7 @@ class PermissionTable extends Component{
         this.demoteUser = this.demoteUser.bind(this);
         this.promoteUser = this.promoteUser.bind(this);
         this.renderAllUsers = this.renderAllUsers.bind(this);
+        this.updateUser = this.updateUser.bind(this);
 
     }
     componentWillMount(){
@@ -30,6 +31,18 @@ class PermissionTable extends Component{
         this.setState({permissions:getUsers, selectedUser:getUsers})
     };
 
+    updateUser = async ()=> {
+        console.log(this.state.statusP);
+        await fetch ('/api/user/promDenyUser',
+            {method: 'post', body: JSON.stringify({selectedUser: this.state.selectedUser, statusP: this.state.statusP}),
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+                credentials:'include'});
+
+
+    }
 
 
     promoteUser = async ()=> {
@@ -72,8 +85,8 @@ class PermissionTable extends Component{
                         {this.renderAllUsers()}
                     </Input>
 
-                    <button type='button' color="primary" onClick={this.approveUser}>Promote </button>
-                    <button type='button' color="secondary" onClick={this.denyUser}>Demote</button>
+                    <button type='button' color="primary" onClick={this.promoteUser}>Promote </button>
+                    <button type='button' color="secondary" onClick={this.demoteUser}>Demote</button>
                 </tr>
                 </tbody>
             </Table>

@@ -150,10 +150,14 @@ router.get('/getUser', async function(req,res){
 });
 
 router.get('/pendingUser',async function (req,res) {
+    // var pendingId = await knex('permissions').select('permissions_id').where('type', '=', 'Pending')
+    // pendingId = pendingId.permission_id
     var pendingU = await knex('users')
         .select('username')
-        .where('permission_id', '=', '4')
-    // console.log(pendingU);
+        .leftJoin('permissions', 'users.permission_id', 'permissions.permission_id')
+        .where('permission_id', '=', 'pending')
+    pendingU = pendingU.permission_id
+    console.log(pendingU);
     res.json({pendingU});
 })
 router.get('/allUsers', async function (req,res) {
@@ -179,6 +183,37 @@ router.post('/approveUser', async function (req, res) {
     }
 
 })
+
+// router.post('/promDenyUser', async function (req, res) {
+//     var permUser = body.statusP;
+//     var username = body.selectedUser.username;
+//
+//     if(permUser === true){
+//         await User.where({username:username}).save({permission_id: "admin"}
+//             ,{patch: true})
+//     }
+//     else if (permUser === false){
+//         await User.where({username:username}).save({permission_id: "user"}
+//             ,{patch:true})
+//     }
+//
+// })
+
+router.post('promDenyUser', async function (res){
+    var permUser = body.statusP;
+    var username = body.selectedUser.username;
+    var permissions = [];
+
+    if(permUser === true){
+        permissions = await knex ('users').select('*')
+            .leftJoin('permissions', 'users.permission_id', 'permissions.permission_id')
+            .where('type', '=', 'pending')
+        console.log("aljsdfklj",permissions)
+        res.json({permissions});
+    }
+
+})
+
 
 router.post('/logout', function(req,res){
     req.session.destroy(response => {
