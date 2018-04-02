@@ -24,6 +24,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+website/chromedriver.exe
+
 client/dist/
 data
 .api-key.txt
