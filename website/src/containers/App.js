@@ -11,6 +11,7 @@ import Alerts from '../containers/alerts.js'
 import ProfileForm from '../components/registration/profileForm.js';
 import VerifyLoggedIn from '../components/verifyLoggedIn.js'
 import Admin from '../containers/admin.js'
+import Approval from '../components/admin/Approval.js';
 
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 
@@ -21,7 +22,8 @@ class App extends Component {
       username: '',
       email: '',
       phone: '',
-      isAdmin: false
+      isAdmin: false,
+      permissions: ''
     }
   }
   componentDidMount(){
@@ -38,12 +40,15 @@ class App extends Component {
         credentials: 'include'
     })
     var body = await response.json();
+
     if(!body.phone){
-      this.setState({username: body.username, email: body.email, phone: 'Phone Number', isAdmin: body.isAdmin});
+      this.setState({username: body[0].username, email: body[0].email, phone: 'Phone Number', permissions: body[0].type});
     }
     else{
-      this.setState({username: body.username, email: body.email, phone: body.phone, isAdmin: body.isAdmin});      
+      this.setState({username: body[0].username, email: body[0].email, phone: body[0].phone, permissions: body[0].type});
     }
+      console.log(this.state.permissions)
+
   }
 
   renderNav = (props) => {
@@ -51,6 +56,7 @@ class App extends Component {
       return (
         <Navigation 
           username={this.state.username}
+          permissions={this.state.permissions}
           {...props}
         />
       );
@@ -67,7 +73,7 @@ class App extends Component {
       username={this.state.username} 
       email={this.state.email} 
       phone={this.state.phone} 
-      isAdmin={this.state.isAdmin}
+      permissions={this.state.permissions}
       {...props}
       />
     </div>
@@ -85,6 +91,7 @@ class App extends Component {
             <Route path="/user/login" component={Login}/>
             <Route path="/user/create" component={Create}/>  
             <Route path="/user/reset" component={ResetPassword} exact/>
+            <Route path="/user/approval" component={Approval}/>
             <Route path="/user/reset/:token" component={ResetPassword}/>
             <Route path="/profile" render={this.renderProfile}/>
             <Route path="/historical" component={Historical}/>

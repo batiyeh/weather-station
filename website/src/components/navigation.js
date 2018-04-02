@@ -23,10 +23,9 @@ import {
     Alert } from 'reactstrap';
 import download from 'downloadjs';
 var moment = require('moment');
-moment().format();
 
 class Navigation extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.toggleAlert = this.toggleAlert.bind(this);
         this.dismissAlerts = this.dismissAlerts.bind(this);
@@ -52,16 +51,25 @@ class Navigation extends Component {
             secondValue: null,
             unread: false,
             navShown: false,
+            permissions: this.props.permissions
         }
         this.toggleDropdown = this.toggleDropdown.bind(this);
         this.toggleNav = this.toggleNav.bind(this);
         this.downloadClient = this.downloadClient.bind(this);
+    }
+    componentWillReceiveProps(nextProps){
+        if(nextProps.permissions !== this.state.permissions){
+            this.setState({
+                permissions: nextProps.permissions
+            })
+        }
     }
     //fetch all alerts when navbar mounts
     componentDidMount = async () => {
         await this.getTriggeredAlerts();
         this.interval = setInterval(this.getTriggeredAlerts, 5000);
     }
+
     //clear interval when navbar unmounts
     componentWillUnmount() {
         clearInterval(this.interval);
@@ -85,8 +93,8 @@ class Navigation extends Component {
 
         //check for unread alerts here
         var unread = false;
-        await alerts.map(alerts=>{
-            if(alerts.read === 0){
+        await alerts.map(alerts => {
+            if (alerts.read === 0) {
                 unread = true;
             }
             return null;
@@ -95,15 +103,15 @@ class Navigation extends Component {
         this.setState({alerts: alerts, unread: unread});
     }
 
-    toggleDropdown(){
+    toggleDropdown() {
         this.setState({
-            dropdown:!this.state.dropdown
+            dropdown: !this.state.dropdown
         })
     }
 
-    toggleNav(){
+    toggleNav() {
         this.setState({
-            navShown:!this.state.navShown
+            navShown: !this.state.navShown
         })
     }
 
@@ -116,11 +124,12 @@ class Navigation extends Component {
             alertDropDown: !this.state.alertDropDown
         })
     }
+
     //when user clicks on alert from dropdown, modal will toggle and values will be set for that specific alert
-    toggleAlertModal(station_name, type, keyword, value, secondValue, temperature, pressure, humidity, time){
+    toggleAlertModal(station_name, type, keyword, value, secondValue, temperature, pressure, humidity, time) {
         this.setState({
             station_name: station_name,
-            type : type,
+            type: type,
             keyword: keyword,
             value: value,
             secondValue: secondValue,
@@ -131,7 +140,8 @@ class Navigation extends Component {
             modal: !this.state.modal
         })
     }
-    closeModal(){
+
+    closeModal() {
         this.setState({
             modal: false
         })
@@ -147,7 +157,7 @@ class Navigation extends Component {
     }
 
 
-    downloadClient = async() => {
+    downloadClient = async () => {
         var response = await fetch('/api/stations/download');
         var fileBlob = await response.blob();
         download(fileBlob, "weatherstation.zip");
@@ -188,13 +198,28 @@ class Navigation extends Component {
     }
 
     //renders the header of the alert modal based on what alert the user is looking at
-    renderHeader(){
-        if(this.state.secondValue){
-            return(<ModalHeader toggle={this.toggleAlertModal}> {this.state.station_name}'s {this.state.type} is {this.state.keyword} {this.state.value} and {this.state.secondValue} </ModalHeader>)
+    renderHeader() {
+        if (this.state.secondValue) {
+            return (<ModalHeader
+                toggle={this.toggleAlertModal}> {this.state.station_name}'s {this.state.type} is {this.state.keyword} {this.state.value} and {this.state.secondValue} </ModalHeader>)
         }
-        else{
-            return(<ModalHeader toggle={this.toggleAlertModal}> {this.state.station_name}'s {this.state.type} is {this.state.keyword} {this.state.value} </ModalHeader>)
+        else {
+            return (<ModalHeader
+                toggle={this.toggleAlertModal}> {this.state.station_name}'s {this.state.type} is {this.state.keyword} {this.state.value} </ModalHeader>)
         }
+    }
+
+    renderAdmin() {
+        console.log("asjldfsdf" , this.state.permissions);
+        if (this.state.permissions === "Admin" || this.state.permissions === "Superuser") {
+            return( <DropdownItem tag='a'>
+                <Link to={'/admin'} className='nav-link nav-link-dark'>admin</Link>
+            </DropdownItem>)
+        }
+        else {
+            return null;
+        }
+
     }
 
     //renders the alert cards in the drop down for the user
@@ -228,7 +253,6 @@ class Navigation extends Component {
             }
             return null;
         })
-
         //shows message if there are no alerts
         if(webpageAlertCards.length === 0){
             return(<Alert color="primary">You have no alerts</Alert>)
@@ -309,9 +333,7 @@ class Navigation extends Component {
                                                 <span className="download-text">client</span>
                                                 {/* <i class="fa fa-download" aria-hidden="true"></i> */}
                                             </DropdownItem>
-                                            <DropdownItem tag='a'>
-                                                <Link to={'/admin'} className='nav-link nav-link-dark'>admin</Link>
-                                            </DropdownItem>
+                                            {this.renderAdmin()}
                                             <DropdownItem tag='a'>
                                                 <a onClick={this.logout} className='nav-link nav-link-dark'>logout</a>
                                             </DropdownItem>

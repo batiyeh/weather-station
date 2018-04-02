@@ -4,6 +4,8 @@ import AdminStationCard from './adminStationCard'
 import moment from 'moment';
 import DatePicker  from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
+import Approval from './Approval.js';
+import PermissionTable from './PermissionTable.js'
 const crypto = require('crypto');
 
 // Station List component is a list of each station
@@ -185,6 +187,8 @@ class AdminStationList extends Component {
                     }) 
                 }   
                 { this.renderAlert() }
+                <Approval></Approval>
+                <PermissionTable></PermissionTable>
             </div>
         );
   }
