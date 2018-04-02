@@ -161,9 +161,9 @@ export class MapContainer extends Component {
             }
         }
 
-        averages["temperature"] = values.temperature.reduce((a,b) => a + b, 0) / values.temperature.length;
-        averages["pressure"] = values.pressure.reduce((a,b) => a + b, 0) / values.pressure.length;
-        averages["humidity"] = values.humidity.reduce((a,b) => a + b, 0) / values.humidity.length;
+        averages["temperature"] = values.temperature.reduce((accumulator,value) => accumulator + value, 0) / values.temperature.length;
+        averages["pressure"] = values.pressure.reduce((accumulator,value) => accumulator + value, 0) / values.pressure.length;
+        averages["humidity"] = values.humidity.reduce((accumulator,value) => accumulator + value, 0) / values.humidity.length;
         this.updateAverages(circle, averages);
     }
 

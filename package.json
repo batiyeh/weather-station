@@ -10,7 +10,7 @@
     "prod": "npm run prod-server",
     "migrate": "knex migrate:latest",
     "rollback": "knex migrate:rollback",
-    "test": "jest"
+    "test": "mocha"
   },
   "dependencies": {
     "async": "^2.6.0",
@@ -42,11 +42,5 @@
     "jest-fetch-mock": "^1.4.2",
     "superagent": "^3.8.2",
     "supertest": "^3.0.0"
-  },
-  "jest": {
-    "automock": false,
-    "setupFiles": [
-      "./test/setupJest.js"
-    ]
   }
 }
