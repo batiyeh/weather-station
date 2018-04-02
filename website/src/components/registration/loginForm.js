@@ -47,15 +47,15 @@ class LoginForm extends Component {
             });
 
         var body = await response.json();
-        console.log(body.redirect);
+
+        if(body.redirect === 'true'){
+            await Cookies.set('loggedIn', 'true')
+        }
+        console.log(body.redirect, Cookies.get('loggedIn'));
         this.setState({
           errors: body.errors,
           redirect: body.redirect
         })
-
-        if(body.redirect){
-            Cookies.set('loggedIn', true)
-        }
     }
     renderErrors(){
         if(this.state.errors.length > 0){
@@ -69,7 +69,7 @@ class LoginForm extends Component {
     }
     
     render(){
-        if(this.state.redirect === true){
+        if(this.state.redirect === 'true'){
             return (<Redirect to='/'/>)
         }
         else{
@@ -77,6 +77,7 @@ class LoginForm extends Component {
                 <div className='login-container'>
                     <div id='login'>
                         <img src={logo} className="login-logo" width="200" height="200" alt=""></img>
+                        {this.renderErrors()}                
                         <form id='loginForm'>
                             <div className='login-info mb-3'>
                             <div className='col-12 row'>

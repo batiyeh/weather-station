@@ -44,7 +44,7 @@ router.post('/create', async function(req, res){
             type: datatype,
             keyword: keyword,
             threshold: threshold,
-            username: req.user,
+            username: req.session.username,
             deleted: false,
             last_triggered: moment.utc().subtract(duration).format("YYYY-MM-DD HH:mm:ss")
         }).save();
@@ -89,13 +89,13 @@ router.post('/create', async function(req, res){
 router.post('/webpage/', async function(req, res){
     var alerts = []
 
-    if(req.user){    
+    if(req.session.username){    
         alerts = await knex('triggeredalerts')
         .select('triggeredalerts.triggered_id', 'alertvalues.value', 'alerts.alert_id', 'stations.station_name', 'alerts.type','alerts.keyword', 'triggeredalerts.read', 'triggeredalerts.temperature', 'triggeredalerts.humidity', 'triggeredalerts.pressure', 'triggeredalerts.created_at')
         .leftJoin('alerts', 'triggeredalerts.alert_id', '=', 'alerts.alert_id')
         .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
         .leftJoin('stations', 'stations.apikey', '=','alerts.apikey')
-        .where('alerts.username', '=', req.user)
+        .where('alerts.username', '=', req.session.username)
         .where('triggeredalerts.cleared', '=', false)
         .orderBy('triggeredalerts.triggered_id', 'asc')
 
@@ -111,7 +111,7 @@ router.put('/read/', async function(req, res){
     .update('triggeredalerts.read', true)
     .leftJoin('alerts', 'triggeredalerts.alert_id','=','alerts.alert_id')
     .where('triggeredalerts.read','=', false)
-    .where('alerts.username','=', req.user)
+    .where('alerts.username','=', req.session.username)
     .where('triggeredalerts.cleared', '=', false)
 
     return res.status(200).json({succcess: 'success'});
@@ -122,7 +122,7 @@ router.put('/webpage/', async function(req, res){
     var alerts = await knex('triggeredalerts')
     .update('triggeredalerts.cleared', true)
     .leftJoin('alerts', 'triggeredalerts.alert_id','=','alerts.alert_id')
-    .where('alerts.username', '=', req.user)
+    .where('alerts.username', '=', req.session.username)
     .where('triggeredalerts.cleared', '=', false);
 
     return res.status(200).json({success: 'success'});
@@ -135,7 +135,7 @@ router.post('/', async function(req, res){
     .select('alerts.alert_id', 'stations.station_name', 'alerts.type', 'alerts.keyword', 'alerts.last_triggered', 'alerts.threshold', 'alertvalues.value')
     .leftJoin('stations', 'stations.apikey', '=','alerts.apikey')
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
-    .where('alerts.username', '=', req.user)
+    .where('alerts.username', '=', req.session.username)
     .where('alerts.deleted','=', false)
 
     var methods = await knex('alertmethods')
@@ -150,7 +150,7 @@ router.post('/', async function(req, res){
     .leftJoin('alerts', 'triggeredalerts.alert_id', '=', 'alerts.alert_id')
     .leftJoin('alertvalues', 'alerts.alert_id', '=', 'alertvalues.alert_id')
     .leftJoin('stations', 'stations.apikey', '=','alerts.apikey')
-    .where('alerts.username', '=', req.user)
+    .where('alerts.username', '=', req.session.username)
     .orderBy('triggeredalerts.triggered_id')
 
     alerts = await parseBetween(alerts);

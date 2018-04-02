@@ -139,13 +139,13 @@ class Navigation extends Component {
     }
 
     logout = async() => {
+        await Cookies.set('loggedIn', false);
+
         var response = await fetch('/api/user/logout', {method: 'post', credentials: 'include'})
         var body = await response.json();
         this.setState({
             redirect: true
         })
-
-        await Cookies.set('loggedIn', false);
         return body;
     }
 

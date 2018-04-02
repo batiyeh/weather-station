@@ -94,24 +94,26 @@ router.post('/login', async function(req, res){
 
     var user = await User.where({username: username}).fetch();
     if(!user){
-        return res.status(401).json({redirect: false, errors: {msg: "Invalid Username/Password"}})
+        return res.status(401).json({redirect: false, errors: [{msg: "Invalid Username/Password"}]})
     }
     
     var check = await bcrypt.compare(password, user.attributes.password);
     if(!check){
-        return res.status(401).json({redirect: false, errors: {msg: "Invalid Username/Password"}})
+        return res.status(401).json({redirect: false, errors: [{msg: "Invalid Username/Password"}]})
     }
 
     req.session.username = username;
     req.session.save();
+
+    console.log(req.session.username);
     
-    res.status(200).json({redirect: true, errors: null})
+    res.status(200).json({redirect: 'true', errors: []})
 });
 
 //used to verify user is logged in on each page
 router.post('/getUserInfo', async function(req,res){
-    if(req.user){
-        var user = await User.where({username: req.user}).fetch();
+    if(req.session.username){
+        var user = await User.where({username: req.session.username}).fetch();
 
         res.json({username: user.attributes.username, email: user.attributes.email,
         phone: user.attributes.phone, permissions: user.attributes.permissions});
@@ -212,7 +214,7 @@ router.post('/reset/:token', function(req, res){
 router.post('/editProfile', async function(req, res){
     var email = req.body.email;
     var phone = req.body.phone;
-    var user = await User.where({username: req.user}).fetch()
+    var user = await User.where({username: req.session.username}).fetch()
     
     if(email){
         var dbEmail = "";
@@ -252,7 +254,7 @@ router.post('/editProfile', async function(req, res){
     }
     else{
         //updates user profile
-        await User.where({username: req.user}).save({
+        await User.where({username: req.session.username}).save({
             email: email,
             phone: phone,
         },{patch:true});
@@ -265,7 +267,7 @@ router.post('/editPassword', async function(req, res){
     var currPass = req.body.currPass;
     var newPass = req.body.newPass;
 
-    var user = await User.where({username: req.user}).fetch()
+    var user = await User.where({username: req.session.username}).fetch()
     if(!user)
         console.log('Invalid username');//(this shouldnt happen ever)
 
@@ -285,7 +287,7 @@ router.post('/editPassword', async function(req, res){
         else{
             //updates user password in db
             await bcrypt.hash(newPass, 10, function(err,hash){
-                User.where({username: req.user}).save({
+                User.where({username: req.session.username}).save({
                     password: hash,
                 },{patch:true})
             })
