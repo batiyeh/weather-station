@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { Alert } from 'reactstrap';
 import '../../styles/historical.css';
 import { Line, Scatter } from 'react-chartjs-2';
-import _ from 'lodash';
-var moment = require('moment');
+
 
 
 var colorsGraph = ['#4bc0c0', '#c0864b', '#4b86c0', '#c04b4b', '#c0c04b', '#4bc086', '#c04b86', '#327c0c'];  // Array of colors to be choosen when drawing multiple lines on the graph
@@ -44,7 +43,6 @@ class Graph extends Component{
     componentWillUnmount() {
         // reset the color index upon the page being unloaded
         colorIndex = 0;
-        this.state.stations = [];
     }
 
     //function for creating the line on the graph based on station data
