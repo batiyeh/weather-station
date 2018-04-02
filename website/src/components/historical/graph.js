@@ -9,7 +9,7 @@ var moment = require('moment');
 var colorsGraph = ['#4bc0c0', '#c0864b', '#4b86c0', '#c04b4b', '#c0c04b', '#4bc086', '#c04b86', '#327c0c'];  // Array of colors to be choosen when drawing multiple lines on the graph
 var colorIndex = 0;   //variable to keep track of what index is currently selected in the graph
 
-class TemperatureGraph extends Component{
+class Graph extends Component{
     constructor(props) {
         super(props);
         this.state = {
@@ -297,4 +297,4 @@ class TemperatureGraph extends Component{
         }
     }
 }
-export default TemperatureGraph;
+export default Graph;
