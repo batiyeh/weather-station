@@ -24,6 +24,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+website/chromedriver
+
 client/dist/
 data
 .api-key.txt
@@ -31,3 +33,4 @@ data
 client2.py
 client3.py
 client4.py
+

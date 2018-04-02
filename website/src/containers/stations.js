@@ -7,7 +7,7 @@ class Stations extends Component {
   render() {
     return (
       <div className='StationList'>
-        <VerifyLoggedIn/>
+        {/* <VerifyLoggedIn/> */}
         <StationList/>
       </div>
     );

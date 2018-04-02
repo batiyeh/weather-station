@@ -88,9 +88,24 @@ passport.use(new LocalStrategy(
 ));
 
 //calls passport authentication on login
-router.post('/login', passport.authenticate('local', {failureRedirect:'/user/login'}), 
-    function(req, res){
-        res.redirect('/');
+router.post('/login', async function(req, res){
+    var username = req.body.username;
+    var password = req.body.password;
+
+    var user = await User.where({username: username}).fetch();
+    if(!user){
+        return res.status(401).json({redirect: false, errors: {msg: "Invalid Username/Password"}})
+    }
+    
+    var check = await bcrypt.compare(password, user.attributes.password);
+    if(!check){
+        return res.status(401).json({redirect: false, errors: {msg: "Invalid Username/Password"}})
+    }
+
+    req.session.username = username;
+    req.session.save();
+    
+    res.status(200).json({redirect: true, errors: null})
 });
 
 //used to verify user is logged in on each page
