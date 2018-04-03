@@ -10,8 +10,10 @@ import logo from '../../images/space-satellite-dish-512x512.png';
 class LoginForm extends Component {
     constructor(props){
         super(props);
+
         var redirect = Cookies.get('loggedIn')
         if (_.isUndefined(redirect)) redirect = false;
+        
         this.state={
             username: '',
             password: '',
@@ -50,8 +52,8 @@ class LoginForm extends Component {
 
         if(body.redirect === 'true'){
             await Cookies.set('loggedIn', 'true')
+            this.props.getUser();
         }
-        console.log(body.redirect, Cookies.get('loggedIn'));
         this.setState({
           errors: body.errors,
           redirect: body.redirect

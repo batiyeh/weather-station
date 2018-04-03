@@ -7,7 +7,6 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const async = require('async');
-const passport = require('passport');
 const nodemailer = require('nodemailer');
 const LocalStrategy = require('passport-local').Strategy;
 
@@ -59,33 +58,6 @@ router.post('/create', async function(req, res){
         res.json({errors: [], redirect: true})
     }
 });
-
-//writes username into cookie
-passport.serializeUser(function(user, done){
-    done(null, user.attributes.username);
-});
-
-//erases username from cookie
-passport.deserializeUser(async function(username, done){
-    var user = await User.where({username: username}).fetch()
-        if(user)
-            done(null, user.attributes.username);
-});
-
-//Verifies user login credentials
-passport.use(new LocalStrategy(
-    async function(username, password, done) {
-        var user = await User.where({username: username}).fetch()
-            if(!user)
-                return done(null, false, {message: 'Invalid username/password'});
-            
-        var check = await bcrypt.compare(password, user.attributes.password);
-            if(check)
-                return done(null, user);
-            
-        return done(null, false, {message: 'Invalid username/password'});
-    }
-));
 
 //calls passport authentication on login
 router.post('/login', async function(req, res){
