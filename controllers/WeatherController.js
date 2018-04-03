@@ -86,6 +86,7 @@ router.get('/latest', async function (req, res) {
             .join('weather', 'latestweather.weather_id', 'weather.weather_id')
             .join('stations', 'latestweather.apikey', 'stations.apikey')
             .select('weather.*', 'stations.station_name', 'stations.last_connected', 'stations.connected')
+            .orderBy('weather.created_at', 'desc')
     } catch(ex){
         console.log(ex);
         return res.json({});

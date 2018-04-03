@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import '../../styles/stations.css';
 import { Input, Button, Card, CardText, CardTitle, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import ConnectionIndicator from './connectionIndicator';
+import MapContainer from '../map/mapContainer';
 var moment = require('moment');
 moment().format();
 
@@ -9,6 +10,7 @@ class StationCard extends Component {
     constructor(props){
         super(props);
         this.state = {
+            station: this.props.station,
             visibility: "n/a",
             wind_speed: "n/a",
             wind_direction: "n/a",
@@ -43,6 +45,12 @@ class StationCard extends Component {
                 visibility: nextProps.station.visibility,
                 wind_speed: nextProps.station.wind_speed,
                 wind_direction: nextProps.station.wind_direction,
+            })
+        }
+
+        if (this.state.station !== nextProps.station){
+            this.setState({
+                station: nextProps.station
             })
         }
     }
@@ -111,6 +119,18 @@ class StationCard extends Component {
         }
     }
 
+    renderMap(){
+        if (this.props.station.latitude !== "n/a" && this.props.station.longitude !== "n/a"){
+            return (
+                <div className="modal-map-box">
+                    <div className="modal-map-container" ref={ (mapElement) => this.mapElement = mapElement} style={{position: 'absolute', right: 0, bottom: 0, width: '100%', height: '200px'}}>
+                        <MapContainer height={400} width={400} checkedStations={[this.state.station]} showLabels={false} mapOnly={true}></MapContainer>
+                    </div>
+                </div>
+            )
+        }
+    }
+
     // Update the station name state on input change
     onNameChange(value){
         this.setState({
@@ -142,6 +162,8 @@ class StationCard extends Component {
     }
 
     render() {
+        const location = (this.props.station.latitude === "n/a") ? "Unavailable" : "(" + this.props.station.latitude + ", " + this.props.station.longitude + ")";
+
         return (
             <div className="col-12 station-container">
                 <Modal isOpen={this.state.modal} className="station-detail-modal" toggle={this.toggleStationDetail}>
@@ -167,8 +189,9 @@ class StationCard extends Component {
                             </div><br/>
                             <div className="station-detail-row">
                                 <span className="left">Location</span>
-                                <span className="right">({this.props.station.latitude}, {this.props.station.longitude})</span>
+                                <span className="right">{ location }</span>
                             </div><br/>
+                            { this.renderMap() } 
                         </div>
                     </ModalBody>
                     <ModalFooter>
