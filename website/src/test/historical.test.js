@@ -34,6 +34,7 @@ describe('Historical page selenium tests', () => {
     });
 
     it('Click Filter', function(done) {
+        this.timeout(10000);
         driver.findElement(By.id('filter')).click();
         driver.wait(until.elementLocated(By.css('.modal-open')), 10000).then(()=>{
             driver.findElement(By.css('.modal-open'))
@@ -42,15 +43,26 @@ describe('Historical page selenium tests', () => {
     });
 
     it('Click Submit', function(done) {
-        driver.findElement(By.css('.btn btn-primary')).click();
+        this.timeout(10000);
+        driver.findElement(By.className('btn btn-primary')).click();
         driver.wait(until.elementLocated(By.className('historical-page-title')), 10000).then(()=>{
             driver.findElement(By.className('historical-page-title'))
         })
             .then(() => done())
     });
 
-    
-
+    it('Click Cancel', function(done) {
+        this.timeout(10000);
+        driver.findElement(By.id('filter')).click();
+        driver.wait(until.elementLocated(By.css('.modal-open')), 10000).then(()=>{
+            driver.findElement(By.css('.modal-open'))
+        });
+        driver.findElement(By.className('btn btn-secondary')).click();
+        driver.wait(until.elementLocated(By.className('historical-page-title')), 10000).then(()=>{
+            driver.findElement(By.className('historical-page-title'))
+        })
+            .then(() => done())
+    });
 
     after(function(done) {
         driver.quit().then(() => done())
