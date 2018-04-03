@@ -24,8 +24,32 @@ class Graph extends Component{
         }
     }
 
-    componentWillReceieveProps(nextProps){
-        // console.log(nextProps);
+    componentWillReceiveProps(nextProps){
+        if(nextProps.state.stationsData !== this.state.data){
+            this.setState({
+                station: nextProps.state.stationsData
+            })
+        }
+        if(nextProps.state.toBeDrawn !== this.state.stations){
+            this.setState({
+                station: nextProps.state.toBeDrawn
+            })
+        }
+        if(nextProps.state.fromDate !== this.state.from){
+            this.setState({
+                station: nextProps.state.fromDate
+            })
+        }
+        if(nextProps.state.toDate !== this.state.to){
+            this.setState({
+                station: nextProps.state.toDate
+            })
+        }
+        if(nextProps.state.sensorType !== this.state.sensorType){
+            this.setState({
+                station: nextProps.state.sensorType
+            })
+        }
     }
 
     componentDidMount(){

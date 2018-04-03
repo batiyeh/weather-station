@@ -169,7 +169,7 @@ class HistoricalContainer extends Component{
     //function upon hitting submit in the modal with new data to update the graph and close the modal
     updateGraph(){
         this.setState({
-            loading: true,
+            loading: false,
             modal: false
         })
         this.getSensorData() //call the async function to get the data based on the new parameters set by the filter
@@ -190,13 +190,13 @@ class HistoricalContainer extends Component{
         return(
             <Graph className="row graph"
                 //passes the stations data to the graph component
-                              data={this.state.stationsData}
-                              stations={this.state.toBeDrawn}
-                              from={this.state.fromDate} // passes the to and from dates to the graph component
-                              to={this.state.toDate}
-                              height={500} //The height and width of the graph is passed to the graph component
-                              width={"100%"}
-                              sensorType={this.state.sensorType}
+               data={this.state.stationsData}
+               stations={this.state.toBeDrawn}
+               from={this.state.fromDate} // passes the to and from dates to the graph component
+               to={this.state.toDate}
+               height={500} //The height and width of the graph is passed to the graph component
+               width={"100%"}
+               sensorType={this.state.sensorType}
             />
         )
     }
