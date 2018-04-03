@@ -30,16 +30,27 @@ describe('Historical page selenium tests', () => {
         driver.wait(until.elementLocated(By.className('col-12 no-data-alert')), 10000).then(()=>{
             driver.findElement(By.className('col-12 no-data-alert'))
         })
-            .then(() => done())
+        .then(() => done())
     });
 
     it('Click Filter', function(done) {
-        driver.findElement(By.className('btn btn-primary filter-btn btn btn-primary"')).click();
-        driver.wait(until.elementLocated(By.className('col-12 no-data-alert')), 10000).then(()=>{
-            driver.findElement(By.className('col-12 no-data-alert'))
+        driver.findElement(By.id('filter')).click();
+        driver.wait(until.elementLocated(By.css('.modal-open')), 10000).then(()=>{
+            driver.findElement(By.css('.modal-open'))
+        })
+        .then(() => done())
+    });
+
+    it('Click Submit', function(done) {
+        driver.findElement(By.css('.btn btn-primary')).click();
+        driver.wait(until.elementLocated(By.className('historical-page-title')), 10000).then(()=>{
+            driver.findElement(By.className('historical-page-title'))
         })
             .then(() => done())
     });
+
+    
+
 
     after(function(done) {
         driver.quit().then(() => done())

@@ -205,7 +205,7 @@ class HistoricalContainer extends Component{
         if(this.state.loading === false){   // if the state is no longer loading then it will render the page
             return(
                 <div className="historical-container">
-                    <Modal isOpen={this.state.modal} toggle={this.toggleFilter}>
+                    <Modal isOpen={this.state.modal} className="filter-modal" toggle={this.toggleFilter}>
                         <ModalHeader toggle={this.toggleFilter}>Filter Historical Graph</ModalHeader>
                         <form id='filterForm'>
                             <ModalBody>
@@ -261,7 +261,7 @@ class HistoricalContainer extends Component{
                         </form>
                     </Modal>
                     <div className="filter row">
-                        <Button type='button' color="primary" className="btn btn-primary filter-btn" onClick={this.toggleFilter}>Filter</Button>
+                        <Button type='button' color="primary" className="btn btn-primary filter-btn" id="filter" onClick={this.toggleFilter}>Filter</Button>
                     </div>
                     {this.renderGraph() }
                 </div>
