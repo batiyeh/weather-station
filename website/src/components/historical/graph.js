@@ -25,29 +25,30 @@ class Graph extends Component{
     }
 
     componentWillReceiveProps(nextProps){
-        if(nextProps.state.stationsData !== this.state.data){
+        console.log(nextProps);
+        if(nextProps.props.stationsData !== this.state.data){
             this.setState({
-                station: nextProps.state.stationsData
+                station: nextProps.props.stationsData
             })
         }
-        if(nextProps.state.toBeDrawn !== this.state.stations){
+        if(nextProps.props.toBeDrawn !== this.state.stations){
             this.setState({
-                station: nextProps.state.toBeDrawn
+                station: nextProps.props.toBeDrawn
             })
         }
-        if(nextProps.state.fromDate !== this.state.from){
+        if(nextProps.props.fromDate !== this.state.from){
             this.setState({
-                station: nextProps.state.fromDate
+                station: nextProps.props.fromDate
             })
         }
-        if(nextProps.state.toDate !== this.state.to){
+        if(nextProps.props.toDate !== this.state.to){
             this.setState({
-                station: nextProps.state.toDate
+                station: nextProps.props.toDate
             })
         }
-        if(nextProps.state.sensorType !== this.state.sensorType){
+        if(nextProps.props.sensorType !== this.state.sensorType){
             this.setState({
-                station: nextProps.state.sensorType
+                station: nextProps.props.sensorType
             })
         }
     }
