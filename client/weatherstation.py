@@ -42,11 +42,14 @@ class Client(object):
     # Get the API key for server requests
     # TODO: Encrypt the key in the file so it is not accessible
     def getApiKey(self):
-        keyFile = Path(os.path.dirname(os.path.abspath(__file__)) + "/.api-key.txt")
+        if getattr(sys, 'frozen', False):
+            keyFile = Path(os.path.dirname(sys.executable) + "/.api-key.txt")
+        else:
+            keyFile = Path(os.path.dirname(os.path.abspath(__file__)) + "/.api-key.txt")
 
         # If the file already exists read from it
         if keyFile.is_file():
-            with open(str(os.path.dirname(os.path.abspath(__file__))) + "/.api-key.txt", 'r') as f:
+            with open(str(keyFile), 'r') as f:
                 key = f.readline()
             return key
 
@@ -64,7 +67,7 @@ class Client(object):
                     r = requests.post(self.URL + '/api/weather/verifyKey', data = {"apikey": key, "time": datetime.datetime.utcnow()})
                     if (r.status_code == 200):
                         print("Key Verified.")
-                        f = open(str(os.path.dirname(os.path.abspath(__file__))) + "/.api-key.txt", 'w')
+                        f = open(str(keyFile), 'w')
                         f.write(key)
                         f.close()
                         verified = True

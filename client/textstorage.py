@@ -1,6 +1,7 @@
 import os
 import requests
 import datetime
+import sys
 from pathlib import Path
 from collections import OrderedDict
 
@@ -28,7 +29,11 @@ class TextStorage(object):
 
     # Check if we have the data directory already. If we don't, make it
     def checkDataDirectory(self):
-        dataDir = Path(os.path.dirname(os.path.abspath(__file__)) + self.DATA_DIR)
+        if getattr(sys, 'frozen', False):
+            dataDir = Path(os.path.dirname(sys.executable) + self.DATA_DIR)
+        else:
+            dataDir = Path(os.path.dirname(os.path.abspath(__file__)) + self.DATA_DIR)
+
         if dataDir.is_dir():
             return True
         else:
@@ -41,7 +46,10 @@ class TextStorage(object):
         today = datetime.date.today()
         data = self.constructWeatherString(weatherdata)
         if(self.checkDataDirectory()):
-            file = Path(os.path.dirname(os.path.abspath(__file__)) + self.DATA_DIR + today.strftime('%d%m%Y') + ".txt")
+            if getattr(sys, 'frozen', False):
+                file = Path(os.path.dirname(sys.executable) + self.DATA_DIR + today.strftime('%d%m%Y') + ".txt")
+            else:
+                file = Path(os.path.dirname(os.path.abspath(__file__)) + self.DATA_DIR + today.strftime('%d%m%Y') + ".txt")
             if file.is_file():
                 with open(str(file), 'a') as f:
                     f.write(data)
@@ -95,7 +103,11 @@ class TextStorage(object):
 
     # Send any stored weather data we may have left after reconnecting to the server
     def sendWeather(self):
-        dataDir = Path(os.path.dirname(os.path.abspath(__file__)) + self.DATA_DIR)
+        if getattr(sys, 'frozen', False):
+            dataDir = Path(os.path.dirname(sys.executable) + self.DATA_DIR)
+        else:
+            dataDir = Path(os.path.dirname(os.path.abspath(__file__)) + self.DATA_DIR)
+
         if (dataDir.is_dir()):
             # Iterate through each existing file in our data directory
             for filename in os.listdir(str(dataDir)):

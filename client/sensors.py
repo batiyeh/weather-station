@@ -2,6 +2,7 @@ import random
 import datetime
 import os
 import subprocess
+import sys
 from collections import OrderedDict
 from pathlib import Path
 try:
@@ -103,14 +104,15 @@ class Sensors(object):
                 self.temperature = (9.0/5.0) * self.sense.temperature + 32
                 self.pressure = self.sense.pressure
 
+                # TODO: Fix below code as it is buggy with the sense hat (can cause +-700 temps)
                 # Calibrate the temperature to account for CPU temp with the sense hat
-                cpu_temp = subprocess.check_output("vcgencmd measure_temp", shell=True)
-                array = cpu_temp.split("=")
-                array2 = array[1].split("'")
+                # cpu_temp = subprocess.check_output("vcgencmd measure_temp", shell=True)
+                # array = cpu_temp.split("=")
+                # array2 = array[1].split("'")
 
-                cpu_tempf = float(array2[0]) * 9.0 / 5.0 + 32.0
-                cpu_tempf = float("{0:.2f}".format(cpu_tempf))
-                self.temperature = self.temperature - ((cpu_tempf - self.temperature) / 5.466)
+                # cpu_tempf = float(array2[0]) * 9.0 / 5.0 + 32.0
+                # cpu_tempf = float("{0:.2f}".format(cpu_tempf))
+                # self.temperature = self.temperature - ((cpu_tempf - self.temperature) / 5.466)
             except:
                 pass
         # self.temperature = random.uniform(70.0, 73.0)
@@ -119,29 +121,35 @@ class Sensors(object):
 
     def getGpsCoords(self):
         # Try to get latitude and longitude data from our receiver
-        try:
-            latitude = self.agps_thread.data_stream.lat
-            longitude = self.agps_thread.data_stream.lon
-            if (latitude != "n/a" and longitude != "n/a"):
-                self.latitude = latitude
-                self.longitude = longitude
-                self.saveLatestGpsCoords()
+        # try:
+        latitude = self.agps_thread.data_stream.lat
+        longitude = self.agps_thread.data_stream.lon
+        if (latitude != "n/a" and longitude != "n/a"):
+            self.latitude = latitude
+            self.longitude = longitude
+            self.saveLatestGpsCoords()
+        else:
+            if getattr(sys, 'frozen', False):
+                file = Path(os.path.dirname(sys.executable) + "/.latest-location.txt")
             else:
                 file = Path(os.path.dirname(os.path.abspath(__file__)) + "/.latest-location.txt")
-                if file.is_file():
-                    with open(str(file), 'r') as f:
-                        for data in f:
-                            data = data.rstrip('\n')
-                            data = [col.strip() for col in data.split(',')]
-                            self.latitude = data[0]
-                            self.longitude = data[1]         
-            # self.latitude = "42.357134"
-            # self.longitude = "-83.070308"
-        except:
-            pass
+            if file.is_file():
+                with open(str(file), 'r') as f:
+                    for data in f:
+                        data = data.rstrip('\n')
+                        data = [col.strip() for col in data.split(',')]
+                        self.latitude = data[0]
+                        self.longitude = data[1]         
+        # self.latitude = "42.357134"
+        # self.longitude = "-83.070308"
+        # except:
+        #     pass
 
     def saveLatestGpsCoords(self):
-        file = Path(os.path.dirname(os.path.abspath(__file__)) + "/.latest-location.txt")
+        if getattr(sys, 'frozen', False):
+            file = Path(os.path.dirname(sys.executable) + "/.latest-location.txt")
+        else:
+            file = Path(os.path.dirname(os.path.abspath(__file__)) + "/.latest-location.txt")
         f = open(str(file), 'w')
         f.write(str(self.latitude) + "," + str(self.longitude))
         f.close()
