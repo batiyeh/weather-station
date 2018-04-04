@@ -8,7 +8,6 @@ class VerifyLoggedIn extends Component{
         super();
         var verified = Cookies.get('loggedIn')
         if (_.isUndefined(verified)) verified = 'false';
-        console.log(verified);
         this.state = {
             verified: verified
         }

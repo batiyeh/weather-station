@@ -18,6 +18,7 @@ class Map extends Component {
             mapMode: "move"
         };
         this.checkboxOnChange = this.checkboxOnChange.bind(this);
+        this.allCheckboxesOnChange = this.allCheckboxesOnChange.bind(this);
         this.labelsOnChange = this.labelsOnChange.bind(this);
         this.mapModeOnChange = this.mapModeOnChange.bind(this);
     }
@@ -30,7 +31,6 @@ class Map extends Component {
             mapHeight: height,
             mapWidth: width
         })
-        
         this.getLatestWeather().then(stations => {
             var checkedStations = this.addCheckedStations(stations);
             this.setState({
@@ -39,6 +39,21 @@ class Map extends Component {
                 loading: false
             })
         });
+    }
+
+    // Push stations into our checkedStations array
+    addCheckedStations(stations){
+        var checkedStations = [];
+        if (stations.length !== 0){
+            stations.map(station => {
+                if (station.latitude !== "n/a" && station.longitude !== "n/a"){
+                    checkedStations.push(station);
+                }
+                return null;
+            })
+        }
+
+        return checkedStations;
     }
 
     // Request the stations' latest we ather
@@ -56,21 +71,6 @@ class Map extends Component {
 
         return stations;
     };
-
-    // Push stations into our checkedStations array
-    addCheckedStations(stations){
-        var checkedStations = [];
-        if (stations.length !== 0){
-            stations.map(station => {
-                if (station.latitude !== "n/a" && station.longitude !== "n/a"){
-                    checkedStations.push(station);
-                }
-                return null;
-            })
-        }
-
-        return checkedStations;
-    }
 
     // Set the component's filter state whenever the filter input changes 
     filterOnChange(e){
@@ -121,6 +121,21 @@ class Map extends Component {
         });
     }
 
+    allCheckboxesOnChange(event){
+        if (event.target.checked === true){
+            var checkedStations = this.addCheckedStations(this.state.stations);
+            this.setState({
+                checkedStations: checkedStations
+            });
+        }
+
+        else {
+            this.setState({
+                checkedStations: []
+            });
+        }
+    }
+
     // Returns false if the filter string is not in the station's name.
     // Returns true if the filter is empty or is within the station's name.
     filterStations(station){
@@ -156,9 +171,17 @@ class Map extends Component {
                     .map((station, index) => {
                         if (station.latitude !== "n/a" && station.longitude !== "n/a"){
                             displayIndex += 1;
-                            return (
-                                <SidebarItem key={station.apikey} index={displayIndex} station={station} checkboxOnChange={this.checkboxOnChange}></SidebarItem>
-                            );
+                            if (this.state.checkedStations.indexOf(station) >= 0){
+                                return (
+                                    <SidebarItem key={station.apikey} checked={true} index={displayIndex} station={station} checkboxOnChange={this.checkboxOnChange}></SidebarItem>
+                                );
+                            }
+
+                            else{
+                                return (
+                                    <SidebarItem key={station.apikey} checked={false} index={displayIndex} station={station} checkboxOnChange={this.checkboxOnChange}></SidebarItem>
+                                );
+                            }
                         }
                         return null;
                     })
@@ -185,6 +208,12 @@ class Map extends Component {
                             <FormGroup className="col-12">
                                 <Input type="text" className="filterWidth" name="stationFilter" id="stationFilter" placeholder="Filter" onChange={this.filterOnChange.bind(this)} />
                             </FormGroup>
+                            <FormGroup check className="all-checkboxes-container">
+                                <Label check>
+                                    <Input type="checkbox" defaultChecked={true} onChange={(event) => this.allCheckboxesOnChange(event)}/>{' '}
+                                    <span className="show-labels">All</span>
+                                </Label>
+                            </FormGroup>
                             <div className="col-12">
                                 <h4 className="map-title">Last Known Locations</h4>
                             </div>
@@ -202,7 +231,6 @@ class Map extends Component {
             return(
                 <div className='MapPage'>
                     <div className="map-container" ref={ (mapElement) => this.mapElement = mapElement} style={{position: 'absolute', right: 0, top: 0, width: '75%', height: '100%'}}>
-
                     </div>
                 </div>
             );

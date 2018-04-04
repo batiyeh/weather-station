@@ -39,6 +39,12 @@
     margin-bottom: 10px;
 }
 
+.all-checkboxes-container{
+    text-align: left !important;
+    margin-left: 15px;
+    margin-bottom: 10px;
+}
+
 .marker-icon{
     box-shadow: "0px 0px 10px 0px #707070" !important;
 }

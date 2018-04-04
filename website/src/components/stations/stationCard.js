@@ -155,10 +155,7 @@ class StationCard extends Component {
         if (this.state.name != null){
             return this.state.name;
         }
-
-        else {
-            return this.props.station.mac_address;
-        }
+        else return null;
     }
 
     render() {
