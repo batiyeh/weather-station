@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import '../../styles/stations.css';
-import { Input, Button, Card, CardText, CardTitle, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Input, Button, Card, CardText, CardTitle, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, FormFeedback } from 'reactstrap';
 import ConnectionIndicator from './connectionIndicator';
 import MapContainer from '../map/mapContainer';
+import _ from 'lodash';
 var moment = require('moment');
 moment().format();
 
@@ -15,6 +16,7 @@ class StationCard extends Component {
             wind_speed: "n/a",
             wind_direction: "n/a",
             modal: false,
+            error: "",
             name: this.props.station.station_name
         }
 
@@ -67,10 +69,24 @@ class StationCard extends Component {
     }
 
     // Toggle the station detail modal open/closed
-    toggleStationDetail(){
-        this.setState({
-            modal: !this.state.modal
-        });
+    toggleStationDetail(clicked){
+        var name = this.state.name;
+        name = (clicked === "cancel") ? this.props.station.station_name : name;
+        
+        if (this.state.error != ""){
+            this.setState({
+                modal: !this.state.modal,
+                error: "",
+                name: name
+            });
+        }
+
+        else{
+            this.setState({
+                modal: !this.state.modal,
+                name: name
+            });
+        }
     }
 
     saveStationName = async() => {
@@ -83,7 +99,17 @@ class StationCard extends Component {
               }
         });
         var body = await response.json();
-        this.toggleStationDetail();
+        if (!_.isUndefined(body.error)){
+            this.setState({
+                error: body.error,
+            })
+        }
+
+        else {
+            this.setState({ error: "" })
+            this.toggleStationDetail("save");
+        }
+
         return body;
     }
 
@@ -140,13 +166,21 @@ class StationCard extends Component {
     
     // Render the station name input with or without a value if it exists
     renderNameInput(){
-        if (this.state.name !== undefined || this.state.name !== ""){
-            return <Input type="text" className="stationNameInput" name="stationNameInput" id="stationNameInput" placeholder="Name" onChange={e => this.onNameChange(e.target.value)} value={this.state.name}></Input>
+        if (this.state.error.length > 0){
+            return (
+                <FormGroup>
+                    <Input type="text" className="stationNameInput is-invalid" name="stationNameInput" id="stationNameInput" placeholder="Name" onChange={e => this.onNameChange(e.target.value)} value={this.state.name}></Input>
+                    <FormFeedback>{this.state.error}</FormFeedback>
+                </FormGroup>
+            );
         }
 
-        else{
-            return <Input type="text" className="stationNameInput" name="stationNameInput" id="stationNameInput" onChange={e => this.onNameChange(e.target.value)} placeholder="Name"></Input>
-        }
+        else
+            return (
+                <FormGroup>
+                    <Input type="text" className="stationNameInput" name="stationNameInput" id="stationNameInput" placeholder="Name" onChange={e => this.onNameChange(e.target.value)} value={this.state.name}></Input>
+                </FormGroup>
+            );
     }
 
     // If there is no station name, render the mac address
@@ -193,7 +227,7 @@ class StationCard extends Component {
                     </ModalBody>
                     <ModalFooter>
                         <Button color="primary" id="save-station-changes-btn" className="primary-themed-btn" onClick={this.saveStationName}>Save Changes</Button>{' '}
-                        <Button color="secondary" onClick={this.toggleStationDetail}>Cancel</Button>
+                        <Button color="secondary" onClick={() => this.toggleStationDetail("cancel")}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
 
