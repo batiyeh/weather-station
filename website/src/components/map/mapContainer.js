@@ -221,39 +221,39 @@ export class MapContainer extends Component {
         return (
             <div id="map" className="map">
                 <GoogleMap
-                        bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAPS_KEY, libraries: ['drawing'].join(',') }}
-                        center={this.state.center}
-                        zoom={this.state.zoom}
-                        hoverDistance={MARKER_SIZE - 10}
-                        onBoundsChange={this._onBoundsChange}
-                        onChildClick={this._onChildClick}
-                        onChildMouseEnter={this._onChildMouseEnter}
-                        onChildMouseLeave={this._onChildMouseLeave}
-                        yesIWantToUseGoogleMapApiInternals
-                        onGoogleApiLoaded={this.handleGoogleMapApi.bind(this)}
-                        style={style}>
-                        {this.state.stations
-                            .map((station, index) => {
-                                if (station.latitude !== "n/a" && station.longitude !== "n/a"){
-                                    return (
-                                            <Marker
-                                                key={station.apikey}
-                                                markerId={index}
-                                                lat={station.latitude}
-                                                lng={station.longitude}
-                                                station={station}
-                                                hover={this.state.hoverKey === station.apikey}
-                                                label={this.state.showLabels}
-                                            />
-                                    );
-                                }
+                    bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAPS_KEY, libraries: ['drawing'].join(',') }}
+                    center={this.state.center}
+                    zoom={this.state.zoom}
+                    hoverDistance={MARKER_SIZE - 10}
+                    onBoundsChange={this._onBoundsChange}
+                    onChildClick={this._onChildClick}
+                    onChildMouseEnter={this._onChildMouseEnter}
+                    onChildMouseLeave={this._onChildMouseLeave}
+                    yesIWantToUseGoogleMapApiInternals
+                    onGoogleApiLoaded={this.handleGoogleMapApi.bind(this)}
+                    style={style}>
+                    {this.state.stations
+                        .map((station, index) => {
+                            if (station.latitude !== "n/a" && station.longitude !== "n/a"){
+                                return (
+                                        <Marker
+                                            key={station.apikey}
+                                            markerId={index}
+                                            lat={station.latitude}
+                                            lng={station.longitude}
+                                            station={station}
+                                            hover={this.state.hoverKey === station.apikey}
+                                            label={this.state.showLabels}
+                                        />
+                                );
+                            }
 
-                                else{
-                                    return null;
-                                }
-                            })
-                        }
-                        { this.renderAverages() }
+                            else{
+                                return null;
+                            }
+                        })
+                    }
+                    { this.renderAverages() }
                 </GoogleMap>
             </div>
         ); 

@@ -16,7 +16,6 @@ router.post('/', async function (req, res) {
         apikey: req.body.api_key,
         expiration: expiration,
         connected: false,
-        username: req.body.username
     }).save()
     return res.json({result});
 });

@@ -73,6 +73,8 @@ class Client(object):
                         verified = True
                     elif (r.status_code == 400):
                         print("Invalid API key. Please try again.")
+                    elif (r.status_code == 409):
+                        print("API key already taken. Please try again with an unused API key.")
                     else:
                         print("Something went wrong with the server.")
                 except:

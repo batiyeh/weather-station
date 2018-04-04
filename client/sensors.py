@@ -121,29 +121,29 @@ class Sensors(object):
 
     def getGpsCoords(self):
         # Try to get latitude and longitude data from our receiver
-        # try:
-        latitude = self.agps_thread.data_stream.lat
-        longitude = self.agps_thread.data_stream.lon
-        if (latitude != "n/a" and longitude != "n/a"):
-            self.latitude = latitude
-            self.longitude = longitude
-            self.saveLatestGpsCoords()
-        else:
-            if getattr(sys, 'frozen', False):
-                file = Path(os.path.dirname(sys.executable) + "/.latest-location.txt")
+        try:
+            latitude = self.agps_thread.data_stream.lat
+            longitude = self.agps_thread.data_stream.lon
+            if (latitude != "n/a" and longitude != "n/a"):
+                self.latitude = latitude
+                self.longitude = longitude
+                self.saveLatestGpsCoords()
             else:
-                file = Path(os.path.dirname(os.path.abspath(__file__)) + "/.latest-location.txt")
-            if file.is_file():
-                with open(str(file), 'r') as f:
-                    for data in f:
-                        data = data.rstrip('\n')
-                        data = [col.strip() for col in data.split(',')]
-                        self.latitude = data[0]
-                        self.longitude = data[1]         
-        # self.latitude = "42.357134"
-        # self.longitude = "-83.070308"
-        # except:
-        #     pass
+                if getattr(sys, 'frozen', False):
+                    file = Path(os.path.dirname(sys.executable) + "/.latest-location.txt")
+                else:
+                    file = Path(os.path.dirname(os.path.abspath(__file__)) + "/.latest-location.txt")
+                if file.is_file():
+                    with open(str(file), 'r') as f:
+                        for data in f:
+                            data = data.rstrip('\n')
+                            data = [col.strip() for col in data.split(',')]
+                            self.latitude = data[0]
+                            self.longitude = data[1]         
+            # self.latitude = "42.357134"
+            # self.longitude = "-83.070308"
+        except:
+            pass
 
     def saveLatestGpsCoords(self):
         if getattr(sys, 'frozen', False):
