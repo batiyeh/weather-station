@@ -25,12 +25,12 @@ class Graph extends Component{
     }
 
     componentWillReceiveProps(nextProps){
-        console.log(nextProps.from);
-        console.log(this.state.from);
+        console.log(this.state.data);
         if(nextProps.data !== this.state.data){
-         this.setState({
-          data: nextProps.data
-        })
+            this.setState({
+                data: nextProps.data
+            });
+            console.log("we in here");
         }
         if(nextProps.stations !== this.state.stations){
             this.setState({
@@ -52,7 +52,21 @@ class Graph extends Component{
                 sensorType: nextProps.sensorType
             })
         }
-        console.log(this.state.sensorType);
+        console.log(this.state.data);
+        var data;
+        var stations = this.state.stations;
+        for (var station_name in this.state.data) {
+            data = this.state.data[station_name];
+            //this.createLines(station_name, data["sensorData"], data["dates"]);
+            if(stations.includes(station_name)){
+                //create the lines for each station based on its data that has been passec
+                this.createLine(station_name, data["points"])
+            }
+        }
+    }
+    componentWillUpdate(){
+
+
     }
 
     componentDidMount(){
@@ -104,6 +118,7 @@ class Graph extends Component{
     }
 
     render(){
+        console.log(this.state.datasets);
         //render each dataset that has been made below sets the styling of the overall graph and chart not the lines
         if (this.state.sensorType === 'temperature'){
             if (this.state.datasets["datasets"].length > 0){

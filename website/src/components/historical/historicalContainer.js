@@ -144,6 +144,7 @@ class HistoricalContainer extends Component{
             stationsData: newStationsDict,
             loading: false // set loading to false so that graph can be rendered
         });
+        console.log(this.state.stationsData);
 
     };
 
@@ -169,14 +170,14 @@ class HistoricalContainer extends Component{
 
 
     //function upon hitting submit in the modal with new data to update the graph and close the modal
-    updateGraph(){
+    updateGraph= async () => {
         this.setState({
-            //loading: true,
+            loading: false,
             modal: false
-        })
-        this.getSensorData() //call the async function to get the data based on the new parameters set by the filter
-        console.log(this.state.fromDate);
-    }
+        });
+        await this.getSensorData();//call the async function to get the data based on the new parameters set by the filter
+        console.log(this.state.stationsData);
+    };
 
     renderStations(){
         var options = [];
