@@ -76,8 +76,6 @@ router.post('/login', async function(req, res){
 
     req.session.username = username;
     req.session.save();
-
-    console.log(req.session.username);
     
     res.status(200).json({redirect: 'true', errors: []})
 });
