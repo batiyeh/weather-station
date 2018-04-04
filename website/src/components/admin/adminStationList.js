@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Button, Alert, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, Alert, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input, FormFeedback } from 'reactstrap';
 import AdminStationCard from './adminStationCard'
 import moment from 'moment';
+import _ from 'lodash'
 import DatePicker  from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
 const crypto = require('crypto');
@@ -17,7 +18,8 @@ class AdminStationList extends Component {
             modal: false,
             apikey: '',
             name: '',
-            expiration: ''
+            expiration: '',
+            error: ''
         };
         this.toggleAddStationModal = this.toggleAddStationModal.bind(this);
         this.deleteStation = this.deleteStation.bind(this);
@@ -79,9 +81,19 @@ class AdminStationList extends Component {
               }
         });
         var body = await response.json();
-        this.setState({name: ''});
-        this.toggleAddStationModal();
-        this.updateStations();
+        if (!_.isUndefined(body.error)){
+            this.setState({
+                error: body.error,
+            })
+        }
+
+        else {
+            this.setState({name: ''});
+            this.setState({ error: "" })
+            this.toggleAddStationModal("save");
+            this.updateStations();
+        }
+
         return body;
     }
 
@@ -125,15 +137,44 @@ class AdminStationList extends Component {
         });
     }
 
+    // Render the station name input with or without errors
+    renderNameInput(){
+        if (this.state.error.length > 0){
+            return (
+                <FormGroup>
+                    <Input type="text" className="station_name is-invalid" name="station_name" id="station_name" placeholder="Name" onChange={e => this.onNameChange(e.target.value)} value={this.state.name}></Input>
+                    <FormFeedback>{this.state.error}</FormFeedback>
+                </FormGroup>
+            );
+        }
+
+        else
+            return (
+                <FormGroup>
+                    <Input id='station_name' name='station_name' type='text' className='form-control' placeholder='Name' onChange={e => this.onNameChange(e.target.value)} value={this.state.name}/>
+                </FormGroup>
+            );
+    }
+
     // Create a random API key of length 10 and open the modal
-    toggleAddStationModal(){
-        crypto.randomBytes(10, function(err, buf){
-            var token = buf.toString('hex');
+    toggleAddStationModal(clicked){
+        if (this.state.modal === false){
+            crypto.randomBytes(10, function(err, buf){
+                var token = buf.toString('hex');
+                this.setState({
+                    modal: !this.state.modal,
+                    apikey: token
+                });
+            }.bind(this));
+        }
+
+        else{
+            var error = (this.state.error !== "" && clicked === "save") ? "" : this.state.error;
             this.setState({
                 modal: !this.state.modal,
-                apikey: token
+                error: error,
             });
-        }.bind(this));
+        }
     }
 
     render() {
@@ -145,7 +186,7 @@ class AdminStationList extends Component {
                             <form className="add-station-form">
                                 <div className='form-group'>
                                     <label>Name:</label>
-                                    <input id='station_name' name='station_name' type='text' className='form-control' placeholder='Name' onChange={e => this.onNameChange(e.target.value)} value={this.state.name}/>
+                                    { this.renderNameInput() }
                                 </div>
                                 <div className='form-group'>
                                     <label className="form-label">Expiration:</label>

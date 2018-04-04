@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../../styles/admin.css';
-import { Button, Card, CardText, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, Card, CardText, Modal, ModalHeader, ModalBody, ModalFooter, FormFeedback, Input, FormGroup } from 'reactstrap';
 import DatePicker  from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
 import moment from 'moment';
@@ -15,9 +15,11 @@ class AdminStationCard extends Component {
         }
         this.state = {
             modal: false,
+            station: props.station,
             name: props.station.station_name,
             apikey: props.station.apikey,
-            expiration: expiration
+            expiration: expiration,
+            error: "",
         }
 
         this.toggleEditStation = this.toggleEditStation.bind(this);
@@ -25,10 +27,24 @@ class AdminStationCard extends Component {
     }
 
     // Toggle the station detail modal open/closed
-    toggleEditStation(){
-        this.setState({
-            modal: !this.state.modal
-        });
+    toggleEditStation(clicked){
+        var name = this.state.name;
+        name = (clicked === "cancel") ? this.props.station.station_name : name;
+        
+        if (this.state.error !== ""){
+            this.setState({
+                modal: !this.state.modal,
+                error: "",
+                name: name
+            });
+        }
+
+        else{
+            this.setState({
+                modal: !this.state.modal,
+                name: name
+            });
+        }
     }
 
     saveStation = async() => {
@@ -41,8 +57,36 @@ class AdminStationCard extends Component {
               }
         });
         var body = await response.json();
-        this.toggleEditStation();
+        if (!_.isUndefined(body.error)){
+            this.setState({
+                error: body.error,
+            })
+        }
+
+        else {
+            this.setState({ error: "" })
+            this.toggleEditStation("save");
+        }
         return body;
+    }
+
+    // Render the station name input with or without errors
+    renderNameInput(){
+        if (this.state.error.length > 0){
+            return (
+                <FormGroup>
+                    <Input type="text" className="station_name is-invalid" name="station_name" id="station_name" placeholder="Name" onChange={e => this.onNameChange(e.target.value)} value={this.state.name}></Input>
+                    <FormFeedback>{this.state.error}</FormFeedback>
+                </FormGroup>
+            );
+        }
+
+        else
+            return (
+                <FormGroup>
+                    <Input id='station_name' name='station_name' type='text' className='form-control' placeholder='Name' onChange={e => this.onNameChange(e.target.value)} value={this.state.name}/>
+                </FormGroup>
+            );
     }
 
     // Update the station name state on input change
@@ -62,11 +106,11 @@ class AdminStationCard extends Component {
         return (
             <div className="col-12 admin-station-container">
                 <Modal isOpen={this.state.modal} toggle={this.toggleEditStation}>
-                    <ModalHeader toggle={this.toggleEditStation}>Station Info</ModalHeader>
+                    <ModalHeader toggle={() => this.toggleEditStation("cancel")}>Station Info</ModalHeader>
                     <ModalBody>
                         <div className='form-group'>
                             <label>Name:</label>
-                            <input id='station_name' name='station_name' type='text' className='form-control' placeholder='Name' onChange={e => this.onNameChange(e.target.value)} value={this.state.name}/>
+                            { this.renderNameInput() }
                         </div>
                         <div className='form-group'>
                             <label className="form-label">Expiration:</label>
@@ -90,7 +134,7 @@ class AdminStationCard extends Component {
                             </div>
                             <div className="save-changes-container right">
                                 <Button color="primary" className="primary-themed-btn" onClick={this.saveStation}>Save Changes</Button>
-                                <Button color="secondary" className="cancel-btn" onClick={this.toggleEditStation}>Cancel</Button>
+                                <Button color="secondary" className="cancel-btn" onClick={() => this.toggleEditStation("cancel")}>Cancel</Button>
                             </div>
                         </div>
                     </ModalFooter>

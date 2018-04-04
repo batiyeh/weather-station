@@ -73,7 +73,7 @@ class StationCard extends Component {
         var name = this.state.name;
         name = (clicked === "cancel") ? this.props.station.station_name : name;
         
-        if (this.state.error != ""){
+        if (this.state.error !== ""){
             this.setState({
                 modal: !this.state.modal,
                 error: "",
@@ -198,7 +198,7 @@ class StationCard extends Component {
         return (
             <div className="col-12 station-container">
                 <Modal isOpen={this.state.modal} className="station-detail-modal" toggle={this.toggleStationDetail}>
-                    <ModalHeader toggle={this.toggleStationDetail}>Station Detail View</ModalHeader>
+                    <ModalHeader toggle={() => this.toggleStationDetail("cancel")}>Station Detail View</ModalHeader>
                     <ModalBody>
                         { this.renderNameInput() }
                         <div className="station-detail-container">
