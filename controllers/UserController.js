@@ -7,7 +7,6 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const async = require('async');
-const passport = require('passport');
 const nodemailer = require('nodemailer');
 const LocalStrategy = require('passport-local').Strategy;
 
@@ -60,43 +59,31 @@ router.post('/create', async function(req, res){
     }
 });
 
-//writes username into cookie
-passport.serializeUser(function(user, done){
-    done(null, user.attributes.username);
-});
-
-//erases username from cookie
-passport.deserializeUser(async function(username, done){
-    var user = await User.where({username: username}).fetch()
-        if(user)
-            done(null, user.attributes.username);
-});
-
-//Verifies user login credentials
-passport.use(new LocalStrategy(
-    async function(username, password, done) {
-        var user = await User.where({username: username}).fetch()
-            if(!user)
-                return done(null, false, {message: 'Invalid username/password'});
-            
-        var check = await bcrypt.compare(password, user.attributes.password);
-            if(check)
-                return done(null, user);
-            
-        return done(null, false, {message: 'Invalid username/password'});
-    }
-));
-
 //calls passport authentication on login
-router.post('/login', passport.authenticate('local', {failureRedirect:'/user/login'}), 
-    function(req, res){
-        res.redirect('/');
+router.post('/login', async function(req, res){
+    var username = req.body.username;
+    var password = req.body.password;
+
+    var user = await User.where({username: username}).fetch();
+    if(!user){
+        return res.status(401).json({redirect: false, errors: [{msg: "Invalid Username/Password"}]})
+    }
+    
+    var check = await bcrypt.compare(password, user.attributes.password);
+    if(!check){
+        return res.status(401).json({redirect: false, errors: [{msg: "Invalid Username/Password"}]})
+    }
+
+    req.session.username = username;
+    req.session.save();
+    
+    res.status(200).json({redirect: 'true', errors: []})
 });
 
 //used to verify user is logged in on each page
 router.post('/getUserInfo', async function(req,res){
-    if(req.user){
-        var user = await User.where({username: req.user}).fetch();
+    if(req.session.username){
+        var user = await User.where({username: req.session.username}).fetch();
 
         res.json({username: user.attributes.username, email: user.attributes.email,
         phone: user.attributes.phone, permissions: user.attributes.permissions});
@@ -197,7 +184,7 @@ router.post('/reset/:token', function(req, res){
 router.post('/editProfile', async function(req, res){
     var email = req.body.email;
     var phone = req.body.phone;
-    var user = await User.where({username: req.user}).fetch()
+    var user = await User.where({username: req.session.username}).fetch()
     
     if(email){
         var dbEmail = "";
@@ -237,7 +224,7 @@ router.post('/editProfile', async function(req, res){
     }
     else{
         //updates user profile
-        await User.where({username: req.user}).save({
+        await User.where({username: req.session.username}).save({
             email: email,
             phone: phone,
         },{patch:true});
@@ -250,7 +237,7 @@ router.post('/editPassword', async function(req, res){
     var currPass = req.body.currPass;
     var newPass = req.body.newPass;
 
-    var user = await User.where({username: req.user}).fetch()
+    var user = await User.where({username: req.session.username}).fetch()
     if(!user)
         console.log('Invalid username');//(this shouldnt happen ever)
 
@@ -270,7 +257,7 @@ router.post('/editPassword', async function(req, res){
         else{
             //updates user password in db
             await bcrypt.hash(newPass, 10, function(err,hash){
-                User.where({username: req.user}).save({
+                User.where({username: req.session.username}).save({
                     password: hash,
                 },{patch:true})
             })
