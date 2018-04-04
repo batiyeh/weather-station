@@ -47,15 +47,17 @@ class HistoricalContainer extends Component{
 
     //When the to date value is changed in the modal it is handled here
     handleToChange(date) {
+        var newDate = date.format("YYYY-MM-DD HH:mm:ss");
         this.setState({
-            toDate: date
+            toDate: newDate
         });
     }
 
     //When the from date value is changed in the modal it is handled here
     handleFromChange(date) {
+        var newDate = date.format("YYYY-MM-DD HH:mm:ss");
         this.setState({
-            fromDate: date
+            fromDate: newDate
         });
     }
 
@@ -169,10 +171,11 @@ class HistoricalContainer extends Component{
     //function upon hitting submit in the modal with new data to update the graph and close the modal
     updateGraph(){
         this.setState({
-            loading: false,
+            //loading: true,
             modal: false
         })
         this.getSensorData() //call the async function to get the data based on the new parameters set by the filter
+        console.log(this.state.fromDate);
     }
 
     renderStations(){
