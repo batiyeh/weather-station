@@ -4,15 +4,22 @@ import json
 import sys
 import requests
 import datetime
+import yaml
 from pathlib import Path
 from textstorage import TextStorage
 from sensors import Sensors
 
 class Client(object):
-    URL = "http://67.205.153.103:5000"
     WAIT_TIME = 5
 
     def main(self):
+        with open("config.yaml", 'r') as stream:
+            try:
+                config = yaml.load(stream)
+            except yaml.YAMLError as exc:
+                print(exc)
+
+        self.URL = "http://" + str(config['server']['host']) + ":" + str(config['server']['port']) 
         self.apikey = self.getApiKey()
         textStorage = TextStorage(self.URL)
         sensors = Sensors()

@@ -3,6 +3,7 @@ import datetime
 import os
 import subprocess
 import sys
+import yaml
 from collections import OrderedDict
 from pathlib import Path
 try:
@@ -28,13 +29,18 @@ except:
 
 class Sensors(object):
     def __init__(self):
+        with open("config.yaml", 'r') as stream:
+            try:
+                config = yaml.load(stream)
+            except yaml.YAMLError as exc:
+                print(exc)
         self.temperature = 0.0
         self.pressure = 0.0
         self.humidity = 0.0
         self.dataIndex = 0
         self.latitude = "n/a"
         self.longitude = "n/a"
-        self.pin = 14
+        self.pin = config['sensors']['temp_pin']
 
     def initializeSensors(self):
         # Instantiate GPS data retrieval mechanism
