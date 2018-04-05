@@ -25,12 +25,12 @@ class Graph extends Component{
     }
 
     componentWillReceiveProps(nextProps){
-        console.log(this.state.data);
+        console.log("we in will rec");
         if(nextProps.data !== this.state.data){
             this.setState({
                 data: nextProps.data
             });
-            console.log("we in here");
+            console.log("state should be set");
         }
         if(nextProps.stations !== this.state.stations){
             this.setState({
@@ -52,21 +52,27 @@ class Graph extends Component{
                 sensorType: nextProps.sensorType
             })
         }
-        console.log(this.state.data);
-        var data;
-        var stations = this.state.stations;
-        for (var station_name in this.state.data) {
-            data = this.state.data[station_name];
-            //this.createLines(station_name, data["sensorData"], data["dates"]);
-            if(stations.includes(station_name)){
-                //create the lines for each station based on its data that has been passec
-                this.createLine(station_name, data["points"])
-            }
-        }
+    }
+
+    shouldComponentUpdate(nextProps, nextState){
+        return true;
     }
     componentWillUpdate(){
 
+    }
 
+    componentDidUpdate(){
+        console.log(this.state.data[station_name]);
+        // var data;
+        // var stations = this.state.stations;
+        // for (var station_name in this.state.data) {
+        //     data = this.state.data[station_name];
+        //     //this.createLines(station_name, data["sensorData"], data["dates"]);
+        //     if(stations.includes(station_name)){
+        //         //create the lines for each station based on its data that has been passec
+        //         this.createLine(station_name, data["points"])
+        //     }
+        // }
     }
 
     componentDidMount(){
