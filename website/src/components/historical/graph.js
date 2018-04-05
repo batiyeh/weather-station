@@ -30,14 +30,34 @@ class Graph extends Component{
         var from = (nextProps.from !== this.state.from) ? nextProps.from : this.state.from;
         var to = (nextProps.to !== this.state.to) ? nextProps.to : this.state.to;
         var sensorType = (nextProps.sensorType !== this.state.sensorType) ? nextProps.sensorType : this.state.sensorType;
-        
-        this.setState({
-            data: data,
-            stations: stations,
-            from: from,
-            to: to,
-            sensorType: sensorType 
-        });
+
+        if (data !== this.state.data || stations !== this.state.station || from !== this.state.from ||
+            to !== this.state.to || sensorType !== this.state.sensorType){
+                this.setState({
+                    data: data,
+                    stations: stations,
+                    from: from,
+                    to: to,
+                    sensorType: sensorType ,
+                    datasets: {"datasets": []}
+                }, () => {
+                    colorIndex = 0;
+                    this.updateGraph();
+                });
+        }
+    }
+
+    updateGraph(){
+        var data;
+        var stations = this.state.stations;
+        for (var station_name in this.state.data) {
+            data = this.state.data[station_name];
+            //this.createLines(station_name, data["sensorData"], data["dates"]);
+            if(stations.includes(station_name)){
+                //create the lines for each station based on its data that has been passec
+                this.createLine(station_name, data["points"])
+            }
+        }
     }
 
     componentDidUpdate(){
@@ -103,222 +123,92 @@ class Graph extends Component{
     }
 
     render(){
-        console.log(this.state.datasets);
         //render each dataset that has been made below sets the styling of the overall graph and chart not the lines
         if (this.state.sensorType === 'temperature'){
-            if (this.state.datasets["datasets"].length > 0){
-                return(
-                    <div className='graph'>
-                        <Scatter
-                            data={this.state.datasets}      //load in the datasets aka lines to be drawn
-                            width={this.state.width}        // set the width and the height
-                            height={this.state.height}
-                            // spanGaps={{}}
-                            options={{
-                                maintainAspectRatio: false,    //options setup the styling for the graph setting the x and y axis
-                                showLines: true,
-                                scales: {
-                                    xAxes: [{
-                                        stacked: false,
-                                        scaleLabel: {
-                                            display: true,
-                                            labelString: 'Time',
-                                            fontFamily: 'Roboto Mono',
-                                            fontColor: '#000',
-                                            fontSize: 15
-                                        },
-                                        type: 'time',
-                                        gridLines: {
-                                            drawBorder: true,
-                                        },
-                                        ticks: {
-                                            fontColor: '#000',
-                                            fontFamily: 'Roboto Mono',
-                                            fontSize: 15
-                                        },
-                                    }],
-                                    yAxes: [{
-                                        scaleLabel: {
-                                            display: true,
-                                            labelString: 'Temperature',
-                                            fontFamily: 'Roboto Mono',
-                                            fontColor: '#000',
-                                            fontSize: 15
-                                        },
-                                        type: 'linear',
-                                        ticks: {
-                                            fontColor: '#000',
-                                            fontFamily: 'Roboto Mono',
-                                            fontSize: 15,
-                                            callback: function(value, index, values) {
-                                                return value + '°';     // add the degree symbol to the points on the y axis
-                                            }
-                                        },
-                                        gridLines: {
-                                            borderDash: [2,1],
-                                            drawBorder: false
-                                        }
-                                    }],
-                                },
-                            }}
-                        />
-                    </div>
-                );
-
-            }
-            else{ //if there is nothing loaded in to data sets thats because no data was returned so no weather data
-                return(
-                    <div className='col-12 no-data-alert'>
-                        <Alert color="primary">There is no weather data for this filter.</Alert>
-                    </div>
-                );
-            }
-
-        }
-        else if(this.state.sensorType === 'pressure'){
-            if (this.state.datasets["datasets"].length > 0){
-                //console.log(this.state.datasets);
-                return(
-                    <div className='graph'>
-                        <Line
-                            data={this.state.datasets}
-                            width={this.state.width}
-                            height={this.state.height}
-                            options={{
-                                maintainAspectRatio: false,
-                                showLines: true,
-                                scales: {
-                                    xAxes: [{
-                                        scaleLabel: {
-                                            display: true,
-                                            labelString: 'Time',
-                                            fontFamily: 'Roboto Mono',
-                                            fontColor: '#000',
-                                            fontSize: 15
-                                        },
-                                        type: 'time',
-                                        gridLines: {
-                                            drawBorder: true,
-                                        },
-                                        ticks: {
-                                            fontColor: '#000',
-                                            fontFamily: 'Roboto Mono',
-                                            fontSize: 15
-                                        },
-                                        time: {
-                                            displayFormats: {
-                                                quarter: 'MM D YYYY'    /*Displays month day year*/
-                                            }
-                                        },
-                                    }],
-                                    yAxes: [{
-                                        scaleLabel: {
-                                            display: true,
-                                            labelString: 'Pressure',
-                                            fontFamily: 'Roboto Mono',
-                                            fontColor: '#000',
-                                            fontSize: 15
-                                        },
-                                        type: 'linear',
-                                        ticks: {
-                                            fontColor: '#000',
-                                            fontFamily: 'Roboto Mono',
-                                            fontSize: 15,
-                                            callback: function(value, index, values) {
-                                                return value + 'hPa';
-                                            }
-                                        },
-                                        gridLines: {
-                                            borderDash: [2,1],
-                                            drawBorder: false
-                                        }
-                                    }],
-                                },
-                            }}
-                        />
-                    </div>
-                );
-            }
-
-            else{
-                return(
-                    <div className='col-12 no-data-alert'>
-                        <Alert color="primary">There is no weather data for this filter.</Alert>
-                    </div>
-                );
+            var labelString = "Temperature";
+            var callback = function(value, index, values) {
+                return value + '°';     // add the degree symbol to the points on the y axis
             }
         }
-        else if(this.state.sensorType === 'humidity'){
-            if (this.state.datasets["datasets"].length > 0){
-                return(
-                    <div className='graph'>
-                        <Scatter
-                            data={this.state.datasets}
-                            width={this.state.width}
-                            height={this.state.height}
-                            options={{
-                                maintainAspectRatio: false,
-                                showLines: true,
-                                scales: {
-                                    xAxes: [{
-                                        scaleLabel: {
-                                            display: true,
-                                            labelString: 'Time',
-                                            fontFamily: 'Roboto Mono',
-                                            fontColor: '#000',
-                                            fontSize: 15
-                                        },
-                                        type: 'time',
-                                        gridLines: {
-                                            drawBorder: true,
-                                        },
-                                        ticks: {
-                                            fontColor: '#000',
-                                            fontFamily: 'Roboto Mono',
-                                            fontSize: 15
-                                        },
-                                        time: {
-                                            displayFormats: {
-                                                quarter: 'MMM D YYYY'    /*Displays month day year*/
-                                            }
-                                        },
-                                    }],
-                                    yAxes: [{
-                                        scaleLabel: {
-                                            display: true,
-                                            labelString: 'Humidity',
-                                            fontFamily: 'Roboto Mono',
-                                            fontColor: '#000',
-                                            fontSize: 15
-                                        },
-                                        type: 'linear',
-                                        ticks: {
-                                            fontColor: '#000',
-                                            fontFamily: 'Roboto Mono',
-                                            fontSize: 15,
-                                            callback: function(value, index, values) {
-                                                return value + '%';
-                                            }
-                                        },
-                                        gridLines: {
-                                            borderDash: [2,1],
-                                            drawBorder: false
-                                        }
-                                    }],
-                                },
-                            }}
-                        />
-                    </div>
-                );
-            }
 
-            else{
-                return(
-                    <div className='col-12 no-data-alert'>
-                        <Alert color="primary">There is no weather data for this filter.</Alert>
-                    </div>
-                );
+        if (this.state.sensorType === 'humidity'){
+            var labelString = "Humidity";
+            var callback = function(value, index, values) {
+                return value + '%';     // add the degree symbol to the points on the y axis
             }
+        }
+
+        if (this.state.sensorType === 'pressure'){
+            var labelString = "Pressure";
+            var callback = function(value, index, values) {
+                return value + 'hPa';     // add the degree symbol to the points on the y axis
+            }
+        }
+
+        if (this.state.datasets["datasets"].length > 0){
+            return(
+                <div className='graph'>
+                    <Scatter
+                        data={this.state.datasets}      //load in the datasets aka lines to be drawn
+                        width={this.state.width}        // set the width and the height
+                        height={this.state.height}
+                        // spanGaps={{}}
+                        options={{
+                            maintainAspectRatio: false,    //options setup the styling for the graph setting the x and y axis
+                            showLines: true,
+                            scales: {
+                                xAxes: [{
+                                    stacked: false,
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Time',
+                                        fontFamily: 'Roboto Mono',
+                                        fontColor: '#000',
+                                        fontSize: 15
+                                    },
+                                    type: 'time',
+                                    gridLines: {
+                                        drawBorder: true,
+                                    },
+                                    ticks: {
+                                        fontColor: '#000',
+                                        fontFamily: 'Roboto Mono',
+                                        fontSize: 15
+                                    },
+                                }],
+                                yAxes: [{
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: labelString,
+                                        fontFamily: 'Roboto Mono',
+                                        fontColor: '#000',
+                                        fontSize: 15
+                                    },
+                                    type: 'linear',
+                                    ticks: {
+                                        fontColor: '#000',
+                                        fontFamily: 'Roboto Mono',
+                                        fontSize: 15,
+                                        callback: callback
+                                    },
+                                    gridLines: {
+                                        borderDash: [2,1],
+                                        drawBorder: false
+                                    }
+                                }],
+                            },
+                        }}
+                    />
+                </div>
+            );
+
+        }
+        else{ //if there is nothing loaded in to data sets thats because no data was returned so no weather data
+            return(
+                <div className='col-12 no-data-alert'>
+                    <Alert color="primary">There is no weather data for this filter.</Alert>
+                </div>
+            );
         }
     }
 }

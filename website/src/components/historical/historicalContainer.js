@@ -98,7 +98,7 @@ class HistoricalContainer extends Component{
                 this.state.toBeDrawn.push(names[i].station_name)
             }
         }
-        this.setState({ stations: names });
+        return names;
     };
 
 
@@ -138,14 +138,13 @@ class HistoricalContainer extends Component{
 
         }
         var newStationsDict = this.processDataPoints(stationsDict);
-        await this.getStations();
+        var names = await this.getStations();
         this.setState({
             // end the async function by setting the state so that the stations dictionary is stored in stations data
             stationsData: newStationsDict,
-            loading: false // set loading to false so that graph can be rendered
+            loading: false, // set loading to false so that graph can be rendered
+            stations: names
         });
-        console.log(this.state.stationsData);
-
     };
 
     processDataPoints(stationsDict){
@@ -156,7 +155,7 @@ class HistoricalContainer extends Component{
             data = stationsDict[station_name];
             newStationsDict[station_name] = {};
             for(var i = 0; i < data["points"].length; i++){
-                if ( i % 180 === 0){
+                if ( i % 10 === 0){
                     var date = moment(data["points"][i]["x"]).utc(data["points"][i]["x"]).local().format("MM/DD/YY HH:mm:ss")
                     points.unshift({x: date, y: data["points"][i]["y"]});
                 }
@@ -170,13 +169,11 @@ class HistoricalContainer extends Component{
 
 
     //function upon hitting submit in the modal with new data to update the graph and close the modal
-    updateGraph= async () => {
+    updateGraph = async () => {
         this.setState({
-            loading: false,
             modal: false
         });
         await this.getSensorData();//call the async function to get the data based on the new parameters set by the filter
-        console.log(this.state.stationsData);
     };
 
     renderStations(){
