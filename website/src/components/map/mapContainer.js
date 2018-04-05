@@ -21,6 +21,7 @@ export class MapContainer extends Component {
             clickKey: null,
             showLabels: this.props.showLabels,
             mode: this.props.mapMode,
+            mapOnly: this.props.mapOnly,
             showAverages: false,
             averagesCenter: [],
             averages: {}
@@ -94,40 +95,42 @@ export class MapContainer extends Component {
 
     // Directly access the google maps api once google-maps-react library is done loading
     handleGoogleMapApi(google){
-        this.map = google.map;
-        this.maps = google.maps;
+        if (this.state.mapOnly === false){
+            this.map = google.map;
+            this.maps = google.maps;
 
-        // Set up the google maps api drawing manager
-        const drawingManager = new this.maps.drawing.DrawingManager({
-            drawingControl: true,
-            drawingControlOptions: {
-                position: this.maps.ControlPosition.BOTTOM_CENTER,
-                drawingModes: [
-                    this.maps.drawing.OverlayType.MARKER,
-                    this.maps.drawing.OverlayType.CIRCLE
-                ]
-            },
-            markerOptions: {icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'},
-            circleOptions: {
-                fillColor: '#fff',
-                fillOpacity: 0.4,
-                strokeWeight: 3,
-                clickable: false,
-                editable: true,
-                zIndex: 1
-            }
-        });
-        drawingManager.setMap(this.map);
-        this.drawingManager = drawingManager;
-        this.updateMapMode(this.state.mode);
+            // Set up the google maps api drawing manager
+            const drawingManager = new this.maps.drawing.DrawingManager({
+                drawingControl: true,
+                drawingControlOptions: {
+                    position: this.maps.ControlPosition.BOTTOM_CENTER,
+                    drawingModes: [
+                        this.maps.drawing.OverlayType.MARKER,
+                        this.maps.drawing.OverlayType.CIRCLE
+                    ]
+                },
+                markerOptions: {icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'},
+                circleOptions: {
+                    fillColor: '#fff',
+                    fillOpacity: 0.4,
+                    strokeWeight: 3,
+                    clickable: false,
+                    editable: true,
+                    zIndex: 1
+                }
+            });
+            drawingManager.setMap(this.map);
+            this.drawingManager = drawingManager;
+            this.updateMapMode(this.state.mode);
 
-        // When a circle is done drawing, delete the existing one and 
-        // average the weather data for the new circle
-        this.maps.event.addListener(drawingManager, 'circlecomplete', (circle) => {
-            if (!_.isUndefined(this.averageCircle)) this.averageCircle.setMap(null);
-            this.averageCircle = circle;
-            this.averageWeather(circle);
-        });
+            // When a circle is done drawing, delete the existing one and 
+            // average the weather data for the new circle
+            this.maps.event.addListener(drawingManager, 'circlecomplete', (circle) => {
+                if (!_.isUndefined(this.averageCircle)) this.averageCircle.setMap(null);
+                this.averageCircle = circle;
+                this.averageWeather(circle);
+            });
+        }
     }
 
     // Switch between drawing and moving around the map modes
@@ -218,39 +221,39 @@ export class MapContainer extends Component {
         return (
             <div id="map" className="map">
                 <GoogleMap
-                        bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAPS_KEY, libraries: ['drawing'].join(',') }}
-                        center={this.state.center}
-                        zoom={this.state.zoom}
-                        hoverDistance={MARKER_SIZE - 10}
-                        onBoundsChange={this._onBoundsChange}
-                        onChildClick={this._onChildClick}
-                        onChildMouseEnter={this._onChildMouseEnter}
-                        onChildMouseLeave={this._onChildMouseLeave}
-                        yesIWantToUseGoogleMapApiInternals
-                        onGoogleApiLoaded={this.handleGoogleMapApi.bind(this)}
-                        style={style}>
-                        {this.state.stations
-                            .map((station, index) => {
-                                if (station.latitude !== "n/a" && station.longitude !== "n/a"){
-                                    return (
-                                            <Marker
-                                                key={station.apikey}
-                                                markerId={index}
-                                                lat={station.latitude}
-                                                lng={station.longitude}
-                                                station={station}
-                                                hover={this.state.hoverKey === station.apikey}
-                                                label={this.state.showLabels}
-                                            />
-                                    );
-                                }
+                    bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAPS_KEY, libraries: ['drawing'].join(',') }}
+                    center={this.state.center}
+                    zoom={this.state.zoom}
+                    hoverDistance={MARKER_SIZE - 10}
+                    onBoundsChange={this._onBoundsChange}
+                    onChildClick={this._onChildClick}
+                    onChildMouseEnter={this._onChildMouseEnter}
+                    onChildMouseLeave={this._onChildMouseLeave}
+                    yesIWantToUseGoogleMapApiInternals
+                    onGoogleApiLoaded={this.handleGoogleMapApi.bind(this)}
+                    style={style}>
+                    {this.state.stations
+                        .map((station, index) => {
+                            if (station.latitude !== "n/a" && station.longitude !== "n/a"){
+                                return (
+                                        <Marker
+                                            key={station.apikey}
+                                            markerId={index}
+                                            lat={station.latitude}
+                                            lng={station.longitude}
+                                            station={station}
+                                            hover={this.state.hoverKey === station.apikey}
+                                            label={this.state.showLabels}
+                                        />
+                                );
+                            }
 
-                                else{
-                                    return null;
-                                }
-                            })
-                        }
-                        { this.renderAverages() }
+                            else{
+                                return null;
+                            }
+                        })
+                    }
+                    { this.renderAverages() }
                 </GoogleMap>
             </div>
         ); 

@@ -1,37 +1,19 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router';
+import Cookies from 'js-cookie';
+import _ from 'lodash';
 
 class VerifyLoggedIn extends Component{
     constructor() {
         super();
-        this.username = null;
+        var verified = Cookies.get('loggedIn')
+        if (_.isUndefined(verified)) verified = 'false';
         this.state = {
-            redirect: false
-        }
-    }
-    //when component loads, calls function verify, if false is returned, sets redirect state to true
-    componentWillMount = async () => {        
-        if(!await this.verify()){
-            this.setState({redirect: true});
-        }
-    }      
-    //does a fetch call that returns the username currently stored in the cookie
-    //if no username is stored, the user is not logged in and returns false
-    verify = async () => {
-        var response = await fetch('/api/user/getUserInfo', {method: 'post', credentials: 'include'})
-        var body = await response.json();
-        this.username = body.username;
-        if(this.username){
-            return true;
-        }
-        else{
-            return false;
+            verified: verified
         }
     }
     render(){
-        const { redirect } = this.state;
-        //if redirect state is set to true, redirects user to login
-        if(redirect) {
+        if(this.state.verified === 'false') {
             return <Redirect to='/user/login'/>;
         }
         else {

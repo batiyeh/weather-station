@@ -10,15 +10,28 @@ const knex = require('knex')(require('../knexfile'));
 router.post('/', async function (req, res) {
     var expiration = req.body.expiration;
     if (expiration === 'Invalid date') expiration = null;
-    // If the station doesn't exist, create a new one and insert it.
-    var result = await new Station({
-        station_name: req.body.station_name,
-        apikey: req.body.api_key,
-        expiration: expiration,
-        connected: false,
-        username: req.body.username
-    }).save()
-    return res.json({result});
+    
+    // If the station name doesn't exist, create a new one and insert it.
+    var station = await knex('stations').select().where('station_name', req.body.station_name);
+    if (station.length > 0){
+        res.json({error: "Station name already exists", redirect: false});
+    }
+
+    else{
+        if (req.body.station_name.length > 64){
+            res.json({error: "Station name is too long. Must be 64 characters or less.", redirect: false});
+        }
+
+        else{
+            var result = await new Station({
+                station_name: req.body.station_name,
+                apikey: req.body.api_key,
+                expiration: expiration,
+                connected: false,
+            }).save()
+            return res.json({result});
+        }
+    }
 });
 
 // Returns all stations in the database
@@ -39,11 +52,24 @@ router.route('/:api_key')
         var expiration = req.body.expiration;
         if (expiration === 'Invalid date') expiration = null;
 
-        var result = await Station.where('apikey', req.params.api_key).save({
-            station_name: req.body.station_name,
-            expiration: expiration
-        }, {patch:true});
-        return res.json({result});
+        var station = await knex('stations').select().where('station_name', req.body.station_name);
+        if (station.length > 0){
+            res.json({error: "Station name already exists", redirect: false});
+        }
+
+        else{
+            if (req.body.station_name.length > 64){
+                res.json({error: "Station name is too long. Must be 64 characters or less.", redirect: false});
+            }
+
+            else{
+                var result = await Station.where('apikey', req.params.api_key).save({
+                    station_name: req.body.station_name,
+                    expiration: expiration
+                }, {patch:true});
+                return res.json({result});
+            }
+        }
     })
     // Delete existing station
     .delete(async function(req, res) {

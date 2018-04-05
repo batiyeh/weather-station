@@ -4,15 +4,22 @@ import json
 import sys
 import requests
 import datetime
+import yaml
 from pathlib import Path
 from textstorage import TextStorage
 from sensors import Sensors
 
 class Client(object):
-    URL = "http://67.205.153.103:5000"
     WAIT_TIME = 5
 
     def main(self):
+        with open("config.yaml", 'r') as stream:
+            try:
+                config = yaml.load(stream)
+            except yaml.YAMLError as exc:
+                print(exc)
+
+        self.URL = "http://" + str(config['server']['host']) + ":" + str(config['server']['port']) 
         self.apikey = self.getApiKey()
         textStorage = TextStorage(self.URL)
         sensors = Sensors()
@@ -42,11 +49,14 @@ class Client(object):
     # Get the API key for server requests
     # TODO: Encrypt the key in the file so it is not accessible
     def getApiKey(self):
-        keyFile = Path(os.path.dirname(os.path.abspath(__file__)) + "/.api-key.txt")
+        if getattr(sys, 'frozen', False):
+            keyFile = Path(os.path.dirname(sys.executable) + "/.api-key.txt")
+        else:
+            keyFile = Path(os.path.dirname(os.path.abspath(__file__)) + "/.api-key.txt")
 
         # If the file already exists read from it
         if keyFile.is_file():
-            with open(str(os.path.dirname(os.path.abspath(__file__))) + "/.api-key.txt", 'r') as f:
+            with open(str(keyFile), 'r') as f:
                 key = f.readline()
             return key
 
@@ -64,12 +74,14 @@ class Client(object):
                     r = requests.post(self.URL + '/api/weather/verifyKey', data = {"apikey": key, "time": datetime.datetime.utcnow()})
                     if (r.status_code == 200):
                         print("Key Verified.")
-                        f = open(str(os.path.dirname(os.path.abspath(__file__))) + "/.api-key.txt", 'w')
+                        f = open(str(keyFile), 'w')
                         f.write(key)
                         f.close()
                         verified = True
                     elif (r.status_code == 400):
                         print("Invalid API key. Please try again.")
+                    elif (r.status_code == 409):
+                        print("API key already taken. Please try again with an unused API key.")
                     else:
                         print("Something went wrong with the server.")
                 except:

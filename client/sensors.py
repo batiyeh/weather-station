@@ -2,6 +2,8 @@ import random
 import datetime
 import os
 import subprocess
+import sys
+import yaml
 from collections import OrderedDict
 from pathlib import Path
 try:
@@ -27,13 +29,18 @@ except:
 
 class Sensors(object):
     def __init__(self):
+        with open("config.yaml", 'r') as stream:
+            try:
+                config = yaml.load(stream)
+            except yaml.YAMLError as exc:
+                print(exc)
         self.temperature = 0.0
         self.pressure = 0.0
         self.humidity = 0.0
         self.dataIndex = 0
         self.latitude = "n/a"
         self.longitude = "n/a"
-        self.pin = 14
+        self.pin = config['sensors']['temp_pin']
 
     def initializeSensors(self):
         # Instantiate GPS data retrieval mechanism
@@ -103,14 +110,15 @@ class Sensors(object):
                 self.temperature = (9.0/5.0) * self.sense.temperature + 32
                 self.pressure = self.sense.pressure
 
+                # TODO: Fix below code as it is buggy with the sense hat (can cause +-700 temps)
                 # Calibrate the temperature to account for CPU temp with the sense hat
-                cpu_temp = subprocess.check_output("vcgencmd measure_temp", shell=True)
-                array = cpu_temp.split("=")
-                array2 = array[1].split("'")
+                # cpu_temp = subprocess.check_output("vcgencmd measure_temp", shell=True)
+                # array = cpu_temp.split("=")
+                # array2 = array[1].split("'")
 
-                cpu_tempf = float(array2[0]) * 9.0 / 5.0 + 32.0
-                cpu_tempf = float("{0:.2f}".format(cpu_tempf))
-                self.temperature = self.temperature - ((cpu_tempf - self.temperature) / 5.466)
+                # cpu_tempf = float(array2[0]) * 9.0 / 5.0 + 32.0
+                # cpu_tempf = float("{0:.2f}".format(cpu_tempf))
+                # self.temperature = self.temperature - ((cpu_tempf - self.temperature) / 5.466)
             except:
                 pass
         # self.temperature = random.uniform(70.0, 73.0)
@@ -127,7 +135,10 @@ class Sensors(object):
                 self.longitude = longitude
                 self.saveLatestGpsCoords()
             else:
-                file = Path(os.path.dirname(os.path.abspath(__file__)) + "/.latest-location.txt")
+                if getattr(sys, 'frozen', False):
+                    file = Path(os.path.dirname(sys.executable) + "/.latest-location.txt")
+                else:
+                    file = Path(os.path.dirname(os.path.abspath(__file__)) + "/.latest-location.txt")
                 if file.is_file():
                     with open(str(file), 'r') as f:
                         for data in f:
@@ -141,7 +152,10 @@ class Sensors(object):
             pass
 
     def saveLatestGpsCoords(self):
-        file = Path(os.path.dirname(os.path.abspath(__file__)) + "/.latest-location.txt")
+        if getattr(sys, 'frozen', False):
+            file = Path(os.path.dirname(sys.executable) + "/.latest-location.txt")
+        else:
+            file = Path(os.path.dirname(os.path.abspath(__file__)) + "/.latest-location.txt")
         f = open(str(file), 'w')
         f.write(str(self.latitude) + "," + str(self.longitude))
         f.close()

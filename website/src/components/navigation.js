@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import '../styles/navbar.css';
 import logo from '../images/space-satellite-dish-512x512.png';
+import Cookies from 'js-cookie';
 import { Link, Redirect} from 'react-router-dom';
 import {
     Navbar,
@@ -138,6 +139,8 @@ class Navigation extends Component {
     }
 
     logout = async() => {
+        await Cookies.set('loggedIn', false);
+
         var response = await fetch('/api/user/logout', {method: 'post', credentials: 'include'})
         var body = await response.json();
         this.setState({

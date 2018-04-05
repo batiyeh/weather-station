@@ -2,17 +2,22 @@ import React, { Component } from 'react';
 import '../../styles/login.css';
 import {Alert, Button, Input} from 'reactstrap';
 import { Redirect } from 'react-router';
+import Cookies from 'js-cookie';
+import _ from 'lodash';
 
 class CreateUserForm extends Component {
     constructor(props){
         super(props);
+        var loggedIn = Cookies.get('loggedIn')
+        if (_.isUndefined(loggedIn)) loggedIn = false;
         this.state={
             redirect: false,
             username: '',
             email: '',
             password: '',
             confirmPass: '',
-            errors: []
+            errors: [],
+            loggedIn: loggedIn 
         };
         this.submitForm = this.submitForm.bind(this);
         this.renderErrors = this.renderErrors.bind(this);
@@ -75,11 +80,14 @@ class CreateUserForm extends Component {
     }
     render(){
         //redirects user if the flag was set
-        if(this.state.redirect){
-        return ( <Redirect to='/user/login'/>)
+        if(this.state.loggedIn === 'true'){
+            return(<Redirect to='/'/>)
+        }
+        else if(this.state.redirect){
+            return ( <Redirect to='/user/login'/>)
         }
         else{
-        return(
+            return(
             <div className='register-container'> 
             <h2 className="login-title">Create Account</h2> 
             <form id='createForm'>

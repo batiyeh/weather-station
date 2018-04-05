@@ -32,7 +32,7 @@ class SidebarItem extends Component {
             <div key={this.state.station.apikey} style={{backgroundColor: backgroundColor}} className="list-item-container">
                 <FormGroup check>
                     <Label check>
-                        <Input type="checkbox" defaultChecked={true} onChange={(event) => this.props.checkboxOnChange(event, this.state.station)}/>{' '}
+                        <Input type="checkbox" checked={this.state.checked} onChange={(event) => this.props.checkboxOnChange(event, this.state.station)}/>{' '}
                         <span className="station-name">{this.state.station.station_name}</span>
                     </Label>
                 </FormGroup>

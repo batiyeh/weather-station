@@ -3,7 +3,6 @@ import '../styles/App.css';
 import Navigation from '../components/navigation.js';
 import Station from '../containers/stations.js';
 import Map from '../containers/map.js';
-import Login from '../containers/login.js';
 import Create from '../containers/create.js';
 import Historical from '../containers/historical.js';
 import ResetPassword from '../containers/resetPassword.js';
@@ -11,6 +10,7 @@ import Alerts from '../containers/alerts.js'
 import ProfileForm from '../components/registration/profileForm.js';
 import VerifyLoggedIn from '../components/verifyLoggedIn.js'
 import Admin from '../containers/admin.js'
+import LoginForm from '../components/registration/loginForm.js';
 
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 
@@ -74,6 +74,15 @@ class App extends Component {
     )
   }
 
+  renderLogin = (props) => {
+    return(
+      <div id="login-page">
+      <LoginForm
+      getUser={this.getUser}
+      />
+      </div>
+    )
+  }
   render(props) {
     return (
       <Router>
@@ -82,7 +91,7 @@ class App extends Component {
           <div className="main">
             <Route path="/" component={Station} exact/>
             <Route path="/map" component={Map}/>
-            <Route path="/user/login" component={Login}/>
+            <Route path="/user/login" render={this.renderLogin}/>
             <Route path="/user/create" component={Create}/>  
             <Route path="/user/reset" component={ResetPassword} exact/>
             <Route path="/user/reset/:token" component={ResetPassword}/>

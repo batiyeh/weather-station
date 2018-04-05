@@ -86,6 +86,7 @@ router.get('/latest', async function (req, res) {
             .join('weather', 'latestweather.weather_id', 'weather.weather_id')
             .join('stations', 'latestweather.apikey', 'stations.apikey')
             .select('weather.*', 'stations.station_name', 'stations.last_connected', 'stations.connected')
+            .orderBy('weather.created_at', 'desc')
     } catch(ex){
         console.log(ex);
         return res.json({});
@@ -125,7 +126,16 @@ router.post('/verifyKey', async function (req, res) {
     var station = await knex('stations').select().where('apikey', req.body.apikey);
     if (station.length > 0){
         if (_.isNull(station[0].expiration) ||  moment(station[0].expiration).utc(station[0].expiration).isAfter(req.body.time)){
-            res.status(200).send("Verified API Key.");
+            if (station[0].taken === 0){
+                var result = await Station.where('apikey', req.body.apikey).save({
+                    taken: 1,
+                }, {patch:true});
+                res.status(200).send("Verified API Key.");
+            }
+
+            else{
+                res.status(409).send('API Key already taken.');
+            }
         }
         else res.status(400).send('Invalid API Key.');
     }

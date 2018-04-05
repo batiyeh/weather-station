@@ -53,6 +53,10 @@
     margin-bottom: 15px;
 }
 
+.modal-map-box{
+    min-height: 200px;
+}
+
 .view-options{
     margin-bottom: 10px;
     width: 100%;
