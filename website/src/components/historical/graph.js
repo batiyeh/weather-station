@@ -25,44 +25,22 @@ class Graph extends Component{
     }
 
     componentWillReceiveProps(nextProps){
-        console.log("we in will rec");
-        if(nextProps.data !== this.state.data){
-            this.setState({
-                data: nextProps.data
-            });
-            console.log("state should be set");
-        }
-        if(nextProps.stations !== this.state.stations){
-            this.setState({
-                stations: nextProps.stations
-            })
-        }
-        if(nextProps.from !== this.state.from){
-            this.setState({
-                from: nextProps.from
-            })
-        }
-        if(nextProps.to !== this.state.to){
-            this.setState({
-                to: nextProps.to
-            })
-        }
-        if(nextProps.sensorType !== this.state.sensorType){
-            this.setState({
-                sensorType: nextProps.sensorType
-            })
-        }
-    }
-
-    shouldComponentUpdate(nextProps, nextState){
-        return true;
-    }
-    componentWillUpdate(){
-
+        var data = (nextProps.data !== this.state.data) ? nextProps.data : this.state.data;
+        var stations = (nextProps.stations !== this.state.stations) ? nextProps.data : this.state.stations;
+        var from = (nextProps.from !== this.state.from) ? nextProps.from : this.state.from;
+        var to = (nextProps.to !== this.state.to) ? nextProps.to : this.state.to;
+        var sensorType = (nextProps.sensorType !== this.state.sensorType) ? nextProps.sensorType : this.state.sensorType;
+        
+        this.setState({
+            data: data,
+            stations: stations,
+            from: from,
+            to: to,
+            sensorType: sensorType 
+        });
     }
 
     componentDidUpdate(){
-        console.log(this.state.data[station_name]);
         // var data;
         // var stations = this.state.stations;
         // for (var station_name in this.state.data) {
@@ -87,6 +65,7 @@ class Graph extends Component{
             }
         }
     }
+
     componentWillUnmount() {
         // reset the color index upon the page being unloaded
         colorIndex = 0;
