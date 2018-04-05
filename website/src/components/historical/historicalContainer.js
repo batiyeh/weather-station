@@ -155,7 +155,7 @@ class HistoricalContainer extends Component{
             data = stationsDict[station_name];
             newStationsDict[station_name] = {};
             for(var i = 0; i < data["points"].length; i++){
-                if ( i % 10 === 0){
+                if ( i % 180 === 0){
                     var date = moment(data["points"][i]["x"]).utc(data["points"][i]["x"]).local().format("MM/DD/YY HH:mm:ss")
                     points.unshift({x: date, y: data["points"][i]["y"]});
                 }
