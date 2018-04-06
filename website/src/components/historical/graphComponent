@@ -1,0 +1,79 @@
+import React, { Component } from 'react';
+import { Alert } from 'reactstrap';
+import '../../styles/historical.css';
+import { Line, Scatter } from 'react-chartjs-2';
+
+class Graph extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: this.props.data,
+            stations: this.props.stations,
+            height: this.props.height,
+            from: this.props.from,
+            to: this.props.to,
+            width: this.props.width,
+            sensorType: this.props.sensorType,
+            datasets: {"datasets": []},
+        }
+    }
+
+    render(){
+        return(
+            <div className='graph'>
+                <Scatter
+                    data={this.state.datasets}      //load in the datasets aka lines to be drawn
+                    width={this.state.width}        // set the width and the height
+                    height={this.state.height}
+                    // spanGaps={{}}
+                    options={{
+                        maintainAspectRatio: false,    //options setup the styling for the graph setting the x and y axis
+                        showLines: true,
+                        scales: {
+                            xAxes: [{
+                                stacked: false,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Time',
+                                    fontFamily: 'Roboto Mono',
+                                    fontColor: '#000',
+                                    fontSize: 15
+                                },
+                                type: 'time',
+                                gridLines: {
+                                    drawBorder: true,
+                                },
+                                ticks: {
+                                    fontColor: '#000',
+                                    fontFamily: 'Roboto Mono',
+                                    fontSize: 15
+                                },
+                            }],
+                            yAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: labelString,
+                                    fontFamily: 'Roboto Mono',
+                                    fontColor: '#000',
+                                    fontSize: 15
+                                },
+                                type: 'linear',
+                                ticks: {
+                                    fontColor: '#000',
+                                    fontFamily: 'Roboto Mono',
+                                    fontSize: 15,
+                                    callback: callback
+                                },
+                                gridLines: {
+                                    borderDash: [2,1],
+                                    drawBorder: false
+                                }
+                            }],
+                        },
+                    }}
+                />
+            </div>
+        );
+    }
+}
+export default Graph;

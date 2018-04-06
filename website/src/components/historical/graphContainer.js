@@ -146,61 +146,7 @@ class Graph extends Component{
         }
 
         if (this.state.datasets["datasets"].length > 0){
-            return(
-                <div className='graph'>
-                    <Scatter
-                        data={this.state.datasets}      //load in the datasets aka lines to be drawn
-                        width={this.state.width}        // set the width and the height
-                        height={this.state.height}
-                        // spanGaps={{}}
-                        options={{
-                            maintainAspectRatio: false,    //options setup the styling for the graph setting the x and y axis
-                            showLines: true,
-                            scales: {
-                                xAxes: [{
-                                    stacked: false,
-                                    scaleLabel: {
-                                        display: true,
-                                        labelString: 'Time',
-                                        fontFamily: 'Roboto Mono',
-                                        fontColor: '#000',
-                                        fontSize: 15
-                                    },
-                                    type: 'time',
-                                    gridLines: {
-                                        drawBorder: true,
-                                    },
-                                    ticks: {
-                                        fontColor: '#000',
-                                        fontFamily: 'Roboto Mono',
-                                        fontSize: 15
-                                    },
-                                }],
-                                yAxes: [{
-                                    scaleLabel: {
-                                        display: true,
-                                        labelString: labelString,
-                                        fontFamily: 'Roboto Mono',
-                                        fontColor: '#000',
-                                        fontSize: 15
-                                    },
-                                    type: 'linear',
-                                    ticks: {
-                                        fontColor: '#000',
-                                        fontFamily: 'Roboto Mono',
-                                        fontSize: 15,
-                                        callback: callback
-                                    },
-                                    gridLines: {
-                                        borderDash: [2,1],
-                                        drawBorder: false
-                                    }
-                                }],
-                            },
-                        }}
-                    />
-                </div>
-            );
+
 
         }
         else{ //if there is nothing loaded in to data sets thats because no data was returned so no weather data
