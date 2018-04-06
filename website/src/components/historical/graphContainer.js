@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Alert } from 'reactstrap';
 import '../../styles/historical.css';
-import Graph from './graphComponent'
+import Graph from './graph'
 
 
 
@@ -60,19 +60,6 @@ class GraphData extends Component{
         }
     }
 
-    componentDidUpdate(){
-        // var data;
-        // var stations = this.state.stations;
-        // for (var station_name in this.state.data) {
-        //     data = this.state.data[station_name];
-        //     //this.createLines(station_name, data["sensorData"], data["dates"]);
-        //     if(stations.includes(station_name)){
-        //         //create the lines for each station based on its data that has been passec
-        //         this.createLine(station_name, data["points"])
-        //     }
-        // }
-    }
-
     componentDidMount(){
         var data;
         var stations = this.state.stations;
@@ -126,7 +113,7 @@ class GraphData extends Component{
 
         if (this.state.datasets["datasets"].length > 0){
             return(
-                <Graph
+                <Graph className="row graph"
                     //passes the stations data to the graph component
                     height={500} //The height and width of the graph is passed to the graph component
                     width={"100%"}
@@ -134,9 +121,6 @@ class GraphData extends Component{
                     datasets={this.state.datasets}
                 />
             );
-
-
-
         }
         else{ //if there is nothing loaded in to data sets thats because no data was returned so no weather data
             return(

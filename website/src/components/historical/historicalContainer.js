@@ -187,9 +187,8 @@ class HistoricalContainer extends Component{
 
     //function that handles the rendering of the graph it is done by sensor type
     renderGraph(){
-        // checks which sensor type is currently selected and renders the corresponding component based on that
         return(
-            <GraphData className="row graph"
+            <GraphData
                 //passes the stations data to the graph component
                data={this.state.stationsData}
                stations={this.state.toBeDrawn}

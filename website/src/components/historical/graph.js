@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../../styles/historical.css';
-import { Line, Scatter } from 'react-chartjs-2';
+import { Scatter } from 'react-chartjs-2';
 
 class Graph extends Component {
     constructor(props) {
@@ -9,29 +9,31 @@ class Graph extends Component {
             height: this.props.height,
             width: this.props.width,
             sensorType: this.props.sensorType,
-            datasets: {"datasets": []},
+            datasets: this.props.datasets,
         }
     }
 
     render(){
         //render each dataset that has been made below sets the styling of the overall graph and chart not the lines
+        var labelString = " ";
+        var callback;
         if (this.state.sensorType === 'temperature'){
-            var labelString = "Temperature";
-            var callback = function(value, index, values) {
+            labelString = "Temperature";
+            callback = function(value, index, values) {
                 return value + '°';     // add the degree symbol to the points on the y axis
             }
         }
 
-        if (this.state.sensorType === 'humidity'){
-            var labelString = "Humidity";
-            var callback = function(value, index, values) {
+        else if (this.state.sensorType === 'humidity'){
+            labelString = "Humidity";
+            callback = function(value, index, values) {
                 return value + '%';     // add the degree symbol to the points on the y axis
             }
         }
 
-        if (this.state.sensorType === 'pressure'){
-            var labelString = "Pressure";
-            var callback = function(value, index, values) {
+        else if (this.state.sensorType === 'pressure'){
+            labelString = "Pressure";
+            callback = function(value, index, values) {
                 return value + 'hPa';     // add the degree symbol to the points on the y axis
             }
         }
