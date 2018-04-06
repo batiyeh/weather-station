@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import '../../styles/historical.css';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap';
-import Graph from './graph'
+import GraphData from './graphContainer'
 import DatePicker  from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
 var moment = require('moment');
@@ -189,7 +189,7 @@ class HistoricalContainer extends Component{
     renderGraph(){
         // checks which sensor type is currently selected and renders the corresponding component based on that
         return(
-            <Graph className="row graph"
+            <GraphData className="row graph"
                 //passes the stations data to the graph component
                data={this.state.stationsData}
                stations={this.state.toBeDrawn}

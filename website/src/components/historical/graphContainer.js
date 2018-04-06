@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { Alert } from 'reactstrap';
 import '../../styles/historical.css';
-import { Line, Scatter } from 'react-chartjs-2';
+import Graph from './graphComponent'
 
 
 
 var colorsGraph = ['#4bc0c0', '#c0864b', '#4b86c0', '#c04b4b', '#c0c04b', '#4bc086', '#c04b86', '#327c0c'];  // Array of colors to be choosen when drawing multiple lines on the graph
 var colorIndex = 0;   //variable to keep track of what index is currently selected in the graph
 
-class Graph extends Component{
+class GraphData extends Component{
     constructor(props) {
         super(props);
         this.state = {
@@ -123,29 +123,18 @@ class Graph extends Component{
     }
 
     render(){
-        //render each dataset that has been made below sets the styling of the overall graph and chart not the lines
-        if (this.state.sensorType === 'temperature'){
-            var labelString = "Temperature";
-            var callback = function(value, index, values) {
-                return value + '°';     // add the degree symbol to the points on the y axis
-            }
-        }
-
-        if (this.state.sensorType === 'humidity'){
-            var labelString = "Humidity";
-            var callback = function(value, index, values) {
-                return value + '%';     // add the degree symbol to the points on the y axis
-            }
-        }
-
-        if (this.state.sensorType === 'pressure'){
-            var labelString = "Pressure";
-            var callback = function(value, index, values) {
-                return value + 'hPa';     // add the degree symbol to the points on the y axis
-            }
-        }
 
         if (this.state.datasets["datasets"].length > 0){
+            return(
+                <Graph
+                    //passes the stations data to the graph component
+                    height={500} //The height and width of the graph is passed to the graph component
+                    width={"100%"}
+                    sensorType={this.state.sensorType}
+                    datasets={this.state.datasets}
+                />
+            );
+
 
 
         }
@@ -158,4 +147,4 @@ class Graph extends Component{
         }
     }
 }
-export default Graph;
+export default GraphData;
