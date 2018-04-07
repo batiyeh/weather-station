@@ -162,13 +162,15 @@ class HistoricalContainer extends Component{
             data = stationsDict[station_name];
             newStationsDict[station_name] = {};
             var dateRange = moment.range(from, to);
-            console.log(dateRange.diff('days'));
+            console.log();
             for(var i = 0; i < data["points"].length; i++){
-                // if(from + to )
-                if ( i % 180 === 0){
-                    var date = moment(data["points"][i]["x"]).utc(data["points"][i]["x"]).local().format("MM/DD/YY HH:mm:ss");
-                    points.unshift({x: date, y: data["points"][i]["y"]});
+                if(dateRange.diff('days') === 1 || data["points"].length > 1 ){
+                    if ( i % 180 === 0){
+                        var date = moment(data["points"][i]["x"]).utc(data["points"][i]["x"]).local().format("MM/DD/YY HH:mm:ss");
+                        points.unshift({x: date, y: data["points"][i]["y"]});
+                    }
                 }
+
             }
             newStationsDict[station_name]["points"]= points;
             //clear the arrays after storing the data
