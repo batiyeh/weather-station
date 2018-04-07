@@ -4,7 +4,10 @@ import { Alert, Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, I
 import GraphData from './graphContainer'
 import DatePicker  from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
-var moment = require('moment');
+var Moment = require('moment');
+var MomentRange = require('moment-range');
+
+var moment = MomentRange.extendMoment(Moment);
 
 class HistoricalContainer extends Component{
     //set the props for the container
@@ -150,13 +153,18 @@ class HistoricalContainer extends Component{
     };
 
     processDataPoints(stationsDict){
+        var to = this.state.toDate;
+        var from = this.state.fromDate;
         var data;
         var points = [];
         var newStationsDict = {};
         for (var station_name in stationsDict) {
             data = stationsDict[station_name];
             newStationsDict[station_name] = {};
+            var dateRange = moment.range(from, to);
+            console.log(dateRange.diff('days'));
             for(var i = 0; i < data["points"].length; i++){
+                // if(from + to )
                 if ( i % 180 === 0){
                     var date = moment(data["points"][i]["x"]).utc(data["points"][i]["x"]).local().format("MM/DD/YY HH:mm:ss");
                     points.unshift({x: date, y: data["points"][i]["y"]});
