@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../../styles/historical.css';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap';
+import { Alert, Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap';
 import GraphData from './graphContainer'
 import DatePicker  from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
@@ -22,6 +22,7 @@ class HistoricalContainer extends Component{
             fromDate: oneday.format("YYYY-MM-DD HH:mm:ss"), //the props that set the range for the graph
             toDate: now.format("YYYY-MM-DD HH:mm:ss"),
             toBeDrawn: [],
+            dateError: false,
         }
         this.toggleFilter = this.toggleFilter.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
@@ -170,10 +171,21 @@ class HistoricalContainer extends Component{
 
     //function upon hitting submit in the modal with new data to update the graph and close the modal
     updateGraph = async () => {
-        this.setState({
-            modal: false
-        });
-        await this.getSensorData();//call the async function to get the data based on the new parameters set by the filter
+        var today = moment();
+        if(this.state.toDate > today.format("YYYY-MM-DD HH:mm:ss")){
+            this.setState({
+                dateError: true
+            });
+        }
+        
+        else{
+            this.setState({
+                dateError: false,
+                modal: false
+            });
+            await this.getSensorData();//call the async function to get the data based on the new parameters set by the filter
+        }
+
     };
 
     renderStations(){
@@ -200,6 +212,14 @@ class HistoricalContainer extends Component{
             />
         )
     }
+
+    renderError(){
+        if(this.state.dateError === true){
+            return(
+                 <Alert className='alert-danger error-alert'>Invalid date range selected</Alert>
+            );
+        }
+    }
     
     render(){
         if(this.state.loading === false){   // if the state is no longer loading then it will render the page
@@ -219,6 +239,7 @@ class HistoricalContainer extends Component{
                                 </div>
                                 <div className='form-group'>
                                     <div className="row">
+                                        {this.renderError()}
                                         <div className="col-6">
                                             <label for="dateBegin" className="form-label">From</label>
                                             <DatePicker
