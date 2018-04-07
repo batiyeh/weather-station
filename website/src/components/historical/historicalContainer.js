@@ -23,6 +23,7 @@ class HistoricalContainer extends Component{
             toDate: now.format("YYYY-MM-DD HH:mm:ss"),
             toBeDrawn: [],
             dateError: false,
+            stationError: false
         }
         this.toggleFilter = this.toggleFilter.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
@@ -157,7 +158,7 @@ class HistoricalContainer extends Component{
             newStationsDict[station_name] = {};
             for(var i = 0; i < data["points"].length; i++){
                 if ( i % 180 === 0){
-                    var date = moment(data["points"][i]["x"]).utc(data["points"][i]["x"]).local().format("MM/DD/YY HH:mm:ss")
+                    var date = moment(data["points"][i]["x"]).utc(data["points"][i]["x"]).local().format("MM/DD/YY HH:mm:ss");
                     points.unshift({x: date, y: data["points"][i]["y"]});
                 }
             }
@@ -177,10 +178,17 @@ class HistoricalContainer extends Component{
                 dateError: true
             });
         }
-        
+
+        else if(this.state.toBeDrawn.length > 5 ){
+            this.setState({
+                stationError: true
+            });
+        }
+
         else{
             this.setState({
                 dateError: false,
+                stationError: false,
                 modal: false
             });
             await this.getSensorData();//call the async function to get the data based on the new parameters set by the filter
@@ -213,10 +221,18 @@ class HistoricalContainer extends Component{
         )
     }
 
-    renderError(){
+    renderDateError(){
         if(this.state.dateError === true){
             return(
                  <Alert className='alert-danger error-alert'>Invalid date range selected</Alert>
+            );
+        }
+    }
+
+    renderStationsError(){
+        if(this.state.stationError === true ){
+            return(
+                <Alert className='alert-danger error-alert'>You may only select 5 stations to draw</Alert>
             );
         }
     }
@@ -239,7 +255,7 @@ class HistoricalContainer extends Component{
                                 </div>
                                 <div className='form-group'>
                                     <div className="row">
-                                        {this.renderError()}
+                                        {this.renderDateError()}
                                         <div className="col-6">
                                             <label for="dateBegin" className="form-label">From</label>
                                             <DatePicker
@@ -267,6 +283,7 @@ class HistoricalContainer extends Component{
                                     </div>
                                 </div>
                                 <div className='form-group'>
+                                    {this.renderStationsError()}
                                     <FormGroup>
                                         <label for="stations" className="form-label">Stations</label>
                                         <Input type="select" name="selectMulti" id="SelectMulti" onChange={this.onStationChange} multiple>
