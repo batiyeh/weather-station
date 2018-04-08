@@ -216,7 +216,27 @@ cpgs -s
 For pin numbering check this website with the GPIO Pinout Diagram
 https://www.jameco.com/Jameco/workshop/circuitnotes/raspberry-pi-circuit-note.html
 
-5. Follow [this](https://www.modmypi.com/blog/am2302-temphumidity-sensor) tutorial for installing the proper software 
+5. Follow [this](https://www.modmypi.com/blog/am2302-temphumidity-sensor) tutorial for installing the proper software
+
+#### Pressure
+1. Make sure that the sensor is open and not being covered by anything.
+
+2. Connect the female to female wires to the Vin, Gnd, Sck, and Sdi pins on the pressure sensor.
+
+3. Connect the Vin wire to the 1 pin on the Pi which is for 3V of power.
+
+4. Connect the Gnd wire to the 9 pin on the Pi which is for Ground.
+
+5. Connect the Sck wire to the 5 pin on the Pi which is for the I2C clock.
+
+6. Connect the Sdi wire to the 3 pin on the Pi which is for the I2c data.
+
+7. Once all wires have been connected go to the Raspberry Pi configuration and enable I2c.
+
+8. To make sure that the sensor has properly been connected you can run the command sudo i2cdetect -y 1
+
+For more information about the sensor check this website
+https://learn.adafruit.com/adafruit-bmp280-barometric-pressure-plus-temperature-sensor-breakout?view=all
 
 #### Sense Hat
 1. Install the sense hat library
