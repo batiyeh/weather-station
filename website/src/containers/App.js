@@ -96,13 +96,21 @@ class App extends Component {
     )
   }
 
+  renderStations = (props) => {
+    return(
+      <div id="stations-page">
+        <Station permissions={this.state.permissions}/>
+      </div>
+    )
+  }
+
   render(props) {
     return (
       <Router>
         <div className="App">
           <Route path='/' username={this.state.username} render={this.renderNav}/>  
           <div className="main">
-            <Route path="/" component={Station} exact/>
+            <Route path="/" render={this.renderStations} exact/>
             <Route path="/map" component={Map}/>
             <Route path="/user/login" render={this.renderLogin}/>
             <Route path="/user/create" component={Create}/>  

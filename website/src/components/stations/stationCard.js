@@ -17,7 +17,8 @@ class StationCard extends Component {
             wind_direction: "n/a",
             modal: false,
             error: "",
-            name: this.props.station.station_name
+            name: this.props.station.station_name,
+            permissions: this.props.permissions
         }
 
         this.toggleStationDetail = this.toggleStationDetail.bind(this);
@@ -53,6 +54,12 @@ class StationCard extends Component {
         if (this.state.station !== nextProps.station){
             this.setState({
                 station: nextProps.station
+            })
+        }
+
+        if(nextProps.permissions !== this.state.permissions){
+            this.setState({
+                permissions: nextProps.permissions
             })
         }
     }
@@ -166,21 +173,35 @@ class StationCard extends Component {
     
     // Render the station name input with or without a value if it exists
     renderNameInput(){
-        if (this.state.error.length > 0){
-            return (
-                <FormGroup>
-                    <Input type="text" className="stationNameInput is-invalid" name="stationNameInput" id="stationNameInput" placeholder="Name" onChange={e => this.onNameChange(e.target.value)} value={this.state.name}></Input>
-                    <FormFeedback>{this.state.error}</FormFeedback>
-                </FormGroup>
-            );
+        if (this.state.permissions === "Admin" || this.state.permissions === "Superuser"){
+            if (this.state.error.length > 0){
+                return (
+                    <FormGroup>
+                        <Input type="text" className="stationNameInput is-invalid" name="stationNameInput" id="stationNameInput" placeholder="Name" onChange={e => this.onNameChange(e.target.value)} value={this.state.name}></Input>
+                        <FormFeedback>{this.state.error}</FormFeedback>
+                    </FormGroup>
+                );
+            }
+    
+            else{
+                return (
+                    <FormGroup>
+                        <Input type="text" className="stationNameInput" name="stationNameInput" id="stationNameInput" placeholder="Name" onChange={e => this.onNameChange(e.target.value)} value={this.state.name}></Input>
+                    </FormGroup>
+                );
+            }
         }
 
-        else
-            return (
-                <FormGroup>
-                    <Input type="text" className="stationNameInput" name="stationNameInput" id="stationNameInput" placeholder="Name" onChange={e => this.onNameChange(e.target.value)} value={this.state.name}></Input>
-                </FormGroup>
+        else{
+            return(
+                <div>
+                    <div className="station-detail-row-none">
+                        <span className="left">Name</span>
+                        <span className="right">{ this.state.name }</span>
+                    </div><br/>          
+                </div>
             );
+        }
     }
 
     // If there is no station name, render the mac address
