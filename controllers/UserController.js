@@ -48,12 +48,16 @@ router.post('/create', async function(req, res){
         res.json({errors: errors, redirect: false});
     }
     else{
+        var pendingId = await knex('permissions').select('permission_id').where('type', '=', 'Pending');
+        pendingId = pendingId[0]["permission_id"];
+
         //hashes the password using bcrypt, then creates user and stores in database
         await bcrypt.hash(password, 10, function(err, hash) {
             new User({
                 username: username,
                 email: email,
                 password: hash,
+                permission_id: pendingId
             }).save()
         });
         res.json({errors: [], redirect: true})
@@ -95,15 +99,14 @@ router.post('/getUserInfo', async function(req,res){
 });
 
 router.get('/pendingUsers',async function (req,res) {
-    var pendingId = await knex('permissions').select('permissions_id').where('type', '=', 'Pending')
-    pendingId = pendingId.permission_id
+    var pendingId = await knex('permissions').select('permission_id').where('type', '=', 'Pending')
+    pendingId = pendingId[0]["permission_id"];
 
-    var pendingUser = await knex('users')
+    var pendingUsers = await knex('users')
         .select('username')
         .leftJoin('permissions', 'users.permission_id', 'permissions.permission_id')
         .where('users.permission_id', '=', pendingId)
-
-    res.json({ pendingUser });
+    res.json({ pendingUsers });
 })
 
 router.get('/allUsers', async function(req,res){

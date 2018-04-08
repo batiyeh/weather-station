@@ -39,10 +39,12 @@ class App extends Component {
     })
     var body = await response.json();
 
-    if(!body.phone){
-      this.setState({username: body[0].username, email: body[0].email, phone: 'Phone Number', permissions: body[0].type});
-    } else{
-      this.setState({username: body[0].username, email: body[0].email, phone: body[0].phone, permissions: body[0].type});
+    if (body.length > 0){
+      if(!body.phone){
+        this.setState({username: body[0].username, email: body[0].email, phone: 'Phone Number', permissions: body[0].type});
+      } else{
+        this.setState({username: body[0].username, email: body[0].email, phone: body[0].phone, permissions: body[0].type});
+      }
     }
   }
 
