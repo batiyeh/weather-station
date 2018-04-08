@@ -1,7 +1,7 @@
 # -*- mode: python -*-
+import shutil
 
 block_cipher = None
-
 
 a = Analysis(['weatherstation.py'],
              pathex=['/home/pi/dev/weather-station-site/client'],
@@ -27,3 +27,7 @@ exe = EXE(pyz,
           upx=True,
           runtime_tmpdir=None,
           console=True )
+
+shutil.copyfile('binaryUtils/setup.py', '{0}/setup.py'.format(DISTPATH))
+shutil.copyfile('binaryUtils/install.txt', '{0}/install.txt'.format(DISTPATH))
+shutil.copyfile('config.yaml', '{0}/config.yaml'.format(DISTPATH))
