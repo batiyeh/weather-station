@@ -150,35 +150,31 @@ router.post('/reset/', function(req,res){
         if(err)
             console.log('Error:', err);
     })
-    res.status(200).json({errors: [{msg: "If you have entered a valid email address you will recieve an email with a link to reset your password shortly"}]})
+    res.status(200).json({errors: [{msg: "If you have entered a valid email address you will recieve an email with instructions on how to reset your password shortly"}]})
 })
 
 router.post('/reset/:token', function(req, res){
-    async.waterfall([ 
-        function(done){
-            //makes sure new user password meets password requirements
-            req.checkBody('password','Password must be longer than 8 characters, cannot contain symbols, and must have at least 1 letter and 1 number.')
-            .isLength({min: 8}).matches(/\d/).not().matches(/\W/).equals(req.body.password2);
-            //if it doesnt meet requirements, throw error
-            var errors = req.validationErrors();
-            if(errors){
-                console.log(errors);
-            }
-            else{
-                //hash password, assign to user in db
-                bcrypt.hash(req.body.password, 10, function(err,hash){
-                    var user = User.where({reset_password_token: req.params.token}).save({
-                        password: hash,
-                        reset_password_token: null
-                    },{patch:true})
-                    if(!user)
-                        console.log("Error no user with that token");//redirect after
-                })
-                console.log("Your password has been reset!");
-                res.redirect('/user/login');
-            }
-        }
-    ])
+    //makes sure new user password meets password requirements
+    req.checkBody('password','Password must be longer than 8 characters, cannot contain symbols, and must have at least 1 letter and 1 number.')
+    .isLength({min: 8}).matches(/\d/).not().matches(/\W/).equals(req.body.password2);
+    //if it doesnt meet requirements, throw error
+    var errors = req.validationErrors();
+    if(errors){
+        res.json({errors: errors, redirect: false});
+    }
+    else{
+        //hash password, assign to user in db
+        bcrypt.hash(req.body.password, 10, function(err,hash){
+            var user = User.where({reset_password_token: req.params.token}).save({
+                password: hash,
+                reset_password_token: null
+            },{patch:true})
+            if(!user)
+                console.log("Error no user with that token");//redirect after
+        })
+        console.log("Your password has been reset!");
+        res.redirect('/user/login');
+    }
 })
 //updates user profile (email/phone) when user submits form on profile page
 router.post('/editProfile', async function(req, res){
