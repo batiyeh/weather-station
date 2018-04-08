@@ -8,6 +8,8 @@ class Graph extends Component {
         this.state = {
             height: this.props.height,
             width: this.props.width,
+            maxDate: this.props.maxDate,
+            minDate: this.props.minDate,
             sensorType: this.props.sensorType,
             datasets: this.props.datasets,
         }
@@ -15,6 +17,8 @@ class Graph extends Component {
 
     render(){
         //render each dataset that has been made below sets the styling of the overall graph and chart not the lines
+        var min = this.state.minDate;
+        var max = this.state.maxDate;
         var labelString = " ";
         var callback;
         if (this.state.sensorType === 'temperature'){
@@ -58,6 +62,10 @@ class Graph extends Component {
                                     fontSize: 15
                                 },
                                 type: 'time',
+                                time: {
+                                    min: min,
+                                    max: max
+                                },
                                 gridLines: {
                                     drawBorder: true,
                                 },

@@ -117,6 +117,8 @@ class GraphData extends Component{
                     //passes the stations data to the graph component
                     height={500} //The height and width of the graph is passed to the graph component
                     width={"100%"}
+                    maxDate={this.state.to}
+                    minDate={this.state.from}
                     sensorType={this.state.sensorType}
                     datasets={this.state.datasets}
                 />
