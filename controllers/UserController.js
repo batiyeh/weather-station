@@ -6,6 +6,7 @@ router.use(bodyParser.json());
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const knex = require('knex')(require('../knexfile'));
 const async = require('async');
 const nodemailer = require('nodemailer');
 const LocalStrategy = require('passport-local').Strategy;
@@ -83,13 +84,48 @@ router.post('/login', async function(req, res){
 //used to verify user is logged in on each page
 router.post('/getUserInfo', async function(req,res){
     if(req.session.username){
-        var user = await User.where({username: req.session.username}).fetch();
-
-        res.json({username: user.attributes.username, email: user.attributes.email,
-        phone: user.attributes.phone, permissions: user.attributes.permissions});
+        var user = await knex('users').select('*')
+        .leftJoin('permissions', 'users.permission_id', 'permissions.permission_id')
+        .where('users.username', req.session.username)
+        res.json(user);
     }
     else{
         res.json({username: undefined})
+    }
+});
+
+router.get('/pendingUsers',async function (req,res) {
+    var pendingId = await knex('permissions').select('permissions_id').where('type', '=', 'Pending')
+    pendingId = pendingId.permission_id
+
+    var pendingUser = await knex('users')
+        .select('username')
+        .leftJoin('permissions', 'users.permission_id', 'permissions.permission_id')
+        .where('users.permission_id', '=', pendingId)
+
+    res.json({ pendingUser });
+})
+
+router.get('/allUsers', async function(req,res){
+    try{
+        var users = await knex('users').select('*')
+        .leftJoin('permissions', 'users.permission_id', 'permissions.permission_id')
+    } catch(ex){
+        return res.json({});
+    }
+    return res.json({ users });
+});
+
+router.put('/permissions', async function (req, res) {
+    var username = req.body.selectedUser.username;
+
+    if(req.body.status === true){
+        await User.where({username:username}).save({permission_id: 2}
+            ,{patch: true})
+    }
+    else if (req.body.status === false){
+        await User.where({username:username}).save({permission_id: 5}
+        ,{patch:true})
     }
 })
 

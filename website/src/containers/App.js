@@ -38,11 +38,11 @@ class App extends Component {
         credentials: 'include'
     })
     var body = await response.json();
+
     if(!body.phone){
-      this.setState({username: body.username, email: body.email, phone: 'Phone Number', isAdmin: body.isAdmin});
-    }
-    else{
-      this.setState({username: body.username, email: body.email, phone: body.phone, isAdmin: body.isAdmin});      
+      this.setState({username: body[0].username, email: body[0].email, phone: 'Phone Number', permissions: body[0].type});
+    } else{
+      this.setState({username: body[0].username, email: body[0].email, phone: body[0].phone, permissions: body[0].type});
     }
   }
 
@@ -51,6 +51,7 @@ class App extends Component {
       return (
         <Navigation 
           username={this.state.username}
+          permissions={this.state.permissions}
           {...props}
         />
       );
