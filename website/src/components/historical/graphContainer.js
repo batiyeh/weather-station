@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 import { Alert } from 'reactstrap';
 import '../../styles/historical.css';
-import { Line, Scatter } from 'react-chartjs-2';
-import _ from 'lodash';
-var moment = require('moment');
+import Graph from './graph'
+
 
 
 var colorsGraph = ['#4bc0c0', '#c0864b', '#4b86c0', '#c04b4b', '#c0c04b', '#4bc086', '#c04b86', '#327c0c'];  // Array of colors to be choosen when drawing multiple lines on the graph
 var colorIndex = 0;   //variable to keep track of what index is currently selected in the graph
 
-class TemperatureGraph extends Component{
+class GraphData extends Component{
     constructor(props) {
         super(props);
         this.state = {
@@ -20,12 +19,45 @@ class TemperatureGraph extends Component{
             from: this.props.from,
             to: this.props.to,
             width: this.props.width,
+            sensorType: this.props.sensorType,
             datasets: {"datasets": []}, // a dictionary of datasets to be drawn on the graph
         }
     }
 
-    componentWillReceieveProps(nextProps){
-        // console.log(nextProps);
+    componentWillReceiveProps(nextProps){
+        var data = (nextProps.data !== this.state.data) ? nextProps.data : this.state.data;
+        var stations = (nextProps.stations !== this.state.stations) ? nextProps.data : this.state.stations;
+        var from = (nextProps.from !== this.state.from) ? nextProps.from : this.state.from;
+        var to = (nextProps.to !== this.state.to) ? nextProps.to : this.state.to;
+        var sensorType = (nextProps.sensorType !== this.state.sensorType) ? nextProps.sensorType : this.state.sensorType;
+
+        if (data !== this.state.data || stations !== this.state.station || from !== this.state.from ||
+            to !== this.state.to || sensorType !== this.state.sensorType){
+                this.setState({
+                    data: data,
+                    stations: stations,
+                    from: from,
+                    to: to,
+                    sensorType: sensorType ,
+                    datasets: {"datasets": []}
+                }, () => {
+                    colorIndex = 0;
+                    this.updateGraph();
+                });
+        }
+    }
+
+    updateGraph(){
+        var data;
+        var stations = this.state.stations;
+        for (var station_name in this.state.data) {
+            data = this.state.data[station_name];
+            //this.createLines(station_name, data["sensorData"], data["dates"]);
+            if(stations.includes(station_name)){
+                //create the lines for each station based on its data that has been passec
+                this.createLine(station_name, data["points"])
+            }
+        }
     }
 
     componentDidMount(){
@@ -40,10 +72,10 @@ class TemperatureGraph extends Component{
             }
         }
     }
+
     componentWillUnmount() {
         // reset the color index upon the page being unloaded
         colorIndex = 0;
-        this.state.stations = [];
     }
 
     //function for creating the line on the graph based on station data
@@ -78,67 +110,20 @@ class TemperatureGraph extends Component{
     }
 
     render(){
-        //render each dataset that has been made below sets the styling of the overall graph and chart not the lines
+
         if (this.state.datasets["datasets"].length > 0){
             return(
-                <div className='graph'>
-                    <Scatter
-                        data={this.state.datasets}      //load in the datasets aka lines to be drawn
-                        width={this.state.width}        // set the width and the height
-                        height={this.state.height}
-                        // spanGaps={{}}
-                        options={{
-                            maintainAspectRatio: false,    //options setup the styling for the graph setting the x and y axis
-                            showLines: true,
-                            scales: {
-                                xAxes: [{
-                                    stacked: false,
-                                    scaleLabel: {
-                                        display: true,
-                                        labelString: 'Time',
-                                        fontFamily: 'Roboto Mono',
-                                        fontColor: '#000',
-                                        fontSize: 15
-                                    },
-                                    type: 'time',
-                                    gridLines: {
-                                        drawBorder: true,
-                                    },
-                                    ticks: {
-                                        fontColor: '#000',
-                                        fontFamily: 'Roboto Mono',
-                                        fontSize: 15
-                                    },
-                                }],
-                                yAxes: [{
-                                    scaleLabel: {
-                                        display: true,
-                                        labelString: 'Temperature',
-                                        fontFamily: 'Roboto Mono',
-                                        fontColor: '#000',
-                                        fontSize: 15
-                                    },
-                                    type: 'linear',
-                                    ticks: {
-                                        fontColor: '#000',
-                                        fontFamily: 'Roboto Mono',
-                                        fontSize: 15,
-                                        callback: function(value, index, values) {
-                                            return value + '°';     // add the degree symbol to the points on the y axis
-                                        }
-                                    },
-                                    gridLines: {
-                                        borderDash: [2,1],
-                                        drawBorder: false
-                                    }
-                                }],
-                            },
-                        }}
-                    />
-                </div>
+                <Graph className="row graph"
+                    //passes the stations data to the graph component
+                    height={500} //The height and width of the graph is passed to the graph component
+                    width={"100%"}
+                    maxDate={this.state.to}
+                    minDate={this.state.from}
+                    sensorType={this.state.sensorType}
+                    datasets={this.state.datasets}
+                />
             );
         }
-
         else{ //if there is nothing loaded in to data sets thats because no data was returned so no weather data
             return(
                 <div className='col-12 no-data-alert'>
@@ -148,4 +133,4 @@ class TemperatureGraph extends Component{
         }
     }
 }
-export default TemperatureGraph;
+export default GraphData;

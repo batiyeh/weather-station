@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import '../../styles/historical.css';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap';
-import TemperatureGraph from './temperatureGraph'
-import PressureGraph from './pressureGraph'
-import HumidityGraph from './humidityGraph'
+import { Alert, Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap';
+import GraphData from './graphContainer'
 import DatePicker  from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
-var moment = require('moment');
+var Moment = require('moment');
+var MomentRange = require('moment-range');
+
+var moment = MomentRange.extendMoment(Moment);
 
 class HistoricalContainer extends Component{
     //set the props for the container
@@ -24,6 +25,8 @@ class HistoricalContainer extends Component{
             fromDate: oneday.format("YYYY-MM-DD HH:mm:ss"), //the props that set the range for the graph
             toDate: now.format("YYYY-MM-DD HH:mm:ss"),
             toBeDrawn: [],
+            dateError: false,
+            stationError: false
         }
         this.toggleFilter = this.toggleFilter.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
@@ -49,15 +52,17 @@ class HistoricalContainer extends Component{
 
     //When the to date value is changed in the modal it is handled here
     handleToChange(date) {
+        var newDate = date.format("YYYY-MM-DD HH:mm:ss");
         this.setState({
-            toDate: date
+            toDate: newDate
         });
     }
 
     //When the from date value is changed in the modal it is handled here
     handleFromChange(date) {
+        var newDate = date.format("YYYY-MM-DD HH:mm:ss");
         this.setState({
-            fromDate: date
+            fromDate: newDate
         });
     }
 
@@ -98,7 +103,7 @@ class HistoricalContainer extends Component{
                 this.state.toBeDrawn.push(names[i].station_name)
             }
         }
-        this.setState({ stations: names });
+        return names;
     };
 
 
@@ -138,27 +143,33 @@ class HistoricalContainer extends Component{
 
         }
         var newStationsDict = this.processDataPoints(stationsDict);
-        await this.getStations();
+        var names = await this.getStations();
         this.setState({
             // end the async function by setting the state so that the stations dictionary is stored in stations data
             stationsData: newStationsDict,
-            loading: false // set loading to false so that graph can be rendered
+            loading: false, // set loading to false so that graph can be rendered
+            stations: names
         });
-
     };
 
     processDataPoints(stationsDict){
+        var to = this.state.toDate;
+        var from = this.state.fromDate;
         var data;
         var points = [];
         var newStationsDict = {};
         for (var station_name in stationsDict) {
             data = stationsDict[station_name];
             newStationsDict[station_name] = {};
+            var dateRange = moment.range(from, to);
             for(var i = 0; i < data["points"].length; i++){
-                if ( i % 180 === 0){
-                    var date = moment(data["points"][i]["x"]).utc(data["points"][i]["x"]).local().format("MM/DD/YY HH:mm:ss")
-                    points.unshift({x: date, y: data["points"][i]["y"]});
+                if(dateRange.diff('days') === 1 || data["points"].length > 1 ){
+                    if ( i % 180 === 0){
+                        var date = moment(data["points"][i]["x"]).utc(data["points"][i]["x"]).local().format("MM/DD/YY HH:mm:ss");
+                        points.unshift({x: date, y: data["points"][i]["y"]});
+                    }
                 }
+
             }
             newStationsDict[station_name]["points"]= points;
             //clear the arrays after storing the data
@@ -169,13 +180,30 @@ class HistoricalContainer extends Component{
 
 
     //function upon hitting submit in the modal with new data to update the graph and close the modal
-    updateGraph(){
-        this.setState({
-            loading: true,
-            modal: false
-        })
-        this.getSensorData() //call the async function to get the data based on the new parameters set by the filter
-    }
+    updateGraph = async () => {
+        var today = moment();
+        if(this.state.toDate > today.format("YYYY-MM-DD HH:mm:ss")){
+            this.setState({
+                dateError: true
+            });
+        }
+
+        else if(this.state.toBeDrawn.length > 5 ){
+            this.setState({
+                stationError: true
+            });
+        }
+
+        else{
+            this.setState({
+                dateError: false,
+                stationError: false,
+                modal: false
+            });
+            await this.getSensorData();//call the async function to get the data based on the new parameters set by the filter
+        }
+
+    };
 
     renderStations(){
         var options = [];
@@ -188,43 +216,33 @@ class HistoricalContainer extends Component{
 
     //function that handles the rendering of the graph it is done by sensor type
     renderGraph(){
-        // checks which sensor type is currently selected and renders the corresponding component based on that
-        if(this.state.sensorType === 'temperature') { 
+        return(
+            <GraphData
+                //passes the stations data to the graph component
+               data={this.state.stationsData}
+               stations={this.state.toBeDrawn}
+               from={this.state.fromDate} // passes the to and from dates to the graph component
+               to={this.state.toDate}
+               height={500} //The height and width of the graph is passed to the graph component
+               width={"100%"}
+               sensorType={this.state.sensorType}
+            />
+        )
+    }
+
+    renderDateError(){
+        if(this.state.dateError === true){
             return(
-                <TemperatureGraph className="row graph"
-                    //passes the stations data to the graph component
-                    data={this.state.stationsData}
-                    stations={this.state.toBeDrawn}
-                    from={this.state.fromDate} // passes the to and from dates to the graph component
-                    to={this.state.toDate}
-                    height={500} //The height and width of the graph is passed to the graph component
-                    width={"100%"}
-                />
-            )
+                 <Alert className='alert-danger error-alert'>Invalid date range selected</Alert>
+            );
         }
-        else if(this.state.sensorType === 'pressure'){
+    }
+
+    renderStationsError(){
+        if(this.state.stationError === true ){
             return(
-                <PressureGraph className="row graph"
-                    data={this.state.stationsData}
-                    stations={this.state.toBeDrawn}
-                    from={this.state.fromDate}
-                    to={this.state.toDate}
-                    height={500}
-                    width={"100%"}
-                />
-            )
-        }
-        else if(this.state.sensorType === 'humidity'){
-            return(
-                <HumidityGraph className="row graph"
-                    data={this.state.stationsData}
-                    stations={this.state.toBeDrawn}
-                    from={this.state.fromDate}
-                    to={this.state.toDate}
-                    height={500}
-                    width={"100%"}
-                />
-            )
+                <Alert className='alert-danger error-alert'>You may only select 5 stations to draw</Alert>
+            );
         }
     }
     
@@ -232,7 +250,7 @@ class HistoricalContainer extends Component{
         if(this.state.loading === false){   // if the state is no longer loading then it will render the page
             return(
                 <div className="historical-container">
-                    <Modal isOpen={this.state.modal} toggle={this.toggleFilter}>
+                    <Modal isOpen={this.state.modal} className="filter-modal" toggle={this.toggleFilter}>
                         <ModalHeader toggle={this.toggleFilter}>Filter Historical Graph</ModalHeader>
                         <form id='filterForm'>
                             <ModalBody>
@@ -246,6 +264,7 @@ class HistoricalContainer extends Component{
                                 </div>
                                 <div className='form-group'>
                                     <div className="row">
+                                        {this.renderDateError()}
                                         <div className="col-6">
                                             <label for="dateBegin" className="form-label">From</label>
                                             <DatePicker
@@ -273,6 +292,7 @@ class HistoricalContainer extends Component{
                                     </div>
                                 </div>
                                 <div className='form-group'>
+                                    {this.renderStationsError()}
                                     <FormGroup>
                                         <label for="stations" className="form-label">Stations</label>
                                         <Input type="select" name="selectMulti" id="SelectMulti" onChange={this.onStationChange} multiple>
@@ -288,7 +308,7 @@ class HistoricalContainer extends Component{
                         </form>
                     </Modal>
                     <div className="filter row">
-                        <Button type='button' color="primary" className="btn btn-primary filter-btn" onClick={this.toggleFilter}>Filter</Button>
+                        <Button type='button' color="primary" className="btn btn-primary filter-btn" id="filter" onClick={this.toggleFilter}>Filter</Button>
                     </div>
                     {this.renderGraph() }
                 </div>
