@@ -21,6 +21,7 @@ class CreateUserForm extends Component {
         };
         this.submitForm = this.submitForm.bind(this);
         this.renderErrors = this.renderErrors.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
     }
     //sets state based on value entered by user in the fields
     onUsernameChange(value){
@@ -42,6 +43,11 @@ class CreateUserForm extends Component {
         this.setState({
             confirmPass: value
         })
+    }
+    handleKeyPress(target){
+        if(target.charCode==13){
+            this.submitForm();
+        }
     }
     //sents data for user account to back end
     //errors are returned (if they exist) and the redirect flag is set (true if user's account was created successfully)
@@ -95,16 +101,16 @@ class CreateUserForm extends Component {
                 <div className='form-group'>            
                 {this.renderErrors()}
 
-                  <Input id='username' name='username' type='text' className='form-control' placeholder='Username' onChange={e => this.onUsernameChange(e.target.value)}/>
+                  <Input id='username' name='username' type='text' className='form-control' placeholder='Username' onKeyPress={this.handleKeyPress} onChange={e => this.onUsernameChange(e.target.value)}/>
                 </div>
                 <div className='form-group'>
-                  <Input id='email' name='email' type='email' className='form-control' placeholder='Email' aria-label='Email' onChange={e => this.onEmailChange(e.target.value)} />
+                  <Input id='email' name='email' type='email' className='form-control' placeholder='Email' aria-label='Email' onKeyPress={this.handleKeyPress} onChange={e => this.onEmailChange(e.target.value)} />
                 </div>
                 <div className='form-group'>
-                  <Input id='password' name='password' type='password' className='form-control' placeholder='Password' aria-label='Password' onChange={e => this.onPasswordChange(e.target.value)} />
+                  <Input id='password' name='password' type='password' className='form-control' placeholder='Password' aria-label='Password' onKeyPress={this.handleKeyPress} onChange={e => this.onPasswordChange(e.target.value)} />
                 </div>
                 <div className='form-group'>
-                  <Input id='confirmPass' name='confirmPass' type='password' className='form-control' placeholder='Confirm Password' aria-label='Confirm Password' onChange={e => this.onConfirmPassChange(e.target.value)} />
+                  <Input id='confirmPass' name='confirmPass' type='password' className='form-control' placeholder='Confirm Password' aria-label='Confirm Password' onKeyPress={this.handleKeyPress} onChange={e => this.onConfirmPassChange(e.target.value)} />
                 </div>
               </div>
               <div className='row'>

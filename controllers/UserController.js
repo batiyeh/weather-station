@@ -150,7 +150,7 @@ router.post('/reset/', function(req,res){
         if(err)
             console.log('Error:', err);
     })
-    res.redirect('/user/login');
+    res.status(200).json({errors: [{msg: "If you have entered a valid email address you will recieve an email with a link to reset your password shortly"}]})
 })
 
 router.post('/reset/:token', function(req, res){

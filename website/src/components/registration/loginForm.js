@@ -22,6 +22,7 @@ class LoginForm extends Component {
         };
         this.submitForm = this.submitForm.bind(this);
         this.renderErrors = this.renderErrors.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
     }
     onUsernameChange(value){
         this.setState({
@@ -59,6 +60,11 @@ class LoginForm extends Component {
           redirect: body.redirect
         })
     }
+    handleKeyPress(target){
+        if(target.charCode==13){
+            this.submitForm();
+        }
+    }
     renderErrors(){
         if(this.state.errors.length > 0){
             var allErrors = []
@@ -86,10 +92,10 @@ class LoginForm extends Component {
                                 <a className="forgot-link" id="forgot" href="/user/reset">Forgot password?</a> 
                             </div>
                             <div className='form-group'>
-                                <Input id='username' name='username' type='text' className='form-control' placeholder='Username' onChange={e => this.onUsernameChange(e.target.value)}/>
+                                <Input id='username' name='username' type='text' className='form-control' placeholder='Username' onKeyPress={this.handleKeyPress} onChange={e => this.onUsernameChange(e.target.value)}/>
                             </div>
                             <div className='form-group'>
-                                <Input id='password' name='password' type='password' className='form-control' placeholder='Password' onChange={e => this.onPasswordChange(e.target.value)}/>
+                                <Input id='password' name='password' type='password' className='form-control' placeholder='Password' onKeyPress={this.handleKeyPress} onChange={e => this.onPasswordChange(e.target.value)}/>
                             </div>
                             </div>
                             <div className='row'>
