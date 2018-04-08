@@ -13,7 +13,11 @@ class Client(object):
     WAIT_TIME = 5
 
     def main(self):
-        with open("config.yaml", 'r') as stream:
+        if getattr(sys, 'frozen', False):
+            configFile = Path(os.path.dirname(sys.executable) + "/config.yaml")
+        else:
+            configFile = Path(os.path.dirname(os.path.abspath(__file__)) + "/config.yaml")
+        with open(str(configFile), 'r') as stream:
             try:
                 config = yaml.load(stream)
             except yaml.YAMLError as exc:
