@@ -94,10 +94,10 @@ class LoginForm extends Component {
                             </div>
                             <div className='row'>
                                 <div className='col-6'>
-                                    <a className='register-link' href='/user/create'><button type='button' className='btn btn-default btn-block register-btn'>Register</button></a>
+                                    <a className='register-link' href='/user/create'><button type='button' className='btn btn-secondary btn-block register-btn'>Register</button></a>
                                 </div>
                                 <div className='col-6'>
-                                    <Button type='button' onClick={this.submitForm} className='btn btn-default btn-block login-btn'>Login</Button>
+                                    <Button type='button' onClick={this.submitForm} className='btn btn-secondary btn-block login-btn'>Login</Button>
                                 </div>
                             </div>
                         </form>
