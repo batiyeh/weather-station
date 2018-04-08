@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import '../../styles/login.css';
+
 import {Alert, Button, Input} from 'reactstrap';
 import { Redirect } from 'react-router';
 import Cookies from 'js-cookie';
@@ -14,13 +15,27 @@ class LoginForm extends Component {
         var loggedIn = Cookies.get('loggedIn')
         if (_.isUndefined(loggedIn)) loggedIn = false;
         
-        this.state={
-            username: '',
-            password: '',
-            errors: [],
-            redirect: false,
-            loggedIn: loggedIn
-        };
+        if(this.props.location.state){
+            this.state={
+                username:'',
+                password:'',
+                messages: this.props.location.state.errors,
+                errors: [],
+                redirect:false,
+                loggedIn: loggedIn
+            };
+        }
+        else{
+            this.state={
+                username: '',
+                password: '',
+                messages: [],
+                errors: [],
+                redirect: false,
+                loggedIn: loggedIn
+            };
+        }
+
         this.submitForm = this.submitForm.bind(this);
         this.renderErrors = this.renderErrors.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
@@ -55,7 +70,6 @@ class LoginForm extends Component {
 
         if(body.redirect === 'true'){
             await Cookies.set('loggedIn', 'true')
-            this.props.getUser();
         }
         this.setState({
           errors: body.errors,
@@ -63,7 +77,7 @@ class LoginForm extends Component {
         })
     }
     handleKeyPress(target){
-        if(target.charCode==13){
+        if(target.charCode === 13){
             this.submitForm();
         }
     }
@@ -71,6 +85,15 @@ class LoginForm extends Component {
         this.setState({
             redirect:true
         })
+    }
+    renderMessages(){
+        if(this.state.messages.length > 0){
+            var allMessages = []
+            this.state.messages.map(msg => {
+                allMessages.push(<Alert classname='error-alert'>{msg.msg}</Alert>)
+            })
+            return allMessages;
+        }
     }
     renderErrors(){
         if(this.state.errors.length > 0){
@@ -91,10 +114,11 @@ class LoginForm extends Component {
         }
         else{
             return(
-                <div className='login-container'>
-                    <div id='login'>
+                <div id='login-page'> 
+                    <div className='login-container'>
                         <img src={logo} className="login-logo" width="200" height="200" alt=""></img>
-                        {this.renderErrors()}                
+                        {this.renderErrors()} 
+                        {this.renderMessages()}               
                         <form id='loginForm'>
                             <div className='login-info mb-3'>
                             <div className='col-12 row'>

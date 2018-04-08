@@ -51,6 +51,7 @@ class App extends Component {
       return (
         <Navigation 
           username={this.state.username}
+          getUser={this.getUser}
           {...props}
         />
       );
@@ -73,16 +74,6 @@ class App extends Component {
     </div>
     )
   }
-
-  renderLogin = (props) => {
-    return(
-      <div id="login-page">
-      <LoginForm
-      getUser={this.getUser}
-      />
-      </div>
-    )
-  }
   render(props) {
     return (
       <Router>
@@ -91,7 +82,7 @@ class App extends Component {
           <div className="main">
             <Route path="/" component={Station} exact/>
             <Route path="/map" component={Map}/>
-            <Route path="/user/login" render={this.renderLogin}/>
+            <Route path="/user/login" component={LoginForm}/>
             <Route path="/user/create" component={Create}/>  
             <Route path="/user/reset" component={ResetPassword} exact/>
             <Route path="/user/reset/:token" component={ResetPassword}/>

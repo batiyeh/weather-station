@@ -60,6 +60,7 @@ class Navigation extends Component {
     }
     //fetch all alerts when navbar mounts
     componentDidMount = async () => {
+        this.props.getUser();
         await this.getTriggeredAlerts();
         this.interval = setInterval(this.getTriggeredAlerts, 5000);
     }

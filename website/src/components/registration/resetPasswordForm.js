@@ -58,7 +58,7 @@ class ResetPasswordForm extends Component {
         })
     }
     handleKeyPress(target){
-        if(target.charCode==13){
+        if(target.charCode === 13){
             this.submitForm();
         }
     }
@@ -81,7 +81,7 @@ class ResetPasswordForm extends Component {
                     <form className='ResetPasswordForm'>
                         {this.renderErrors()}
                         <div className='form-group'>
-                            <Input id='email' name='email' type='email' class='form-control' placeholder='Email'  onChange={e => this.onEmailChange(e.target.value)}/>
+                            <Input id='email' name='email' type='email' class='form-control' placeholder='Email' onKeyPress={this.handleKeyPress} onChange={e => this.onEmailChange(e.target.value)}/>
                         </div>
                         <div className='row'>
                             <div className='col-6'>

@@ -12,6 +12,7 @@ class CreateUserForm extends Component {
         if (_.isUndefined(loggedIn)) loggedIn = false;
         this.state={
             redirect: false,
+            return: false,
             username: '',
             email: '',
             password: '',
@@ -46,13 +47,13 @@ class CreateUserForm extends Component {
         })
     }
     handleKeyPress(target){
-        if(target.charCode==13){
+        if(target.charCode === 13){
             this.submitForm();
         }
     }
     return(){
         this.setState({
-            redirect: true
+            return: true
         })
     }
     //sents data for user account to back end
@@ -95,8 +96,12 @@ class CreateUserForm extends Component {
         if(this.state.loggedIn === 'true'){
             return(<Redirect to='/'/>)
         }
-        else if(this.state.redirect){
+        else if(this.state.return){
             return ( <Redirect to='/user/login'/>)
+        }
+        else if(this.state.redirect){
+            console.log("Redirecting to login")
+            return ( <Redirect to={{pathname: '/user/login', state: {errors: [{msg: "Your account and been created and is currently pending Admin approval"}]}}}/>)
         }
         else{
             return(
