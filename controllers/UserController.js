@@ -52,7 +52,7 @@ router.post('/create', async function(req, res){
         pendingId = pendingId[0]["permission_id"];
 
         //hashes the password using bcrypt, then creates user and stores in database
-        await bcrypt.hash(password, 10, function(err, hash) {
+        await bcrypt.hash(password, 10, function (err, hash) {
             new User({
                 username: username,
                 email: email,
@@ -62,6 +62,34 @@ router.post('/create', async function(req, res){
         });
         res.json({errors: [], redirect: true})
     }
+
+        // if(pendingQ) {
+        //  //   function (token, user, done) {
+        //         var transporter = nodemailer.createTransport({
+        //             host: 'smtp.gmail.com',
+        //             port: 587,
+        //             secure: false,
+        //             auth: {
+        //                 //Find better way to store user and pass for whole system.
+        //                 user: 'WStationTestdod@gmail.com',
+        //                 pass: 'wayne123'
+        //             }
+        //         });
+        //         var mailOptions = {
+        //             to: email,
+        //             from: 'wstationtestdod@gmail.com',
+        //             subject: 'Weather Station Account Request',
+        //             text: 'You are receiving this message because you are able to accept or deny the approval of this account request.\n\n' +
+        //             'Please click the following link to complete this process:\n\n' +
+        //             req.protocol + '://' + req.get('host') + '/user/Approval/' + token + '\n\n'
+        //         };
+        //         transporter.sendMail(mailOptions, function (err) {
+        //             //Alert user email has been sent
+        //             done(err, 'done');
+        //         });
+        //     }
+        //
+
 });
 
 //calls passport authentication on login
@@ -132,7 +160,7 @@ router.post('/logout', function(req,res){
     req.session.destroy(response => {
         res.json({response: response})
     });
-})
+});
 
 router.post('/reset/', function(req,res){
     var email = req.body.email;
@@ -184,9 +212,9 @@ router.post('/reset/', function(req,res){
     ],function(err){
         if(err)
             console.log('Error:', err);
-    })
+    });
     res.redirect('/user/login');
-})
+});
 
 router.post('/reset/:token', function(req, res){
     async.waterfall([ 
@@ -208,7 +236,7 @@ router.post('/reset/:token', function(req, res){
                     },{patch:true})
                     if(!user)
                         console.log("Error no user with that token");//redirect after
-                })
+                });
                 console.log("Your password has been reset!");
                 res.redirect('/user/login');
             }
