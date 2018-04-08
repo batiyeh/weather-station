@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import '../../styles/historical.css';
-import { Scatter } from 'react-chartjs-2';
+import { Scatter } from 'react-chartjs-2'
+var Moment = require('moment');
+var MomentRange = require('moment-range');
+
+var moment = MomentRange.extendMoment(Moment);
 
 class Graph extends Component {
     constructor(props) {
@@ -19,6 +23,7 @@ class Graph extends Component {
         //render each dataset that has been made below sets the styling of the overall graph and chart not the lines
         var min = this.state.minDate;
         var max = this.state.maxDate;
+        var dateRange = moment.range(min, max);
         var labelString = " ";
         var callback;
         if (this.state.sensorType === 'temperature'){
@@ -40,6 +45,12 @@ class Graph extends Component {
             callback = function(value, index, values) {
                 return value + 'hPa';     // add the degree symbol to the points on the y axis
             }
+        }
+        if(dateRange.diff('days') === 1 ){
+            var unit = 'hour';
+        }
+        else{
+            unit = 'day';
         }
         return(
             <div className='graph'>
@@ -63,6 +74,11 @@ class Graph extends Component {
                                 },
                                 type: 'time',
                                 time: {
+                                    unit: unit,
+                                    displayFormats: {
+                                        hour: 'HH:mm:ss',
+                                        day: 'MM/DD/YYYY HH:mm:ss',
+                                    },
                                     min: min,
                                     max: max
                                 },

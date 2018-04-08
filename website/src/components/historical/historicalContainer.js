@@ -162,7 +162,6 @@ class HistoricalContainer extends Component{
             data = stationsDict[station_name];
             newStationsDict[station_name] = {};
             var dateRange = moment.range(from, to);
-            console.log();
             for(var i = 0; i < data["points"].length; i++){
                 if(dateRange.diff('days') === 1 || data["points"].length > 1 ){
                     if ( i % 180 === 0){
