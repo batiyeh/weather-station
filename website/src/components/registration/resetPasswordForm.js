@@ -10,16 +10,19 @@ class ResetPasswordForm extends Component {
     constructor(props){
         super(props);
 
-        var redirect = Cookies.get('loggedIn')
-        if (_.isUndefined(redirect)) redirect = false;
+        var loggedIn = Cookies.get('loggedIn')
+        if (_.isUndefined(loggedIn)) loggedIn = false;
         
         this.state={
             email: '',
             errors: [],
-            redirect: redirect
+            loggedIn: loggedIn,
+            redirect: false
         };
         this.submitForm = this.submitForm.bind(this);
         this.renderErrors = this.renderErrors.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.return = this.return.bind(this);
     }
     submitForm = async () => {
         var response = await fetch('/api/user/reset/', 
@@ -51,29 +54,48 @@ class ResetPasswordForm extends Component {
     }
     onEmailChange(value){
         this.setState({
-          email: value
+            email: value
+        })
+    }
+    handleKeyPress(target){
+        if(target.charCode==13){
+            this.submitForm();
+        }
+    }
+    return(){
+        this.setState({
+            redirect: true
         })
     }
     render(){
-        return(
-            <div className="forgot-container">
-                <h2 className="login-title">Reset Password</h2> 
-                <form className='ResetPasswordForm'>
-                    {this.renderErrors()}
-                    <div className='form-group'>
-                        <Input id='email' name='email' type='email' class='form-control' placeholder='Email'  onChange={e => this.onEmailChange(e.target.value)}/>
-                    </div>
-                    <div className='row'>
-                        <div className='col-6'>
-                            <a className='register-link' href='/user/login'><Button type='button' className='btn btn-default btn-block register-btn'>Return</Button></a>
+        if(this.state.loggedIn === 'true'){
+            return (<Redirect to='/'/>)
+        }
+        else if(this.state.redirect){
+            return (<Redirect to='/user/login'/>)
+        }
+        else{
+            return(
+                <div className="forgot-container">
+                    <h2 className="login-title">Reset Password</h2> 
+                    <form className='ResetPasswordForm'>
+                        {this.renderErrors()}
+                        <div className='form-group'>
+                            <Input id='email' name='email' type='email' class='form-control' placeholder='Email'  onChange={e => this.onEmailChange(e.target.value)}/>
                         </div>
-                        <div className='col-6'>
-                            <Button type='button' onClick={this.submitForm} className='btn btn-default btn-block login-btn'>Recover Password</Button>
+                        <div className='row'>
+                            <div className='col-6'>
+                                <Button type='button' onClick={this.return} className='btn btn-default btn-block login-btn'>Return</Button>
+                            </div>
+                            <div className='col-6'>
+                                <Button type='button' onClick={this.submitForm} className='btn btn-default btn-block login-btn'>Recover Password</Button>
+                            </div>
                         </div>
-                    </div>
-                </form>
-            </div>
-        )
+                    </form>
+                </div>
+            )   
+        }
+
     }
 }
 

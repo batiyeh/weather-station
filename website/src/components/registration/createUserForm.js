@@ -22,6 +22,7 @@ class CreateUserForm extends Component {
         this.submitForm = this.submitForm.bind(this);
         this.renderErrors = this.renderErrors.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.return = this.return.bind(this);
     }
     //sets state based on value entered by user in the fields
     onUsernameChange(value){
@@ -48,6 +49,11 @@ class CreateUserForm extends Component {
         if(target.charCode==13){
             this.submitForm();
         }
+    }
+    return(){
+        this.setState({
+            redirect: true
+        })
     }
     //sents data for user account to back end
     //errors are returned (if they exist) and the redirect flag is set (true if user's account was created successfully)
@@ -115,7 +121,7 @@ class CreateUserForm extends Component {
               </div>
               <div className='row'>
                 <div className='col-6'>
-                  <a className='return-link' href='/user/login'><Button type='button' className='btn btn-default btn-block return-btn'>Return</Button></a>                
+                  <Button type='button' onClick={this.return} className='btn btn-default btn-block return-btn'>Return</Button>               
                 </div>
                 <div className='col-6'>
                   <Button type='button' onClick={this.submitForm} className="btn btn-default btn-block">Submit</Button>

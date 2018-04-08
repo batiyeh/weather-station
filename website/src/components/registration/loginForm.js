@@ -11,18 +11,20 @@ class LoginForm extends Component {
     constructor(props){
         super(props);
 
-        var redirect = Cookies.get('loggedIn')
-        if (_.isUndefined(redirect)) redirect = false;
+        var loggedIn = Cookies.get('loggedIn')
+        if (_.isUndefined(loggedIn)) loggedIn = false;
         
         this.state={
             username: '',
             password: '',
             errors: [],
-            redirect: redirect
+            redirect: false,
+            loggedIn: loggedIn
         };
         this.submitForm = this.submitForm.bind(this);
         this.renderErrors = this.renderErrors.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.createRedirect = this.createRedirect.bind(this);
     }
     onUsernameChange(value){
         this.setState({
@@ -65,6 +67,11 @@ class LoginForm extends Component {
             this.submitForm();
         }
     }
+    createRedirect(){
+        this.setState({
+            redirect:true
+        })
+    }
     renderErrors(){
         if(this.state.errors.length > 0){
             var allErrors = []
@@ -75,10 +82,12 @@ class LoginForm extends Component {
           return allErrors;
         }
     }
-    
     render(){
-        if(this.state.redirect === 'true'){
+        if(this.state.loggedIn === 'true'){
             return (<Redirect to='/'/>)
+        }
+        else if(this.state.redirect){
+            return (<Redirect to='/user/create'/>)
         }
         else{
             return(
@@ -100,7 +109,7 @@ class LoginForm extends Component {
                             </div>
                             <div className='row'>
                                 <div className='col-6'>
-                                    <a className='register-link' href='/user/create'><button type='button' className='btn btn-secondary btn-block register-btn'>Register</button></a>
+                                    <Button type='button' onClick={this.createRedirect} className='btn btn-secondary btn-block register-btn'>Register</Button>
                                 </div>
                                 <div className='col-6'>
                                     <Button type='button' onClick={this.submitForm} className='btn btn-secondary btn-block login-btn'>Login</Button>
