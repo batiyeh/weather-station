@@ -32,30 +32,20 @@ class NewUserApproval extends Component {
     };
 
     updateTable(){
-        this.getPendingUsers();
+        this.getPendingUsers().then((pendingUsers) => {
+            this.setState({ 
+                pendingUsers: pendingUsers, 
+                loading: false 
+            })
+        });
     };
 
-    // approveUser = async ()=> {
-    //     await this.setState({
-    //         statusP: true
-    //     })
-    //     this.updateUser()
-    //     this.getuser()
-    // }
-
-    // denyUser = async ()=> {
-    //     await this.setState({
-    //         statusP: false
-    //     })
-    //     this.updateUser()
-    //     this.getuser()
-    // }
-
-    updateUser = async () => {
-        await fetch ('/api/user/approveUser', { method: 'post', 
+    updateUser = async (user, type) => {
+        await this.setState({ loading: true });
+        await fetch ('/api/user/permissions', { method: 'put', 
             body: JSON.stringify({
-                selectedUser: this.state.selectedUser, 
-                statusP: this.state.statusP
+                username: user["username"], 
+                permissions: type
             }),
             headers: {
                 'Accept': 'application/json, text/plain, */*',
@@ -63,6 +53,7 @@ class NewUserApproval extends Component {
             },
             credentials:'include'}
         );
+        this.updateTable();
     }
 
     renderAlert(){
@@ -81,7 +72,13 @@ class NewUserApproval extends Component {
 
     render() {
         if (this.state.loading === true){
-            return null;
+            return (
+                <div>
+                    <Alert className="no-users-alert" color="primary">
+                        There are no pending users to display.
+                    </Alert>
+                </div>
+            );
         } else{
             return(
                 <Table className="admin-table" bordered>
@@ -102,10 +99,10 @@ class NewUserApproval extends Component {
                                         <td className="admin-table-buttons">
                                             <div className="row">                                          
                                                 <div className="col-6">
-                                                    <Button color="primary" onClick={() => this.updateUser(user, "approve")}>Approve</Button>
+                                                    <Button color="primary" onClick={() => this.updateUser(user, "User")}>Approve</Button>
                                                 </div>
                                                 <div className="col-6">
-                                                    <Button color="danger" onClick={() => this.updateUser(user, "approve")}>Deny</Button>
+                                                    <Button color="danger" onClick={() => this.updateUser(user, "Denied")}>Deny</Button>
                                                 </div>
                                             </div>
                                         </td>

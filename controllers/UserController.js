@@ -120,16 +120,11 @@ router.get('/allUsers', async function(req,res){
 });
 
 router.put('/permissions', async function (req, res) {
-    var username = req.body.selectedUser.username;
-
-    if(req.body.status === true){
-        await User.where({username:username}).save({permission_id: 2}
-            ,{patch: true})
-    }
-    else if (req.body.status === false){
-        await User.where({username:username}).save({permission_id: 5}
-        ,{patch:true})
-    }
+    var username = req.body.username;
+    var permissisionId = await knex('permissions').select('permission_id').where('type', '=', req.body.permissions)
+    permissisionId = permissisionId[0]["permission_id"];
+    
+    await User.where({username: req.body.username}).save({permission_id: permissisionId}, {patch: true});
 })
 
 router.post('/logout', function(req,res){

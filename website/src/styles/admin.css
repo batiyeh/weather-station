@@ -18,6 +18,10 @@
     width: 30%;
 }
 
+.no-users-alert{
+    margin-top: 25px;
+}
+
 .station-title{
     font-size: 16pt;
 }
