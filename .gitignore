@@ -1,3 +1,4 @@
+env2/
 .idea/*
 .vscode/*
 db.sqlite3
