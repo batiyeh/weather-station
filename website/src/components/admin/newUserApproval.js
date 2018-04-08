@@ -8,11 +8,10 @@ class NewUserApproval extends Component {
             pendingUsers: [],
             loading: true
         }
-
         this.updateUser = this.updateUser.bind(this);
-
     };
 
+    // Set the pendingUsers array in the state
     componentDidMount(){
         this.getPendingUsers().then((pendingUsers) => {
             this.setState({ 
@@ -22,6 +21,7 @@ class NewUserApproval extends Component {
         });
     }
 
+    // Get all pending users
     getPendingUsers = async () => {
         var pendingUsers = [];
         const response = await fetch('api/user/pendingUsers', {method: 'get'});
@@ -31,6 +31,7 @@ class NewUserApproval extends Component {
         return pendingUsers;
     };
 
+    // Update the list of pending users
     updateTable(){
         this.getPendingUsers().then((pendingUsers) => {
             this.setState({ 
@@ -40,6 +41,7 @@ class NewUserApproval extends Component {
         });
     };
 
+    // Update a single user with a permission type
     updateUser = async (user, type) => {
         await this.setState({ loading: true });
         await fetch ('/api/user/permissions', { method: 'put', 
@@ -56,6 +58,7 @@ class NewUserApproval extends Component {
         this.updateTable();
     }
 
+    // Render an empty table alert
     renderAlert(){
         if (this.state.pendingUsers.length === 0){
             return (

@@ -120,6 +120,7 @@ router.get('/allUsers', async function(req,res){
 });
 
 router.put('/permissions', async function (req, res) {
+    // Pass in the user and the permission you want to change that user to
     var username = req.body.username;
     var permissisionId = await knex('permissions').select('permission_id').where('type', '=', req.body.permissions)
     permissisionId = permissisionId[0]["permission_id"];
