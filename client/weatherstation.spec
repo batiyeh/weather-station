@@ -6,10 +6,7 @@ block_cipher = None
 a = Analysis(['weatherstation.py'],
              pathex=['/home/pi/dev/weather-station-site/client'],
              binaries=[],
-             datas=[
-                ('env/lib/python3.5/site-packages/sense_hat/sense_hat_text.png', 'sense_hat_text.png'), 
-                ('env/lib/python3.5/site-packages/sense_hat/sense_hat_text.txt', 'sense_hat_text.txt')    
-             ],
+             datas=[],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],

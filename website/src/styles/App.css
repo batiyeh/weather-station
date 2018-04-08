@@ -39,7 +39,7 @@
 }
 
 .btn{
-  pointer: cursor;
+  cursor: pointer;
 }
 
 .current .container {
