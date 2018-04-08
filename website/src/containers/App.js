@@ -21,7 +21,8 @@ class App extends Component {
       username: '',
       email: '',
       phone: '',
-      isAdmin: false
+      isAdmin: false,
+      permissions: ''
     }
   }
   componentDidMount(){
@@ -86,6 +87,15 @@ class App extends Component {
       </div>
     )
   }
+
+  renderAdmin = (props) => {
+    return(
+      <div id="admin-page">
+        <Admin permissions={this.state.permissions}/>
+      </div>
+    )
+  }
+
   render(props) {
     return (
       <Router>
@@ -101,7 +111,7 @@ class App extends Component {
             <Route path="/profile" render={this.renderProfile}/>
             <Route path="/historical" component={Historical}/>
             <Route path="/alerts" component={Alerts}/>
-            <Route path="/admin" component={Admin}/>
+            <Route path="/admin" render={this.renderAdmin}/>
           </div>
         </div>
       </Router>

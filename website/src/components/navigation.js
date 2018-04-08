@@ -53,6 +53,7 @@ class Navigation extends Component {
             secondValue: null,
             unread: false,
             navShown: false,
+            permissions: this.props.permissions
         }
         this.toggleDropdown = this.toggleDropdown.bind(this);
         this.toggleNav = this.toggleNav.bind(this);
@@ -63,6 +64,15 @@ class Navigation extends Component {
         await this.getTriggeredAlerts();
         this.interval = setInterval(this.getTriggeredAlerts, 5000);
     }
+
+    componentWillReceiveProps(nextProps){
+        if(nextProps.permissions !== this.state.permissions){
+            this.setState({
+                permissions: nextProps.permissions
+            })
+        }
+    }
+
     //clear interval when navbar unmounts
     componentWillUnmount() {
         clearInterval(this.interval);
@@ -137,6 +147,19 @@ class Navigation extends Component {
             modal: false
         })
     }
+
+    renderAdmin() {
+        if (this.state.permissions === "Admin" || this.state.permissions === "Superuser") {
+            return( 
+                <DropdownItem tag='a'>
+                    <Link to={'/admin'} className='nav-link nav-link-dark'>admin</Link>
+                </DropdownItem>
+            );
+        }
+        else {
+            return null;
+        }
+     }
 
     logout = async() => {
         await Cookies.set('loggedIn', false);
@@ -312,9 +335,7 @@ class Navigation extends Component {
                                                 <span className="download-text">client</span>
                                                 {/* <i class="fa fa-download" aria-hidden="true"></i> */}
                                             </DropdownItem>
-                                            <DropdownItem tag='a'>
-                                                <Link to={'/admin'} className='nav-link nav-link-dark'>admin</Link>
-                                            </DropdownItem>
+                                            { this.renderAdmin() }
                                             <DropdownItem tag='a'>
                                                 <a onClick={this.logout} className='nav-link nav-link-dark'>logout</a>
                                             </DropdownItem>
