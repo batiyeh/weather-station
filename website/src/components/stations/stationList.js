@@ -8,17 +8,25 @@ import _ from 'lodash';
 // Each connected station is built out of a single Station component in a loop here
 class StationList extends Component {
     // Constructor called when the component is loaded in
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         var view = Cookies.get('view');
         if (_.isUndefined(view)) view = 'list';
-
         this.state = {
             stations: [],
             secondsElapsed: 0,
             filter: '',
-            view: view
+            view: view,
+            permissions: props.permissions
         };
+    }
+
+    componentWillReceiveProps(nextProps){
+        if(nextProps.permissions !== this.state.permissions){
+            this.setState({
+                permissions: nextProps.permissions
+            })
+        }
     }
 
     // Sets the initial state of the component to be null/0 so 
@@ -125,7 +133,7 @@ class StationList extends Component {
                 .filter(this.filterStations.bind(this))
                 .map(station => {
                     return (
-                        <StationCard key={station.key} station={station}></StationCard>
+                        <StationCard key={station.key} permissions={this.state.permissions} station={station}></StationCard>
                     );
                 }) 
             ); 
@@ -140,7 +148,7 @@ class StationList extends Component {
                     .map((station, index) => {
                         return (
                             <div class="col-md-6 col-sm-12 no-padding">
-                                <StationCard key={station.key} station={station}></StationCard>
+                                <StationCard key={station.key} permissions={this.state.permissions} station={station}></StationCard>
                             </div>
                         );
                     }) 

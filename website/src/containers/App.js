@@ -21,7 +21,8 @@ class App extends Component {
       username: '',
       email: '',
       phone: '',
-      isAdmin: false
+      isAdmin: false,
+      permissions: ''
     }
   }
   componentDidMount(){
@@ -38,12 +39,16 @@ class App extends Component {
         credentials: 'include'
     })
     var body = await response.json();
-    if(!body.phone){
-      this.setState({username: body.username, email: body.email, phone: 'Phone Number', isAdmin: body.isAdmin});
+
+    if (body.length > 0){
+      if(!body.phone){
+        this.setState({username: body[0].username, email: body[0].email, phone: 'Phone Number', permissions: body[0].type});
+      } else{
+        this.setState({username: body[0].username, email: body[0].email, phone: body[0].phone, permissions: body[0].type});
+      }
     }
-    else{
-      this.setState({username: body.username, email: body.email, phone: body.phone, isAdmin: body.isAdmin});      
-    }
+      console.log(this.state.permissions)
+
   }
 
   renderNav = (props) => {
@@ -51,6 +56,7 @@ class App extends Component {
       return (
         <Navigation 
           username={this.state.username}
+          permissions={this.state.permissions}
           {...props}
         />
       );
@@ -67,7 +73,7 @@ class App extends Component {
       username={this.state.username} 
       email={this.state.email} 
       phone={this.state.phone} 
-      isAdmin={this.state.isAdmin}
+      permissions={this.state.permissions}
       {...props}
       />
     </div>
@@ -83,13 +89,30 @@ class App extends Component {
       </div>
     )
   }
+
+  renderAdmin = (props) => {
+    return(
+      <div id="admin-page">
+        <Admin permissions={this.state.permissions}/>
+      </div>
+    )
+  }
+
+  renderStations = (props) => {
+    return(
+      <div id="stations-page">
+        <Station permissions={this.state.permissions}/>
+      </div>
+    )
+  }
+
   render(props) {
     return (
       <Router>
         <div className="App">
           <Route path='/' username={this.state.username} render={this.renderNav}/>  
           <div className="main">
-            <Route path="/" component={Station} exact/>
+            <Route path="/" render={this.renderStations} exact/>
             <Route path="/map" component={Map}/>
             <Route path="/user/login" render={this.renderLogin}/>
             <Route path="/user/create" component={Create}/>  
@@ -98,7 +121,7 @@ class App extends Component {
             <Route path="/profile" render={this.renderProfile}/>
             <Route path="/historical" component={Historical}/>
             <Route path="/alerts" component={Alerts}/>
-            <Route path="/admin" component={Admin}/>
+            <Route path="/admin" render={this.renderAdmin}/>
           </div>
         </div>
       </Router>
