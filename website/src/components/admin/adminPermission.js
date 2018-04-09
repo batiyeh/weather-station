@@ -40,14 +40,15 @@ class AdminPermission extends Component {
                 loading: false
             })
         });
+        console.log(this.state.users);
+        console.log(this.state.loading);
         console.log("done updating table");
     };
 
     // Update a single user with a permission type
     updateUser = async (user, type) => {
         console.log("updating the user");
-        await this.setState({ loading: true });
-        fetch ('/api/user/permissions', { method: 'put',
+        var response = fetch ('/api/user/permissions', { method: 'put',
             body: JSON.stringify({
                 username: user["username"],
                 permissions: type
@@ -58,6 +59,12 @@ class AdminPermission extends Component {
             },
             credentials:'include'}
         );
+        var body = await response.json();
+        this.setState({
+            loading: true
+        });
+        console.log(this.state.users);
+        console.log(this.state.loading);
         console.log("about to update the table");
         this.updateTable();
     };
