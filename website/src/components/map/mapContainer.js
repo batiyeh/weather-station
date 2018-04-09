@@ -5,12 +5,12 @@ import geolib from 'geolib';
 import Marker from './marker';
 import AveragesMarker from './averagesMarker';
 import { MARKER_SIZE } from './markerStyles'
-import _ from 'lodash';
 import '../../styles/map.css';
 
 export class MapContainer extends Component {
     constructor(props) {
         super(props);
+        this.averageCircles = [];
         const {center, zoom} = this.calculateMapBounds(this.props.checkedStations, this.props.height, this.props.width);
 
         this.state = {
@@ -23,8 +23,7 @@ export class MapContainer extends Component {
             mode: this.props.mapMode,
             mapOnly: this.props.mapOnly,
             showAverages: false,
-            averagesCenter: [],
-            averages: {}
+            averages: []
         };
     }
 
@@ -126,8 +125,8 @@ export class MapContainer extends Component {
             // When a circle is done drawing, delete the existing one and 
             // average the weather data for the new circle
             this.maps.event.addListener(drawingManager, 'circlecomplete', (circle) => {
-                if (!_.isUndefined(this.averageCircle)) this.averageCircle.setMap(null);
-                this.averageCircle = circle;
+                // if (!_.isUndefined(this.averageCircle)) this.averageCircle.setMap(null);
+                this.averageCircles.push(circle);
                 this.averageWeather(circle);
             });
         }
@@ -140,9 +139,12 @@ export class MapContainer extends Component {
         }
 
         else{
-            if (!_.isUndefined(this.averageCircle)){ 
+            if (this.averageCircles.length > 0){ 
                 this.setState({ showAverages: false });
-                this.averageCircle.setMap(null);
+                for (var i = 0; i < this.averageCircles.length; i++){
+                    this.averageCircles[i].setMap(null);
+                }
+                this.averageCircles = [];
             }
             
             this.drawingManager.setDrawingMode(null);
@@ -172,10 +174,16 @@ export class MapContainer extends Component {
 
     // Update our state to show averages
     updateAverages(circle, averages){
+        var averagesArray = this.state.averages;
+        averagesArray.push({
+            lat: circle.center.lat(),
+            lng: circle.center.lng(),
+            data: averages
+        });
+
         this.setState({ 
             showAverages: true, 
-            averagesCenter: [circle.center.lat(), circle.center.lng()], 
-            averages: averages 
+            averages: averagesArray 
         });
     }
 
@@ -207,8 +215,17 @@ export class MapContainer extends Component {
     }
     
     renderAverages(){
+        var averageMarkers = [];
         if (this.state.showAverages){
-            return (<AveragesMarker lat={this.state.averagesCenter[0]} lng={this.state.averagesCenter[1]} show={this.state.showAverages} averages={this.state.averages}></AveragesMarker>);
+            this.state.averages.map((average, index) => {
+                averageMarkers.push(
+                    <AveragesMarker key={index} lat={average["lat"]} lng={average["lng"]} show={this.state.showAverages} averages={average["data"]}></AveragesMarker>
+                );
+                return null;
+            }) 
+            return averageMarkers;
+        } else {
+            return null;
         }
     }
 

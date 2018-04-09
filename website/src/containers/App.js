@@ -47,7 +47,6 @@ class App extends Component {
         this.setState({username: body[0].username, email: body[0].email, phone: body[0].phone, permissions: body[0].type});
       }
     }
-      console.log(this.state.permissions)
 
   }
 

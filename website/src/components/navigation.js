@@ -3,25 +3,7 @@ import '../styles/navbar.css';
 import logo from '../images/space-satellite-dish-512x512.png';
 import Cookies from 'js-cookie';
 import { Link, Redirect} from 'react-router-dom';
-import {
-    Navbar,
-    NavbarBrand,
-    NavbarToggler,
-    Collapse,
-    Nav,
-    NavItem,
-    Dropdown,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
-    Card,
-    Modal,
-    ModalBody,
-    ModalFooter,
-    ModalHeader,
-    Form,
-    Button,
-    Alert } from 'reactstrap';
+import { Navbar, NavbarBrand, NavbarToggler, Collapse, Nav, NavItem, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Card, Modal, ModalBody, ModalFooter, ModalHeader, Form, Button, Alert } from 'reactstrap';
 import download from 'downloadjs';
 var moment = require('moment');
 
