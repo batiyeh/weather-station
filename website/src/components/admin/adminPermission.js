@@ -9,9 +9,10 @@ class AdminPermission extends Component {
             loading: true
         }
         this.updateUser = this.updateUser.bind(this);
+        this.updateTable = this.updateTable.bind(this);
     };
 
-    // Set the pendingUsers array in the state
+
     componentDidMount(){
         this.getUsers().then((users) => {
             this.setState({
@@ -21,13 +22,13 @@ class AdminPermission extends Component {
         });
     }
 
-    // Get all pending users
     getUsers = async () => {
         var users = [];
         const response = await fetch('api/user/allUsers', {method: 'get'});
         const body = await response.json();
         if (body.users.length > 0) users = body.users;
         if (response.status !== 200) throw Error(body.message);
+        await this.setState({ loading: false });
         return users;
     };
 
@@ -39,12 +40,14 @@ class AdminPermission extends Component {
                 loading: false
             })
         });
+        console.log("done updating table");
     };
 
     // Update a single user with a permission type
     updateUser = async (user, type) => {
+        console.log("updating the user");
         await this.setState({ loading: true });
-        await fetch ('/api/user/permissions', { method: 'put',
+        fetch ('/api/user/permissions', { method: 'put',
             body: JSON.stringify({
                 username: user["username"],
                 permissions: type
@@ -55,20 +58,14 @@ class AdminPermission extends Component {
             },
             credentials:'include'}
         );
+        console.log("about to update the table");
         this.updateTable();
     };
 
 
+
     render() {
-        if (this.state.loading === true){
-            return (
-                <div>
-                    <Alert className="no-users-alert" color="primary">
-                        Loading user table.
-                    </Alert>
-                </div>
-            );
-        } else{
+        if (this.state.loading === false){
             return(
                 <Table className="admin-table" bordered>
                     <thead>
@@ -105,6 +102,14 @@ class AdminPermission extends Component {
                     }
                     </tbody>
                 </Table>
+            );
+        } else{
+            return (
+                <div>
+                    <Alert className="no-users-alert" color="primary">
+                        Loading user table.
+                    </Alert>
+                </div>
             );
         }
     }
