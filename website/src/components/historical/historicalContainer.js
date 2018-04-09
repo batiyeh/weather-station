@@ -182,7 +182,7 @@ class HistoricalContainer extends Component{
     //function upon hitting submit in the modal with new data to update the graph and close the modal
     updateGraph = async () => {
         var today = moment();
-        if(this.state.toDate > today.format("YYYY-MM-DD HH:mm:ss")){
+        if(this.state.toDate > today.format("YYYY-MM-DD HH:mm:ss") || this.state.fromDate > this.state.fromDate){
             this.setState({
                 dateError: true
             });
