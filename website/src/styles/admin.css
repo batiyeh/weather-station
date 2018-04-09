@@ -1,3 +1,7 @@
+.download-btn{
+    margin-right: 5px;
+}
+
 .adminPage{
     max-width: 850px;
     margin: auto;
@@ -16,6 +20,10 @@
 
 .admin-table-buttons{
     width: 30%;
+}
+
+.no-users-alert-td{
+    margin-bottom: 0px !important;
 }
 
 .no-users-alert{
