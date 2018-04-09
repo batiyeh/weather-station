@@ -15,7 +15,6 @@ var moment = require('moment');
 // This is probably super slow but it makes it more efficient for the user on the stations page for now
 router.post('/', async function (req, res) {
     var station = await knex('stations').select().where('apikey', req.body.apikey);
-    
     if (station.length > 0){
     // if (_.isNull(station[0].expiration) ||  moment(station[0].expiration).utc(station[0].expiration).isAfter(req.body.created_at)){
         var latestWeather = await openweather.getLatestOpenWeatherData(req.body.apikey);
@@ -58,6 +57,14 @@ router.post('/', async function (req, res) {
                     apikey: req.body.apikey,
                 }).save()
             }
+        }
+
+        // Update our connected status if it is 0 / off
+        if (station[0].connected === 0){
+            await Station.where('apikey', req.body.apikey).save({
+                connected: 1,
+                last_connected: moment().utc().format("YYYY-MM-DD HH:mm:ss")
+            }, {patch:true});
         }
 
         return res.json({result});

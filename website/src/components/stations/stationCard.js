@@ -69,7 +69,7 @@ class StationCard extends Component {
     getUptime() {
         var uptime = "";
         if (this.props.station.connected){
-            uptime = moment().diff(moment(this.props.station.last_connected))
+            uptime = moment().diff(moment(moment(this.props.station.last_connected).utc(this.props.station.last_connected).local()))
             uptime = moment.utc(uptime).format("HH:mm:ss");
         }
         return uptime;
@@ -213,6 +213,19 @@ class StationCard extends Component {
         else return null;
     }
 
+    renderUptime(){
+        if (this.props.station.connected === 1){
+            return(
+                <div>
+                    <div className="station-detail-row">
+                    <span className="left">Uptime</span>
+                    <span className="right">{this.getUptime()}</span>
+                    </div><br/>
+                </div>
+            );
+        }
+    }
+
     render() {
         const location = (this.props.station.latitude === "n/a") ? "Unavailable" : "(" + this.props.station.latitude + ", " + this.props.station.longitude + ")";
 
@@ -223,10 +236,7 @@ class StationCard extends Component {
                     <ModalBody>
                         { this.renderNameInput() }
                         <div className="station-detail-container">
-                            {/* <div className="station-detail-row">
-                                <span className="left">Uptime</span>
-                                <span className="right">{this.getUptime()}</span>
-                            </div><br/> */}
+                            { this.renderUptime() }
                             <div className="station-detail-row">
                                 <span className="left">Temperature</span>
                                 <span className="right">{this.props.station.temperature} &deg;F</span>
@@ -240,7 +250,7 @@ class StationCard extends Component {
                                 <span className="right">{this.props.station.humidity}%</span>
                             </div><br/>
                             <div className="station-detail-row">
-                                <span className="left">Location</span>
+                                <span className="left">Last Known Location</span>
                                 <span className="right">{ location }</span>
                             </div><br/>
                             { this.renderMap() } 
