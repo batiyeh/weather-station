@@ -9,7 +9,8 @@ const crypto = require('crypto');
 const knex = require('knex')(require('../knexfile'));
 const async = require('async');
 const nodemailer = require('nodemailer');
-const LocalStrategy = require('passport-local').Strategy;
+const moment = require('moment');
+
 
 router.post('/create', async function(req, res){
     var username = req.body.username.toLowerCase();
@@ -176,10 +177,9 @@ router.post('/reset/', function(req,res){
             });
         },
         function(token, done){
-            date = Date.now() + 3600000;
             var user = User.where({email: email}).save({
                 reset_password_token: token,
-                reset_password_expires: date,
+                reset_password_expires: moment.utc().format("YYYY-MM-DD HH:mm:ss"),
             },{patch:true});   
             if(!user)
                 var err = 'No user';
@@ -217,7 +217,7 @@ router.post('/reset/', function(req,res){
     res.status(200).json({errors: [{msg: "If you have entered a valid email address you will recieve an email with instructions on how to reset your password shortly"}]})
 })
 
-router.post('/reset/:token', function(req, res){
+router.post('/reset/:token', async function(req, res){
     //makes sure new user password meets password requirements
     var newPass = req.body.newPass
     var confirmPass = req.body.confirmPass
@@ -234,6 +234,18 @@ router.post('/reset/:token', function(req, res){
         res.status(200).json({errors: errors, redirect: false});
     }
     else{
+        var user = await User.where({reset_password_token: req.params.token}).fetch();
+        if(!user){
+            res.status(200).json({errors: [{msg: "Invalid token, please request a new password reset email"}]})
+        }
+        console.log(moment.utc().format("YYYY-MM-DD HH:mm:ss"), moment(user.attributes.reset_password_expires).utc().format("YYYY-MM-DD HH:mm:ss"));
+        console.log(moment.utc().format("YYYY-MM-DD HH:mm:ss") - user.attributes.reset_password_expires);
+
+        // await user.save({
+        //     password: hash,
+        //     reset_password_token: ''
+        // },{patch:true})
+
         // //hash password, assign to user in db
         // bcrypt.hash(req.body.password, 10, function(err,hash){
         //     var user = User.where({reset_password_token: req.params.token}).save({
