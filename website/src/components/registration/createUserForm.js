@@ -100,7 +100,6 @@ class CreateUserForm extends Component {
             return ( <Redirect to='/user/login'/>)
         }
         else if(this.state.redirect){
-            console.log("Redirecting to login")
             return ( <Redirect to={{pathname: '/user/login', state: {errors: [{msg: "Your account and been created and is currently pending Admin approval"}]}}}/>)
         }
         else{

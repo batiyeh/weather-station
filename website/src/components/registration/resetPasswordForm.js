@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../../styles/login.css';
-import {Alert, Button, Input} from 'reactstrap';
+import {Alert, Button, Input, Form} from 'reactstrap';
 import { Redirect } from 'react-router';
 import Cookies from 'js-cookie';
 import _ from 'lodash';
@@ -59,6 +59,7 @@ class ResetPasswordForm extends Component {
     }
     handleKeyPress(target){
         if(target.charCode === 13){
+            target.preventDefault();
             this.submitForm();
         }
     }
@@ -76,22 +77,24 @@ class ResetPasswordForm extends Component {
         }
         else{
             return(
-                <div className="forgot-container">
-                    <h2 className="login-title">Reset Password</h2> 
-                    <form className='ResetPasswordForm'>
+                <div id='reset-password-page'>
+                    <div className="forgot-container">
+                        <h2 className="login-title">Reset Password</h2> 
                         {this.renderErrors()}
-                        <div className='form-group'>
-                            <Input id='email' name='email' type='email' class='form-control' placeholder='Email' onKeyPress={this.handleKeyPress} onChange={e => this.onEmailChange(e.target.value)}/>
-                        </div>
-                        <div className='row'>
-                            <div className='col-6'>
-                                <Button type='button' onClick={this.return} className='btn btn-default btn-block login-btn'>Return</Button>
+                        <Form id='ResetPasswordForm'>
+                            <div className='form-group'>
+                                <Input id='email' name='email' type='email' class='form-control' placeholder='Email' onKeyPress={this.handleKeyPress} onChange={e => this.onEmailChange(e.target.value)}/>
                             </div>
-                            <div className='col-6'>
-                                <Button type='button' onClick={this.submitForm} className='btn btn-default btn-block login-btn'>Recover Password</Button>
+                            <div className='row'>
+                                <div className='col-6'>
+                                    <Button type='button' onClick={this.return} className='btn btn-default btn-block login-btn'>Return</Button>
+                                </div>
+                                <div className='col-6'>
+                                    <Button type='button' onClick={this.submitForm} className='btn btn-default btn-block login-btn'>Recover Password</Button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </Form>
+                    </div>
                 </div>
             )   
         }

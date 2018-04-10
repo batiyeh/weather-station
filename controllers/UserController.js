@@ -179,7 +179,7 @@ router.post('/reset/', function(req,res){
             date = Date.now() + 3600000;
             var user = User.where({email: email}).save({
                 reset_password_token: token,
-                // reset_password_expires: date,
+                reset_password_expires: date,
             },{patch:true});   
             if(!user)
                 var err = 'No user';
@@ -219,25 +219,32 @@ router.post('/reset/', function(req,res){
 
 router.post('/reset/:token', function(req, res){
     //makes sure new user password meets password requirements
-    req.checkBody('password','Password must be longer than 8 characters, cannot contain symbols, and must have at least 1 letter and 1 number.')
-    .isLength({min: 8}).matches(/\d/).not().matches(/\W/).equals(req.body.password2);
+    var newPass = req.body.newPass
+    var confirmPass = req.body.confirmPass
+
+    req.checkBody('newPass','Password must 8 characters or longer').isLength({min: 8});
+    req.checkBody('newPass','Password cannot contain symbols').not().matches(/\W/);
+    req.checkBody('newPass', 'Password must have at least 1 letter and 1 number').matches(/\d/);
+    req.checkBody('newPass', 'Passwords do not match').equals(confirmPass);
+    // req.checkBody('password','Password must be longer than 8 characters, cannot contain symbols, and must have at least 1 letter and 1 number.')
+    // .isLength({min: 8}).matches(/\d/).not().matches(/\W/).equals(req.body.password2);
     //if it doesnt meet requirements, throw error
     var errors = req.validationErrors();
     if(errors){
-        res.json({errors: errors, redirect: false});
+        res.status(200).json({errors: errors, redirect: false});
     }
     else{
-        //hash password, assign to user in db
-        bcrypt.hash(req.body.password, 10, function(err,hash){
-            var user = User.where({reset_password_token: req.params.token}).save({
-                password: hash,
-                reset_password_token: null
-            },{patch:true})
-            if(!user)
-                console.log("Error no user with that token");//redirect after
-        })
+        // //hash password, assign to user in db
+        // bcrypt.hash(req.body.password, 10, function(err,hash){
+        //     var user = User.where({reset_password_token: req.params.token}).save({
+        //         password: hash,
+        //         reset_password_token: null
+        //     },{patch:true})
+        //     if(!user)
+        //         console.log("Error no user with that token");//redirect after
+        // })
         console.log("Your password has been reset!");
-        res.redirect('/user/login');
+        res.status(200).json({errors: [], redirect: true});
     }
 })
 //updates user profile (email/phone) when user submits form on profile page

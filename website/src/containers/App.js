@@ -107,7 +107,7 @@ class App extends Component {
             <Route path="/user/login" component={LoginForm}/>
             <Route path="/user/create" component={Create}/>  
             <Route path="/user/reset" component={ResetPassword} exact/>
-            <Route path="/user/reset/:tsoken" component={ResetPassword}/>
+            <Route path="/user/reset/:token" component={ResetPassword}/>
             <Route path="/profile" render={this.renderProfile}/>
             <Route path="/historical" component={Historical}/>
             <Route path="/alerts" component={Alerts}/>
