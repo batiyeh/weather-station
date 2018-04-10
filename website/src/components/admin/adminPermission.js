@@ -33,22 +33,20 @@ class AdminPermission extends Component {
     };
 
     // Update the list of pending users
-    updateTable(){
-        this.getUsers().then((users) => {
+    updateTable = async()  => {
+         this.getUsers().then((users) => {
             this.setState({
                 users: users,
                 loading: false
             })
         });
-        console.log(this.state.users);
-        console.log(this.state.loading);
         console.log("done updating table");
     };
 
     // Update a single user with a permission type
     updateUser = async (user, type) => {
         console.log("updating the user");
-        var response = fetch ('/api/user/permissions', { method: 'put',
+        fetch ('/api/user/permissions', { method: 'put',
             body: JSON.stringify({
                 username: user["username"],
                 permissions: type
@@ -59,12 +57,9 @@ class AdminPermission extends Component {
             },
             credentials:'include'}
         );
-        var body = await response.json();
-        this.setState({
+       await this.setState({
             loading: true
         });
-        console.log(this.state.users);
-        console.log(this.state.loading);
         console.log("about to update the table");
         this.updateTable();
     };
