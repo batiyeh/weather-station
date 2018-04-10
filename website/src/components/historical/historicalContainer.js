@@ -8,6 +8,12 @@ var Moment = require('moment');
 var MomentRange = require('moment-range');
 
 var moment = MomentRange.extendMoment(Moment);
+var sensorType ='temperature';
+var toDate = '';
+var fromDate = '';
+//var toBeDrawn = [];
+
+
 
 class HistoricalContainer extends Component{
     //set the props for the container
@@ -26,13 +32,15 @@ class HistoricalContainer extends Component{
             toDate: now.format("YYYY-MM-DD HH:mm:ss"),
             toBeDrawn: [],
             dateError: false,
-            stationError: false
+            stationError: false,
+            //shouldRender: true
         }
         this.toggleFilter = this.toggleFilter.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
         this.handleToChange = this.handleToChange.bind(this);
         this.handleFromChange = this.handleFromChange.bind(this);
         this.onStationChange = this.onStationChange.bind(this);
+        this.setForUpdate = this.setForUpdate.bind(this);
         this.updateGraph = this.updateGraph.bind(this);
 
     }
@@ -53,24 +61,31 @@ class HistoricalContainer extends Component{
     //When the to date value is changed in the modal it is handled here
     handleToChange(date) {
         var newDate = date.format("YYYY-MM-DD HH:mm:ss");
-        this.setState({
-            toDate: newDate
-        });
+        // this.setState({
+        //     toDate: newDate
+        // });
+        toDate = newDate;
+        console.log(toDate);
     }
 
     //When the from date value is changed in the modal it is handled here
     handleFromChange(date) {
         var newDate = date.format("YYYY-MM-DD HH:mm:ss");
-        this.setState({
-            fromDate: newDate
-        });
+        // this.setState({
+        //     fromDate: newDate
+        // });
+        fromDate = newDate;
+        console.log(fromDate);
     }
 
     //When the sensor type is changed in the modal it is handled here
     onSenseChange(value) {
-        this.setState({
-            sensorType: value
-        })
+        // this.setState({
+        //     sensorType: value
+        // })
+        sensorType = value;
+        console.log(sensorType);
+        //console.log(this.state.sensorType);
     }
 
     onStationChange(e){
@@ -178,11 +193,21 @@ class HistoricalContainer extends Component{
         return newStationsDict;
     }
 
+    setForUpdate(){
+        this.setState({
+            sensorType: sensorType,
+            toDate: toDate,
+            //fromDate: fromDate,
+        });
+        this.updateGraph();
+    }
+
 
     //function upon hitting submit in the modal with new data to update the graph and close the modal
     updateGraph = async () => {
         var today = moment();
-        if(this.state.toDate > today.format("YYYY-MM-DD HH:mm:ss") || this.state.fromDate > this.state.fromDate){
+        if(this.state.toDate > today.format("YYYY-MM-DD HH:mm:ss") || this.state.fromDate > this.state.toDate
+            || this.state.to < this.state.fromDate){
             this.setState({
                 dateError: true
             });
@@ -198,7 +223,8 @@ class HistoricalContainer extends Component{
             this.setState({
                 dateError: false,
                 stationError: false,
-                modal: false
+                modal: false,
+                shouldRender: true
             });
             await this.getSensorData();//call the async function to get the data based on the new parameters set by the filter
         }
@@ -219,13 +245,13 @@ class HistoricalContainer extends Component{
         return(
             <GraphData
                 //passes the stations data to the graph component
-               data={this.state.stationsData}
-               stations={this.state.toBeDrawn}
-               from={this.state.fromDate} // passes the to and from dates to the graph component
-               to={this.state.toDate}
-               height={500} //The height and width of the graph is passed to the graph component
-               width={"100%"}
-               sensorType={this.state.sensorType}
+                data={this.state.stationsData}
+                stations={this.state.toBeDrawn}
+                from={this.state.fromDate} // passes the to and from dates to the graph component
+                to={this.state.toDate}
+                height={500} //The height and width of the graph is passed to the graph component
+                width={"100%"}
+                sensorType={this.state.sensorType}
             />
         )
     }
@@ -303,7 +329,7 @@ class HistoricalContainer extends Component{
                             </ModalBody>
                             <ModalFooter>
                                 <Button type='button' color="secondary" onClick={this.toggleFilter}>Cancel</Button>
-                                <Button type='button' color="primary" onClick={this.updateGraph}>Submit</Button>
+                                <Button type='button' color="primary" onClick={this.setForUpdate}>Submit</Button>
                             </ModalFooter>
                         </form>
                     </Modal>
