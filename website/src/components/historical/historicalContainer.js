@@ -165,8 +165,10 @@ class HistoricalContainer extends Component{
             for(var i = 0; i < data["points"].length; i++){
                 if(dateRange.diff('days') === 1 || data["points"].length > 1 ){
                     if ( i % 180 === 0){
-                        var date = moment(data["points"][i]["x"]).utc(data["points"][i]["x"]).local().format("MM/DD/YY HH:mm:ss");
-                        points.unshift({x: date, y: data["points"][i]["y"]});
+                        if (data["points"][i]["y"] !== 0){
+                            var date = moment(data["points"][i]["x"]).utc(data["points"][i]["x"]).local().format("MM/DD/YY HH:mm:ss");
+                            points.unshift({x: date, y: data["points"][i]["y"]});
+                        }
                     }
                 }
 

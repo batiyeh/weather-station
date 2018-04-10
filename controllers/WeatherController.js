@@ -93,7 +93,8 @@ router.get('/latest', async function (req, res) {
             .join('weather', 'latestweather.weather_id', 'weather.weather_id')
             .join('stations', 'latestweather.apikey', 'stations.apikey')
             .select('weather.*', 'stations.station_name', 'stations.last_connected', 'stations.connected')
-            .orderBy('weather.created_at', 'desc')
+            .orderBy('stations.connected', 'desc')
+            .orderBy('stations.station_name')
     } catch(ex){
         console.log(ex);
         return res.json({});
@@ -108,7 +109,8 @@ router.get('/sensorData/:from/:to/:type', async function (req, res) {
     try{
         var temp = await knex('weather').select('weather.temperature', 'weather.pressure', 'weather.humidity', 'weather.created_at', 'weather.apikey', 'stations.station_name').from('weather')
         .leftJoin('stations', 'stations.apikey', 'weather.apikey')
-        .whereBetween('weather.created_at', [from, to]);
+        .whereBetween('weather.created_at', [from, to])
+        .orderBy('weather.created_at');
     } catch(ex){
         console.log(ex);
         return res.json({});
