@@ -1,3 +1,41 @@
+.download-btn{
+    margin-right: 5px;
+}
+
+.adminPage{
+    max-width: 850px;
+    margin: auto;
+    margin-top: 125px;
+}
+
+.admin-table{
+    margin: auto;
+    margin-top: 25px;
+    max-width: 700px !important;
+}
+
+.admin-table-username{
+    width: 70%;
+}
+
+.admin-table-buttons{
+    width: 30%;
+}
+
+.no-users-alert-td{
+    margin-bottom: 0px !important;
+}
+
+.no-users-alert{
+    margin-top: 25px;
+}
+
+.no-auth-alert{
+    margin: auto;
+    margin-top: 100px;
+    max-width: 700px;
+}
+
 .station-title{
     font-size: 16pt;
 }
@@ -66,7 +104,7 @@
 }
 
 .admin-content {
-    margin-top: 125px;
+    margin-top: 30px;
     max-width: 600px !important;
 }
 

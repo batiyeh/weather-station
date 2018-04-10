@@ -7,15 +7,15 @@ const knex = require('./knexfile');
 const cookieParser = require('cookie-parser');
 const expressValidator = require('express-validator');
 const passport = require('passport');
+const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const MySQLStore = require('express-mysql-session')(session);
 const scheduler = require('./scheduler');
 require('dotenv').config();
 
 // Apply scheduled tasks
-// scheduler.saveHistoricalData();
-// scheduler.updateConnectedList();
 scheduler.checkAlerts();
+scheduler.updateConnectedList();
 
 // Session storage options
 const options = {
@@ -53,8 +53,9 @@ app.use(session({
 //Facilitates logging in and creating sessions
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.use(express.static('website/public')) 
+app.use(express.static('website/public')) ;
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({limit: '50mb', extended: true}));
 
 // Import all of our controllers
 var StationController = require('./controllers/StationController');

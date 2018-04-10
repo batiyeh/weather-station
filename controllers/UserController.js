@@ -6,6 +6,7 @@ router.use(bodyParser.json());
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const knex = require('knex')(require('../knexfile'));
 const async = require('async');
 const nodemailer = require('nodemailer');
 const LocalStrategy = require('passport-local').Strategy;
@@ -47,16 +48,48 @@ router.post('/create', async function(req, res){
         res.json({errors: errors, redirect: false});
     }
     else{
+        var pendingId = await knex('permissions').select('permission_id').where('type', '=', 'Pending');
+        pendingId = pendingId[0]["permission_id"];
+
         //hashes the password using bcrypt, then creates user and stores in database
-        await bcrypt.hash(password, 10, function(err, hash) {
+        await bcrypt.hash(password, 10, function (err, hash) {
             new User({
                 username: username,
                 email: email,
                 password: hash,
+                permission_id: pendingId
             }).save()
         });
         res.json({errors: [], redirect: true})
     }
+
+        // if(pendingQ) {
+        //  //   function (token, user, done) {
+        //         var transporter = nodemailer.createTransport({
+        //             host: 'smtp.gmail.com',
+        //             port: 587,
+        //             secure: false,
+        //             auth: {
+        //                 //Find better way to store user and pass for whole system.
+        //                 user: 'WStationTestdod@gmail.com',
+        //                 pass: 'wayne123'
+        //             }
+        //         });
+        //         var mailOptions = {
+        //             to: email,
+        //             from: 'wstationtestdod@gmail.com',
+        //             subject: 'Weather Station Account Request',
+        //             text: 'You are receiving this message because you are able to accept or deny the approval of this account request.\n\n' +
+        //             'Please click the following link to complete this process:\n\n' +
+        //             req.protocol + '://' + req.get('host') + '/user/Approval/' + token + '\n\n'
+        //         };
+        //         transporter.sendMail(mailOptions, function (err) {
+        //             //Alert user email has been sent
+        //             done(err, 'done');
+        //         });
+        //     }
+        //
+
 });
 
 //calls passport authentication on login
@@ -83,21 +116,52 @@ router.post('/login', async function(req, res){
 //used to verify user is logged in on each page
 router.post('/getUserInfo', async function(req,res){
     if(req.session.username){
-        var user = await User.where({username: req.session.username}).fetch();
-
-        res.json({username: user.attributes.username, email: user.attributes.email,
-        phone: user.attributes.phone, permissions: user.attributes.permissions});
+        var user = await knex('users').select('*')
+        .leftJoin('permissions', 'users.permission_id', 'permissions.permission_id')
+        .where('users.username', req.session.username)
+        res.json(user);
     }
     else{
         res.json({username: undefined})
     }
+});
+
+router.get('/pendingUsers',async function (req,res) {
+    var pendingId = await knex('permissions').select('permission_id').where('type', '=', 'Pending')
+    pendingId = pendingId[0]["permission_id"];
+
+    var pendingUsers = await knex('users')
+        .select('username')
+        .leftJoin('permissions', 'users.permission_id', 'permissions.permission_id')
+        .where('users.permission_id', '=', pendingId)
+    res.json({ pendingUsers });
+})
+
+router.get('/allUsers', async function(req,res){
+    try{
+        var users = await knex('users').select('*')
+        .leftJoin('permissions', 'users.permission_id', 'permissions.permission_id')
+    } catch(ex){
+        return res.json({});
+    }
+    return res.json({ users });
+});
+
+router.put('/permissions', async function (req, res) {
+    // Pass in the user and the permission you want to change that user to
+    var username = req.body.username;
+    var permissisionId = await knex('permissions').select('permission_id').where('type', '=', req.body.permissions)
+    permissisionId = permissisionId[0]["permission_id"];
+    
+    var result = await User.where({username: req.body.username}).save({permission_id: permissisionId}, {patch: true});
+    return res.json({ result });
 })
 
 router.post('/logout', function(req,res){
     req.session.destroy(response => {
         res.json({response: response})
     });
-})
+});
 
 router.post('/reset/', function(req,res){
     var email = req.body.email;

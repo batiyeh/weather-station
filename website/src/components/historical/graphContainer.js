@@ -3,8 +3,6 @@ import { Alert } from 'reactstrap';
 import '../../styles/historical.css';
 import Graph from './graph'
 
-
-
 var colorsGraph = ['#4bc0c0', '#c0864b', '#4b86c0', '#c04b4b', '#c0c04b', '#4bc086', '#c04b86', '#327c0c'];  // Array of colors to be choosen when drawing multiple lines on the graph
 var colorIndex = 0;   //variable to keep track of what index is currently selected in the graph
 

@@ -17,7 +17,8 @@ class StationCard extends Component {
             wind_direction: "n/a",
             modal: false,
             error: "",
-            name: this.props.station.station_name
+            name: this.props.station.station_name,
+            permissions: this.props.permissions
         }
 
         this.toggleStationDetail = this.toggleStationDetail.bind(this);
@@ -55,6 +56,12 @@ class StationCard extends Component {
                 station: nextProps.station
             })
         }
+
+        if(nextProps.permissions !== this.state.permissions){
+            this.setState({
+                permissions: nextProps.permissions
+            })
+        }
     }
     
     // Format the station's uptime for user viewing
@@ -62,7 +69,7 @@ class StationCard extends Component {
     getUptime() {
         var uptime = "";
         if (this.props.station.connected){
-            uptime = moment().diff(moment(this.props.station.last_connected))
+            uptime = moment().diff(moment(moment(this.props.station.last_connected).utc(this.props.station.last_connected).local()))
             uptime = moment.utc(uptime).format("HH:mm:ss");
         }
         return uptime;
@@ -166,21 +173,35 @@ class StationCard extends Component {
     
     // Render the station name input with or without a value if it exists
     renderNameInput(){
-        if (this.state.error.length > 0){
-            return (
-                <FormGroup>
-                    <Input type="text" className="stationNameInput is-invalid" name="stationNameInput" id="stationNameInput" placeholder="Name" onChange={e => this.onNameChange(e.target.value)} value={this.state.name}></Input>
-                    <FormFeedback>{this.state.error}</FormFeedback>
-                </FormGroup>
-            );
+        if (this.state.permissions === "Admin" || this.state.permissions === "Superuser"){
+            if (this.state.error.length > 0){
+                return (
+                    <FormGroup>
+                        <Input type="text" className="stationNameInput is-invalid" name="stationNameInput" id="stationNameInput" placeholder="Name" onChange={e => this.onNameChange(e.target.value)} value={this.state.name}></Input>
+                        <FormFeedback>{this.state.error}</FormFeedback>
+                    </FormGroup>
+                );
+            }
+    
+            else{
+                return (
+                    <FormGroup>
+                        <Input type="text" className="stationNameInput" name="stationNameInput" id="stationNameInput" placeholder="Name" onChange={e => this.onNameChange(e.target.value)} value={this.state.name}></Input>
+                    </FormGroup>
+                );
+            }
         }
 
-        else
-            return (
-                <FormGroup>
-                    <Input type="text" className="stationNameInput" name="stationNameInput" id="stationNameInput" placeholder="Name" onChange={e => this.onNameChange(e.target.value)} value={this.state.name}></Input>
-                </FormGroup>
+        else{
+            return(
+                <div>
+                    <div className="station-detail-row-none">
+                        <span className="left">Name</span>
+                        <span className="right">{ this.state.name }</span>
+                    </div><br/>          
+                </div>
             );
+        }
     }
 
     // If there is no station name, render the mac address
@@ -190,6 +211,19 @@ class StationCard extends Component {
             return this.state.name;
         }
         else return null;
+    }
+
+    renderUptime(){
+        if (this.props.station.connected === 1){
+            return(
+                <div>
+                    <div className="station-detail-row">
+                    <span className="left">Uptime</span>
+                    <span className="right">{this.getUptime()}</span>
+                    </div><br/>
+                </div>
+            );
+        }
     }
 
     render() {
@@ -202,10 +236,7 @@ class StationCard extends Component {
                     <ModalBody>
                         { this.renderNameInput() }
                         <div className="station-detail-container">
-                            {/* <div className="station-detail-row">
-                                <span className="left">Uptime</span>
-                                <span className="right">{this.getUptime()}</span>
-                            </div><br/> */}
+                            { this.renderUptime() }
                             <div className="station-detail-row">
                                 <span className="left">Temperature</span>
                                 <span className="right">{this.props.station.temperature} &deg;F</span>
@@ -219,7 +250,7 @@ class StationCard extends Component {
                                 <span className="right">{this.props.station.humidity}%</span>
                             </div><br/>
                             <div className="station-detail-row">
-                                <span className="left">Location</span>
+                                <span className="left">Last Known Location</span>
                                 <span className="right">{ location }</span>
                             </div><br/>
                             { this.renderMap() } 
