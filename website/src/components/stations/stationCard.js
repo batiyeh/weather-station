@@ -229,9 +229,9 @@ class StationCard extends Component {
     render() {
         const latitude = (this.props.station.latitude === "n/a") ? "Unavailable" : this.props.station.latitude;
         const longitude = (this.props.station.longitude === "n/a") ? "Unavailable" : this.props.station.longitude;
-        const temperature = (this.props.station.temperature === 0) ? "Unavailable" : this.props.station.temperature;
-        const pressure = (this.props.station.pressure === 0) ? "Unavailable" : this.props.station.pressure;
-        const humidity = (this.props.station.humidity === 0) ? "Unavailable" : this.props.station.humidity;
+        const temperature = (this.props.station.temperature === 0) ? "Unavailable" : this.props.station.temperature + " &deg;F";
+        const pressure = (this.props.station.pressure === 0) ? "Unavailable" : this.props.station.pressure + " hPa";
+        const humidity = (this.props.station.humidity === 0) ? "Unavailable" : this.props.station.humidity + " %";
 
         return (
             <div className="col-12 station-container">
@@ -243,15 +243,15 @@ class StationCard extends Component {
                             { this.renderUptime() }
                             <div className="station-detail-row">
                                 <span className="left">Temperature</span>
-                                <span className="right">{temperature} &deg;F</span>
+                                <span className="right">{temperature}</span>
                             </div><br/>
                             <div className="station-detail-row">
                                 <span className="left">Pressure</span>
-                                <span className="right">{pressure} hPa</span>
+                                <span className="right">{pressure}</span>
                             </div><br/>
                             <div className="station-detail-row">
                                 <span className="left">Humidity</span>
-                                <span className="right">{humidity}%</span>
+                                <span className="right">{humidity}</span>
                             </div><br/>
                             <div className="station-detail-row">
                                 <span className="left">Last Known Latitude</span>
