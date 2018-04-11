@@ -21,6 +21,7 @@ class GraphData extends Component{
             width: this.props.width,
             sensorType: this.props.sensorType,
             datasets: {"datasets": []}, // a dictionary of datasets to be drawn on the graph
+            shouldUpdate: this.props.shouldUpdate
         }
     }
 
@@ -46,6 +47,17 @@ class GraphData extends Component{
                 });
         }
     }
+    componentWillUpdate(){
+        console.log("should this update?");
+        console.log(this.state.shouldUpdate);
+        if(this.state.shouldUpdate){
+            return true
+        }
+        else{
+            return false
+        }
+
+    }
 
     updateGraph(){
         var data;
@@ -58,6 +70,9 @@ class GraphData extends Component{
                 this.createLine(station_name, data["points"])
             }
         }
+        this.setState({
+            shouldUpdate: false
+        })
     }
 
     componentDidMount(){

@@ -9,7 +9,7 @@ var MomentRange = require('moment-range');
 
 var moment = MomentRange.extendMoment(Moment);
 
-var shouldDraw = false;
+var shouldDraw = true;
 
 
 
@@ -60,6 +60,7 @@ class HistoricalContainer extends Component{
         this.setState({
             toDate: newDate
         });
+        shouldDraw = false;
     }
 
     //When the from date value is changed in the modal it is handled here
@@ -68,13 +69,15 @@ class HistoricalContainer extends Component{
         this.setState({
             fromDate: newDate
         });
+        shouldDraw = false;
     }
 
     //When the sensor type is changed in the modal it is handled here
     onSenseChange(value) {
         this.setState({
             sensorType: value
-        })
+        });
+        shouldDraw = false;
     }
 
     onStationChange(e){
@@ -88,6 +91,7 @@ class HistoricalContainer extends Component{
         this.setState({
             toBeDrawn: selected
         });
+        shouldDraw = false;
 
     }
 
@@ -154,6 +158,7 @@ class HistoricalContainer extends Component{
             loading: false, // set loading to false so that graph can be rendered
             stations: names
         });
+        shouldDraw = true;
     };
 
     processDataPoints(stationsDict){
@@ -220,6 +225,15 @@ class HistoricalContainer extends Component{
 
     };
 
+    // shouldComponentUpdate(){
+    //     if(shouldDraw){
+    //         return true;
+    //     }
+    //     else{
+    //         return false;
+    //     }
+    // }
+
     //may use this for fixing issue when values are changed in the modal changing the graph even once canceled
     // resetValues(){
     //     this.setState({
@@ -238,23 +252,20 @@ class HistoricalContainer extends Component{
 
     //function that handles the rendering of the graph it is done by sensor type
     renderGraph(){
-        if(this.state.shouldDraw === true){
-            console.log("about to draw graph");
-            return(
-                <GraphData
-                    //passes the stations data to the graph component
-                    data={this.state.stationsData}
-                    stations={this.state.toBeDrawn}
-                    from={this.state.fromDate} // passes the to and from dates to the graph component
-                    to={this.state.toDate}
-                    height={500} //The height and width of the graph is passed to the graph component
-                    width={"100%"}
-                    sensorType={this.state.sensorType}
-                />
-            )
-        }
-        shouldDraw = false;
-
+        console.log(shouldDraw);
+        return(
+            <GraphData
+                //passes the stations data to the graph component
+                data={this.state.stationsData}
+                stations={this.state.toBeDrawn}
+                from={this.state.fromDate} // passes the to and from dates to the graph component
+                to={this.state.toDate}
+                height={500} //The height and width of the graph is passed to the graph component
+                width={"100%"}
+                sensorType={this.state.sensorType}
+                shouldUpdate={shouldDraw}
+            />
+        );
     }
 
     renderDateError(){
