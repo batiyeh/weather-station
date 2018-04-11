@@ -4,13 +4,14 @@ const {Builder, By, Key, until} = require('selenium-webdriver');
 module.exports = function(driver) {
     const elements = {
         usernameInput: By.css('#username'),
+        emailInput: By.css('#email'),
         passwordInput: By.css('#password'),
-        loginButton: By.css('.login-btn'),
-        registerButton: By.css('.register-btn'),
-        forgotPassLink: By.css('.forgot-link'),
+        confirmPassInput: By.css('#confirmPass'),
+        registerButton: By.css('.submit-btn'),
+        returnButton: By.css('.return-btn'),
     };
     return {
-        url:  'http://localhost:8000/user/login',
+        url:  'http://localhost:8000/user/create',
         elements: elements,
         waitUntilVisible: function() {
             return driver.wait(until.elementLocated(elements.usernameInput));
@@ -22,23 +23,32 @@ module.exports = function(driver) {
         enterUsername: function(value) {
             return driver.findElement(elements.usernameInput).sendKeys(value);
         },
+        enterEmail: function(value){
+            return driver.findElement(elements.emailInput).sendKeys(value);
+        },
         enterPassword: function(value){
             return driver.findElement(elements.passwordInput).sendKeys(value);
         },
+        enterConfirmPass: function(value){
+            return driver.findElement(elements.confirmPassInput).sendKeys(value);
+        },
         getUsername: function() {
-            return driver.findElement(elements.usernameInput).getAttribute('value')
+            return driver.findElement(elements.usernameInput).getAttribute('value');
+        },
+        getEmail: function() {
+            return driver.findElement(elements.emailInput).getAttribute('value');
         },
         getPassword: function() {
-            return driver.findElement(elements.passwordInput).getAttribute('value')
+            return driver.findElement(elements.passwordInput).getAttribute('value');
         },
-        login: function() {
-            return driver.findElement(elements.loginButton).click();
+        getConfirmPass: function() {
+            return driver.findElement(elements.confirmPassInput).getAttribute('value');
         },
         register: function(){
             return driver.findElement(elements.registerButton).click();
         },
-        forgotPass: function(){
-            return driver.findElement(elements.forgotPassLink).click();
+        return: function(){
+            return driver.findElement(elements.returnButton).click();
         },
     };
 };

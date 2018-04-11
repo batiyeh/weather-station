@@ -128,7 +128,7 @@ class CreateUserForm extends Component {
                   <Button type='button' onClick={this.return} className='btn btn-default btn-block return-btn'>Return</Button>               
                 </div>
                 <div className='col-6'>
-                  <Button type='button' onClick={this.submitForm} className="btn btn-default btn-block">Submit</Button>
+                  <Button type='button' onClick={this.submitForm} className="btn btn-default btn-block submit-btn">Submit</Button>
                 </div>
               </div>
             </form>

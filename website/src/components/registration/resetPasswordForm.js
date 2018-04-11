@@ -87,10 +87,10 @@ class ResetPasswordForm extends Component {
                             </div>
                             <div className='row'>
                                 <div className='col-6'>
-                                    <Button type='button' onClick={this.return} className='btn btn-default btn-block login-btn'>Return</Button>
+                                    <Button type='button' onClick={this.return} className='btn btn-default btn-block return-btn'>Return</Button>
                                 </div>
                                 <div className='col-6'>
-                                    <Button type='button' onClick={this.submitForm} className='btn btn-default btn-block login-btn'>Recover Password</Button>
+                                    <Button type='button' onClick={this.submitForm} className='btn btn-default btn-block recover-btn'>Recover Password</Button>
                                 </div>
                             </div>
                         </Form>
