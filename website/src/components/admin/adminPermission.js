@@ -6,7 +6,8 @@ class AdminPermission extends Component {
         super();
         this.state = {
             users: [],
-            loading: true
+            loading: true,
+            permissions: this.props.permissions
         }
         this.updateUser = this.updateUser.bind(this);
         this.updateTable = this.updateTable.bind(this);
@@ -14,6 +15,7 @@ class AdminPermission extends Component {
 
 
     componentDidMount(){
+        console.log(this.state.permissions);
         this.getUsers().then((users) => {
             this.setState({
                 users: users,
@@ -40,12 +42,11 @@ class AdminPermission extends Component {
                 loading: false
             })
         });
-        console.log("done updating table");
+
     };
 
     // Update a single user with a permission type
     updateUser = async (user, type) => {
-        console.log("updating the user");
         fetch ('/api/user/permissions', { method: 'put',
             body: JSON.stringify({
                 username: user["username"],
@@ -60,7 +61,6 @@ class AdminPermission extends Component {
        await this.setState({
             loading: true
         });
-        console.log("about to update the table");
         this.updateTable();
     };
 

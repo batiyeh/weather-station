@@ -82,7 +82,9 @@ class Alerts extends Component {
                         <TabPane tabId="3">
                             <Row>
                                 <Col sm="12">
-                                    <AdminPermission></AdminPermission>
+                                    <AdminPermission
+                                    permissions={this.state.permissions}
+                                    />
                                 </Col>
                             </Row>
                         </TabPane>
