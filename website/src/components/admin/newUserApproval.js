@@ -64,7 +64,7 @@ class NewUserApproval extends Component {
             return (
                 <tr>
                     <td colSpan="2">
-                        <Alert className="no-users-alert" color="primary">
+                        <Alert className="no-users-alert-td" color="primary">
                             There are no pending users to display.
                         </Alert>
                     </td>

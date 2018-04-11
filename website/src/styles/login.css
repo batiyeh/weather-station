@@ -64,23 +64,23 @@ a:hover a:active{
 .login-container{
     max-width: 400px;
     margin: auto;
-    padding-top: 75px;
+    padding-top: 6%;
 }
 
 .register-container{
     max-width: 400px;
     margin: auto;
-    padding-top: 100px;
+    padding-top: 6%;
 }
 
 .forgot-container{
     max-width: 400px;
     margin: auto;
-    padding-top: 100px;
+    padding-top: 6%;
 }
 
 .confirm-container{
     max-width: 400px;
     margin: auto;
-    padding-top: 100px;
+    padding-top: 6%;
 }

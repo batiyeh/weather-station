@@ -3,26 +3,7 @@ import '../styles/navbar.css';
 import logo from '../images/space-satellite-dish-512x512.png';
 import Cookies from 'js-cookie';
 import { Link, Redirect} from 'react-router-dom';
-import {
-    Navbar,
-    NavbarBrand,
-    NavbarToggler,
-    Collapse,
-    Nav,
-    NavItem,
-    Dropdown,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
-    Card,
-    Modal,
-    ModalBody,
-    ModalFooter,
-    ModalHeader,
-    Form,
-    Button,
-    Alert } from 'reactstrap';
-import download from 'downloadjs';
+import { Navbar, NavbarBrand, NavbarToggler, Collapse, Nav, NavItem, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Card, Modal, ModalBody, ModalFooter, ModalHeader, Form, Button, Alert } from 'reactstrap';
 var moment = require('moment');
 
 class Navigation extends Component {
@@ -56,7 +37,6 @@ class Navigation extends Component {
         }
         this.toggleDropdown = this.toggleDropdown.bind(this);
         this.toggleNav = this.toggleNav.bind(this);
-        this.downloadClient = this.downloadClient.bind(this);
     }
     
     componentWillReceiveProps(nextProps){
@@ -172,14 +152,6 @@ class Navigation extends Component {
             redirect: true
         })
         return body;
-    }
-
-
-    downloadClient = async () => {
-        var response = await fetch('/api/stations/download');
-        var fileBlob = await response.blob();
-        download(fileBlob, "weatherstation.zip");
-        return fileBlob;
     }
 
     //changes the bell icon depending on if there are unread alerts or not
@@ -333,10 +305,6 @@ class Navigation extends Component {
                                         <DropdownMenu className="user-menu" right>
                                             <DropdownItem tag='a'>
                                                 <Link to={'/profile'} className='nav-link nav-link-dark'>profile</Link>
-                                            </DropdownItem>
-                                            <DropdownItem onClick={this.downloadClient} className="nav-link nav-link-dark download-link">
-                                                <span className="download-text">client</span>
-                                                {/* <i class="fa fa-download" aria-hidden="true"></i> */}
                                             </DropdownItem>
                                             { this.renderAdmin() }
                                             <DropdownItem tag='a'>

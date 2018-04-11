@@ -46,12 +46,9 @@ class Graph extends Component {
                 return value + 'hPa';     // add the degree symbol to the points on the y axis
             }
         }
-        if(dateRange.diff('days') === 1 ){
-            var unit = 'hour';
-        }
-        else{
-            unit = 'day';
-        }
+        if(dateRange.diff('days') === 1 ) var unit = 'hour';
+        else unit = 'day'; 
+        
         return(
             <div className='graph'>
                 <Scatter

@@ -1,3 +1,7 @@
+.station-list{
+    padding-bottom: 50px;
+}
+
 .no-stations-alert{
     max-width: 600px;
     margin: auto;
@@ -103,10 +107,19 @@
     box-shadow: 0px 0px 20px 0px #e8e8e8;
 }
 
+.connection-indicator-icon{
+    position: relative;
+    display: inline-block;
+    font-size: 10pt;
+    color: #21c486;
+    margin-right: 15px;
+    bottom: 3px;
+}
+
 .connection-indicator{
     display: inline-block;
-    width: 10px;
-    height: 10px;
+    width: 9px;
+    height: 9px;
     border-radius: 50%;
     background-color: '#48DB28';
     border: 1px solid #8e8e8e;

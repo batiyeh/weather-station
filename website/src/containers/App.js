@@ -47,7 +47,6 @@ class App extends Component {
         this.setState({username: body[0].username, email: body[0].email, phone: body[0].phone, permissions: body[0].type});
       }
     }
-      console.log(this.state.permissions)
 
   }
 
@@ -63,6 +62,28 @@ class App extends Component {
     }
 
     else return null;
+  }
+
+  renderFooter = () => {
+    if (window.location.pathname.includes('/user/login')){
+      return(
+        <footer id="footer-id" className="footer white-footer">
+          <a href="https://goodstuffnononsense.com/hand-drawn-icons/space-icons/" rel="noopener noreferrer" target="_blank">Satellite Icon</a> By <a href="https://goodstuffnononsense.com/about/" rel="noopener noreferrer" target="_blank">Agata</a> / <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener noreferrer" target="_blank">CC BY</a>
+        </footer>
+      );
+    }
+
+    else if (window.location.pathname.includes('/user')){
+      return null;
+    }
+
+    else{
+      return (
+        <footer id="footer-id" className="footer">
+          <a href="https://goodstuffnononsense.com/hand-drawn-icons/space-icons/" rel="noopener noreferrer" target="_blank">Satellite Icon</a> By <a href="https://goodstuffnononsense.com/about/" rel="noopener noreferrer" target="_blank">Agata</a> / <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener noreferrer" target="_blank">CC BY</a>
+        </footer>
+      );
+    }
   }
 
   renderProfile = (props) => {
@@ -123,6 +144,7 @@ class App extends Component {
             <Route path="/alerts" component={Alerts}/>
             <Route path="/admin" render={this.renderAdmin}/>
           </div>
+          { this.renderFooter() }
         </div>
       </Router>
     );

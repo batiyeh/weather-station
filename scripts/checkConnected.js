@@ -1,23 +1,21 @@
 const knex = require('knex')(require('../knexfile'));
 const fetch = require("node-fetch");
 const moment = require('moment');
-moment().format();
 
 // If the station has not sent data for longer than 30 seconds we will 
 // Update the connected column to be false.
 async function checkConnected(){
-    var now = new Date();
-    var stations = await knex('stations').select('mac_address', 'updated_at', 'connected');
+    var stations = await knex('latestweather')
+            .join('weather', 'latestweather.weather_id', 'weather.weather_id')
+            .join('stations', 'latestweather.apikey', 'stations.apikey')
+            .select('weather.created_at', 'stations.apikey', 'stations.connected');
     
     for (var i = 0; i < stations.length; i++){
         var station = stations[i];
-        if (((moment() - moment(station.updated_at)) > 30000) && station.connected == '1'){
-            knex('stations')
-                .where({mac_address: station.mac_address})
-                .update({
-                    connected: false,
-                })
-                .then()
+        if (((moment() - moment(station["created_at"]).utc(station["created_at"]).local()) > 20000) && station["connected"] === 1){
+            var result = await knex('stations').where({apikey: station.apikey}).update({
+                connected: 0,
+            });
         }
     }
 }

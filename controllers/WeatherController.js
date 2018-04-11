@@ -15,7 +15,6 @@ var moment = require('moment');
 // This is probably super slow but it makes it more efficient for the user on the stations page for now
 router.post('/', async function (req, res) {
     var station = await knex('stations').select().where('apikey', req.body.apikey);
-    
     if (station.length > 0){
     // if (_.isNull(station[0].expiration) ||  moment(station[0].expiration).utc(station[0].expiration).isAfter(req.body.created_at)){
         var latestWeather = await openweather.getLatestOpenWeatherData(req.body.apikey);
@@ -60,6 +59,14 @@ router.post('/', async function (req, res) {
             }
         }
 
+        // Update our connected status if it is 0 / off
+        if (station[0].connected === 0){
+            await Station.where('apikey', req.body.apikey).save({
+                connected: 1,
+                last_connected: moment().utc().format("YYYY-MM-DD HH:mm:ss")
+            }, {patch:true});
+        }
+
         return res.json({result});
     }
 
@@ -86,7 +93,8 @@ router.get('/latest', async function (req, res) {
             .join('weather', 'latestweather.weather_id', 'weather.weather_id')
             .join('stations', 'latestweather.apikey', 'stations.apikey')
             .select('weather.*', 'stations.station_name', 'stations.last_connected', 'stations.connected')
-            .orderBy('weather.created_at', 'desc')
+            .orderBy('stations.connected', 'desc')
+            .orderBy('stations.station_name')
     } catch(ex){
         console.log(ex);
         return res.json({});
@@ -101,7 +109,8 @@ router.get('/sensorData/:from/:to/:type', async function (req, res) {
     try{
         var temp = await knex('weather').select('weather.temperature', 'weather.pressure', 'weather.humidity', 'weather.created_at', 'weather.apikey', 'stations.station_name').from('weather')
         .leftJoin('stations', 'stations.apikey', 'weather.apikey')
-        .whereBetween('weather.created_at', [from, to]);
+        .whereBetween('weather.created_at', [from, to])
+        .orderBy('weather.created_at');
     } catch(ex){
         console.log(ex);
         return res.json({});

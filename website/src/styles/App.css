@@ -8,6 +8,21 @@
   padding: 0px;
 }
 
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px; /* Set the fixed height of the footer here */
+  line-height: 90px; /* Vertically center the text there */
+  padding-left: 10px;
+  font-size: 8pt;
+  text-align: left !important; 
+}
+
+.white-footer a{
+  color: white !important;
+}
+
 #root{
   width: 100%;
   height: 100%;

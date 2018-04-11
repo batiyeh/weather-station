@@ -107,6 +107,12 @@ router.post('/login', async function(req, res){
         return res.status(401).json({redirect: false, errors: [{msg: "Invalid Username/Password"}]})
     }
 
+    var pendingId = await knex('permissions').select('permission_id').where('type', '=', 'Pending')
+    pendingId = pendingId[0]["permission_id"];
+    if (user.attributes.permission_id === pendingId){
+        return res.status(401).json({redirect: false, errors: [{msg: "Invalid Username/Password"}]})
+    }
+
     req.session.username = username;
     req.session.save();
     
@@ -153,7 +159,8 @@ router.put('/permissions', async function (req, res) {
     var permissisionId = await knex('permissions').select('permission_id').where('type', '=', req.body.permissions)
     permissisionId = permissisionId[0]["permission_id"];
     
-    await User.where({username: req.body.username}).save({permission_id: permissisionId}, {patch: true});
+    var result = await User.where({username: req.body.username}).save({permission_id: permissisionId}, {patch: true});
+    return res.json({ result });
 })
 
 router.post('/logout', function(req,res){
