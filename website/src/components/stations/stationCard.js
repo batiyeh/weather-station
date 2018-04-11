@@ -226,10 +226,24 @@ class StationCard extends Component {
         }
     }
 
+    renderTemperature(temperature){
+        if (temperature === "Unavailable"){
+            return (
+                <span className="right">{temperature}</span>
+            );
+        }
+
+        else{
+            return (
+                <span className="right">{temperature} &deg;F</span>
+            );
+        }
+    }
+
     render() {
         const latitude = (this.props.station.latitude === "n/a") ? "Unavailable" : this.props.station.latitude;
         const longitude = (this.props.station.longitude === "n/a") ? "Unavailable" : this.props.station.longitude;
-        const temperature = (this.props.station.temperature === 0) ? "Unavailable" : this.props.station.temperature + " &deg;F";
+        const temperature = (this.props.station.temperature === 0) ? "Unavailable" : this.props.station.temperature;
         const pressure = (this.props.station.pressure === 0) ? "Unavailable" : this.props.station.pressure + " hPa";
         const humidity = (this.props.station.humidity === 0) ? "Unavailable" : this.props.station.humidity + " %";
 
@@ -243,7 +257,7 @@ class StationCard extends Component {
                             { this.renderUptime() }
                             <div className="station-detail-row">
                                 <span className="left">Temperature</span>
-                                <span className="right">{temperature}</span>
+                                { this.renderTemperature(temperature) }
                             </div><br/>
                             <div className="station-detail-row">
                                 <span className="left">Pressure</span>
