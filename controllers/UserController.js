@@ -31,7 +31,9 @@ router.post('/create', async function(req, res){
     
     //Verifies that all User Account credentials meet the string requirements
     req.checkBody('username','Username cannot be blank').notEmpty()
-    req.checkBody('username','Username can only contain letters and numbers').matches(/\w/)
+    if(username !== ''){
+        req.checkBody('username','Username can only contain letters and numbers').not().matches(/\W/)
+    }
     req.checkBody('username','Username already exists').not().equals(dbUsername);
 
     req.checkBody('email', 'Email cannot be blank').notEmpty()

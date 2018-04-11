@@ -44,6 +44,18 @@ module.exports = function(driver) {
         getConfirmPass: function() {
             return driver.findElement(elements.confirmPassInput).getAttribute('value');
         },
+        clearUsername: function(){
+            return driver.findElement(elements.usernameInput).clear();
+        },
+        clearEmail: function(){
+            return driver.findElement(elements.emailInput).clear();
+        },
+        clearPassword: function(){
+            return driver.findElement(elements.passwordInput).clear();
+        },
+        clearConfirmPass: function(){
+            return driver.findElement(elements.confirmPassInput).clear();
+        },
         register: function(){
             return driver.findElement(elements.registerButton).click();
         },
