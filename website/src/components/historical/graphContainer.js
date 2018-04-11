@@ -47,10 +47,8 @@ class GraphData extends Component{
                 });
         }
     }
-    componentWillUpdate(){
-        console.log("should this update?");
-        console.log(this.state.shouldUpdate);
-        if(this.state.shouldUpdate){
+    shouldComponentUpdate(nextProps){
+        if(nextProps.shouldUpdate){
             return true
         }
         else{
@@ -136,6 +134,7 @@ class GraphData extends Component{
                     minDate={this.state.from}
                     sensorType={this.state.sensorType}
                     datasets={this.state.datasets}
+                    shouldUpdate={this.state.shouldUpdate}
                 />
             );
         }

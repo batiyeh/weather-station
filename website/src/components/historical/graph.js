@@ -16,8 +16,10 @@ class Graph extends Component {
             minDate: this.props.minDate,
             sensorType: this.props.sensorType,
             datasets: this.props.datasets,
+            shouldUpdate: this.props.shouldUpdate
         }
     }
+
 
     render(){
         //render each dataset that has been made below sets the styling of the overall graph and chart not the lines

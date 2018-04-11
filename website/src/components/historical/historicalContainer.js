@@ -252,7 +252,6 @@ class HistoricalContainer extends Component{
 
     //function that handles the rendering of the graph it is done by sensor type
     renderGraph(){
-        console.log(shouldDraw);
         return(
             <GraphData
                 //passes the stations data to the graph component
