@@ -8,7 +8,8 @@ class Marker extends Component {
         this.state = {
             station: this.props.station,
             hover: this.props.hover,
-            label: this.props.label
+            label: this.props.label,
+            neverHover: this.props.neverHover
         }
     }
 
@@ -23,20 +24,22 @@ class Marker extends Component {
         if (label !== this.state.label){
             this.updateLabel(label);
         }
+
+        if (nextProps.neverHover !== this.state.neverHover){
+            this.setState({ neverHover: nextProps.neverHover });
+        }
     }
 
     // Updates the hover state attribute
     updateHover(hover) {
-        if (this.state.label === true) this.updateLabel(!this.state.label);
-        this.setState({
-            hover: hover
-        })
+        if (!this.state.neverHover){
+            if (this.state.label === true) this.updateLabel(!this.state.label);
+            this.setState({ hover: hover })
+        }
     }
 
     updateLabel(label) {
-        this.setState({
-            label: label
-        })
+        this.setState({ label: label })
     }
 
     renderLabel(label){

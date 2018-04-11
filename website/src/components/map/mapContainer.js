@@ -24,7 +24,8 @@ export class MapContainer extends Component {
             mapOnly: this.props.mapOnly,
             showAverages: false,
             averages: [],
-            recenter: false
+            recenter: false,
+            neverHover: this.props.neverHover
         };
     }
 
@@ -40,22 +41,20 @@ export class MapContainer extends Component {
         }
 
         if (nextProps.checkedStations !== this.state.stations){
-            this.setState({
-                stations: nextProps.checkedStations,
-            });
+            this.setState({ stations: nextProps.checkedStations });
         }
 
         if (nextProps.showLabels !== this.state.showLabels){
-            this.setState({
-                showLabels: nextProps.showLabels
-            });
+            this.setState({ showLabels: nextProps.showLabels });
         }
 
         if (nextProps.mapMode !== this.state.mode){
             this.updateMapMode(nextProps.mapMode);
-            this.setState({
-                mode: nextProps.mapMode
-            })
+            this.setState({ mode: nextProps.mapMode })
+        }
+
+        if (nextProps.neverHover !== this.state.neverHover){
+            this.setState({ neverHover: nextProps.neverHover });
         }
     }
 
@@ -292,6 +291,7 @@ export class MapContainer extends Component {
                                             station={station}
                                             hover={this.state.hoverKey === station.apikey}
                                             label={this.state.showLabels}
+                                            neverHover={this.state.neverHover}
                                         />
                                 );
                             }

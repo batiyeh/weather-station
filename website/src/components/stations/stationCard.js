@@ -157,7 +157,7 @@ class StationCard extends Component {
             return (
                 <div className="modal-map-box">
                     <div className="modal-map-container" ref={ (mapElement) => this.mapElement = mapElement} style={{position: 'absolute', right: 0, bottom: 0, width: '100%', height: '200px'}}>
-                        <MapContainer height={400} width={400} checkedStations={[this.state.station]} showLabels={false} mapOnly={true}></MapContainer>
+                        <MapContainer height={400} width={400} checkedStations={[this.state.station]} showLabels={false} recenter={false} neverHover={true} mapOnly={true}></MapContainer>
                     </div>
                 </div>
             )
@@ -227,7 +227,8 @@ class StationCard extends Component {
     }
 
     render() {
-        const location = (this.props.station.latitude === "n/a") ? "Unavailable" : "(" + this.props.station.latitude + ", " + this.props.station.longitude + ")";
+        const latitude = (this.props.station.latitude === "n/a") ? "Unavailable" : this.props.station.latitude;
+        const longitude = (this.props.station.longitude === "n/a") ? "Unavailable" : this.props.station.longitude
 
         return (
             <div className="col-12 station-container">
@@ -250,8 +251,12 @@ class StationCard extends Component {
                                 <span className="right">{this.props.station.humidity}%</span>
                             </div><br/>
                             <div className="station-detail-row">
-                                <span className="left">Last Known Location</span>
-                                <span className="right">{ location }</span>
+                                <span className="left">Last Known Latitude</span>
+                                <span className="right">{latitude}</span>
+                            </div><br/>
+                            <div className="station-detail-row">
+                                <span className="left">Last Known Longitude</span>
+                                <span className="right">{longitude}</span>
                             </div><br/>
                             { this.renderMap() } 
                         </div>
