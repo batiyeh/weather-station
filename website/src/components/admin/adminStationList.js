@@ -5,6 +5,7 @@ import moment from 'moment';
 import _ from 'lodash'
 import DatePicker  from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
+import download from 'downloadjs';
 const crypto = require('crypto');
 
 // Station List component is a list of each station
@@ -24,6 +25,7 @@ class AdminStationList extends Component {
         this.toggleAddStationModal = this.toggleAddStationModal.bind(this);
         this.deleteStation = this.deleteStation.bind(this);
         this.onExpirationChange = this.onExpirationChange.bind(this);
+        this.downloadClient = this.downloadClient.bind(this);
     }
 
     // Sets the initial state of the component to be null/0 so 
@@ -177,6 +179,13 @@ class AdminStationList extends Component {
         }
     }
 
+    downloadClient = async () => {
+        var response = await fetch('/api/stations/download');
+        var fileBlob = await response.blob();
+        download(fileBlob, "weatherstation.zip");
+        return fileBlob;
+    }
+
     render() {
         return (
             <div className="container admin-content">
@@ -215,6 +224,7 @@ class AdminStationList extends Component {
                         <h3>Stations</h3>
                     </div>
                     <div className="col-8 right no-padding-right">
+                        <Button onClick={this.downloadClient} className="download-btn" color="secondary">Download Client</Button>
                         <Button onClick={this.toggleAddStationModal} className="btn btn-primary add-btn">Add</Button>
                     </div>
                 </div>

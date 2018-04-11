@@ -21,7 +21,7 @@ class Stations extends Component {
 
   render() {
     return (
-      <div className='StationList'>
+      <div className='station-list'>
         <VerifyLoggedIn/>
         <StationList permissions={this.state.permissions}/>
       </div>

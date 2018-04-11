@@ -15,7 +15,8 @@ class Map extends Component {
             mapWidth: 0,
             filter: '',
             showLabels: true,
-            mapMode: "move"
+            mapMode: "move",
+            recenter: false
         };
         this.checkboxOnChange = this.checkboxOnChange.bind(this);
         this.allCheckboxesOnChange = this.allCheckboxesOnChange.bind(this);
@@ -136,6 +137,12 @@ class Map extends Component {
         }
     }
 
+    updateMapRecenter = () => {
+        this.setState({
+            recenter: !this.state.recenter
+        })
+    }
+
     // Returns false if the filter string is not in the station's name.
     // Returns true if the filter is empty or is within the station's name.
     filterStations(station){
@@ -213,6 +220,7 @@ class Map extends Component {
                                     <Input type="checkbox" defaultChecked={true} onChange={(event) => this.allCheckboxesOnChange(event)}/>{' '}
                                     <span className="show-labels">All</span>
                                 </Label>
+                                <Button className="btn btn-sm recenter-btn" color="secondary" onClick={this.updateMapRecenter}>Recenter Map</Button>
                             </FormGroup>
                             <div className="col-12">
                                 <h4 className="map-title">Last Known Locations</h4>
@@ -221,7 +229,7 @@ class Map extends Component {
                         </div>
                     </div>
                     <div className="map-container" ref={ (mapElement) => this.mapElement = mapElement} style={{position: 'absolute', right: 0, top: 0, width: '75%', height: '100%'}}>
-                        <MapContainer height={this.state.mapHeight} width={this.state.mapWidth} checkedStations={this.state.checkedStations} showLabels={this.state.showLabels} mapMode={this.state.mapMode} mapOnly={false}></MapContainer>
+                        <MapContainer height={this.state.mapHeight} width={this.state.mapWidth} checkedStations={this.state.checkedStations} showLabels={this.state.showLabels} mapMode={this.state.mapMode} mapOnly={false} updateRecenter={this.updateMapRecenter} recenter={this.state.recenter}></MapContainer>
                     </div>
                 </div>
             )
