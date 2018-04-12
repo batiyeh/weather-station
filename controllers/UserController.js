@@ -78,7 +78,10 @@ router.post('/create', async function(req, res){
                 from: 'wstationtestdod@gmail.com',
                 subject: 'Weather Station Account Request',
                 text: 'You are receiving this message because you are able to accept or deny the approval of this account request.\n\n' +
-                'Please click the following link to complete this process:\n\n',
+                'Username: ' +username + '\n'+ 'Email: ' + email + '\n\n'+
+                'Please click the following link to complete this process:\n\n'+
+                req.protocol + '://' + req.get('host') + '/admin \n\n' +
+                'After clicking the link go to the pending users tab on the Admin page and select Approve or Deny for the account.',
             };
             transporter.sendMail(mailOptions, function (err) {
                 //Alert user email has been sent
