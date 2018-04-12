@@ -21,9 +21,11 @@ describe('New account requirements selenium tests', () => {
         registerPage.register();
 
         driver.wait(until.elementLocated(By.className('error-alert')), 10000).then(() => {
-            driver.findElement(By.className('error-alert'))
+            driver.findElement(By.className('error-alert')).getAttribute('innerHTML')
+            .then((text) => {
+                if(text === 'Username cannot be blank') done();
+            });
         })
-        .then(() => done());
     });
 
     it('Invalid Username', function(done) {
@@ -31,9 +33,11 @@ describe('New account requirements selenium tests', () => {
         registerPage.register();
 
         driver.wait(until.elementLocated(By.className('error-alert')), 10000).then(() => {
-            driver.findElement(By.className('error-alert'))
+            driver.findElement(By.className('error-alert')).getAttribute('innerHTML')
+            .then((text) => {
+                if(text === 'Username can only contain letters and numbers') done();
+            })
         })
-        .then(() => done());
     });
 
     it('Duplicate Username', function(done) {
@@ -42,29 +46,41 @@ describe('New account requirements selenium tests', () => {
         registerPage.register();
 
         driver.wait(until.elementLocated(By.className('error-alert')), 10000).then(() => {
-            driver.findElement(By.className('error-alert'))
+            driver.findElement(By.className('error-alert')).getAttribute('innerHTML')
+            .then((text) => {
+                if(text === 'Username already exists') done();
+            })
         })
-        .then(() => done());
     });
 
     it('Blank Email', function(done) {
-        registerPage.clearEmail();
+        driver.navigate().refresh();
+        registerPage.enterUsername('validUser');
+        registerPage.enterPassword('testing123');
+        registerPage.enterConfirmPass('testing123');
         registerPage.register();
 
         driver.wait(until.elementLocated(By.className('error-alert')), 10000).then(() => {
-            driver.findElement(By.className('error-alert'))
+            driver.findElement(By.className('error-alert')).getAttribute('innerHTML')
+            .then((text) => {
+                if(text === 'Email cannot be blank') done();
+            })
         })
-        .then(() => done());
     });
 
     it('Invalid Email', function(done) {
+        registerPage.clearEmail();
         registerPage.enterEmail('invalidEmail');
         registerPage.register();
 
         driver.wait(until.elementLocated(By.className('error-alert')), 10000).then(() => {
-            driver.findElement(By.className('error-alert'))
+            driver.findElement(By.className('error-alert')).getAttribute('innerHTML')
+            .then((text) => {
+                if(text === 'Not a valid email') {
+                    done();
+                }
+            })
         })
-        .then(() => done());
     });
 
     it('Duplicate Email', function(done) {
@@ -73,21 +89,29 @@ describe('New account requirements selenium tests', () => {
         registerPage.register();
 
         driver.wait(until.elementLocated(By.className('error-alert')), 10000).then(() => {
-            driver.findElement(By.className('error-alert'))
+            driver.findElement(By.className('error-alert')).getAttribute('innerHTML')
+            .then((text) => {
+                if(text === 'Email already exists') done();
+            })
         })
-        .then(() => done());
     });
 
     it('Short Password', function(done) {
+        registerPage.clearEmail();
+        registerPage.enterEmail('testingemail@gmail.com')
         registerPage.clearPassword();
         registerPage.clearConfirmPass();
-        registerPage.enterPassword('short');
-        registerPage.enterConfirmPass('short');
+        registerPage.enterPassword('short1');
+        registerPage.enterConfirmPass('short1');
+        registerPage.register();
+
 
         driver.wait(until.elementLocated(By.className('error-alert')), 10000).then(() => {
-            driver.findElement(By.className('error-alert'))
+            driver.findElement(By.className('error-alert')).getAttribute('innerHTML')
+            .then((text) => {
+                if(text === 'Password must 8 characters or longer') done();
+            })
         })
-        .then(() => done());
     });
 
     it('Password doesn’t meet string requirements', function(done) {
@@ -95,12 +119,14 @@ describe('New account requirements selenium tests', () => {
         registerPage.clearConfirmPass();
         registerPage.enterPassword('NoNumbers');
         registerPage.enterConfirmPass('NoNumbers');
+        registerPage.register();
 
         driver.wait(until.elementLocated(By.className('error-alert')), 10000).then(() => {
-            driver.findElement(By.className('error-alert'))
+            driver.findElement(By.className('error-alert')).getAttribute('innerHTML')
+            .then((text) => {
+                if(text === 'Password must have at least 1 letter and 1 number') done();
+            })
         })
-        .then(() => done());
-
     });
 
     it('Passwords do not match', function(done) {
@@ -108,11 +134,14 @@ describe('New account requirements selenium tests', () => {
         registerPage.clearConfirmPass();
         registerPage.enterPassword('password1');
         registerPage.enterConfirmPass('password2');
+        registerPage.register();
 
         driver.wait(until.elementLocated(By.className('error-alert')), 10000).then(() => {
-            driver.findElement(By.className('error-alert'))
+            driver.findElement(By.className('error-alert')).getAttribute('innerHTML')
+            .then((text) => {
+                if(text === 'Passwords do not match') done();
+            })
         })
-        .then(() => done());
     });
     after(function(done) {
         driver.quit().then(() => done())

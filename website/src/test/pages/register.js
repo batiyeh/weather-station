@@ -47,6 +47,9 @@ module.exports = function(driver) {
         clearUsername: function(){
             return driver.findElement(elements.usernameInput).clear();
         },
+        flushEmail: function(){
+            return driver.findElement(elements.emailInput).sendKeys("value", '');
+        },
         clearEmail: function(){
             return driver.findElement(elements.emailInput).clear();
         },

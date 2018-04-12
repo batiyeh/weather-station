@@ -37,7 +37,9 @@ router.post('/create', async function(req, res){
     req.checkBody('username','Username already exists').not().equals(dbUsername);
 
     req.checkBody('email', 'Email cannot be blank').notEmpty()
-    req.checkBody('email', 'Not a valid email').isEmail()
+    if(email !== ''){
+        req.checkBody('email', 'Not a valid email').isEmail()
+    }
     req.checkBody('email', 'Email already exists').not().equals(dbEmail);
 
     req.checkBody('password','Password must 8 characters or longer').isLength({min: 8});
@@ -45,12 +47,15 @@ router.post('/create', async function(req, res){
     req.checkBody('password', 'Password must have at least 1 letter and 1 number').matches(/\d/);
     req.checkBody('password', 'Passwords do not match').equals(confirmPass);
 
+
     //If one of the user inputs fails to meet the requirements it gets saved in errors
     var errors = req.validationErrors();
     if(errors){
         res.json({errors: errors, redirect: false});
     }
     else{
+        console.log(username, email, password, confirmPass)
+
         var pendingId = await knex('permissions').select('permission_id').where('type', '=', 'Pending');
         pendingId = pendingId[0]["permission_id"];
 
