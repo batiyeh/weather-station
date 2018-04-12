@@ -217,8 +217,11 @@ class Navigation extends Component {
             
             }
             else{
+                var className = "";
+                (!alerts.read) ? className = "alert-notification-card-unread" : className = "alert-notification-card";
+
                 webpageAlertCards.unshift(
-                    <Card key={index} onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, null, alerts.temperature, alerts.pressure, alerts.humidity, alerts.created_at)} className="alert-notification-card">
+                    <Card key={index} onClick={() => this.toggleAlertModal(alerts.station_name, alerts.type, alerts.keyword, alerts.value, null, alerts.temperature, alerts.pressure, alerts.humidity, alerts.created_at)} className={className}>
                         <div className="alert-text">
                             {alerts.station_name}'s {alerts.type} is {alerts.keyword}&nbsp;{alerts.value}
                         </div>
