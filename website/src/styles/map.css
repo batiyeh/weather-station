@@ -2,6 +2,16 @@
     height: 300px !important;
 }
 
+.recenter-btn{
+    margin-left: 10px;
+}
+
+.average-marker-remove{
+    position: relative;
+    top: 3px;
+    padding-right: 6px;
+}
+
 .sidebar{
     width: 100%;
     height: 100%;

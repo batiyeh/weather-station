@@ -9,6 +9,7 @@ class AveragesMarker extends Component {
         this.state = {
             averages: this.props.averages,
             show: this.props.show,
+            index: this.props.index
         }
     }
 
@@ -21,6 +22,10 @@ class AveragesMarker extends Component {
 
         if (nextProps.show !== this.state.show){
             this.setState({ show: nextProps.show });
+        }
+
+        if (nextProps.index !== this.state.index){
+            this.setState({ index: nextProps.index });
         }
     }
 
@@ -48,7 +53,8 @@ class AveragesMarker extends Component {
         if (this.state.show){
             return (
                 <div style={averagesStyle} className="averages-container">
-                    <p className="marker-info-title">Weather Averages</p>
+                    <p className="marker-info-title left">Weather Averages</p>
+                    <i className="fa fa-times average-marker-remove right" onClick={() => {this.props.removeCircle(this.state.index)}} aria-hidden="true"></i>
                     { this.renderAverages() }
                 </div>
             ); 

@@ -23,29 +23,38 @@ export class MapContainer extends Component {
             mode: this.props.mapMode,
             mapOnly: this.props.mapOnly,
             showAverages: false,
-            averages: []
+            averages: [],
+            recenter: false,
+            neverHover: this.props.neverHover
         };
     }
 
     // Update our values on prop change if they are different than before
     componentWillReceiveProps(nextProps) {
-        if (nextProps.checkedStations !== this.state.stations){
+        if (nextProps.recenter !== this.state.recenter){
+            const {center, zoom} = this.calculateMapBounds(nextProps.checkedStations, this.props.height, this.props.width);
             this.setState({
-                stations: nextProps.checkedStations
+                center: [center.lat, center.lng],
+                zoom: zoom-1,
             });
+            this.props.updateRecenter();
+        }
+
+        if (nextProps.checkedStations !== this.state.stations){
+            this.setState({ stations: nextProps.checkedStations });
         }
 
         if (nextProps.showLabels !== this.state.showLabels){
-            this.setState({
-                showLabels: nextProps.showLabels
-            });
+            this.setState({ showLabels: nextProps.showLabels });
         }
 
         if (nextProps.mapMode !== this.state.mode){
             this.updateMapMode(nextProps.mapMode);
-            this.setState({
-                mode: nextProps.mapMode
-            })
+            this.setState({ mode: nextProps.mapMode })
+        }
+
+        if (nextProps.neverHover !== this.state.neverHover){
+            this.setState({ neverHover: nextProps.neverHover });
         }
     }
 
@@ -139,16 +148,38 @@ export class MapContainer extends Component {
         }
 
         else{
-            if (this.averageCircles.length > 0){ 
-                this.setState({ showAverages: false });
-                for (var i = 0; i < this.averageCircles.length; i++){
-                    this.averageCircles[i].setMap(null);
-                }
-                this.averageCircles = [];
-            }
-            
             this.drawingManager.setDrawingMode(null);
         }
+    }
+
+    removeCircle = (index) => {
+        var averages = this.state.averages;
+        this.averageCircles[index].setMap(null);
+        this.averageCircles.splice(index, 1);
+        averages.splice(index, 1);
+
+        this.setState({ averages: averages });
+    }
+
+    // Remove all average circles drawn on the map
+    clearAverageCircles(){
+        if (this.averageCircles.length > 0){ 
+            this.setState({ showAverages: false, averages: [] });
+            for (var i = 0; i < this.averageCircles.length; i++){
+                this.averageCircles[i].setMap(null);
+            }
+            this.averageCircles = [];
+        }
+    }
+
+    // Checks if the given latitude/longitude is within the radius of the circle drawn
+    circleContains(latLng, circle){
+        // Gets the distance from the center of the circle to the latitude/longitude object of the marker point
+        var centerToPointDistance = this.maps.geometry.spherical.computeDistanceBetween(circle.getCenter(), latLng);
+        // Gets the radius of the circle drawn
+        var circleRadius = circle.getRadius();
+        // Checks if the distance between the center of the circle and the marker point is less than or equal to the radius of the circle
+        return (centerToPointDistance <= circleRadius);
     }
 
     // Average all the weather data from markers within the circle
@@ -158,8 +189,7 @@ export class MapContainer extends Component {
         for (var i = 0; i < this.state.stations.length; i++){
             var latLng = new this.maps.LatLng(this.state.stations[i].latitude, this.state.stations[i].longitude);
             
-            var circleBounds = circle.getBounds(); 
-            if (circleBounds.contains(latLng)){
+            if (this.circleContains(latLng, circle)){
                 if (this.state.stations[i].temperature !== 0.0) values.temperature.push(this.state.stations[i].temperature);
                 if (this.state.stations[i].pressure !== 0.0) values.pressure.push(this.state.stations[i].pressure);
                 if (this.state.stations[i].humidity !== 0.0) values.humidity.push(this.state.stations[i].humidity);
@@ -219,7 +249,7 @@ export class MapContainer extends Component {
         if (this.state.showAverages){
             this.state.averages.map((average, index) => {
                 averageMarkers.push(
-                    <AveragesMarker key={index} lat={average["lat"]} lng={average["lng"]} show={this.state.showAverages} averages={average["data"]}></AveragesMarker>
+                    <AveragesMarker key={index} lat={average["lat"]} lng={average["lng"]} removeCircle={this.removeCircle} show={this.state.showAverages} index={index} averages={average["data"]}></AveragesMarker>
                 );
                 return null;
             }) 
@@ -261,6 +291,7 @@ export class MapContainer extends Component {
                                             station={station}
                                             hover={this.state.hoverKey === station.apikey}
                                             label={this.state.showLabels}
+                                            neverHover={this.state.neverHover}
                                         />
                                 );
                             }

@@ -110,6 +110,12 @@ router.post('/login', async function(req, res){
         return res.status(401).json({redirect: false, errors: [{msg: "Invalid Username/Password"}]})
     }
 
+    var pendingId = await knex('permissions').select('permission_id').where('type', '=', 'Pending')
+    pendingId = pendingId[0]["permission_id"];
+    if (user.attributes.permission_id === pendingId){
+        return res.status(401).json({redirect: false, errors: [{msg: "Invalid Username/Password"}]})
+    }
+
     req.session.username = username;
     req.session.save();
     
