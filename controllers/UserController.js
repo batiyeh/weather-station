@@ -60,10 +60,10 @@ router.post('/create', async function(req, res){
                 permission_id: pendingId
             }).save()
         });
-        res.json({errors: [], redirect: true});
         var admins = await knex('users').select('users.email').from('users').where('users.permission_id', 1).orWhere('users.permission_id', 3);
-        for(var email in admins){
-            var adminEmail = admins[email];
+        for(var i = 0; i < admins.length; i++){
+           var adminEmail = admins[i]["email"];
+
             var transporter = nodemailer.createTransport({
                 host: 'smtp.gmail.com',
                 port: 587,
@@ -88,38 +88,8 @@ router.post('/create', async function(req, res){
             });
 
         }
-
+        res.json({errors: [], redirect: true});
     }
-
-
-
-        // if(pendingQ) {
-        //  //   function (token, user, done) {
-        //         var transporter = nodemailer.createTransport({
-        //             host: 'smtp.gmail.com',
-        //             port: 587,
-        //             secure: false,
-        //             auth: {
-        //                 //Find better way to store user and pass for whole system.
-        //                 user: 'WStationTestdod@gmail.com',
-        //                 pass: 'wayne123'
-        //             }
-        //         });
-        //         var mailOptions = {
-        //             to: email,
-        //             from: 'wstationtestdod@gmail.com',
-        //             subject: 'Weather Station Account Request',
-        //             text: 'You are receiving this message because you are able to accept or deny the approval of this account request.\n\n' +
-        //             'Please click the following link to complete this process:\n\n' +
-        //             req.protocol + '://' + req.get('host') + '/user/Approval/' + token + '\n\n'
-        //         };
-        //         transporter.sendMail(mailOptions, function (err) {
-        //             //Alert user email has been sent
-        //             done(err, 'done');
-        //         });
-        //     }
-        //
-
 });
 
 //calls passport authentication on login
