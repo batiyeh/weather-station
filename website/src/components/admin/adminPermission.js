@@ -46,7 +46,7 @@ class AdminPermission extends Component {
 
     // Update a single user with a permission type
     updateUser = async (user, type) => {
-        fetch ('/api/user/permissions', { method: 'put',
+        fetch ('/api/user/updatedPermissions', { method: 'put',
             body: JSON.stringify({
                 username: user["username"],
                 permissions: type
