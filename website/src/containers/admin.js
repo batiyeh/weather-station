@@ -83,7 +83,7 @@ class Alerts extends Component {
                             <Row>
                                 <Col sm="12">
                                     <AdminPermission
-                                    permissions={this.state.permissions}
+                                        permissions={this.state.permissions}
                                     />
                                 </Col>
                             </Row>

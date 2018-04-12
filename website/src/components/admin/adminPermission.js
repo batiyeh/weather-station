@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Table, Alert, Button } from 'reactstrap';
 
 class AdminPermission extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             users: [],
             loading: true,
@@ -15,7 +15,6 @@ class AdminPermission extends Component {
 
 
     componentDidMount(){
-        console.log(this.state.permissions);
         this.getUsers().then((users) => {
             this.setState({
                 users: users,
@@ -34,7 +33,7 @@ class AdminPermission extends Component {
         return users;
     };
 
-    // Update the list of pending users
+
     updateTable = async()  => {
          this.getUsers().then((users) => {
             this.setState({
@@ -64,6 +63,22 @@ class AdminPermission extends Component {
         this.updateTable();
     };
 
+    renderPromote(user){
+        if(this.state.permissions === "Admin" || this.state.permissions === "Superuser"){
+            return(
+                <Button color="primary" onClick={() => this.updateUser(user, "Admin")}>Promote</Button>
+            )
+        }
+    }
+
+    renderDemote(user){
+        if(this.state.permissions === "Superuser"){
+            return(
+                <Button color="danger" onClick={() => this.updateUser(user, "User")}>Demote</Button>
+            )
+        }
+    }
+
 
 
     render() {
@@ -91,10 +106,10 @@ class AdminPermission extends Component {
                                     <td className="admin-table-buttons">
                                         <div className="row">
                                             <div className="col-6">
-                                                <Button color="primary" onClick={() => this.updateUser(user, "Admin")}>Promote</Button>
+                                                {this.renderPromote(user)}
                                             </div>
                                             <div className="col-6">
-                                                <Button color="danger" onClick={() => this.updateUser(user, "User")}>Demote</Button>
+                                                {this.renderDemote(user)}
                                             </div>
                                         </div>
                                     </td>
