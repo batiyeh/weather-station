@@ -61,29 +61,31 @@ router.post('/create', async function(req, res){
             }).save()
         });
         res.json({errors: [], redirect: true});
-        var admins = await knex('users').select('users.email').from('users');
+        var admins = await knex('users').select('users.email').from('users').where('users.permission_id', 1).orWhere('users.permission_id', 3);
         for(var email in admins){
-            console.log(email);
-            // var transporter = nodemailer.createTransport({
-            //     host: 'smtp.gmail.com',
-            //     port: 587,
-            //     secure: false,
-            //     auth: {
-            //         user: 'WStationTestdod@gmail.com',
-            //         pass: 'wayne123'
-            //     }
-            // });
-            // var mailOptions = {
-            //     to: email,
-            //     from: 'wstationtestdod@gmail.com',
-            //     subject: 'Weather Station Account Request',
-            //     text: 'You are receiving this message because you are able to accept or deny the approval of this account request.\n\n' +
-            //     'Please click the following link to complete this process:\n\n',
-            // };
-            // transporter.sendMail(mailOptions, function (err) {
-            //     //Alert user email has been sent
-            //     done(err, 'done')
-            // });
+            var adminEmail = admins[email];
+            var transporter = nodemailer.createTransport({
+                host: 'smtp.gmail.com',
+                port: 587,
+                secure: false,
+                auth: {
+                    user: 'WStationTestdod@gmail.com',
+                    pass: 'wayne123'
+                }
+            });
+            var mailOptions = {
+                to: adminEmail,
+                from: 'wstationtestdod@gmail.com',
+                subject: 'Weather Station Account Request',
+                text: 'You are receiving this message because you are able to accept or deny the approval of this account request.\n\n' +
+                'Please click the following link to complete this process:\n\n',
+            };
+            transporter.sendMail(mailOptions, function (err) {
+                //Alert user email has been sent
+                if (err) {
+                    return console.log(err);
+                }
+            });
 
         }
 
