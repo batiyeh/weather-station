@@ -28,7 +28,8 @@ class AlertsList extends Component {
             webpage: false,
             threshold: '1 hour',
             date: date,
-            alertFilter: 'all'
+            alertFilter: 'all',
+            error: []
         };
         this.filterTime = this.filterTime.bind(this);
         this.onAlertFilterChange = this.onAlertFilterChange.bind(this);
@@ -64,7 +65,7 @@ class AlertsList extends Component {
 
     //takes the current data in the state and sends it to the backend, the current alerts are updated and the modal is closed
     createAlert = async () => {
-        await fetch('/api/alerts/create', 
+        var response = await fetch('/api/alerts/create', 
             {method: 'post', 
             body: JSON.stringify({
                 station: this.state.station,
@@ -83,8 +84,17 @@ class AlertsList extends Component {
             credentials:'include'
         });
 
-        await this.getAlerts();
-        this.resetValues();
+        var body = await response.json();
+        if(body.error){
+            var err = [body.error]
+            this.setState({
+                error: err
+            });
+        }
+        else{
+            await this.getAlerts();
+            this.resetValues();
+        }
     }
     //toggles modal for creating a new alert
     toggleAddAlert(){
@@ -278,6 +288,16 @@ class AlertsList extends Component {
             );
         }
     }
+    renderErrors(){
+        if(this.state.error.length > 0){
+            var err = []
+            this.state.error.map(error => {
+                console.log(error);
+                err.push(<Alert className='alert-danger alert-error'>{error}</Alert>)
+            })
+            return err;
+        }
+    }
     //when the user closes the modal, the state is reset back to default values
     resetValues(){
         this.setState({
@@ -290,7 +310,8 @@ class AlertsList extends Component {
             email: true,
             sms: false,
             webpage: false,
-            threshold: '1 hour'
+            threshold: '1 hour',
+            error: {}
         })
         this.toggleAddAlert();
     }
@@ -302,6 +323,7 @@ class AlertsList extends Component {
                 <Form>
                     <ModalBody>
                         <div className ='form-group'>
+                            {this.renderErrors()}
                             <Label>Alert Method</Label>
                             <div className='col-12 row'>
                                 <div className='alert-method-box alert-method-container'>

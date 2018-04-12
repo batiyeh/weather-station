@@ -27,13 +27,19 @@ router.post('/create', async function(req, res){
     //gets apikey of station selected by user
     var apikey = await Station.where({station_name: station}).fetch();
 
+    if(!value){
+        return res.status(200).json({error: 'Enter a value'});
+    }
+    if(!(email || sms || webpage)){
+        return res.status(200).json({error: 'Select an alert method'});
+    }
     //prevents user from submitting blank value
     if(keyword === 'between' && !secondValue){
-        return res.status(404);
+        return res.status(200).json({error: 'Enter a second value'});
     }
     //prevents second value from being greater than first value
     if((secondValue) && (value > secondValue)){
-        return res.status(404);
+        return res.status(200).json({error: 'Values are in wrong order'});
     }
 
     //prevents user from submitting blank value or not selecting an alert method
@@ -82,7 +88,7 @@ router.post('/create', async function(req, res){
     }
 
     //success
-    return res.status(200).json({newAlert})
+    return res.status(200).json({})
 })
 
 //Gets any webpage alerts for user that hasnt been dismissed
