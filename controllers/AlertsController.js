@@ -27,9 +27,11 @@ router.post('/create', async function(req, res){
     //gets apikey of station selected by user
     var apikey = await Station.where({station_name: station}).fetch();
 
+    //checks that the user has entered a value
     if(!value){
         return res.status(200).json({error: 'Enter a value'});
     }
+    //checks that at least one method is selected
     if(!(email || sms || webpage)){
         return res.status(200).json({error: 'Select an alert method'});
     }
@@ -41,10 +43,11 @@ router.post('/create', async function(req, res){
     if((secondValue) && (value > secondValue)){
         return res.status(200).json({error: 'Values are in wrong order'});
     }
-
+    //checks value for non-digits
     if(value){
         var valueReg = value.toString().match(/\D/g);
     }
+    //checks secondValue for non-digits
     if(secondValue){
         var secondValueReg = secondValue.toString().match(/\D/g);
     }    
@@ -198,9 +201,11 @@ router.post('/:id', async function(req,res){
 
     var apikey = await Station.where({station_name: station}).fetch();
 
+    //checks that the user has entered a value
     if(!value){
         return res.status(200).json({error: 'Enter a value'});
     }
+    //checks that at least one method is selected
     if(!(email || sms || webpage)){
         return res.status(200).json({error: 'Select an alert method'});
     }
@@ -212,10 +217,11 @@ router.post('/:id', async function(req,res){
     if((secondValue) && (value > secondValue)){
         return res.status(200).json({error: 'Values are in wrong order'});
     }
-
+    //checked value entery for non-digits
     if(value){
         var valueReg = value.toString().match(/\D/g);
     }
+    //checks secondValue entry for non-digits
     if(secondValue){
         var secondValueReg = secondValue.toString().match(/\D/g);
     }    

@@ -54,8 +54,6 @@ router.post('/create', async function(req, res){
         res.json({errors: errors, redirect: false});
     }
     else{
-        console.log(username, email, password, confirmPass)
-
         var pendingId = await knex('permissions').select('permission_id').where('type', '=', 'Pending');
         pendingId = pendingId[0]["permission_id"];
 
@@ -377,8 +375,6 @@ router.post('/editPassword', async function(req, res){
     var newPass = req.body.newPass;
 
     var user = await User.where({username: req.session.username}).fetch()
-    if(!user)
-        console.log('Invalid username');//(this shouldnt happen ever)
 
     var check = await bcrypt.compare(currPass, user.attributes.password);
     if(!check){
