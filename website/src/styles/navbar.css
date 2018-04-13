@@ -37,6 +37,15 @@ nav a {
     font-size: 12pt !important;
 }
 
+.alert-notification-card-unread{
+    padding: 10px;
+    background-color: rgb(228, 227, 227) !important;
+    margin-bottom: 10px;
+    cursor: pointer;
+    text-align: left !important;
+    font-size: 12pt !important;
+}
+
 .dismiss-all{
     font-size: 10pt;
     text-align: right !important;
