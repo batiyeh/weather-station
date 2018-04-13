@@ -12,6 +12,7 @@ class CreateUserForm extends Component {
         if (_.isUndefined(loggedIn)) loggedIn = false;
         this.state={
             redirect: false,
+            return: false,
             username: '',
             email: '',
             password: '',
@@ -21,6 +22,8 @@ class CreateUserForm extends Component {
         };
         this.submitForm = this.submitForm.bind(this);
         this.renderErrors = this.renderErrors.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.return = this.return.bind(this);
     }
     //sets state based on value entered by user in the fields
     onUsernameChange(value){
@@ -41,6 +44,16 @@ class CreateUserForm extends Component {
     onConfirmPassChange(value){
         this.setState({
             confirmPass: value
+        })
+    }
+    handleKeyPress(target){
+        if(target.charCode === 13){
+            this.submitForm();
+        }
+    }
+    return(){
+        this.setState({
+            return: true
         })
     }
     //sents data for user account to back end
@@ -83,8 +96,11 @@ class CreateUserForm extends Component {
         if(this.state.loggedIn === 'true'){
             return(<Redirect to='/'/>)
         }
-        else if(this.state.redirect){
+        else if(this.state.return){
             return ( <Redirect to='/user/login'/>)
+        }
+        else if(this.state.redirect){
+            return ( <Redirect to={{pathname: '/user/login', state: {errors: [{msg: "Your account and been created and is currently pending Admin approval"}]}}}/>)
         }
         else{
             return(
@@ -95,24 +111,24 @@ class CreateUserForm extends Component {
                 <div className='form-group'>            
                 {this.renderErrors()}
 
-                  <Input id='username' name='username' type='text' className='form-control' placeholder='Username' onChange={e => this.onUsernameChange(e.target.value)}/>
+                  <Input id='username' name='username' type='text' className='form-control' placeholder='Username' onKeyPress={this.handleKeyPress} onChange={e => this.onUsernameChange(e.target.value)}/>
                 </div>
                 <div className='form-group'>
-                  <Input id='email' name='email' type='email' className='form-control' placeholder='Email' aria-label='Email' onChange={e => this.onEmailChange(e.target.value)} />
+                  <Input id='email' name='email' type='email' className='form-control' placeholder='Email' aria-label='Email' onKeyPress={this.handleKeyPress} onChange={e => this.onEmailChange(e.target.value)} />
                 </div>
                 <div className='form-group'>
-                  <Input id='password' name='password' type='password' className='form-control' placeholder='Password' aria-label='Password' onChange={e => this.onPasswordChange(e.target.value)} />
+                  <Input id='password' name='password' type='password' className='form-control' placeholder='Password' aria-label='Password' onKeyPress={this.handleKeyPress} onChange={e => this.onPasswordChange(e.target.value)} />
                 </div>
                 <div className='form-group'>
-                  <Input id='confirmPass' name='confirmPass' type='password' className='form-control' placeholder='Confirm Password' aria-label='Confirm Password' onChange={e => this.onConfirmPassChange(e.target.value)} />
+                  <Input id='confirmPass' name='confirmPass' type='password' className='form-control' placeholder='Confirm Password' aria-label='Confirm Password' onKeyPress={this.handleKeyPress} onChange={e => this.onConfirmPassChange(e.target.value)} />
                 </div>
               </div>
               <div className='row'>
                 <div className='col-6'>
-                  <a className='return-link' href='/user/login'><Button type='button' className='btn btn-default btn-block return-btn'>Return</Button></a>                
+                  <Button type='button' onClick={this.return} className='btn btn-default btn-block return-btn'>Return</Button>               
                 </div>
                 <div className='col-6'>
-                  <Button type='button' onClick={this.submitForm} className="btn btn-default btn-block">Submit</Button>
+                  <Button type='button' onClick={this.submitForm} className="btn btn-default btn-block submit-btn">Submit</Button>
                 </div>
               </div>
             </form>

@@ -3,6 +3,8 @@ const nodemailer = require('nodemailer');
 const Alerts = require('../models/Alerts');
 const TriggeredAlerts = require('../models/TriggeredAlerts');
 const moment = require('moment');
+// const accountSid = process.env.TWILIO_SID;
+// const authToken = process.env.TWILIO_AUTH_TOKEN;
 
 sendAlerts = async () => {
     var triggered = []
@@ -89,7 +91,25 @@ sendEmail = async (triggered) =>{
     });
 }
 sendSMS = async (triggered) => {
-    //code goes here
+    const client = await require('twilio')(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
+    var phone = '+1' + triggered.phone;
+
+    client.messages.create({
+        to: phone,
+        from: '+13133670438',
+        body: 'You are receiving this message because the following alert was triggered:\n\n'+
+        'The ' + triggered.type + ' is ' + triggered.keyword + ' ' + triggered.value + ' at station: ' + triggered.station_name + '\n\n'+
+        'The current weather at ' + triggered.station_name + ' is: \n\n'+
+        'Temperature: ' + triggered.temperature + '\n' +
+        'Pressure: ' + triggered.pressure + '\n' +
+        'Humidity: ' + triggered.humidity + '\n'
+    })
+    .then(function(data) {
+        console.log(data);
+    })
+    .catch(function(err){
+        console.log(err);
+    })
 }
 
 //Sets historic data for triggered alerts
@@ -232,6 +252,7 @@ getWeather = async () => {
     .join('weather', 'latestweather.weather_id', 'weather.weather_id')
     .join('stations', 'latestweather.apikey', 'stations.apikey')
     .select('weather.*', 'stations.station_name', 'stations.last_connected', 'stations.connected')
+    .where('stations.connected', '=', true)
     return weather;
 }
 

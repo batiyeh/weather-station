@@ -9,7 +9,8 @@ const crypto = require('crypto');
 const knex = require('knex')(require('../knexfile'));
 const async = require('async');
 const nodemailer = require('nodemailer');
-const LocalStrategy = require('passport-local').Strategy;
+const moment = require('moment');
+
 
 router.post('/create', async function(req, res){
     var username = req.body.username.toLowerCase();
@@ -30,17 +31,22 @@ router.post('/create', async function(req, res){
     
     //Verifies that all User Account credentials meet the string requirements
     req.checkBody('username','Username cannot be blank').notEmpty()
-    req.checkBody('username','Username can only contain letters and numbers').matches(/\w/)
+    if(username !== ''){
+        req.checkBody('username','Username can only contain letters and numbers').not().matches(/\W/)
+    }
     req.checkBody('username','Username already exists').not().equals(dbUsername);
 
     req.checkBody('email', 'Email cannot be blank').notEmpty()
-    req.checkBody('email', 'Not a valid email').isEmail()
+    if(email !== ''){
+        req.checkBody('email', 'Not a valid email').isEmail()
+    }
     req.checkBody('email', 'Email already exists').not().equals(dbEmail);
 
     req.checkBody('password','Password must 8 characters or longer').isLength({min: 8});
     req.checkBody('password','Password cannot contain symbols').not().matches(/\W/);
     req.checkBody('password', 'Password must have at least 1 letter and 1 number').matches(/\d/);
     req.checkBody('password', 'Passwords do not match').equals(confirmPass);
+
 
     //If one of the user inputs fails to meet the requirements it gets saved in errors
     var errors = req.validationErrors();
@@ -235,10 +241,9 @@ router.post('/reset/', function(req,res){
             });
         },
         function(token, done){
-            date = Date.now() + 3600000;
             var user = User.where({email: email}).save({
                 reset_password_token: token,
-                // reset_password_expires: date,
+                reset_password_expires: moment.utc().format("YYYY-MM-DD HH:mm:ss"),
             },{patch:true});   
             if(!user)
                 var err = 'No user';
@@ -272,36 +277,45 @@ router.post('/reset/', function(req,res){
     ],function(err){
         if(err)
             console.log('Error:', err);
-    });
-    res.redirect('/user/login');
-});
+    })
+    res.status(200).json({errors: [{msg: "If you have entered a valid email address you will recieve an email with instructions on how to reset your password shortly"}]})
+})
 
-router.post('/reset/:token', function(req, res){
-    async.waterfall([ 
-        function(done){
-            //makes sure new user password meets password requirements
-            req.checkBody('password','Password must be longer than 8 characters, cannot contain symbols, and must have at least 1 letter and 1 number.')
-            .isLength({min: 8}).matches(/\d/).not().matches(/\W/).equals(req.body.password2);
-            //if it doesnt meet requirements, throw error
-            var errors = req.validationErrors();
-            if(errors){
-                console.log(errors);
-            }
-            else{
-                //hash password, assign to user in db
-                bcrypt.hash(req.body.password, 10, function(err,hash){
-                    var user = User.where({reset_password_token: req.params.token}).save({
-                        password: hash,
-                        reset_password_token: null
-                    },{patch:true})
-                    if(!user)
-                        console.log("Error no user with that token");//redirect after
-                });
-                console.log("Your password has been reset!");
-                res.redirect('/user/login');
-            }
+router.post('/reset/:token', async function(req, res){
+    //makes sure new user password meets password requirements
+    var newPass = req.body.newPass;
+    var confirmPass = req.body.confirmPass;
+    var token = req.params.token;
+
+    req.checkBody('newPass','Password must 8 characters or longer').isLength({min: 8});
+    req.checkBody('newPass','Password cannot contain symbols').not().matches(/\W/);
+    req.checkBody('newPass', 'Password must have at least 1 letter and 1 number').matches(/\d/);
+    req.checkBody('newPass', 'Passwords do not match').equals(confirmPass);
+
+    //if it doesnt meet requirements, throw error
+    var errors = req.validationErrors();
+    if(errors){
+        res.status(200).json({errors: errors, redirect: false});
+    }
+    else{
+        var user = await User.where({reset_password_token: token}).fetch();
+        if(!user){
+            res.status(200).json({errors: [{msg: "Invalid token, please request a new password reset email"}]})
         }
-    ])
+
+        if((1000 * 60 * 60) < (moment.utc() - user.attributes.reset_password_expires)){
+            res.status(200).json({errors: [{msg: "Invalid token, please request a new password reset email"}]})
+        }
+
+        var hash = await bcrypt.hash(newPass, 10);
+
+        await User.where({reset_password_token: token}).save({
+            password: hash,
+            reset_password_token: '',
+        },{patch:true})
+
+        res.status(200).json({errors: [], redirect: true});
+    }
 })
 //updates user profile (email/phone) when user submits form on profile page
 router.post('/editProfile', async function(req, res){
@@ -361,8 +375,6 @@ router.post('/editPassword', async function(req, res){
     var newPass = req.body.newPass;
 
     var user = await User.where({username: req.session.username}).fetch()
-    if(!user)
-        console.log('Invalid username');//(this shouldnt happen ever)
 
     var check = await bcrypt.compare(currPass, user.attributes.password);
     if(!check){

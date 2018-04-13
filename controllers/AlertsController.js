@@ -27,14 +27,38 @@ router.post('/create', async function(req, res){
     //gets apikey of station selected by user
     var apikey = await Station.where({station_name: station}).fetch();
 
+    //checks that the user has entered a value
+    if(!value){
+        return res.status(200).json({error: 'Enter a value'});
+    }
+    //checks that at least one method is selected
+    if(!(email || sms || webpage)){
+        return res.status(200).json({error: 'Select an alert method'});
+    }
     //prevents user from submitting blank value
     if(keyword === 'between' && !secondValue){
-        return res.status(404);
+        return res.status(200).json({error: 'Enter a second value'});
     }
     //prevents second value from being greater than first value
     if((secondValue) && (value > secondValue)){
-        return res.status(404);
+        return res.status(200).json({error: 'Values are in wrong order'});
     }
+    //checks value for non-digits
+    if(value){
+        var valueReg = value.toString().match(/\D/g);
+    }
+    //checks secondValue for non-digits
+    if(secondValue){
+        var secondValueReg = secondValue.toString().match(/\D/g);
+    }    
+
+    if(valueReg){
+        return res.status(200).json({error: 'Invalid value'})
+    }
+    if(secondValueReg){
+        return res.status(200).json({error: 'Invalid second value'})
+    }
+
 
     //prevents user from submitting blank value or not selecting an alert method
     if(value && (email || sms || webpage)){
@@ -82,7 +106,7 @@ router.post('/create', async function(req, res){
     }
 
     //success
-    return res.status(200).json({newAlert})
+    return res.status(200).json({})
 })
 
 //Gets any webpage alerts for user that hasnt been dismissed
@@ -177,13 +201,36 @@ router.post('/:id', async function(req,res){
 
     var apikey = await Station.where({station_name: station}).fetch();
 
-    //prevents user from entering blank value
+    //checks that the user has entered a value
+    if(!value){
+        return res.status(200).json({error: 'Enter a value'});
+    }
+    //checks that at least one method is selected
+    if(!(email || sms || webpage)){
+        return res.status(200).json({error: 'Select an alert method'});
+    }
+    //prevents user from submitting blank value
     if(keyword === 'between' && !secondValue){
-        return res.status(404);
+        return res.status(200).json({error: 'Enter a second value'});
     }
     //prevents second value from being greater than first value
     if((secondValue) && (value > secondValue)){
-        return res.status(404);
+        return res.status(200).json({error: 'Values are in wrong order'});
+    }
+    //checked value entery for non-digits
+    if(value){
+        var valueReg = value.toString().match(/\D/g);
+    }
+    //checks secondValue entry for non-digits
+    if(secondValue){
+        var secondValueReg = secondValue.toString().match(/\D/g);
+    }    
+
+    if(valueReg){
+        return res.status(200).json({error: 'Invalid value'})
+    }
+    if(secondValueReg){
+        return res.status(200).json({error: 'Invalid second value'})
     }
 
     //Prevents user from submitting blank value or not selecting an alert method
@@ -230,7 +277,7 @@ router.post('/:id', async function(req,res){
             }).save();
         }
     }
-    return res.status(200).json({success: 'success'})
+    return res.status(200).json({})
 })
 //soft deletes an alert once the user has deleted
 router.put('/:id', async function(req, res){
