@@ -36,24 +36,23 @@ class AdminPermission extends Component {
                 count++;
             }
         }
-        await this.setState({ loading: false, regUsers: count });
+        await this.setState({ regUsers: count });
         return users;
     };
 
 
-    updateTable = async()  => {
+    updateTable = async() => {
          this.getUsers().then((users) => {
             this.setState({
                 users: users,
                 loading: false
             })
         });
-
     };
 
     // Update a single user with a permission type
     updateUser = async (user, type) => {
-        fetch ('/api/user/updatedPermissions', { method: 'put',
+        await fetch ('/api/user/updatedPermissions', { method: 'put',
             body: JSON.stringify({
                 username: user["username"],
                 permissions: type
@@ -64,13 +63,11 @@ class AdminPermission extends Component {
             },
             credentials:'include'}
         );
-       await this.setState({
-            loading: true
-        });
-        this.updateTable();
+        await this.updateTable();
+        return null;
     };
 
-    renderPromoteDemote(user){
+    renderButtons(user){
         if(this.state.permissions === "Admin"){
             return(
                 <div className="col-6">
@@ -106,8 +103,6 @@ class AdminPermission extends Component {
 
 
     render() {
-        console.log(this.state.users);
-        console.log(this.state.regUsers);
         if (this.state.loading === false && this.state.permissions === "Admin" && this.state.regUsers === 0){
             return(
                 <div>
@@ -134,14 +129,14 @@ class AdminPermission extends Component {
                                 if(user["type"] === "User" ){
                                     return (
                                         <tr>
-                                            <td className="admin-table-username">
+                                            <td className="permissions-table-username">
                                                 { user["username"] }
                                             </td>
-                                            <td className="admin-table-userpermissions">
+                                            <td className="permissions-table-type">
                                                 { user["type"]}
                                             </td>
-                                            <td className="admin-table-buttons">
-                                                {this.renderPromoteDemote(user)}
+                                            <td className="permissions-table-buttons">
+                                                {this.renderButtons(user)}
                                             </td>
                                         </tr>
                                     );
@@ -151,19 +146,20 @@ class AdminPermission extends Component {
                                 if(user["type"] === "User" || user["type"] === "Admin"){
                                     return (
                                         <tr>
-                                            <td className="admin-table-username">
+                                            <td className="permissions-table-username">
                                                 { user["username"] }
                                             </td>
-                                            <td className="admin-table-userpermissions">
+                                            <td className="permissions-table-type">
                                                 { user["type"]}
                                             </td>
-                                            <td className="admin-table-buttons">
-                                                {this.renderPromoteDemote(user)}
+                                            <td className="permissions-table-buttons">
+                                                {this.renderButtons(user)}
                                             </td>
                                         </tr>
                                     );
                                 }
                             }
+                            return null;
                         })
                     }
                     </tbody>
