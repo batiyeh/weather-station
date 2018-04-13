@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import '../../styles/alerts.css';
 
-import { Input, Button, Card, CardText, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Form} from 'reactstrap';
+import { Alert, Input, Button, Card, CardText, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Form} from 'reactstrap';
 
 class AlertCard extends Component {
     constructor(props){
@@ -17,7 +17,8 @@ class AlertCard extends Component {
             email: this.props.alerts.email,
             sms: this.props.alerts.sms,
             webpage: this.props.alerts.webpage,
-            threshold: this.props.alerts.threshold
+            threshold: this.props.alerts.threshold,
+            error: []
         }
         
         this.updateAlert = this.updateAlert.bind(this);
@@ -78,7 +79,7 @@ class AlertCard extends Component {
     }
     //passes the new values to the backend of an alert that the user is editing
     updateAlert = async () => {
-        await fetch('/api/alerts/' + this.props.alerts.alert_id, 
+        var response = await fetch('/api/alerts/' + this.props.alerts.alert_id, 
             {method: 'post', 
             body: JSON.stringify({
                 station: this.state.station,
@@ -97,9 +98,16 @@ class AlertCard extends Component {
             },
             credentials:'include'
         });
-        
-        this.toggleAlert();
-
+        var body = await response.json();
+        if(body.error){
+            var err = [body.error]
+            this.setState({
+                error: err
+            });
+        }
+        else{
+            this.toggleAlert();
+        }
     }
 
     //toggles edit alert modal
@@ -196,6 +204,16 @@ class AlertCard extends Component {
         })
         return options;
     }
+    renderErrors(){
+        if(this.state.error.length > 0){
+            var err = []
+            this.state.error.map(error => {
+                err.push(<Alert className='alert-danger alert-error'>{error}</Alert>)
+                return null;
+            })
+            return err;
+        }
+    }
     //Renders icons for the selected methods of the alert
     renderMethods(){
         var methodTags = [];
@@ -243,9 +261,9 @@ class AlertCard extends Component {
             datatype: this.props.alerts.type,
             value: this.props.alerts.value,
             secondValue: this.props.alerts.secondValue,
-            email: this.state.origEmail,
-            webpage: this.state.origWebpage,
-            sms: this.state.origSms,
+            email: this.props.alerts.email,
+            webpage: this.props.alerts.webpage,
+            sms: this.props.alerts.sms,
             threshold: this.props.alerts.threshold
         })
         this.toggleAlert();
@@ -267,6 +285,7 @@ class AlertCard extends Component {
                     <Form id='AlertForm'>
                         <ModalBody>
                             <div className ='form-group'>
+                                {this.renderErrors()}
                                 <Label>Alert Method</Label>
                                 <div className='col-12 row'>
                                     <div className='alert-method-box alert-method-container'>

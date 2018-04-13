@@ -292,8 +292,8 @@ class AlertsList extends Component {
         if(this.state.error.length > 0){
             var err = []
             this.state.error.map(error => {
-                console.log(error);
                 err.push(<Alert className='alert-danger alert-error'>{error}</Alert>)
+                return null;
             })
             return err;
         }

@@ -183,13 +183,19 @@ router.post('/:id', async function(req,res){
 
     var apikey = await Station.where({station_name: station}).fetch();
 
-    //prevents user from entering blank value
+    if(!value){
+        return res.status(200).json({error: 'Enter a value'});
+    }
+    if(!(email || sms || webpage)){
+        return res.status(200).json({error: 'Select an alert method'});
+    }
+    //prevents user from submitting blank value
     if(keyword === 'between' && !secondValue){
-        return res.status(404);
+        return res.status(200).json({error: 'Enter a second value'});
     }
     //prevents second value from being greater than first value
     if((secondValue) && (value > secondValue)){
-        return res.status(404);
+        return res.status(200).json({error: 'Values are in wrong order'});
     }
 
     //Prevents user from submitting blank value or not selecting an alert method
@@ -236,7 +242,7 @@ router.post('/:id', async function(req,res){
             }).save();
         }
     }
-    return res.status(200).json({success: 'success'})
+    return res.status(200).json({})
 })
 //soft deletes an alert once the user has deleted
 router.put('/:id', async function(req, res){
