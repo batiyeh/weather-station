@@ -165,8 +165,7 @@ class AlertsList extends Component {
 
         this.setState({
             alerts: newAlerts
-        })
-        
+        })        
     }
     //displays either one input box or two to the user depending on what keyword they currently have selected
     renderValues(){
