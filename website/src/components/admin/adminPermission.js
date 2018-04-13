@@ -95,26 +95,28 @@ class AdminPermission extends Component {
                     <tbody>
                     {
                         this.state.users.map((user) => {
-                            return (
-                                <tr>
-                                    <td className="admin-table-username">
-                                        { user["username"] }
-                                    </td>
-                                    <td className="admin-table-userpermissions">
-                                        { user["type"]}
-                                    </td>
-                                    <td className="admin-table-buttons">
-                                        <div className="row">
-                                            <div className="col-6">
-                                                {this.renderPromote(user)}
+                            if(user["type"] === "User" || user["type"] === "Admin"){
+                                return (
+                                    <tr>
+                                        <td className="admin-table-username">
+                                            { user["username"] }
+                                        </td>
+                                        <td className="admin-table-userpermissions">
+                                            { user["type"]}
+                                        </td>
+                                        <td className="admin-table-buttons">
+                                            <div className="row">
+                                                <div className="col-6">
+                                                    {this.renderPromote(user)}
+                                                </div>
+                                                <div className="col-6">
+                                                    {this.renderDemote(user)}
+                                                </div>
                                             </div>
-                                            <div className="col-6">
-                                                {this.renderDemote(user)}
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            );
+                                        </td>
+                                    </tr>
+                                );
+                            }
                         })
                     }
                     </tbody>
