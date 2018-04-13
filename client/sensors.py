@@ -4,6 +4,7 @@ import os
 import subprocess
 import sys
 import yaml
+import threading
 from collections import OrderedDict
 from pathlib import Path
 try:
@@ -38,6 +39,7 @@ class Sensors(object):
                 config = yaml.load(stream)
             except yaml.YAMLError as exc:
                 print(exc)
+        self.currentTime = ""
         self.temperature = 0.0
         self.pressure = 0.0
         self.humidity = 0.0
@@ -70,12 +72,22 @@ class Sensors(object):
             print("Failed initializing Pressure Sensor")
             pass
     
+    def getTime(self):
+        self.currentTime = str(datetime.datetime.utcnow())
+
     def getSensorData(self, apikey):
         weatherdata = OrderedDict()
-        self.getWeather()
-        self.getGpsCoords()
+        threads = []
+        threads.append(threading.Thread(target=self.getWeather, args = ()))
+        threads.append(threading.Thread(target=self.getGpsCoords, args = ()))
+        threads.append(threading.Thread(target=self.getTime, args = ()))
+        for t in threads:
+            t.start()
 
-        weatherdata["created_at"] = str(datetime.datetime.utcnow())
+        for t in threads:
+            t.join()
+
+        weatherdata["created_at"] = self.currentTime
         weatherdata["apikey"] = apikey
         weatherdata["temperature"] = round(self.temperature, 2)
         weatherdata["humidity"] = round(self.humidity, 2)
@@ -93,7 +105,7 @@ class Sensors(object):
             humidity, temperature = Adafruit_DHT.read(Adafruit_DHT.AM2302, self.pin)
             
             if (temperature):
-                self.temperature = (9.0/5.0) * temperature + 32
+                self.temperature = temperature * (9.0/5.0) + 32
             if (humidity):
                 self.humidity = humidity
         except:
@@ -114,15 +126,15 @@ class Sensors(object):
                 self.temperature = (9.0/5.0) * self.sense.temperature + 32
                 self.pressure = self.sense.pressure
 
-                # TODO: Fix below code as it is buggy with the sense hat (can cause +-700 temps)
+                # TODO: Fix below code as it is buggy with the sense hat (can cause +-700deg temps)
                 # Calibrate the temperature to account for CPU temp with the sense hat
-                # cpu_temp = subprocess.check_output("vcgencmd measure_temp", shell=True)
-                # array = cpu_temp.split("=")
-                # array2 = array[1].split("'")
+                cpu_temp = subprocess.check_output("vcgencmd measure_temp", shell=True)
+                array = cpu_temp.split("=")
+                array = array[1].split("'")
 
-                # cpu_tempf = float(array2[0]) * 9.0 / 5.0 + 32.0
-                # cpu_tempf = float("{0:.2f}".format(cpu_tempf))
-                # self.temperature = self.temperature - ((cpu_tempf - self.temperature) / 5.466)
+                cpu_temp = float(array[0]) * (9.0/5.0) + 32.0
+                cpu_temp = float("{0:.2f}".format(cpu_temp))
+                self.temperature = self.temperature - ((cpu_temp - self.temperature) / 2.2)
             except:
                 pass
         # self.temperature = random.uniform(70.0, 73.0)
