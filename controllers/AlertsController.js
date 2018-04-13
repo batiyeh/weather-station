@@ -42,6 +42,21 @@ router.post('/create', async function(req, res){
         return res.status(200).json({error: 'Values are in wrong order'});
     }
 
+    if(value){
+        var valueReg = value.toString().match(/\D/g);
+    }
+    if(secondValue){
+        var secondValueReg = secondValue.toString().match(/\D/g);
+    }    
+
+    if(valueReg){
+        return res.status(200).json({error: 'Invalid value'})
+    }
+    if(secondValueReg){
+        return res.status(200).json({error: 'Invalid second value'})
+    }
+
+
     //prevents user from submitting blank value or not selecting an alert method
     if(value && (email || sms || webpage)){
         var duration = moment.duration({'days' : 1});
@@ -196,6 +211,20 @@ router.post('/:id', async function(req,res){
     //prevents second value from being greater than first value
     if((secondValue) && (value > secondValue)){
         return res.status(200).json({error: 'Values are in wrong order'});
+    }
+
+    if(value){
+        var valueReg = value.toString().match(/\D/g);
+    }
+    if(secondValue){
+        var secondValueReg = secondValue.toString().match(/\D/g);
+    }    
+
+    if(valueReg){
+        return res.status(200).json({error: 'Invalid value'})
+    }
+    if(secondValueReg){
+        return res.status(200).json({error: 'Invalid second value'})
     }
 
     //Prevents user from submitting blank value or not selecting an alert method

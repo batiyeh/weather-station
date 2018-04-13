@@ -232,6 +232,7 @@ getWeather = async () => {
     .join('weather', 'latestweather.weather_id', 'weather.weather_id')
     .join('stations', 'latestweather.apikey', 'stations.apikey')
     .select('weather.*', 'stations.station_name', 'stations.last_connected', 'stations.connected')
+    .where('stations.connected', '=', true)
     return weather;
 }
 
