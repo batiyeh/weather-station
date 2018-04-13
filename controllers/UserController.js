@@ -68,36 +68,39 @@ router.post('/create', async function(req, res){
                 permission_id: pendingId
             }).save()
         });
-        res.json({errors: [], redirect: true})
+        var admins = await knex('users').select('users.email').from('users').where('users.permission_id', 1).orWhere('users.permission_id', 3);
+        for(var i = 0; i < admins.length; i++){
+           var adminEmail = admins[i]["email"];
+
+            var transporter = nodemailer.createTransport({
+                host: 'smtp.gmail.com',
+                port: 587,
+                secure: false,
+                auth: {
+                    user: 'WStationTestdod@gmail.com',
+                    pass: 'wayne123'
+                }
+            });
+            var mailOptions = {
+                to: adminEmail,
+                from: 'wstationtestdod@gmail.com',
+                subject: 'Weather Station Account Request',
+                text: 'You are receiving this message because you are able to accept or deny the approval of this account request.\n\n' +
+                'Username: ' +username + '\n'+ 'Email: ' + email + '\n\n'+
+                'Please click the following link to complete this process:\n\n'+
+                req.protocol + '://' + req.get('host') + '/admin \n\n' +
+                'After clicking the link go to the pending users tab on the Admin page and select Approve or Deny for the account.',
+            };
+            transporter.sendMail(mailOptions, function (err) {
+                //Alert user email has been sent
+                if (err) {
+                    return console.log(err);
+                }
+            });
+
+        }
+        res.json({errors: [], redirect: true});
     }
-
-        // if(pendingQ) {
-        //  //   function (token, user, done) {
-        //         var transporter = nodemailer.createTransport({
-        //             host: 'smtp.gmail.com',
-        //             port: 587,
-        //             secure: false,
-        //             auth: {
-        //                 //Find better way to store user and pass for whole system.
-        //                 user: 'WStationTestdod@gmail.com',
-        //                 pass: 'wayne123'
-        //             }
-        //         });
-        //         var mailOptions = {
-        //             to: email,
-        //             from: 'wstationtestdod@gmail.com',
-        //             subject: 'Weather Station Account Request',
-        //             text: 'You are receiving this message because you are able to accept or deny the approval of this account request.\n\n' +
-        //             'Please click the following link to complete this process:\n\n' +
-        //             req.protocol + '://' + req.get('host') + '/user/Approval/' + token + '\n\n'
-        //         };
-        //         transporter.sendMail(mailOptions, function (err) {
-        //             //Alert user email has been sent
-        //             done(err, 'done');
-        //         });
-        //     }
-        //
-
 });
 
 //calls passport authentication on login
@@ -164,12 +167,62 @@ router.get('/allUsers', async function(req,res){
 router.put('/permissions', async function (req, res) {
     // Pass in the user and the permission you want to change that user to
     var username = req.body.username;
-    var permissisionId = await knex('permissions').select('permission_id').where('type', '=', req.body.permissions)
+    var permissisionId = await knex('permissions').select('permission_id').where('type', '=', req.body.permissions);
     permissisionId = permissisionId[0]["permission_id"];
     
     var result = await User.where({username: req.body.username}).save({permission_id: permissisionId}, {patch: true});
+    var email = await knex('users').select('users.email').from('users').where('users.username', username);
+    email = email[0]["email"];
+    var transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+            user: 'WStationTestdod@gmail.com',
+            pass: 'wayne123'
+        }
+    });
+   
+    if(permissisionId === 2){
+        var mailOptions = {
+            to: email,
+            from: 'wstationtestdod@gmail.com',
+            subject: 'Weather Station Account Request',
+            text: 'You are receiving this message because your account has been approved.\n\n',
+        };
+        transporter.sendMail(mailOptions, function (err) {
+            //Alert user email has been sent
+            if (err) {
+                return console.log(err);
+            }
+        });
+    }
+    else{
+        var mailOptions = {
+            to: email,
+            from: 'wstationtestdod@gmail.com',
+            subject: 'Weather Station Account Request',
+            text: 'You are receiving this message because your account has been denied.\n\n',
+        };
+        transporter.sendMail(mailOptions, function (err) {
+            //Alert user email has been sent
+            if (err) {
+                return console.log(err);
+            }
+        });
+    }
     return res.json({ result });
-})
+});
+
+router.put('/updatedPermissions', async function (req, res) {
+    // Pass in the user and the permission you want to change that user to
+    var username = req.body.username;
+    var permissisionId = await knex('permissions').select('permission_id').where('type', '=', req.body.permissions)
+    permissisionId = permissisionId[0]["permission_id"];
+
+    var result = await User.where({username: req.body.username}).save({permission_id: permissisionId}, {patch: true});
+    return res.json({ result });
+});
 
 router.post('/logout', function(req,res){
     req.session.destroy(response => {

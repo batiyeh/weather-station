@@ -22,6 +22,14 @@
     width: 30%;
 }
 
+.permissions-table-username{
+    width: 50%;
+}
+
+.permissions-table-buttons{
+    width: 30%;
+}
+
 .no-users-alert-td{
     margin-bottom: 0px !important;
 }

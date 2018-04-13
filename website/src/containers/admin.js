@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import VerifyLoggedIn from '../components/verifyLoggedIn.js';
 import AdminStationList from '../components/admin/adminStationList.js';
 import NewUserApproval from '../components/admin/newUserApproval.js';
+import AdminPermission from '../components/admin/adminPermission.js';
 import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col, Alert } from 'reactstrap';
 import classnames from 'classnames';
 import '../styles/admin.css';
@@ -81,7 +82,9 @@ class Alerts extends Component {
                         <TabPane tabId="3">
                             <Row>
                                 <Col sm="12">
-                                    <h1>Test2</h1>
+                                    <AdminPermission
+                                        permissions={this.state.permissions}
+                                    />
                                 </Col>
                             </Row>
                         </TabPane>
