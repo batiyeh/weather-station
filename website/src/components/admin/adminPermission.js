@@ -7,6 +7,7 @@ class AdminPermission extends Component {
         this.state = {
             users: [],
             loading: true,
+            regUsers: 0,
             permissions: this.props.permissions
         }
         this.updateUser = this.updateUser.bind(this);
@@ -25,11 +26,17 @@ class AdminPermission extends Component {
 
     getUsers = async () => {
         var users = [];
+        var count = 0;
         const response = await fetch('api/user/allUsers', {method: 'get'});
         const body = await response.json();
         if (body.users.length > 0) users = body.users;
         if (response.status !== 200) throw Error(body.message);
-        await this.setState({ loading: false });
+        for(var i = 0; i < users.length; i++){
+            if(users[i]["type"] === "User"){
+                count++;
+            }
+        }
+        await this.setState({ loading: false, regUsers: count });
         return users;
     };
 
@@ -63,26 +70,54 @@ class AdminPermission extends Component {
         this.updateTable();
     };
 
-    renderPromote(user){
-        if(this.state.permissions === "Admin" || this.state.permissions === "Superuser"){
+    renderPromoteDemote(user){
+        if(this.state.permissions === "Admin"){
             return(
-                <Button color="primary" onClick={() => this.updateUser(user, "Admin")}>Promote</Button>
+                <div className="col-6">
+                    <Button color="primary" onClick={() => this.updateUser(user, "Admin")}>Promote</Button>
+                </div>
             )
         }
-    }
+        else{
+            if(user["type"] === "Admin"){
+                return(
+                    <div className="row">
+                        <div className="col-6">
+                            <Button color="danger" onClick={() => this.updateUser(user, "User")}>Demote</Button>
+                        </div>
+                    </div>
+                )
+            }
+            else{
+                return(
+                    <div className="row">
+                        <div className="col-6">
+                            <Button color="primary" onClick={() => this.updateUser(user, "Admin")}>Promote</Button>
+                        </div>
+                        <div className="col-6">
+                            <Button color="danger" onClick={() => this.updateUser(user, "User")}>Demote</Button>
+                        </div>
+                    </div>
+                )
+            }
 
-    renderDemote(user){
-        if(this.state.permissions === "Superuser"){
-            return(
-                <Button color="danger" onClick={() => this.updateUser(user, "User")}>Demote</Button>
-            )
         }
     }
-
 
 
     render() {
-        if (this.state.loading === false){
+        console.log(this.state.users);
+        console.log(this.state.regUsers);
+        if (this.state.loading === false && this.state.permissions === "Admin" && this.state.regUsers === 0){
+            return(
+                <div>
+                    <Alert className="no-users-alert" color="primary">
+                        There are currently no users to promote.
+                    </Alert>
+                </div>
+            )
+        }
+        else if (this.state.loading === false){
             return(
                 <Table className="admin-table" bordered>
                     <thead>
@@ -95,34 +130,47 @@ class AdminPermission extends Component {
                     <tbody>
                     {
                         this.state.users.map((user) => {
-                            if(user["type"] === "User" || user["type"] === "Admin"){
-                                return (
-                                    <tr>
-                                        <td className="admin-table-username">
-                                            { user["username"] }
-                                        </td>
-                                        <td className="admin-table-userpermissions">
-                                            { user["type"]}
-                                        </td>
-                                        <td className="admin-table-buttons">
-                                            <div className="row">
-                                                <div className="col-6">
-                                                    {this.renderPromote(user)}
-                                                </div>
-                                                <div className="col-6">
-                                                    {this.renderDemote(user)}
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                );
+                            if(this.state.permissions === "Admin" && this.state.regUsers > 0){
+                                if(user["type"] === "User" ){
+                                    return (
+                                        <tr>
+                                            <td className="admin-table-username">
+                                                { user["username"] }
+                                            </td>
+                                            <td className="admin-table-userpermissions">
+                                                { user["type"]}
+                                            </td>
+                                            <td className="admin-table-buttons">
+                                                {this.renderPromoteDemote(user)}
+                                            </td>
+                                        </tr>
+                                    );
+                                }
+                            }
+                            else{
+                                if(user["type"] === "User" || user["type"] === "Admin"){
+                                    return (
+                                        <tr>
+                                            <td className="admin-table-username">
+                                                { user["username"] }
+                                            </td>
+                                            <td className="admin-table-userpermissions">
+                                                { user["type"]}
+                                            </td>
+                                            <td className="admin-table-buttons">
+                                                {this.renderPromoteDemote(user)}
+                                            </td>
+                                        </tr>
+                                    );
+                                }
                             }
                         })
                     }
                     </tbody>
                 </Table>
             );
-        } else{
+        }
+        else{
             return (
                 <div>
                     <Alert className="no-users-alert" color="primary">
