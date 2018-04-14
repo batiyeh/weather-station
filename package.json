@@ -36,6 +36,7 @@
     "passport-local": "^1.0.0",
     "react-router": "^4.2.0",
     "session-file-store": "^1.2.0",
+    "twilio": "^3.14.0",
     "yarn": "^1.5.1"
   },
   "devDependencies": {

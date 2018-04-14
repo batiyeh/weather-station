@@ -10,7 +10,7 @@ from textstorage import TextStorage
 from sensors import Sensors
 
 class Client(object):
-    WAIT_TIME = 5
+    WAIT_TIME = 4.86
 
     def main(self):
         if getattr(sys, 'frozen', False):

@@ -6,9 +6,11 @@ module.exports = function(driver) {
         usernameInput: By.css('#username'),
         passwordInput: By.css('#password'),
         loginButton: By.css('.login-btn'),
+        registerButton: By.css('.register-btn'),
+        forgotPassLink: By.css('.forgot-link'),
     };
     return {
-        url:  'http://localhost:8000',
+        url:  'http://localhost:8000/user/login',
         elements: elements,
         waitUntilVisible: function() {
             return driver.wait(until.elementLocated(elements.usernameInput));
@@ -31,6 +33,12 @@ module.exports = function(driver) {
         },
         login: function() {
             return driver.findElement(elements.loginButton).click();
+        },
+        register: function(){
+            return driver.findElement(elements.registerButton).click();
+        },
+        forgotPass: function(){
+            return driver.findElement(elements.forgotPassLink).click();
         },
     };
 };
