@@ -277,8 +277,8 @@ class HistoricalContainer extends Component{
                                     </Input>
                                 </div>
                                 <div className='form-group'>
+                                    {this.renderDateError()}
                                     <div className="row">
-                                        {this.renderDateError()}
                                         <div className="col-6">
                                             <label for="dateBegin" className="form-label">From</label>
                                             <DatePicker
