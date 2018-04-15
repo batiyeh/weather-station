@@ -212,6 +212,7 @@ class HistoricalContainer extends Component{
 
         else{
             this.setState({
+                loading: true,
                 dateError: false,
                 stationError: false,
                 modal: false,
@@ -336,7 +337,7 @@ class HistoricalContainer extends Component{
 
        else {
             return (
-                <div>
+                <div className="loading-spinner container">
                     <ReactLoading type={'spin'} color={'#4bc0c0'}/>
                 </div>
             );

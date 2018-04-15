@@ -27,7 +27,7 @@ class AlertsList extends Component {
             threshold: '1 hour',
             date: date,
             alertFilter: 'all',
-            error: []
+            error: [],
         };
         this.filterTime = this.filterTime.bind(this);
         this.onAlertFilterChange = this.onAlertFilterChange.bind(this);
@@ -57,6 +57,7 @@ class AlertsList extends Component {
         stations = body.stations;
         historicAlerts = body.historicAlerts;
         if (stations.length > 0) station = stations[0].station_name;
+        
         //puts alerts, historicAlerts, and stations in state. Sets station to first station in stations array
         this.setState({alerts: alerts, stations: stations, historicAlerts: historicAlerts, station:station});
     }
@@ -151,11 +152,19 @@ class AlertsList extends Component {
             alertFilter: value
         })
     }
+    handleKeyPress(target){
+        if(target.charCode === 13){
+            target.preventDefault();
+        }
+    }
     filterTime(value){
-        var newDate = value.format("YYYY-MM-DD");
-        this.setState({
-            date: newDate
-        })
+        if(value){
+            var newDate = value.format("YYYY-MM-DD");
+            this.setState({
+                date: newDate
+            })
+        }
+
         this.renderHistoricCard();
     }
     deleteAlert(index){
@@ -173,10 +182,10 @@ class AlertsList extends Component {
                 <div>
                     <div className='form-group'> 
                         <Label>Values</Label>
-                        <Input type='text' name='value' id='value' onChange={e => this.onValueChange(e.target.value)}/>
+                        <Input type='text' name='value' id='value' onKeyPress={this.handleKeyPress}  onChange={e => this.onValueChange(e.target.value)}/>
                     </div>
                     <div className='form-group'>
-                        <Input type='text' name='secondValue' id='secondValue' onChange={e => this.onSecondValueChange(e.target.value)}/>
+                        <Input type='text' name='secondValue' id='secondValue' onKeyPress={this.handleKeyPress} onChange={e => this.onSecondValueChange(e.target.value)}/>
                     </div>
                 </div>
             );
@@ -191,7 +200,7 @@ class AlertsList extends Component {
             return (
             <div className='form-group'> 
                 <Label>Value</Label>
-                <Input type='text' name='value' id='value' onChange={e => this.onValueChange(e.target.value)}/>
+                <Input type='text' name='value' id='value' onKeyPress={this.handleKeyPress} onChange={e => this.onValueChange(e.target.value)}/>
             </div>)
         }
     }

@@ -96,6 +96,7 @@ class Admin extends Component {
         else {
             return (
                 <div className="container">
+                    <VerifyLoggedIn/>
                     <Alert className="no-auth-alert" color="danger">
                         You are not authorized to view this.
                     </Alert>
