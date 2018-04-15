@@ -9,9 +9,7 @@ const moment = require('moment');
 class AlertsList extends Component {
     constructor(props){
         super(props);
-        var now = moment();
-        var ymd = now.format('YY-MM-DD');
-        var date = new Date('20'+ ymd + 'T04:00:00.000Z')
+        var date = moment.utc().local().format("YYYY-MM-DD")
 
         this.state={
             modal: false,
@@ -154,8 +152,9 @@ class AlertsList extends Component {
         })
     }
     filterTime(value){
+        var newDate = value.format("YYYY-MM-DD");
         this.setState({
-            date: value._d
+            date: newDate
         })
         this.renderHistoricCard();
     }
@@ -221,17 +220,18 @@ class AlertsList extends Component {
     renderHistoricCard(){
         var cards = []
         this.state.historicAlerts.map(alert => {
-            var filter = moment(this.state.date).format('YYYY-MM-DD');
+            // var filter = moment(this.state.date).format('YYYY-MM-DD');
+            var filter = this.state.date;
             var alertTime = moment(alert.created_at).utc(alert.created_at).local().format('YYYY-MM-DD');
+
             var filterInt = parseInt(this.state.alertFilter, 10);
-            
             if(this.state.alertFilter !== 'all'){
                 if((filter === alertTime) && (filterInt === alert.alert_id)){
                     cards.unshift(<HistoricAlertCard alert={alert}/>)
                 }
             }
             else{
-                if(filter === alertTime){
+                if(filter === alertTime){                    
                     cards.unshift(<HistoricAlertCard alert={alert}/>)
                 }
             }
@@ -328,7 +328,7 @@ class AlertsList extends Component {
                                 <div className='alert-method-box alert-method-container'>
                                     <FormGroup check>
                                         <Label check>
-                                            <Input type='checkbox' className='form-control alert-method-box' checked={this.state.email} onChange={this.onEmailChange} id='email' name='email'/>
+                                            <p><Input type='checkbox' className='form-control alert-method-box' checked={this.state.email} onChange={this.onEmailChange} id='email' name='email'/></p>
                                             <span>Email</span>
                                         </Label>
                                     </FormGroup>
@@ -336,7 +336,7 @@ class AlertsList extends Component {
                                 <div className='alert-method-box alert-method-container'> 
                                     <FormGroup check>   
                                         <Label check>
-                                            <Input type='checkbox' className='form-control alert-method-box' checked={this.state.sms} onChange={this.onSMSChange} id='sms' name='sms'/>
+                                            <p><Input type='checkbox' className='form-control alert-method-box' checked={this.state.sms} onChange={this.onSMSChange} id='sms' name='sms'/></p>
                                             <span>SMS</span>
                                         </Label>
                                     </FormGroup>
@@ -344,7 +344,7 @@ class AlertsList extends Component {
                                 <div className='alert-method-box alert-method-container'>
                                     <FormGroup check>
                                         <Label check>
-                                            <Input type='checkbox' className='form-control alert-method-box' checked={this.state.webpage} onChange={this.onWebpageChange} id='webpage' name='webpage'/>
+                                            <p><Input type='checkbox' className='form-control alert-method-box' checked={this.state.webpage} onChange={this.onWebpageChange} id='webpage' name='webpage'/></p>
                                             <span>Webpage</span>
                                         </Label>
                                     </FormGroup>
@@ -414,7 +414,7 @@ class AlertsList extends Component {
                                 dateFormat="YYYY-MM-DD"
                                 className='form-control'
                                 placeholderText="Date"
-                                selected={moment(this.state.date).utc(this.state.date)}
+                                selected={moment(this.state.date)}
                                 onChange={this.filterTime}/>
                         </Col>
                     </FormGroup>

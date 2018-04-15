@@ -27,38 +27,10 @@ router.post('/create', async function(req, res){
     //gets apikey of station selected by user
     var apikey = await Station.where({station_name: station}).fetch();
 
-    //checks that the user has entered a value
-    if(!value){
-        return res.status(200).json({error: 'Enter a value'});
+    var error = await alertValidation(value, secondValue, keyword, datatype, email, sms, webpage);
+    if(error){
+        return res.status(200).json({error: error.error})
     }
-    //checks that at least one method is selected
-    if(!(email || sms || webpage)){
-        return res.status(200).json({error: 'Select an alert method'});
-    }
-    //prevents user from submitting blank value
-    if(keyword === 'between' && !secondValue){
-        return res.status(200).json({error: 'Enter a second value'});
-    }
-    //prevents second value from being greater than first value
-    if((secondValue) && (value > secondValue)){
-        return res.status(200).json({error: 'Values are in wrong order'});
-    }
-    //checks value for non-digits
-    if(value){
-        var valueReg = value.toString().match(/\D/g);
-    }
-    //checks secondValue for non-digits
-    if(secondValue){
-        var secondValueReg = secondValue.toString().match(/\D/g);
-    }    
-
-    if(valueReg){
-        return res.status(200).json({error: 'Invalid value'})
-    }
-    if(secondValueReg){
-        return res.status(200).json({error: 'Invalid second value'})
-    }
-
 
     //prevents user from submitting blank value or not selecting an alert method
     if(value && (email || sms || webpage)){
@@ -201,36 +173,9 @@ router.post('/:id', async function(req,res){
 
     var apikey = await Station.where({station_name: station}).fetch();
 
-    //checks that the user has entered a value
-    if(!value){
-        return res.status(200).json({error: 'Enter a value'});
-    }
-    //checks that at least one method is selected
-    if(!(email || sms || webpage)){
-        return res.status(200).json({error: 'Select an alert method'});
-    }
-    //prevents user from submitting blank value
-    if(keyword === 'between' && !secondValue){
-        return res.status(200).json({error: 'Enter a second value'});
-    }
-    //prevents second value from being greater than first value
-    if((secondValue) && (value > secondValue)){
-        return res.status(200).json({error: 'Values are in wrong order'});
-    }
-    //checked value entery for non-digits
-    if(value){
-        var valueReg = value.toString().match(/\D/g);
-    }
-    //checks secondValue entry for non-digits
-    if(secondValue){
-        var secondValueReg = secondValue.toString().match(/\D/g);
-    }    
-
-    if(valueReg){
-        return res.status(200).json({error: 'Invalid value'})
-    }
-    if(secondValueReg){
-        return res.status(200).json({error: 'Invalid second value'})
+    var error = await alertValidation(value, secondValue, keyword, datatype, email, sms, webpage);
+    if(error){
+        return res.status(200).json({error: error.error})
     }
 
     //Prevents user from submitting blank value or not selecting an alert method
@@ -345,5 +290,52 @@ parseMethods = async(alerts, methods) => {
     })
 
     return newAlerts;
+}
+alertValidation = async(value, secondValue, keyword, datatype, email, sms, webpage) => {
+    if(!value){
+        return {error: 'Enter a value'};
+    }
+    //checks that at least one method is selected
+    if(!(email || sms || webpage)){
+        return {error: 'Select an alert method'};
+    }
+    //prevents user from submitting blank value
+    if(keyword === 'between' && !secondValue){
+        return {error: 'Enter a second value'};
+    }
+    //prevents second value from being greater than first value
+    if((secondValue) && (value > secondValue)){
+        return {error: 'Values are in wrong order'};
+    }
+
+    //checks value for non-digits
+    if(value){
+        var valueReg = value.toString().replace('-','').match(/\D/g);
+    }
+    //checks secondValue for non-digits
+    if(secondValue){
+        var secondValueReg = secondValue.toString().replace('-','').match(/\D/g);
+    }    
+
+    if(valueReg){
+        return {error: 'Invalid value'};
+    }
+    if(secondValueReg){
+        return {error: 'Invalid second value'};
+    }
+    if((datatype === 'humidity') && (value < 0)){
+        return {error: 'Value outside acceptable range'};
+    }
+    if((datatype === 'temperature') && (value < -100)){
+        return {error: 'Value outside acceptable range'};
+    }
+    if((datatype === 'temperature' || datatype === 'humidity') && (value > 999)){
+        return {error: 'Value outside acceptable range'};
+    }
+    if((datatype === 'pressure') && (value < 0 || value > 9999)){
+        return {error: 'Value outside acceptable range'};
+    }
+
+    return null;
 }
 module.exports = router;
