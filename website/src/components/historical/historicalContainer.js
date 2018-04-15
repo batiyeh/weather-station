@@ -336,7 +336,7 @@ class HistoricalContainer extends Component{
 
        else {
             return (
-                <div>
+                <div className="loading-spinner container">
                     <ReactLoading type={'spin'} color={'#4bc0c0'}/>
                 </div>
             );
