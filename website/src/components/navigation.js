@@ -333,6 +333,9 @@ class Navigation extends Component {
                             </Modal>
                         </Collapse>
                     </Navbar>
+                    <footer id="footer-id" className="footer">
+                        <a href="https://goodstuffnononsense.com/hand-drawn-icons/space-icons/" rel="noopener noreferrer" target="_blank">Satellite Icon</a> By <a href="https://goodstuffnononsense.com/about/" rel="noopener noreferrer" target="_blank">Agata</a> / <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener noreferrer" target="_blank">CC BY</a>
+                    </footer>
                 </div>
             );
         }
