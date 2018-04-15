@@ -1,5 +1,4 @@
 
-'use strict';
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
@@ -8,13 +7,11 @@ const transporter = nodemailer.createTransport({
     port: 587,
     secure: false,
     auth: {
-        //Will implement it with API
-        user: 'WStationTestdod@gmail.com',
-        pass: 'wayne123'
+        user: process.env.EMAIL_USERNAME,
+        pass: process.env.EMAIL_PASSWORD
     }
 
 });
-
 
 const message = {
     from: 'wstationtestdod@gmail.com',

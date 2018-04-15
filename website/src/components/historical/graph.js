@@ -16,8 +16,10 @@ class Graph extends Component {
             minDate: this.props.minDate,
             sensorType: this.props.sensorType,
             datasets: this.props.datasets,
+            shouldUpdate: this.props.shouldUpdate
         }
     }
+
 
     render(){
         //render each dataset that has been made below sets the styling of the overall graph and chart not the lines
@@ -73,8 +75,8 @@ class Graph extends Component {
                                 time: {
                                     unit: unit,
                                     displayFormats: {
-                                        hour: 'HH:mm:ss',
-                                        day: 'MM/DD/YYYY HH:mm:ss',
+                                        hour: 'HH:mm',
+                                        day: 'MM/DD/YYYY',
                                     },
                                     min: min,
                                     max: max

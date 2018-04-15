@@ -13,7 +13,7 @@ exports.up = async function(knex, Promise) {
                 return knex("users").insert([
                         {
                             username: "superuser",
-                            email: "superuser@gmail.com",
+                            email: "superuser1073543@gmail.com",
                             password: hash,
                             permission_id: superuserId
                         },

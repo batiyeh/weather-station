@@ -7,8 +7,13 @@ class ProfileForm extends Component {
         super(props);
         this.state={
             modal: false,
+<<<<<<< HEAD
             email: '',
             phone: null,
+=======
+            email: this.props.email,
+            phone: this.props.phone,
+>>>>>>> 1a46861bd507cb3d34d446670a565da40c650c4a
             currPass: '',
             newPass: '',
             confirmPass: '',
@@ -16,6 +21,15 @@ class ProfileForm extends Component {
         }
         this.renderMessages = this.renderMessages.bind(this);
         this.toggleChangePassword = this.toggleChangePassword.bind(this);
+    }
+    componentWillReceiveProps(nextProps){
+        if (this.state.email !== nextProps.email){
+            this.setState({email: nextProps.email});
+        }
+
+        if (this.state.phone !== nextProps.phone){
+            this.setState({phone: nextProps.phone});
+        }
     }
     toggleChangePassword(){
         this.setState({
@@ -105,13 +119,13 @@ class ProfileForm extends Component {
                             <div className='row'>
                                 <label class="col-sm-4 col-form-label">Email</label>
                                 <div class="form-group col-sm-8">
-                                    <input id='email' name='email' type='email' className='form-control' onChange={e => this.onEmailChange(e.target.value)} placeholder={this.props.email}/>
+                                    <input id='email' name='email' type='email' className='form-control' onChange={e => this.onEmailChange(e.target.value)} placeholder="Email" value={this.state.email}/>
                                 </div>
                             </div>
                             <div className='row'>
                                 <label class="col-sm-4 col-form-label">Phone</label>
                                 <div class="form-group col-sm-8">
-                                    <input id='phone' name='phone' type='text' className='form-control' onChange={e => this.onPhoneChange(e.target.value)} placeholder={this.props.phone}/>
+                                    <input id='phone' name='phone' type='text' className='form-control' onChange={e => this.onPhoneChange(e.target.value)} placeholder="Phone Number" value={this.state.phone}/>
                                 </div>
                             </div>
                             <div className='row'>

@@ -7,7 +7,7 @@ import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col, Alert } from 'rea
 import classnames from 'classnames';
 import '../styles/admin.css';
 
-class Alerts extends Component {
+class Admin extends Component {
     constructor(props) {
         super(props);
         this.toggleTab = this.toggleTab.bind(this);
@@ -105,4 +105,4 @@ class Alerts extends Component {
     }
 }
 
-export default Alerts;
+export default Admin;
