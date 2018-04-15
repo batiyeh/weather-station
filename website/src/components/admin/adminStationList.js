@@ -20,7 +20,10 @@ class AdminStationList extends Component {
             apikey: '',
             name: '',
             expiration: '',
-            error: ''
+            error: {
+                nameInput: '',
+                expirationInput: ''
+            }
         };
         this.toggleAddStationModal = this.toggleAddStationModal.bind(this);
         this.deleteStation = this.deleteStation.bind(this);
@@ -85,13 +88,21 @@ class AdminStationList extends Component {
         var body = await response.json();
         if (!_.isUndefined(body.error)){
             this.setState({
-                error: body.error,
+                error: { 
+                    nameInput: body.error,
+                    expirationInput: this.state.error.expirationInput
+                },
             })
         }
 
         else {
-            this.setState({name: ''});
-            this.setState({ error: "" })
+            this.setState({
+                name: '', 
+                error: { 
+                    nameInput: "",
+                    expirationInput: this.state.error.expirationInput 
+                } 
+            })
             this.toggleAddStationModal("save");
             this.updateStations();
         }
@@ -134,28 +145,80 @@ class AdminStationList extends Component {
     }
 
     onExpirationChange(value){
-        this.setState({
-            expiration: value
-        });
+        if (moment(value).isAfter(moment())){
+            this.setState({ expiration: value });
+            this.setState({ 
+                error: {
+                    nameInput: this.state.error.nameInput,
+                    expirationInput: "",
+                } 
+            });
+        }
+
+        else{
+            this.setState({ 
+                error: {
+                    nameInput: this.state.error.nameInput,
+                    expirationInput: "Expiration date cannot be before now",
+                } 
+            });
+        }
     }
 
     // Render the station name input with or without errors
     renderNameInput(){
-        if (this.state.error.length > 0){
+        if (this.state.error.nameInput.length > 0){
             return (
                 <FormGroup>
                     <Input type="text" className="station_name is-invalid" name="station_name" id="station_name" placeholder="Name" onChange={e => this.onNameChange(e.target.value)} value={this.state.name}></Input>
-                    <FormFeedback>{this.state.error}</FormFeedback>
+                    <FormFeedback>{this.state.error.nameInput}</FormFeedback>
                 </FormGroup>
             );
         }
 
-        else
+        else{
             return (
                 <FormGroup>
                     <Input id='station_name' name='station_name' type='text' className='form-control' placeholder='Name' onChange={e => this.onNameChange(e.target.value)} value={this.state.name}/>
                 </FormGroup>
             );
+        }
+    }
+
+    renderExpirationInput(){
+        if (this.state.error.expirationInput.length > 0){
+            return (
+                <FormGroup>
+                    <DatePicker
+                        id='expiration' 
+                        name='expiration'
+                        dateFormat="YYYY-MM-DD HH:mm:ss"
+                        className='form-control is-invalid'
+                        placeholderText="Expiration"
+                        selected={this.state.expiration !== '' ? moment(this.state.expiration) : null}
+                        onChange={this.onExpirationChange}
+                        showTimeSelect
+                    />
+                    <p className="form-text error-text">
+                        {this.state.error.expirationInput}
+                    </p>
+                </FormGroup>
+            );
+        }
+
+        else{
+            return (
+                <DatePicker
+                    id='expiration' 
+                    name='expiration'
+                    dateFormat="YYYY-MM-DD HH:mm:ss"
+                    className='form-control'
+                    placeholderText="Expiration"
+                    selected={this.state.expiration !== '' ? moment(this.state.expiration) : null}
+                    onChange={this.onExpirationChange}
+                    showTimeSelect/>
+            );
+        }
     }
 
     // Create a random API key of length 10 and open the modal
@@ -171,10 +234,10 @@ class AdminStationList extends Component {
         }
 
         else{
-            var error = (this.state.error !== "" && clicked === "save") ? "" : this.state.error;
             this.setState({
+                expiration: "",
                 modal: !this.state.modal,
-                error: error,
+                error: { nameInput: "", expirationInput: "" },
             });
         }
     }
@@ -199,14 +262,7 @@ class AdminStationList extends Component {
                                 </div>
                                 <div className='form-group'>
                                     <label className="form-label">Expiration:</label>
-                                    <DatePicker
-                                        id='expiration' 
-                                        name='expiration'
-                                        dateFormat="YYYY-MM-DD HH:mm:ss"
-                                        className='form-control'
-                                        placeholderText="Expiration"
-                                        selected={this.state.expiration !== '' ? moment(this.state.expiration) : null}
-                                        onChange={this.onExpirationChange}/>
+                                    { this.renderExpirationInput() }
                                 </div>
                                 <div className='form-group'>
                                     <label>API Key:</label>

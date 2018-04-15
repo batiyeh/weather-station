@@ -67,7 +67,13 @@ class ProfileForm extends Component {
         if(this.state.messages.length > 0){
             var allMessages = [];
             this.state.messages.map(messages => {
-                allMessages.push(<Alert className='alert-danger'>{messages.msg}</Alert>)
+                if (messages.msg === "Profile updated successfully!"){
+                    allMessages.push(<Alert className='alert-primary'>{messages.msg}</Alert>)
+                }
+
+                else{
+                    allMessages.push(<Alert className='alert-danger'>{messages.msg}</Alert>)
+                }
                 return null;
             })
             return allMessages

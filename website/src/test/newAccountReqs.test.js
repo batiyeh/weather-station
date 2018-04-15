@@ -109,7 +109,7 @@ describe('New account requirements selenium tests', () => {
         driver.wait(until.elementLocated(By.className('error-alert')), 10000).then(() => {
             driver.findElement(By.className('error-alert')).getAttribute('innerHTML')
             .then((text) => {
-                if(text === 'Password must 8 characters or longer') done();
+                if(text === 'Password must be 8 characters or longer') done();
             })
         })
     });
