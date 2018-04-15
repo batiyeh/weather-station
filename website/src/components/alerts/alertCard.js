@@ -171,6 +171,11 @@ class AlertCard extends Component {
             threshold: value
         })
     }
+    handleKeyPress(target){
+        if(target.charCode === 13){
+            target.preventDefault();
+        }
+    }
 
     //if the user has a keyword selected the requires multiple inputs, it will display it dynamically
     renderValues(){
@@ -179,10 +184,10 @@ class AlertCard extends Component {
                 <div>
                     <div className='form-group'> 
                         <Label>Values</Label>
-                        <Input type='text' name='value' id='value' value={this.state.value} onChange={e => this.onValueChange(e.target.value)}/>
+                        <Input type='text' name='value' id='value' value={this.state.value} onKeyPress={this.handleKeyPress} onChange={e => this.onValueChange(e.target.value)}/>
                     </div>
                     <div className='form-group'>
-                        <Input type='text' name='secondValue' id='secondValue' value={this.state.secondValue} onChange={e => this.onSecondValueChange(e.target.value)}/>
+                        <Input type='text' name='secondValue' id='secondValue' value={this.state.secondValue} onKeyPress={this.handleKeyPress} onChange={e => this.onSecondValueChange(e.target.value)}/>
                     </div>
                 </div>
             );
@@ -191,7 +196,7 @@ class AlertCard extends Component {
             return (
             <div className='form-group'> 
                 <Label>Value</Label>
-                <Input type='text' name='value1' id='value' value={this.state.value} onChange={e => this.onValueChange(e.target.value)}/>
+                <Input type='text' name='value1' id='value' value={this.state.value} onKeyPress={this.handleKeyPress} onChange={e => this.onValueChange(e.target.value)}/>
             </div>)
         }
     }
