@@ -46,9 +46,9 @@ class HistoricAlertCard extends Component {
                 secondValue: nextProps.alert.secondValue
             })
         }
-        if(nextProps.alert.time !== this.state.time){
+        if(nextProps.alert.created_at !== this.state.time){
             this.setState({
-                time: nextProps.alert.time
+                time: nextProps.alert.created_at
             })
         }
     }
