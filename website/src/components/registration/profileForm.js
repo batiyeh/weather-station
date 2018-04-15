@@ -7,7 +7,7 @@ class ProfileForm extends Component {
         super(props);
         this.state={
             modal: false,
-            email: this.props.email,
+            email: '',
             phone: null,
             currPass: '',
             newPass: '',

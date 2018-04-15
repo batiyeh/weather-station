@@ -40,9 +40,9 @@ class Sensors(object):
             except yaml.YAMLError as exc:
                 print(exc)
         self.currentTime = ""
-        self.temperature = 0.0
-        self.pressure = 0.0
-        self.humidity = 0.0
+        self.temperature = 72.0
+        self.pressure = 5031.0
+        self.humidity = 73.0
         self.dataIndex = 0
         self.latitude = "n/a"
         self.longitude = "n/a"

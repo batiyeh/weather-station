@@ -9,9 +9,12 @@ const moment = require('moment');
 class AlertsList extends Component {
     constructor(props){
         super(props);
-        var now = moment();
-        var ymd = now.format('YY-MM-DD');
-        var date = new Date('20'+ ymd + 'T04:00:00.000Z')
+        // moment(this.state.time).utc(this.state.time).local().format("YYYY-MM-DD HH:mm:ss")
+        var date = moment.utc().local().format("YYYY-MM-DD")
+        // console.log(date);
+        // var now = moment();
+        // var ymd = now.format('YY-MM-DD');
+        // var date = new Date('20'+ ymd + 'T04:00:00.000Z')
 
         this.state={
             modal: false,
@@ -157,6 +160,7 @@ class AlertsList extends Component {
         this.setState({
             date: value._d
         })
+        // console.log(value._d);
         this.renderHistoricCard();
     }
     deleteAlert(index){
@@ -224,7 +228,6 @@ class AlertsList extends Component {
             var filter = moment(this.state.date).format('YYYY-MM-DD');
             var alertTime = moment(alert.created_at).utc(alert.created_at).local().format('YYYY-MM-DD');
             var filterInt = parseInt(this.state.alertFilter, 10);
-            
             if(this.state.alertFilter !== 'all'){
                 if((filter === alertTime) && (filterInt === alert.alert_id)){
                     cards.unshift(<HistoricAlertCard alert={alert}/>)
@@ -232,6 +235,8 @@ class AlertsList extends Component {
             }
             else{
                 if(filter === alertTime){
+                    console.log(filter, alertTime, this.state.date);
+                    console.log(alert);
                     cards.unshift(<HistoricAlertCard alert={alert}/>)
                 }
             }
@@ -414,7 +419,7 @@ class AlertsList extends Component {
                                 dateFormat="YYYY-MM-DD"
                                 className='form-control'
                                 placeholderText="Date"
-                                selected={moment(this.state.date).utc(this.state.date)}
+                                selected={moment(this.state.date)}
                                 onChange={this.filterTime}/>
                         </Col>
                     </FormGroup>
