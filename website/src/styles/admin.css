@@ -2,6 +2,11 @@
     margin-right: 5px;
 }
 
+.error-text{
+    color: #dc3545;
+    font-size: 10pt;
+}
+
 .adminPage{
     max-width: 850px;
     margin: auto;
