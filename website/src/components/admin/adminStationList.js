@@ -146,7 +146,16 @@ class AdminStationList extends Component {
 
     onExpirationChange(value){
         if (moment(value).isAfter(moment())){
-            this.setState({ expiration: value });
+            this.setState({ 
+                expiration: value,
+                error: {
+                    nameInput: this.state.error.nameInput,
+                    expirationInput: "",
+                } 
+            });
+        }
+
+        else if (_.isNull(value)){
             this.setState({ 
                 error: {
                     nameInput: this.state.error.nameInput,

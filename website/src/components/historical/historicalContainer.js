@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactLoading from 'react-loading';
 import '../../styles/historical.css';
 import { Alert, Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap';
 import GraphData from './graphContainer'
@@ -56,20 +57,24 @@ class HistoricalContainer extends Component{
 
     //When the to date value is changed in the modal it is handled here
     handleToChange(date) {
-        var newDate = date.format("YYYY-MM-DD HH:mm:ss");
-        this.setState({
-            toDate: newDate
-        });
-        shouldDraw = false;
+        if(date){
+            var newDate = date.format("YYYY-MM-DD HH:mm:ss");
+            this.setState({
+                toDate: newDate
+            });
+            shouldDraw = false;
+        }
     }
 
     //When the from date value is changed in the modal it is handled here
     handleFromChange(date) {
-        var newDate = date.format("YYYY-MM-DD HH:mm:ss");
-        this.setState({
-            fromDate: newDate
-        });
-        shouldDraw = false;
+        if(date){
+            var newDate = date.format("YYYY-MM-DD HH:mm:ss");
+            this.setState({
+                fromDate: newDate
+            });
+            shouldDraw = false;
+        }
     }
 
     //When the sensor type is changed in the modal it is handled here
@@ -331,7 +336,9 @@ class HistoricalContainer extends Component{
 
        else {
             return (
-                null
+                <div className="loading-spinner container">
+                    <ReactLoading type={'spin'} color={'#4bc0c0'}/>
+                </div>
             );
         }
     }
