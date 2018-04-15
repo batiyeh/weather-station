@@ -26,16 +26,9 @@ class App extends Component {
       permissions: ''
     }
   }
+
   componentDidMount(){
-    this.getUser().then((user) => {
-      if (user.length > 0){
-        if(_.isNull(user[0].phone)){
-          this.setState({username: user[0].username, email: user[0].email, permissions: user[0].type});
-        } else{
-          this.setState({username: user[0].username, email: user[0].email, phone: user[0].phone, permissions: user[0].type});
-        }
-      }
-    });
+    this.getUser();
   }
 
   getUser = async() => {
@@ -48,7 +41,15 @@ class App extends Component {
         credentials: 'include'
     })
     var body = await response.json();
-    
+
+    if (body.length > 0){
+      if(_.isNull(body[0].phone)){
+        this.setState({username: body[0].username, email: body[0].email, permissions: body[0].type});
+      } else{
+        this.setState({username: body[0].username, email: body[0].email, phone: body[0].phone, permissions: body[0].type});
+      }
+    }
+
     return body;
   }
 
