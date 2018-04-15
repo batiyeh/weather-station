@@ -61,6 +61,7 @@ class Graph extends Component {
                     options={{
                         maintainAspectRatio: false,    //options setup the styling for the graph setting the x and y axis
                         showLines: true,
+                        animation: false,
                         scales: {
                             xAxes: [{
                                 stacked: false,
