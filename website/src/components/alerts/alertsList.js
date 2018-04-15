@@ -27,7 +27,8 @@ class AlertsList extends Component {
             threshold: '1 hour',
             date: date,
             alertFilter: 'all',
-            error: []
+            error: [],
+            datepickerError: {error: ''}
         };
         this.filterTime = this.filterTime.bind(this);
         this.onAlertFilterChange = this.onAlertFilterChange.bind(this);
@@ -152,10 +153,13 @@ class AlertsList extends Component {
         })
     }
     filterTime(value){
-        var newDate = value.format("YYYY-MM-DD");
-        this.setState({
-            date: newDate
-        })
+        if(value){
+            var newDate = value.format("YYYY-MM-DD");
+            this.setState({
+                date: newDate
+            })
+        }
+
         this.renderHistoricCard();
     }
     deleteAlert(index){

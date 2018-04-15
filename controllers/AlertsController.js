@@ -32,50 +32,48 @@ router.post('/create', async function(req, res){
         return res.status(200).json({error: error.error})
     }
 
-    //prevents user from submitting blank value or not selecting an alert method
-    if(value && (email || sms || webpage)){
-        var duration = moment.duration({'days' : 1});
-        var newAlert = await new Alerts({
-            apikey: apikey.attributes.apikey,
-            type: datatype,
-            keyword: keyword,
-            threshold: threshold,
-            username: req.session.username,
-            deleted: false,
-            last_triggered: moment.utc().subtract(duration).format("YYYY-MM-DD HH:mm:ss")
-        }).save();
+    var duration = moment.duration({'days' : 1});
+    var newAlert = await new Alerts({
+        apikey: apikey.attributes.apikey,
+        type: datatype,
+        keyword: keyword,
+        threshold: threshold,
+        username: req.session.username,
+        deleted: false,
+        last_triggered: moment.utc().subtract(duration).format("YYYY-MM-DD HH:mm:ss")
+    }).save();
 
-        if(email){
-            await new AlertMethods({
-                method: 'email',
-                alert_id: newAlert.attributes.id
-            }).save();
-        }
-        if(sms){
-            await new AlertMethods({
-                method: 'sms',
-                alert_id: newAlert.attributes.id
-            }).save();
-        }
-        if(webpage){
-            await new AlertMethods({
-                method: 'webpage',
-                alert_id: newAlert.attributes.id
-            }).save();
-        }
-        if(value){
-            await new AlertValues({
-                value: value,
-                alert_id: newAlert.attributes.id
-            }).save();
-        }
-        if(secondValue){
-            await new AlertValues({
-                value: secondValue,
-                alert_id: newAlert.attributes.id
-            }).save();
-        }
+    if(email){
+        await new AlertMethods({
+            method: 'email',
+            alert_id: newAlert.attributes.id
+        }).save();
     }
+    if(sms){
+        await new AlertMethods({
+            method: 'sms',
+            alert_id: newAlert.attributes.id
+        }).save();
+    }
+    if(webpage){
+        await new AlertMethods({
+            method: 'webpage',
+            alert_id: newAlert.attributes.id
+        }).save();
+    }
+    if(value){
+        await new AlertValues({
+            value: value,
+            alert_id: newAlert.attributes.id
+        }).save();
+    }
+    if(secondValue){
+        await new AlertValues({
+            value: secondValue,
+            alert_id: newAlert.attributes.id
+        }).save();
+    }
+
 
     //success
     return res.status(200).json({})
@@ -178,49 +176,46 @@ router.post('/:id', async function(req,res){
         return res.status(200).json({error: error.error})
     }
 
-    //Prevents user from submitting blank value or not selecting an alert method
-    if(value && (email || sms || webpage)){
-        await Alerts.where({alert_id: req.params.id}).save({
-            apikey: apikey.attributes.apikey,
-            type: datatype,
-            threshold: threshold,
-            keyword: keyword
-        },{patch:true})
-        
-        //deletes old values associated with that alert
-        await AlertValues.where({alert_id: req.params.id}).destroy();
-        await AlertMethods.where({alert_id: req.params.id}).destroy();
+    await Alerts.where({alert_id: req.params.id}).save({
+        apikey: apikey.attributes.apikey,
+        type: datatype,
+        threshold: threshold,
+        keyword: keyword
+    },{patch:true})
+    
+    //deletes old values associated with that alert
+    await AlertValues.where({alert_id: req.params.id}).destroy();
+    await AlertMethods.where({alert_id: req.params.id}).destroy();
 
-        //stores new values, associates to alert by foreign key
-        await new AlertValues({
-            value: value,
+    //stores new values, associates to alert by foreign key
+    await new AlertValues({
+        value: value,
+        alert_id: req.params.id
+    }).save();
+
+    if(email){
+        await new AlertMethods({
+            method: 'email',
             alert_id: req.params.id
         }).save();
-
-        if(email){
-            await new AlertMethods({
-                method: 'email',
-                alert_id: req.params.id
-            }).save();
-        }
-        if(sms){
-            await new AlertMethods({
-                method: 'sms',
-                alert_id: req.params.id
-            }).save();
-        }
-        if(webpage){
-            await new AlertMethods({
-                method: 'webpage',
-                alert_id: req.params.id
-            }).save();
-        }
-        if(secondValue){
-            await new AlertValues({
-                value: secondValue,
-                alert_id: req.params.id
-            }).save();
-        }
+    }
+    if(sms){
+        await new AlertMethods({
+            method: 'sms',
+            alert_id: req.params.id
+        }).save();
+    }
+    if(webpage){
+        await new AlertMethods({
+            method: 'webpage',
+            alert_id: req.params.id
+        }).save();
+    }
+    if(secondValue){
+        await new AlertValues({
+            value: secondValue,
+            alert_id: req.params.id
+        }).save();
     }
     return res.status(200).json({})
 })
@@ -263,6 +258,7 @@ parseBetween = async(alerts) => {
     })
     return newAlerts;
 };
+//returns id of alert depending on which tabel it came from
 function getID(alert){
     if(alert.triggered_id){
         return alert.triggered_id
@@ -271,6 +267,7 @@ function getID(alert){
         return alert.alert_id
     }
 }
+//sets flags for alert based on which alert methods it has
 parseMethods = async(alerts, methods) => {
     var newAlerts = [];
     
@@ -316,22 +313,30 @@ alertValidation = async(value, secondValue, keyword, datatype, email, sms, webpa
     if(secondValue){
         var secondValueReg = secondValue.toString().replace('-','').match(/\D/g);
     }    
-
     if(valueReg){
         return {error: 'Invalid value'};
     }
     if(secondValueReg){
         return {error: 'Invalid second value'};
     }
+
+    //ensures humidity value isnt negative
     if((datatype === 'humidity') && (value < 0)){
         return {error: 'Value outside acceptable range'};
     }
+    //ensures temperature value doesnt go below -100
     if((datatype === 'temperature') && (value < -100)){
         return {error: 'Value outside acceptable range'};
     }
-    if((datatype === 'temperature' || datatype === 'humidity') && (value > 999)){
+    //ensures humidity doesnt go above 100
+    if((datatype === 'humidity') && (value > 100)){
+        return {error: 'Value outside acceptable range'}
+    }
+    //ensures temperature doesnt go above 999
+    if((datatype === 'temperature') && (value > 999)){
         return {error: 'Value outside acceptable range'};
     }
+    //ensures pressure doesnt go above 9999
     if((datatype === 'pressure') && (value < 0 || value > 9999)){
         return {error: 'Value outside acceptable range'};
     }

@@ -20,6 +20,7 @@ router.post('/create', async function(req, res){
     var confirmPass = req.body.confirmPass;
     var dbUsername = null;
     var dbEmail = null;
+    
     //Checks if Username and Email already exist in the database
     var user = await User.where({username: username}).fetch()
     if(user)
