@@ -19,12 +19,13 @@ class GraphData extends Component{
             width: this.props.width,
             sensorType: this.props.sensorType,
             datasets: {"datasets": []}, // a dictionary of datasets to be drawn on the graph
+            shouldUpdate: this.props.shouldUpdate
         }
     }
 
     componentWillReceiveProps(nextProps){
         var data = (nextProps.data !== this.state.data) ? nextProps.data : this.state.data;
-        var stations = (nextProps.stations !== this.state.stations) ? nextProps.data : this.state.stations;
+        var stations = (nextProps.stations !== this.state.stations) ? nextProps.stations : this.state.stations;
         var from = (nextProps.from !== this.state.from) ? nextProps.from : this.state.from;
         var to = (nextProps.to !== this.state.to) ? nextProps.to : this.state.to;
         var sensorType = (nextProps.sensorType !== this.state.sensorType) ? nextProps.sensorType : this.state.sensorType;
@@ -44,10 +45,20 @@ class GraphData extends Component{
                 });
         }
     }
+    shouldComponentUpdate(nextProps){
+        if(nextProps.shouldUpdate){
+            return true
+        }
+        else{
+            return false
+        }
+
+    }
 
     updateGraph(){
         var data;
         var stations = this.state.stations;
+        console.log(stations);
         for (var station_name in this.state.data) {
             data = this.state.data[station_name];
             //this.createLines(station_name, data["sensorData"], data["dates"]);
@@ -56,6 +67,9 @@ class GraphData extends Component{
                 this.createLine(station_name, data["points"])
             }
         }
+        this.setState({
+            shouldUpdate: false
+        })
     }
 
     componentDidMount(){
@@ -119,6 +133,7 @@ class GraphData extends Component{
                     minDate={this.state.from}
                     sensorType={this.state.sensorType}
                     datasets={this.state.datasets}
+                    shouldUpdate={this.state.shouldUpdate}
                 />
             );
         }

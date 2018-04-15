@@ -75,8 +75,8 @@ router.post('/create', async function(req, res){
                 port: 587,
                 secure: false,
                 auth: {
-                    user: 'WStationTestdod@gmail.com',
-                    pass: 'wayne123'
+                    user: process.env.EMAIL_USERNAME,
+                    pass: process.env.EMAIL_PASSWORD
                 }
             });
             var mailOptions = {
@@ -176,8 +176,8 @@ router.put('/permissions', async function (req, res) {
         port: 587,
         secure: false,
         auth: {
-            user: 'WStationTestdod@gmail.com',
-            pass: 'wayne123'
+            user: process.env.EMAIL_USERNAME,
+            pass: process.env.EMAIL_PASSWORD
         }
     });
    
@@ -255,9 +255,8 @@ router.post('/reset/', function(req,res){
                 port: 587,
                 secure: false,
                 auth: {
-                    //Find better way to store user and pass for whole system.
-                    user: 'WStationTestdod@gmail.com',
-                    pass: 'wayne123'
+                    user: process.env.EMAIL_USERNAME,
+                    pass: process.env.EMAIL_PASSWORD
                 }
             });
             var mailOptions = {

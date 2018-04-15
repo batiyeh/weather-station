@@ -52,9 +52,8 @@ sendEmail = async (triggered) =>{
         port: 587,
         secure: false,
         auth: {
-            //Find better way to store user and pass for whole system.
-            user: 'WStationTestdod@gmail.com',
-            pass: 'wayne123'
+            user: process.env.EMAIL_USERNAME,
+            pass: process.env.EMAIL_PASSWORD
         }
     });
     if(triggered.secondValue){
