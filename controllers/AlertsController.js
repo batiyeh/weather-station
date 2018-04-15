@@ -320,6 +320,20 @@ alertValidation = async(value, secondValue, keyword, datatype, email, sms, webpa
         return {error: 'Invalid second value'};
     }
 
+    var err = outOfRange(value, datatype);
+    if(err){
+        return {error: err.error}
+    }
+    if(secondValue){
+        var err = outOfRange(secondValue, datatype);
+        if(err){
+            return {error: err.error}
+        }
+    }
+
+    return null;
+}
+function outOfRange(value, datatype){
     //ensures humidity value isnt negative
     if((datatype === 'humidity') && (value < 0)){
         return {error: 'Value outside acceptable range'};
@@ -340,7 +354,6 @@ alertValidation = async(value, secondValue, keyword, datatype, email, sms, webpa
     if((datatype === 'pressure') && (value < 0 || value > 9999)){
         return {error: 'Value outside acceptable range'};
     }
-
     return null;
 }
 module.exports = router;
