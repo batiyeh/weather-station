@@ -25,7 +25,7 @@ class GraphData extends Component{
 
     componentWillReceiveProps(nextProps){
         var data = (nextProps.data !== this.state.data) ? nextProps.data : this.state.data;
-        var stations = (nextProps.stations !== this.state.stations) ? nextProps.data : this.state.stations;
+        var stations = (nextProps.stations !== this.state.stations) ? nextProps.stations : this.state.stations;
         var from = (nextProps.from !== this.state.from) ? nextProps.from : this.state.from;
         var to = (nextProps.to !== this.state.to) ? nextProps.to : this.state.to;
         var sensorType = (nextProps.sensorType !== this.state.sensorType) ? nextProps.sensorType : this.state.sensorType;
@@ -58,6 +58,7 @@ class GraphData extends Component{
     updateGraph(){
         var data;
         var stations = this.state.stations;
+        console.log(stations);
         for (var station_name in this.state.data) {
             data = this.state.data[station_name];
             //this.createLines(station_name, data["sensorData"], data["dates"]);

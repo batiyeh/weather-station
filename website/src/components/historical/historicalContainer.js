@@ -37,7 +37,6 @@ class HistoricalContainer extends Component{
         this.handleToChange = this.handleToChange.bind(this);
         this.handleFromChange = this.handleFromChange.bind(this);
         this.onStationChange = this.onStationChange.bind(this);
-        //this.setForUpdate = this.setForUpdate.bind(this);
         this.updateGraph = this.updateGraph.bind(this);
     }
 
@@ -189,16 +188,6 @@ class HistoricalContainer extends Component{
         }
         return newStationsDict;
     }
-
-    // setForUpdate(){
-    //     // this.setState({
-    //     //     sensorType: sensorType,
-    //     //     toDate: toDate,
-    //     //     //fromDate: fromDate,
-    //     // });
-    //     this.updateGraph();
-    // }
-
 
     //function upon hitting submit in the modal with new data to update the graph and close the modal
     updateGraph = async () => {
