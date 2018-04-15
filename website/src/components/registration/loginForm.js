@@ -90,7 +90,8 @@ class LoginForm extends Component {
         if(this.state.messages.length > 0){
             var allMessages = []
             this.state.messages.map(msg => {
-                allMessages.push(<Alert classname='error-alert'>{msg.msg}</Alert>)
+                allMessages.push(<Alert classname='error-alert'>{msg.msg}</Alert>);
+                return null;
             })
             return allMessages;
         }
@@ -141,6 +142,9 @@ class LoginForm extends Component {
                             </div>
                         </form>
                     </div>
+                    <footer id="footer-id" className="footer white-footer">
+                        <a href="https://goodstuffnononsense.com/hand-drawn-icons/space-icons/" rel="noopener noreferrer" target="_blank">Satellite Icon</a> By <a href="https://goodstuffnononsense.com/about/" rel="noopener noreferrer" target="_blank">Agata</a> / <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener noreferrer" target="_blank">CC BY</a>
+                    </footer>
                 </div>
             )
         }

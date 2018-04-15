@@ -231,6 +231,9 @@ class Map extends Component {
                     <div className="map-container" ref={ (mapElement) => this.mapElement = mapElement} style={{position: 'absolute', right: 0, top: 0, width: '75%', height: '100%'}}>
                         <MapContainer height={this.state.mapHeight} width={this.state.mapWidth} checkedStations={this.state.checkedStations} showLabels={this.state.showLabels} mapMode={this.state.mapMode} mapOnly={false} updateRecenter={this.updateMapRecenter} recenter={this.state.recenter}></MapContainer>
                     </div>
+                    <footer id="footer-id" className="footer">
+                        <a href="https://goodstuffnononsense.com/hand-drawn-icons/space-icons/" rel="noopener noreferrer" target="_blank">Satellite Icon</a> By <a href="https://goodstuffnononsense.com/about/" rel="noopener noreferrer" target="_blank">Agata</a> / <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener noreferrer" target="_blank">CC BY</a>
+                    </footer>
                 </div>
             )
         }

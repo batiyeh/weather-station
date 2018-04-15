@@ -322,9 +322,9 @@ router.post('/editProfile', async function(req, res){
     var phone = req.body.phone;
     var user = await User.where({username: req.session.username}).fetch()
     
-    if(email){
+    if(email !== user.attributes.email){
         var dbEmail = "";
-        email = await email.toLowerCase();
+        email = email.toLowerCase();
 
         var newUser = await User.where({email: email}).fetch();
         if(newUser){
@@ -337,7 +337,7 @@ router.post('/editProfile', async function(req, res){
     else{
         email = user.attributes.email;
     }
-    if(phone){
+    if(phone !== user.attributes.phone){
         var dbPhone = ""
         //remove all non-digit characters
         phone = phone.replace(/\D/g, '');

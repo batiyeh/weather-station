@@ -240,6 +240,16 @@ class StationCard extends Component {
         }
     }
 
+    renderSaveButton(){
+        if (this.state.permissions === "Admin" || this.state.permissions === "Superuser"){
+            return (
+                <Button color="primary" id="save-station-changes-btn" className="primary-themed-btn" onClick={this.saveStationName}>Save Changes</Button>
+            );
+        }
+
+        else return null;
+    }
+
     render() {
         const latitude = (this.props.station.latitude === "n/a") ? "Unavailable" : this.props.station.latitude;
         const longitude = (this.props.station.longitude === "n/a") ? "Unavailable" : this.props.station.longitude;
@@ -279,7 +289,7 @@ class StationCard extends Component {
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" id="save-station-changes-btn" className="primary-themed-btn" onClick={this.saveStationName}>Save Changes</Button>{' '}
+                        { this.renderSaveButton() }
                         <Button color="secondary" onClick={() => this.toggleStationDetail("cancel")}>Cancel</Button>
                     </ModalFooter>
                 </Modal>

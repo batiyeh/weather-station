@@ -70,7 +70,7 @@ class AdminPermission extends Component {
     renderButtons(user){
         if(this.state.permissions === "Admin"){
             return(
-                <div className="col-6">
+                <div className="col-12">
                     <Button color="primary" onClick={() => this.updateUser(user, "Admin")}>Promote</Button>
                 </div>
             )
@@ -79,7 +79,7 @@ class AdminPermission extends Component {
             if(user["type"] === "Admin"){
                 return(
                     <div className="row">
-                        <div className="col-6">
+                        <div className="col-12">
                             <Button color="danger" onClick={() => this.updateUser(user, "User")}>Demote</Button>
                         </div>
                     </div>
