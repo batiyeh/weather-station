@@ -37,7 +37,7 @@ class HistoricalContainer extends Component{
         this.handleToChange = this.handleToChange.bind(this);
         this.handleFromChange = this.handleFromChange.bind(this);
         this.onStationChange = this.onStationChange.bind(this);
-        this.setForUpdate = this.setForUpdate.bind(this);
+        //this.setForUpdate = this.setForUpdate.bind(this);
         this.updateGraph = this.updateGraph.bind(this);
     }
 
@@ -45,7 +45,8 @@ class HistoricalContainer extends Component{
     toggleFilter(){
         this.setState({
             modal: !this.state.modal
-        })
+        });
+        shouldDraw = false;
 
     }
 
@@ -189,14 +190,14 @@ class HistoricalContainer extends Component{
         return newStationsDict;
     }
 
-    setForUpdate(){
-        // this.setState({
-        //     sensorType: sensorType,
-        //     toDate: toDate,
-        //     //fromDate: fromDate,
-        // });
-        this.updateGraph();
-    }
+    // setForUpdate(){
+    //     // this.setState({
+    //     //     sensorType: sensorType,
+    //     //     toDate: toDate,
+    //     //     //fromDate: fromDate,
+    //     // });
+    //     this.updateGraph();
+    // }
 
 
     //function upon hitting submit in the modal with new data to update the graph and close the modal
@@ -227,21 +228,6 @@ class HistoricalContainer extends Component{
 
     };
 
-    // shouldComponentUpdate(){
-    //     if(shouldDraw){
-    //         return true;
-    //     }
-    //     else{
-    //         return false;
-    //     }
-    // }
-
-    //may use this for fixing issue when values are changed in the modal changing the graph even once canceled
-    // resetValues(){
-    //     this.setState({
-    //         //reset the values after the modal is closed
-    //     })
-    // }
 
     renderStations(){
         var options = [];
@@ -342,7 +328,7 @@ class HistoricalContainer extends Component{
                             </ModalBody>
                             <ModalFooter>
                                 <Button type='button' color="secondary" onClick={this.toggleFilter}>Cancel</Button>
-                                <Button type='button' color="primary" onClick={this.setForUpdate}>Submit</Button>
+                                <Button type='button' color="primary" onClick={this.updateGraph}>Submit</Button>
                             </ModalFooter>
                         </form>
                     </Modal>

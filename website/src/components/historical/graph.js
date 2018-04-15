@@ -75,8 +75,8 @@ class Graph extends Component {
                                 time: {
                                     unit: unit,
                                     displayFormats: {
-                                        hour: 'HH:mm:ss',
-                                        day: 'MM/DD/YYYY HH:mm:ss',
+                                        hour: 'HH:mm',
+                                        day: 'MM/DD/YYYY',
                                     },
                                     min: min,
                                     max: max
