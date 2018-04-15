@@ -11,27 +11,33 @@ router.post('/', async function (req, res) {
     var expiration = req.body.expiration;
     if (expiration === 'Invalid date') expiration = null;
     
-    // If the station name doesn't exist, create a new one and insert it.
-    var station = await knex('stations').select().where('station_name', req.body.station_name);
-    if (station.length > 0){
-        res.json({error: "Station name already exists", redirect: false});
+    if (req.body.station_name === "") {
+        res.json({error: "Station name is required", redirect: false});
     }
 
     else{
-        if (req.body.station_name.length > 64){
-            res.json({error: "Station name is too long. Must be 64 characters or less.", redirect: false});
+        // If the station name doesn't exist, create a new one and insert it.
+        var station = await knex('stations').select().where('station_name', req.body.station_name);
+        if (station.length > 0){
+            res.json({error: "Station name already exists", redirect: false});
         }
 
         else{
-            var result = await new Station({
-                station_name: req.body.station_name,
-                apikey: req.body.api_key,
-                expiration: expiration,
-                connected: false,
-            }).save()
-            return res.json({result});
+            if (req.body.station_name.length > 64){
+                res.json({error: "Station name is too long. Must be 64 characters or less.", redirect: false});
+            }
+
+            else{
+                var result = await new Station({
+                    station_name: req.body.station_name,
+                    apikey: req.body.api_key,
+                    expiration: expiration,
+                    connected: false,
+                }).save()
+                return res.json({result});
+            }
         }
-    }
+    }    
 });
 
 // Returns all stations in the database
@@ -53,8 +59,12 @@ router.route('/:api_key')
         if (expiration === 'Invalid date') expiration = null;
 
         var station = await knex('stations').select().where('station_name', req.body.station_name);
-        if (station.length > 0){
+        if (station.length > 0 && req.body.station_name !== req.body.oldName){
             res.json({error: "Station name already exists", redirect: false});
+        }
+
+        else if (req.body.station_name === ""){
+            res.json({error: "Station name is required", redirect: false});
         }
 
         else{

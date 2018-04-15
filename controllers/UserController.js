@@ -42,7 +42,7 @@ router.post('/create', async function(req, res){
     }
     req.checkBody('email', 'Email already exists').not().equals(dbEmail);
 
-    req.checkBody('password','Password must 8 characters or longer').isLength({min: 8});
+    req.checkBody('password','Password must be 8 characters or longer').isLength({min: 8});
     req.checkBody('password','Password cannot contain symbols').not().matches(/\W/);
     req.checkBody('password', 'Password must have at least 1 letter and 1 number').matches(/\d/);
     req.checkBody('password', 'Passwords do not match').equals(confirmPass);
@@ -286,7 +286,7 @@ router.post('/reset/:token', async function(req, res){
     var confirmPass = req.body.confirmPass;
     var token = req.params.token;
 
-    req.checkBody('newPass','Password must 8 characters or longer').isLength({min: 8});
+    req.checkBody('newPass','Password must be 8 characters or longer').isLength({min: 8});
     req.checkBody('newPass','Password cannot contain symbols').not().matches(/\W/);
     req.checkBody('newPass', 'Password must have at least 1 letter and 1 number').matches(/\d/);
     req.checkBody('newPass', 'Passwords do not match').equals(confirmPass);
@@ -347,8 +347,10 @@ router.post('/editProfile', async function(req, res){
             dbPhone = newUser.attributes.phone;
         }
         //must enter a 10 digit number, no duplicate phone numbers
-        req.checkBody('phone', 'Phone numbers must be 10 digits in length').isLength({min: 10, max:10})
-        req.checkBody('phone', 'Phone number already registered').not().equals(dbPhone);
+        if (phone.length > 0){
+            req.checkBody('phone', 'Phone numbers must be 10 digits in length').isLength({min: 10, max:10})
+            req.checkBody('phone', 'Phone number already registered').not().equals(dbPhone);
+        }
     }
     else{
         phone = user.attributes.phone;

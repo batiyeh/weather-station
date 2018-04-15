@@ -291,7 +291,7 @@ class AlertCard extends Component {
                                     <div className='alert-method-box alert-method-container'>
                                         <FormGroup check>
                                             <Label check>
-                                                <p><Input type='checkbox' className='form-control alert-method-box' checked={this.state.email} onChange={this.onEmailChange} id='email' name='email'/></p>
+                                                <Input type='checkbox' className='form-control col-4 alert-method-box' checked={this.state.email} onChange={this.onEmailChange} id='email' name='email'/>
                                                 <span>Email</span>
                                             </Label>
                                         </FormGroup>
@@ -299,7 +299,7 @@ class AlertCard extends Component {
                                     <div className='alert-method-box alert-method-container'> 
                                         <FormGroup check>   
                                             <Label check>
-                                                <p><Input type='checkbox' className='form-control alert-method-box' checked={this.state.sms} onChange={this.onSMSChange} id='sms' name='sms'/></p>
+                                                <Input type='checkbox' className='form-control col-4 alert-method-box' checked={this.state.sms} onChange={this.onSMSChange} id='sms' name='sms'/>
                                                 <span>SMS</span>
                                             </Label>
                                         </FormGroup>
@@ -307,7 +307,7 @@ class AlertCard extends Component {
                                     <div className='alert-method-box alert-method-container'>
                                         <FormGroup check>
                                             <Label check>
-                                                <p><Input type='checkbox' className='form-control alert-method-box' checked={this.state.webpage} onChange={this.onWebpageChange} id='webpage' name='webpage'/></p>
+                                                <Input type='checkbox' className='form-control col-2 alert-method-box' checked={this.state.webpage} onChange={this.onWebpageChange} id='webpage' name='webpage'/>
                                                 <span>Webpage</span>
                                             </Label>
                                         </FormGroup>
