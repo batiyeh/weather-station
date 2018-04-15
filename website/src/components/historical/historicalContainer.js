@@ -212,6 +212,7 @@ class HistoricalContainer extends Component{
 
         else{
             this.setState({
+                loading: true,
                 dateError: false,
                 stationError: false,
                 modal: false,
