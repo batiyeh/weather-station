@@ -58,7 +58,6 @@ class GraphData extends Component{
     updateGraph(){
         var data;
         var stations = this.state.stations;
-        console.log(stations);
         for (var station_name in this.state.data) {
             data = this.state.data[station_name];
             //this.createLines(station_name, data["sensorData"], data["dates"]);

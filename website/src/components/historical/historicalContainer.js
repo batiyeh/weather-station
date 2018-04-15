@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactLoading from 'react-loading';
 import '../../styles/historical.css';
 import { Alert, Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap';
 import GraphData from './graphContainer'
@@ -331,7 +332,9 @@ class HistoricalContainer extends Component{
 
        else {
             return (
-                null
+                <div>
+                    <ReactLoading type={'spin'} color={'#4bc0c0'}/>
+                </div>
             );
         }
     }
